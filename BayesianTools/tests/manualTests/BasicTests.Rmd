@@ -16,7 +16,6 @@ library(msm)
 
 ```{r, results='hide'}
 
-iter = 4000
 start = 500
 
 ll = function(x) sum(dnorm(x, log = T))
@@ -29,18 +28,25 @@ for(i in 1:length(samp$BTname)){
   print(samp$BTname[i])
   
   if(samp$univariatePossible[i] == T){
-      if (samp$restartable[i] == T){
-        settings = list(iterations = iter/2, adaptive = F, consoleUpdates = 1e+8)
-        out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
-        out = runMCMC(bayesianSetup = out, sampler = samp$BTname[i], settings = settings)
-  }else{
-    settings = list(adaptive = F, iterations = iter, consoleUpdates = 1e+8)
-    out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
+    if (samp$restartable[i] == T){
+      settings = applySettingsDefault(settings = list(consoleUpdates = 1e+8), sampler = samp$BTname[i])
+      settings$iterations = round(settings$iterations / 2)
+      out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
+      out = runMCMC(bayesianSetup = out, sampler = samp$BTname[i], settings = settings)
+    }else{
+      settings = applySettingsDefault(settings = list(consoleUpdates = 1e+8), sampler = samp$BTname[i])
+      out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
   } 
 
   plot(out)
   #summary(out) # doesn't work for 1-d
   gap::qqfun(getSample(out, start = start, thin = "auto"), distribution = "tnorm", lower= -10, upper = 10)
+  
+  #x = getSample(out, start = start, thin = "auto", coda = T)
+  
+  
+  #coda::effectiveSize(x)
+  #ks.test(getSample(out, start = start, thin = "auto"), "ptnorm")
   }
 
 }
@@ -61,12 +67,14 @@ samp = getPossibleSamplerTypes()
 for(i in 1:length(samp$BTname)){
   print(samp$BTname[i])
   
+
   if (samp$restartable[i] == T){
-    settings = list(iterations = iter/2, consoleUpdates = 1e+8)
+    settings = applySettingsDefault(settings = list(consoleUpdates = 1e+8), sampler = samp$BTname[i])
+    settings$iterations = round(settings$iterations / 2)
     out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
     out = runMCMC(bayesianSetup = out, sampler = samp$BTname[i], settings = settings)
   }else{
-    settings = list(iterations = iter, consoleUpdates = 1e+8)
+    settings = applySettingsDefault(settings = list(consoleUpdates = 1e+8), sampler = samp$BTname[i])
     out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
   } 
 
@@ -99,7 +107,7 @@ samp = getPossibleSamplerTypes()
 for(i in 1:length(samp$BTname)){
   print(samp$BTname[i])
   
-  settings = list(nrChains = 3, iterations = iter, consoleUpdates = 1e+8)
+  settings = applySettingsDefault(settings = list(consoleUpdates = 1e+8, nrChains = 3), sampler = samp$BTname[i])
   out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings) 
 
   plot(out)
@@ -129,11 +137,12 @@ for(i in 1:length(samp$BTname)){
   print(samp$BTname[i])
 
   if (samp$restartable[i] == T){
-    settings = list(nrChains = 3, iterations = iter/2, consoleUpdates = 1e+8)
+    settings = applySettingsDefault(settings = list(consoleUpdates = 1e+8, nrChains = 3), sampler = samp$BTname[i])
+    settings$iterations = round(settings$iterations / 2)
     out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
     out = runMCMC(bayesianSetup = out, sampler = samp$BTname[i], settings = settings)
   }else{
-    settings = list(nrChains = 3, iterations = iter, consoleUpdates = 1e+8)
+    settings = applySettingsDefault(settings = list(consoleUpdates = 1e+8, nrChains = 3), sampler = samp$BTname[i])
     out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
   } 
 
