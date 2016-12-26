@@ -1,0 +1,273 @@
+---
+title: "Bayesian Tools Demo"
+author: "Florian Hartig"
+date: "10 Jan 2016"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{A quick start guide for the BayesianTools package}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8](inputenc)
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE)
+```
+
+```{r, echo = F, message = F}
+set.seed(123)
+library(BayesianTools)
+```
+
+The purpose of this document is to give you a quick overview of the most important functions of the BayesianTools pacakge. For a detailed description of the options of each function, please consult the help (overview at ?BayesianTools) or the vignette ReferenceManual. 
+
+# The Bayesian Setup
+
+One central object in the package is the BayesianSetup. It contains the information about the model to be fit (likelihood), and the priors for the model parameters. 
+
+A BayesianSetup is created throug the createBayesianSetup function. The function expects a log-likelihood and log-prior. It calculate automatically the posterior and various convenience functions for the samplers. 
+
+Advantages of the BayesianSetup include 1) support for parallelization, 2) functions are wrapped in try-catch statements to avoid crashes during long MCMC evaluations, 3) and the posterior checks if the parameter is outside the prior first, in which case the likelihood is not evaluated (makes the algorithms faster for slow likelihoods).
+
+If no prior information at all is provided, an infinite flat prior is created. If no explicit prior, but lower and upper values are provided, a standard uniform prior is created, including the option to sample from this prior, which is useful for SMC and also for getting starting values. This option is used in the follwoing example, which creates a multivariate normal likelihood density and a uniform prior for 3 parameters.
+
+```{r}
+ll <- generateTestDensityMultiNormal(sigma = "no correlation")
+bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
+```
+
+If you want to use your own custom functions, note the following
+
+## Likelihood definition
+
+As likelihood function, you need to provide the log likelihood density of a parameter vector 
+
+```{r, eval = F}
+ll = logDensity(x)
+```
+
+Likelihoods are often costly to compute. If that is the case for you, you should think about parallelization possibilities. The BayesianSetup has the following options via the variable parallel
+
+* F means no parallelization
+* T means that an automatic parallelization via R is attempted (will not work if your likelihood writes to file, or uses global variables or functions - see general R help on parallelization) 
+* "external", assumed that the likelihood is already parallelized. In this case it needs to accept a matrix with parameters as columns. This is for using complex models that cannot be parallelized via an R cluster, e.g. because they write to file. 
+
+## Prior definition
+
+You have 3 options to set priors
+
+* Only set min/max values in the createBayesianSetup, or even drop that (creates flat priors)
+* Use one of the predefinded priors, see ?createPrior for a list. One of the options here is to use a previous MCMC output as new prior
+* Use a user-define prior, see ?createPrior 
+
+In principle, the following information can be provided to priors:
+
+* A log density function, as a function of a parameter vector x, as in the likelihood
+* Additinally, you should consider providing a function that samples from the prior, because many samplers (SMC, DE, DREAM) can make use of this function for initial conditions. For this purpose, there is the argument sampler in the createBayesianSetup. If you use one of the pre-defined priors, the sampling function is already implemented
+* lower / upper boundaries (can be set on top of any prior)
+* Additional info - best values, names of the parameters, ... 
+
+# Running MCMC and SMC functions
+
+The runMCMC function is the main wrapper for all other implemented MCMC functions. It always takes the following arguments 
+
+* A bayesianSetup (alternatively, the log target function)
+* The sampler name 
+* A list with settings - if a parameter is not provided, the default will be used
+
+## The Metropolis MCMC
+
+A versatile Metropolis-type MCMC with options for covariance adaptation, delayed rejection, tempering and Metropolis-within-Gibbs sampling is available via the Metropolis option. For details, see the help of the Metropolis file
+
+```{r}
+iter = 10000
+settings = list(iterations = iter, consoleUpdates = 1e+8)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
+```
+
+All samplers can be plotted and summarized via the console
+
+```{r}
+print(out)
+summary(out)
+```
+
+and plotted with the following plot functions
+
+```{r}
+plot(out) # plot internally calls tracePlot(out)
+correlationPlot(out)
+marginalPlot(out)
+```
+
+Other Functions that can be applied to all samplers include
+
+```{r}
+marginalLikelihood(out)
+DIC(out)
+MAP(out)
+```
+
+You can extract (a part of) the sampled parameter values by
+
+```{r}
+#getSample(out, start = 100, end = NULL, thin = 5, whichParameters = 1:2)
+```
+
+
+For all samplers, you can perform multiple runs via the nrChains argument
+
+
+```{r}
+iter = 1000
+settings = list(iterations = iter, nrChains = 3, consoleUpdates = 1e+8)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
+
+```
+
+The result is an object of mcmcSamplerList, which should allow to do everything one can do with an mcmcSampler object (with slightly different output sometimes). 
+
+```{r}
+print(out)
+summary(out)
+marginalLikelihood(out)
+DIC(out)
+```
+
+
+For example, in the plot you now see 3 chains. 
+
+```{r}
+plot(out)
+```
+
+There are a few additional functions that may only be available for lists, for example 
+
+```{r}
+#getSample(out, coda = F)
+gelmanDiagnostics(out, plot = T)
+```
+
+
+## Other Metropolis MCMCs
+
+Only for comparison, there are a numer of other Metropolis-type algorithms implemented. In priciple, either of these algorithms can be emulated via the options of the main Metropolis functions. We do not recommend using these algorithms except for comparisons. 
+
+```{r}
+settings = list(iterations = iter, consoleUpdates = 1e+8)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "M", settings = settings)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "AM", settings = settings)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DR", settings = settings)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DRAM", settings = settings)
+
+plot(out)
+correlationPlot(out)
+marginalPlot(out)
+summary(out)
+```
+
+
+## DE samplers
+
+There are two versions of the differentia evolution MCMC included. In doubt, you should use the DEzs option. 
+
+```{r}
+settings = list(iterations = iter, consoleUpdates = 1e+8)
+
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DE", settings = settings)
+
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+
+```
+
+
+```{r}
+plot(out)
+correlationPlot(out)
+marginalPlot(out)
+summary(out)
+gelmanDiagnostics(out, plot = T)
+```
+
+## DREAM sampler family
+
+Also for the DREAM sampler, there are two versions included. Again, you should usually use the "DREAMzs". 
+
+```{r}
+settings = list(iterations = iter, nseq = 6, consoleUpdates = 1e+8) # the rest of the parameters are default settings.
+
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DREAM", settings = settings)
+
+settings = list(iterations = iter, nseq = 3) # Snooker update allows for less chains.
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DREAMzs", settings = settings)
+```
+
+```{r}
+plot(out)
+correlationPlot(out)
+marginalPlot(out)
+summary(out)
+gelmanDiagnostics(out, plot = T)
+```
+
+## T-walk
+
+```{r}
+settings = list(iterations = iter, consoleUpdates = 1e+8) # the rest of the parameters are default settings.
+
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Twalk", settings = settings)
+```
+
+```{r}
+plot(out)
+correlationPlot(out)
+marginalPlot(out)
+summary(out)
+#gelmanDiagnostics(out, plot = T)
+```
+
+
+## SMC sampler
+
+```{r}
+settings = list(initialParticles = 1000, consoleUpdates = 1e+8)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "SMC", settings = settings)
+
+plot(out)
+correlationPlot(out)
+marginalPlot(out)
+summary(out)
+
+```
+
+Note that the above settins initialParticles = 1000 requires that the bayesianSetup includes the possibility to sample from the prior. 
+
+
+# Bayesian model selection and model averaging
+
+The package provides functions to calculate DIC and the marginal Likelihood (for the calculation of the Bayesi factor. See Reference Manual for more details)
+
+
+```{r}
+settings = list(consoleUpdates = 1e+8)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
+
+DIC(out)
+
+marginalLikelihood(out)
+```
+
+
+The DIC function provides further information, e.g. the effective number of parameters. The original reference is Spiegelhalter, D. J.; Best, N. G.; Carlin, B. P. & van der Linde, A. (2002) Bayesian measures of model complexity and fit. J. Roy. Stat. Soc. B, 64, 583-639.
+
+An interesting reference DIC and other Bayesian information criteria is Gelman, A.; Hwang, J. & Vehtari, A. (2014) Understanding predictive information criteria for Bayesian models. Statistics and Computing, Springer US, 24, 997-1016-.
+
+
+# Further examples 
+
+* See the vignette "ReferenceManual"
+
+* A more detailed tutorial on Bayesian inference with process-based models available [here](https://www.dropbox.com/s/y3d5fqh61eqdzz6/TG13-ModelCalibrationTutorial.pdf?dl=0). The tutorial also explains in detail the Bayesian philosophy, and issues such as Interpretation of parameter estimates and confidence intervals
+
+

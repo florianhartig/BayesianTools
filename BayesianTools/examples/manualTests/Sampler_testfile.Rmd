@@ -1,0 +1,222 @@
+---
+title: "MCMC sampler test"
+author: "Stefan Paul"
+date: "9. Juni 2016"
+output: html_document
+---
+Test file for all sampler in the BayesianTools package.
+The sampler are tested for the following cases: 
+
+
+* 3d normal distribution 
+* 3d normal distribution with truncated likelihood
+* 3d normal distribution with truncated prior 
+* 30d normal distribution
+* 50d normal distribution
+
+
+```{r}
+library(BayesianTools)
+library(truncnorm)
+``` 
+
+First a function for the test cases  is created:
+```{r}
+generateTest <- function(mean = NULL){
+  ndim <- length(mean)
+  sigma = diag(rep(1,ndim))
+  out <- function(x) mvtnorm::dmvnorm(x, mean = mean, sigma = sigma, log=T)
+  return(out)
+}
+```
+
+And a function that is running all the samplers.
+```{r}
+
+runSampler <- function(bayesianSetup, iterations = 50000){
+  
+  BS <- bayesianSetup
+  
+  settings <- list(iterations = iterations, adapt = F, optimize = F, message = FALSE)
+  testMH <- runMCMC(BS, sampler = "Metropolis", settings = settings)
+
+  settings <- list(iterations = iterations, adapt = T, optimize = F, message = FALSE)
+  testAM <- runMCMC(BS, sampler = "Metropolis", settings = settings)
+
+  settings <- list(iterations = iterations, adapt = T, optimize = F, DRlevels = 2, message = FALSE)
+  testDRAM <- runMCMC(BS, sampler = "Metropolis", settings = settings)
+
+  settings <- list(iterations = iterations, message = FALSE)
+  testDE <- runMCMC(BS, sampler = "DE", settings = settings)
+  
+  settings <- list(iterations = iterations, blockUpdate = list("correlation", h = 0.5), message = FALSE)
+  testDEblock <- runMCMC(BS, sampler = "DE", settings = settings)
+
+  settings <- list(iterations = iterations, message = FALSE)
+  testDEzs <- runMCMC(BS, sampler = "DEzs", settings = settings)
+  
+  settings <- list(iterations = iterations, blockUpdate = list("correlation", h = 0.5), message = FALSE)
+  testDEzsblock <- runMCMC(BS, sampler = "DEzs", settings = settings)
+  
+  settings <- list(iterations = iterations, message = FALSE)
+  testDREAM <- runMCMC(BS, sampler = "DREAM", settings = settings)
+
+  settings <- list(iterations = iterations, message = FALSE)
+  testDREAMzs <- runMCMC(BS, sampler = "DREAMzs", settings = settings)
+  
+  settings <- list(iterations = iterations, message = FALSE)
+  testTwalk <- runMCMC(BS, sampler = "Twalk", settings = settings)
+  
+  out <- list("MH" = testMH, "AM" = testAM, "DRAM" = testDRAM, "DE" = testDE,
+              "DEzs" = testDEzs, "DEblock" = testDEblock, "DEzsblock" = testDEzsblock,
+              "DREAM" = testDREAM, "DREAMZS" = testDREAMzs, "Twalk" = testTwalk)
+  
+  return(out)
+  
+}
+```
+
+
+# 3d normal distibution
+```{r, message = FALSE}
+
+ll <- generateTest(mean = c(0,2,4))
+BS <- createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3),
+                                          parallel = FALSE)
+
+Normal3d <- runSampler(BS)
+```
+
+### Plot the results
+```{r}
+x <- seq(-11,11, len = 100)
+
+for(i in 1:length(Normal3d)){
+
+  if(Normal3d[[i]]$settings$sampler == "Metropolis"){
+  plot(density(Normal3d[[i]]$chain[,1]), ylim = c(0,1),xlim = range(x), main = names(Normal3d)[i])
+  }else plot(density(Normal3d[[i]]$chain[[1]][,1]), ylim = c(0,1),xlim = range(x), main = names(Normal3d)[i])
+  lines(x,dtruncnorm(x, a = -10, b = 10), col = "red", type = "l", lwd = 2)
+}
+
+
+```
+
+
+
+
+# Truncated prior.
+```{r}
+
+ll <- generateTest(mean = c(0,10,12))
+BS <- createBayesianSetup(likelihood = ll, lower = c(0,-10,-10), upper = rep(30, 3),
+                                          parallel = FALSE)
+
+TruncatedPrior <- runSampler(BS)
+```
+
+### Plot the results
+```{r}
+x <- seq(0,10, len = 100)
+
+for(i in 1:length(TruncatedPrior)){
+
+  if(TruncatedPrior[[i]]$settings$sampler == "Metropolis"){
+  plot(density(TruncatedPrior[[i]]$chain[,1]), ylim = c(0,1),xlim = range(x), main = names(TruncatedPrior)[i])
+  }else plot(density(TruncatedPrior[[i]]$chain[[1]][,1]), ylim = c(0,1), xlim = range(x),main = names(TruncatedPrior)[i])
+  lines(x,dtruncnorm(x, a = 0, b = 30), col = "red", type = "l", lwd = 2)
+}
+
+```
+
+
+# Truncated likelihood
+```{r}
+generateTestTrunc <- function(mean = NULL){
+  ndim <- length(mean)
+  sigma = diag(rep(1,ndim))
+  out <- function(x) {
+    if(x[1]<0) return(-Inf)
+    else mvtnorm::dmvnorm(x, mean = mean, sigma = sigma, log=T)
+  }
+  return(out)
+}
+
+ll <- generateTestTrunc(mean = c(0,2,4))
+BS <- createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3),
+                                          parallel = FALSE)
+
+TruncatedLL <- runSampler(BS)
+
+```
+
+
+### Plot the results
+```{r}
+x <- seq(0,10, len = 100)
+
+for(i in 1:length(TruncatedLL)){
+
+  if(TruncatedPrior[[i]]$settings$sampler == "Metropolis"){
+  plot(hist(TruncatedPrior[[i]]$chain[,1]), ylim = c(0,1), xlim = range(x),main = names(TruncatedPrior)[i], freq = FALSE)
+  }else plot(hist(TruncatedPrior[[i]]$chain[[1]][,1]), ylim = c(0,1), xlim = range(x), main = names(TruncatedPrior)[i], freq = FALSE)
+  lines(x,dtruncnorm(x, a = 0, b = 10), col = "red", type = "l", lwd = 2)
+}
+
+```
+
+
+
+# 30d normal distibution
+```{r, message = FALSE}
+
+meanvec <- sample(1000, 30)
+ll <- generateTest(mean =meanvec)
+BS <- createBayesianSetup(likelihood = ll, lower = meanvec-10, upper = meanvec+10,
+                                          parallel = FALSE)
+
+out <-capture.output(suppressMessages(Normal30d <- runSampler(BS)))
+```
+
+### Plot the results
+```{r}
+x <- seq(meanvec[1]-10,meanvec[1]+10, len = 100)
+
+for(i in 1:length(Normal30d)){
+
+  if(Normal30d[[i]]$settings$sampler == "Metropolis"){
+  plot(density(Normal30d[[i]]$chain[,1]), ylim = c(0,1),xlim = range(x), main = names(Normal30d)[i], freq = FALSE)
+  }else plot(density(Normal30d[[i]]$chain[[1]][,1]), ylim = c(0,1),xlim = range(x), main = names(Normal30d)[i], freq = FALSE)
+  lines(x,dtruncnorm(x, a = meanvec[1]-10, b = meanvec[1]+10, mean = as.numeric(meanvec[1])), col = "red", type = "l", lwd = 2)
+}
+
+
+```
+
+
+
+# 50d normal distibution
+```{r, message = FALSE}
+
+meanvec <- sample(1000, 50)
+ll <- generateTest(mean =meanvec)
+BS <- createBayesianSetup(likelihood = ll, lower = meanvec-10, upper = meanvec+10,
+                                          parallel = FALSE)
+
+Normal50d <- runSampler(BS)
+```
+
+### Plot the results
+```{r}
+x <- seq(meanvec[1]-10,meanvec[1]+10, len = 100)
+
+for(i in 1:length(Normal50d)){
+
+  if(Normal50d[[i]]$sampler == "Metropolis"){
+  plot(hist(Normal50d[[i]]$chain[,1]), ylim = c(0,1),xlim = range(x), main = names(Normal50d)[i], freq = FALSE)
+  }else plot(hist(Normal50d[[i]]$chain[[1]][,1]), ylim = c(0,1), xlim = range(x),main = names(Normal50d)[i], freq = FALSE)
+  lines(x,dtruncnorm(x, a = meanvec[1]-10, b = meanvec[1]+10, mean = as.numeric(meanvec[1])), col = "red", type = "l", lwd = 2)
+}
+
+
+```

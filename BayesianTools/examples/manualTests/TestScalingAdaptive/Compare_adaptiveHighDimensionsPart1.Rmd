@@ -1,0 +1,92 @@
+---
+title: "Part 1"
+author: "Stefan Paul"
+date: "5. Juni 2016"
+output: html_document
+---
+
+This document contains a comparison of the mixing/acceptance rate of the adaptive Metropolis sampler
+before and after changs to the code. 
+Part 1 contains the old code, Part 2 the new.
+
+Changes in the code:
+https://github.com/florianhartig/bayesianTools/commit/fa9ce3dcf7bee7876494905beaa4bab70f1c379e
+
+
+Definnition of a function that creates high dimensional multivariate normal target densities.
+```{r}
+generateTest <- function(mean = NULL, ndim  = 3){
+  
+  sigma = diag(rep(1,ndim))
+  if(is.null(mean)) mean <- sample(1:1000,ndim)
+  
+  out <- function(x) mvtnorm::dmvnorm(x, mean = mean, sigma = sigma, log=T)
+  
+  return(out)
+}
+
+```
+
+
+Run tests:
+```{r}
+library(BayesianTools)
+parVec <- c(3,5,10,20,50,100,200)
+
+settings <- list(iterations = 100000, optimize = F, adapt = T)
+
+count <- 1
+test <- list()
+
+for(i in parVec){
+
+mvec <- sample(1:2000,i , replace = F) # Vector of means
+lower <- mvec-10 # lower and upper for bayesianSetup
+upper <- mvec+10
+
+ll <- generateTest(mean = mvec, ndim = i) # Generate likelihood
+
+# Create Bayesian Setup
+BS<- createBayesianSetup(likelihood = ll, lower = lower, upper =upper)
+
+# Run the sampler; Wrap up in capture.output because cat() is not
+# captured by KnitR
+capture.output(suppressMessages(test[[count]] <- runMCMC(BS, sampler = "Metropolis", settings = settings)))
+count <- count +1
+}
+
+```
+
+
+Plot acceptance rate.
+```{r}
+acc.rate <- numeric()
+
+for(i in 1:(count-1)){
+  acc.rate[i] <- test[[i]]$acceptanceRate
+  
+}
+
+
+plot(parVec, acc.rate, type = "b", main = "Acceptance rate for different dimensions, adaptive MH",
+     xlab = "Number of parameters", ylab = " Acceptance rate") 
+
+```
+
+```{r}
+par(mfrow = c(2,2))
+for(i in 1:(count-1)){
+
+  
+plot(test[[i]]$chain[,1], type = "l", main = paste("Par1 of ", parVec[i]))  
+plot(density(test[[i]]$chain[,1]), type = "l", main = paste("Density of Par1 of ", parVec[i]))  
+
+plot(test[[i]]$chain[,2], type = "l", main = paste("Par2 of ", parVec[i]))  
+plot(density(test[[i]]$chain[,2]), type = "l", main = paste("Density of Par2 of ", parVec[i]))  
+
+
+}
+
+
+```
+

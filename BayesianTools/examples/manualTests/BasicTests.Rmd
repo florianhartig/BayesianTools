@@ -1,0 +1,157 @@
+---
+title: "Test of basic functions"
+author: "Florian Hartig"
+date: "10 Jun 2016"
+output: html_document
+---
+
+```{r}
+set.seed(1)
+library(BayesianTools)
+library(msm)
+```
+
+
+# 1-d distribution
+
+```{r, results='hide'}
+
+iter = 4000
+start = 500
+
+ll = function(x) sum(dnorm(x, log = T))
+setup = createBayesianSetup(ll, lower = c(-10), upper = c(10))
+
+samp = getPossibleSamplerTypes()
+
+for(i in 1:length(samp$BTname)){
+  
+  print(samp$BTname[i])
+  
+  if(samp$univariatePossible[i] == T){
+      if (samp$restartable[i] == T){
+        settings = list(iterations = iter/2, adaptive = F, consoleUpdates = 1e+8)
+        out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
+        out = runMCMC(bayesianSetup = out, sampler = samp$BTname[i], settings = settings)
+  }else{
+    settings = list(adaptive = F, iterations = iter, consoleUpdates = 1e+8)
+    out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
+  } 
+
+  plot(out)
+  #summary(out) # doesn't work for 1-d
+  gap::qqfun(getSample(out, start = start, thin = "auto"), distribution = "tnorm", lower= -10, upper = 10)
+  }
+
+}
+```
+
+
+
+# 2-d distribution
+
+```{r, results='hide'}
+
+ll = function(x) sum(dnorm(x, log = T))
+setup = createBayesianSetup(ll, lower = c(-10,-10), upper = c(10,10))
+
+
+samp = getPossibleSamplerTypes()
+
+for(i in 1:length(samp$BTname)){
+  print(samp$BTname[i])
+  
+  if (samp$restartable[i] == T){
+    settings = list(iterations = iter/2, consoleUpdates = 1e+8)
+    out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
+    out = runMCMC(bayesianSetup = out, sampler = samp$BTname[i], settings = settings)
+  }else{
+    settings = list(iterations = iter, consoleUpdates = 1e+8)
+    out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
+  } 
+
+  plot(out)
+  summary(out)
+  marginalPlot(out)
+  correlationPlot(out)
+  DIC(out)
+  marginalLikelihood(out)
+  
+  x = getSample(out)
+  par(mfrow = c(1,2))
+  gap::qqfun(getSample(out, start = start, thin = "auto")[,1], distribution = "tnorm", lower= -10, upper = 10)
+  gap::qqfun(getSample(out, start = start, thin = "auto")[,2], distribution = "tnorm", lower= -10, upper = 10)
+}
+```
+
+
+
+# 2-d distribution, 3 chains, parallel
+
+```{r, results='hide'}
+
+ll = function(x) sum(dnorm(x, log = T))
+setup = createBayesianSetup(ll, lower = c(-10,-10), upper = c(10,10), parallel = 2)
+
+
+samp = getPossibleSamplerTypes()
+
+for(i in 1:length(samp$BTname)){
+  print(samp$BTname[i])
+  
+  settings = list(nrChains = 3, iterations = iter, consoleUpdates = 1e+8)
+  out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings) 
+
+  plot(out)
+  summary(out)
+  marginalPlot(out)
+  #correlationPlot(out)
+  #DIC(out)
+  par(mfrow = c(1,2))
+  gap::qqfun(getSample(out, start = start, thin = "auto")[,1], distribution = "tnorm", lower= -10, upper = 10)
+  gap::qqfun(getSample(out, start = start, thin = "auto")[,2], distribution = "tnorm", lower= -10, upper = 10)
+}
+```
+
+
+
+# 2-d distribution, 3 chains, parallel
+
+```{r, results='hide'}
+
+ll = function(x) sum(dnorm(x, log = T))
+setup = createBayesianSetup(ll, lower = c(-10,-10), upper = c(10,10), parallel = 2)
+
+
+samp = getPossibleSamplerTypes()
+
+for(i in 1:length(samp$BTname)){
+  print(samp$BTname[i])
+
+  if (samp$restartable[i] == T){
+    settings = list(nrChains = 3, iterations = iter/2, consoleUpdates = 1e+8)
+    out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
+    out = runMCMC(bayesianSetup = out, sampler = samp$BTname[i], settings = settings)
+  }else{
+    settings = list(nrChains = 3, iterations = iter, consoleUpdates = 1e+8)
+    out = runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)
+  } 
+
+  plot(out)
+  summary(out)
+  marginalPlot(out)
+  #correlationPlot(out)
+  #DIC(out)
+  par(mfrow = c(1,2))
+  gap::qqfun(getSample(out, start = start, thin = "auto")[,1], distribution = "tnorm", lower= -10, upper = 10)
+  gap::qqfun(getSample(out, start = start, thin = "auto")[,2], distribution = "tnorm", lower= -10, upper = 10)
+}
+```
+
+
+
+
+
+
+
+

@@ -1,0 +1,156 @@
+---
+title: "Test of scaling and mixing in high dimensions for MH"
+author: "Stefan Paul"
+date: "3. Juni 2016"
+output: html_document
+---
+
+This document contains a test example for the Metropolis based sampler.
+The sampler will be run for multivariate normal distributions with a
+growing number of dimensions.
+Starting with three dimensions, the sampler will be tested for 
+5, 10, 20, 50, 100, 200, 500 and 1000 dimensions.
+
+First a function is defined that takes a number of dimensions and
+creates the likelihood function for us.
+
+```{r}
+generateTest <- function(mean = NULL, ndim  = 3){
+  
+  sigma = diag(rep(1,ndim))
+  if(is.null(mean)) mean <- sample(1:1000,ndim)
+  
+  out <- function(x) mvtnorm::dmvnorm(x, mean = mean, sigma = sigma, log=T)
+  
+  return(out)
+}
+```
+
+Second the function is applied and the results are plotted for 
+the two first parameters.
+
+```{r}
+library(BayesianTools)
+parVec <- c(3,5,10,20,50,100,200)
+
+settings <- list(iterations = 100000, adapt = F, optimize = F)
+
+
+count <- 1
+test <- list()
+
+for(i in parVec){
+
+mvec <- sample(1:2000,i , replace = F) # Vector of means
+lower <- mvec-10 # lower and upper for bayesianSetup
+upper <- mvec+10
+
+ll <- generateTest(mean = mvec, ndim = i) # Generate likelihood
+
+# Create Bayesian Setup
+BS<- createBayesianSetup(likelihood = ll, lower = lower, upper =upper)
+
+# Run the sampler; Wrap up in capture.output because cat() is not
+# captured by KnitR
+capture.output(suppressMessages(test[[count]] <- runMCMC(BS, sampler = "Metropolis", settings = settings)))
+count <- count +1
+}
+
+```
+
+
+```{r}
+acc.rate <- numeric()
+
+for(i in 1:(count-1)){
+  acc.rate[i] <- test[[i]]$acceptanceRate
+  
+}
+
+
+plot(parVec, acc.rate, type = "b", main = "Acceptance rate for different dimensions",
+     xlab = "Number of parameters", ylab = " Acceptance rate") 
+
+```
+
+```{r}
+par(mfrow = c(2,2))
+for(i in 1:(count-1)){
+
+  
+plot(test[[i]]$chain[,1], type = "l", main = paste("Par1 of ", parVec[i]))  
+plot(density(test[[i]]$chain[,1]), type = "l", main = paste("Density of Par1 of ", parVec[i]))  
+
+plot(test[[i]]$chain[,2], type = "l", main = paste("Par2 of ", parVec[i]))  
+plot(density(test[[i]]$chain[,2]), type = "l", main = paste("Density of Par2 of ", parVec[i]))  
+
+
+}
+
+
+```
+
+
+Now the same tests are used for the adaptive MH.
+
+```{r}
+library(BayesianTools)
+parVec <- c(3,5,10,20,50,100,200)
+
+settings <- list(iterations = 100000, adapt = TRUE, optimize = FALSE)
+
+
+count <- 1
+test <- list()
+
+for(i in parVec){
+
+mvec <- sample(1:2000,i , replace = F) # Vector of means
+lower <- mvec-10 # lower and upper for bayesianSetup
+upper <- mvec+10
+
+ll <- generateTest(mean = mvec, ndim = i) # Generate likelihood
+
+# Create Bayesian Setup
+BS<- createBayesianSetup(likelihood = ll, lower = lower, upper =upper)
+
+# Run the sampler; Wrap up in capture.output because cat() is not
+# captured by KnitR
+capture.output(suppressMessages(test[[count]] <- runMCMC(BS, sampler = "Metropolis", settings = settings)))
+count <- count +1
+}
+
+```
+
+
+```{r}
+acc.rate <- numeric()
+
+for(i in 1:(count-1)){
+  acc.rate[i] <- test[[i]]$acceptanceRate
+  
+}
+
+
+plot(parVec, acc.rate, type = "b", main = "Acceptance rate for different dimensions, adaptive MH",
+     xlab = "Number of parameters", ylab = " Acceptance rate") 
+
+```
+
+```{r}
+par(mfrow = c(2,2))
+for(i in 1:(count-1)){
+
+  
+plot(test[[i]]$chain[,1], type = "l", main = paste("Par1 of ", parVec[i]))  
+plot(density(test[[i]]$chain[,1]), type = "l", main = paste("Density of Par1 of ", parVec[i]))  
+
+plot(test[[i]]$chain[,2], type = "l", main = paste("Par2 of ", parVec[i]))  
+plot(density(test[[i]]$chain[,2]), type = "l", main = paste("Density of Par2 of ", parVec[i]))  
+
+
+}
+
+
+```
+

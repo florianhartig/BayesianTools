@@ -1,0 +1,41 @@
+Package: BayesianTools
+Title: General-Purpose MCMC and SMC Samplers and Tools for Bayesian Statistics
+Version: 0.0.10.0
+Authors@R: c(person("Florian", "Hartig", email = "florian.hartig@biom.uni-freiburg.de", role = c("aut", "cre")), person("Francesco", "Minunno", role = c("aut")), person("David", "Cameron", role = "ctb"))
+Author: Florian Hartig [aut, cre],
+    Stefan Paul [aut],
+    Francesco Minunno [ctb],
+    David Cameron [ctb]
+Maintainer: Florian Hartig <florian.hartig@biologie.uni-regensburg.de>
+Description: 'BayesianTools' contains MCMC and SMC samplers, plots and diagnostics
+    for Bayesian analysis, with a particular focus on calibrating system models.
+Depends:
+    R (>= 3.1.2)
+License: file LICENSE
+Imports:
+    coda,
+    vioplot,
+    emulator,
+    mvtnorm,
+    IDPmisc,
+    Rcpp,
+    ellipse,
+    numDeriv,
+    msm,
+    MASS,
+    Matrix
+Suggests:
+    DEoptim,
+    lhs,
+    sensitivity,
+    knitr,
+    rmarkdown,
+    roxygen2,
+    testthat,
+    gap
+LinkingTo: Rcpp
+LazyData: true
+RoxygenNote: 5.0.1
+URL: https://github.com/florianhartig/BayesianTools
+BugReports: https://github.com/florianhartig/BayesianTools/issues
+VignetteBuilder: knitr

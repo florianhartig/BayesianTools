@@ -1,0 +1,63 @@
+#' @export
+getSample.smcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL,
+                                 whichParameters = NULL, reportDiagnostics = FALSE, ...){
+  
+  if(is.null(end)) end = nrow(sampler$particles)
+  
+  if(parametersOnly == T) {
+    out = sampler$particles[start:end,] 
+    if(!is.null(sampler$setup$names)) colnames(out) = sampler$setup$names
+  }
+  else {
+    out = cbind(sampler$particles[start:end,] , sampler$posterior[start:end,] )
+    if(!is.null(sampler$setup$names)) colnames(out) = c(sampler$setup$names, "Lposterior", "Llikelihod", "Lprior")
+  }
+  
+  ########################
+  # THINNING
+  if (thin == "auto"){
+    thin = max(floor(nrow(out) / 5000),1)
+  }
+  if(is.null(thin) | thin == F) thin = 1
+  if (! thin == 1){
+    sel = seq(1,dim(out)[1], by = thin )
+    out = out[sel,]
+  }
+  # Sample size
+  if(thin == 1 && !is.null(numSamples)){
+    sel <- seq(1,dim(out)[1], len = numSamples)
+    out <- out[sel,] 
+  }
+  
+  #############
+  
+  if (!is.null(whichParameters)) out = out[,whichParameters]
+  
+  if(reportDiagnostics == T){
+    return(list(chain = out, start = start, end = end, thin = thin))
+  } else return(out)
+}
+
+#' @method summary smcSampler
+#' @export
+summary.smcSampler<- function(object, ...){
+  sampler <- object
+  print("SMC sampler output")
+  summary(getSample(sampler))
+}
+
+#' @method plot smcSampler
+#' @export
+plot.smcSampler<- function(x, ...){
+  marginalPlot(x, ...)
+}
+
+
+#' @method print smcSampler
+#' @export
+print.smcSampler <- function(x, ...){
+  print("smcSampler - you can use the following methods to summarize, plot or reduce this class:")
+  print(methods(class ="smcSampler"))
+}
+
+

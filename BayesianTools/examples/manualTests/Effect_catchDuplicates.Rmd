@@ -1,0 +1,203 @@
+---
+title: "Does catchDupliates make a difference for SMC sampler?"
+author: "Stefan Paul"
+date: "27. März 2016"
+output: 
+  html_document:
+     keep_md: true
+---
+
+# Outline
+This document contains a small comparison of the effect of catchDuplicates for the SMC sampler.
+It shows that as soon as your model is of higher computational cost the option catchDuplicates can save some time.
+
+```{r}
+library(BayesianTools)
+```
+
+First case: 3d-Multivariate Distribution
+
+```{r}
+
+MultiNomialNoCor <- generateTestDensityMultiNormal(sigma = "no correlation")
+BSMultiNomialNoCorN <- createBayesianSetup(likelihood = MultiNomialNoCor, 
+                                          lower = rep(-10, 3), upper = rep(10, 3),
+                                          parallel = T, catchDuplicates = F)
+
+BSMultiNomialNoCorD <- createBayesianSetup(likelihood = MultiNomialNoCor, 
+                                           lower = rep(-10, 3), upper = rep(10, 3),
+                                           parallel = T, catchDuplicates = T)
+
+tn <- td <- numeric(10)
+
+for(i in 1:10){
+settings = list(initialParticles = 10000, iterations = 2)
+tn[i]<-system.time(out <- runMCMC(bayesianSetup = BSMultiNomialNoCorN, sampler = "SMC", settings =
+                 settings))[3]
+
+td[i]<-system.time(out <- runMCMC(bayesianSetup = BSMultiNomialNoCorD, sampler = "SMC", settings =
+                                settings))[3]
+
+}
+
+
+```
+
+
+```{r}
+boxplot(tn, td, main="3d-Multivariate Distr.", names=c("without catchDupl.", "catchDupl."), ylab="Runtime")
+```
+
+Second case: VSEM 
+
+```{r}
+
+PAR <- VSEMcreatePAR(1:1000)
+refPars   = VSEMgetDefaults()
+refPars[12,] = c(0.2, 0.001, 1)
+rownames(refPars)[12] = "error-sd"
+
+referenceData <- VSEM(refPars$best[1:11], PAR) 
+obs = apply(referenceData, 2, function(x) x + rnorm(length(x), 
+                                                    sd = abs(x) * refPars$best[12]))
+
+# Selecting parameters
+parSel = c(1:6, 12)
+
+
+likelihood <- function(x, sum = T){
+  
+  PAR <- BayesianTools::VSEMcreatePAR(1:1000)
+  refPars   = BayesianTools::VSEMgetDefaults()
+  refPars[12,] = c(0.2, 0.001, 1)
+  rownames(refPars)[12] = "error-sd"
+  
+  referenceData <- BayesianTools::VSEM(refPars$best[1:11], PAR) 
+  obs = apply(referenceData, 2, function(x) x + rnorm(length(x), 
+                                                      sd = abs(x) * refPars$best[12]))
+  
+  # Selecting parameters
+  parSel = c(1:6, 12)
+  x = BayesianTools::createMixWithDefaults(x, refPars$best, parSel)
+  predicted <- BayesianTools::VSEM(x[1:11], PAR)
+  diff = c(predicted[,1:3] - obs[,1:3])
+  llValues = dnorm(diff, sd = max(abs(c(predicted[,1:3])),0.0001) * x[12], log = T) 
+  if (sum == F) return(llValues)
+  else return(sum(llValues))
+}
+
+
+# Prior
+prior <- createUniformPrior(lower = refPars$lower[parSel], upper = refPars$upper[parSel])
+
+# Bayesian Setup
+BSVSEMN <- createBayesianSetup(likelihood, prior, best = refPars$best[parSel], 
+                              names = rownames(refPars)[parSel],
+                              parallel = T, catchDuplicates = F)
+
+BSVSEMD <- createBayesianSetup(likelihood, prior, best = refPars$best[parSel], 
+                              names = rownames(refPars)[parSel],
+                              parallel = T, catchDuplicates = T)
+
+tVn <- tVd <- numeric(10)
+
+settings = list(initialParticles = 10000, iterations = 2, resampling=T)
+
+
+for(i in 1:10){
+ print(i)
+ tVn[i]<-system.time(out <- runMCMC(bayesianSetup = BSVSEMN, sampler = "SMC", settings =
+                                      settings))[3]
+  
+  tVd[i]<-system.time(out <- runMCMC(bayesianSetup = BSVSEMD, sampler = "SMC", settings =
+                                     settings))[3]
+  
+}
+
+```
+
+
+```{r}
+boxplot(tVn,tVd, main="VSEM", names=c("without catchDupl.", "catchDupl."), ylab="Runtime")
+```
+
+
+Third case: PRELES, 
+Note that the calculations are not run in parallel here for both cases.
+For any reson the model is throwing an error.
+
+```{r}
+
+require(Rpreles)
+setwd("C:/Users/Stefan/Desktop/Master/Umweltsystemmodellierung/Aufgaben/PRELES/PRELES/PRELES/Sensitivity")
+load('Boreal_sites.rdata') # Site data
+load('par.rdata')  # Parameters
+parind<-c(5:11,14:18) # Indexes for PRELES parameters
+# that will be changed in the analysis
+
+
+
+
+# Likelihood function
+NLL <- function(parx){
+  
+  parind<-c(5:11,14:18) # Indexes for PRELES parameters
+  # that will be changed in the analysis
+  
+  
+  # Defining a function that is running PRELES
+  runPreles <- function(parx = NULL, indices = NULL){
+    p <- .GlobalEnv$s1$par$def
+    p[indices] = parx[1:length(parind)]
+    out <- Rpreles::PRELES(PAR=.GlobalEnv$s1$PAR, TAir=.GlobalEnv$s1$TAir, 
+                           VPD=.GlobalEnv$s1$VPD, Precip=.GlobalEnv$s1$Precip, 
+                  CO2=.GlobalEnv$s1$CO2, fAPAR=.GlobalEnv$s1$fAPAR, p=p[1:30])
+    return(out)
+  }
+  
+  
+  out <- runPreles(parx[1:12], parind[1:12])
+  NlogLik = sum(dnorm(.GlobalEnv$s1$GPPobs , mean = out$GPP, sd = parx[13], log = T))+
+    sum(dnorm(.GlobalEnv$s1$ETobs , mean = out$ET, sd = parx[14], log = T))
+  
+  return(-NlogLik)
+}
+
+
+# Prior
+Pprior <- createUniformPrior(lower = par$min[c(parind,31,32)], upper = par$max[c(parind,31,32)])
+
+# Bayesian Setup
+BSPreles <- createBayesianSetup(likelihood = NLL, prior = Pprior, best = par$def[c(parind,31,32)],
+                                 names = par$name[c(parind,31,32)], parallel = F, catchDuplicates = F )
+
+
+BSPrelesC <- createBayesianSetup(likelihood = NLL, prior = Pprior, best = par$def[c(parind,31,32)],
+                                names = par$name[c(parind,31,32)], parallel = F, catchDuplicates = T )
+
+
+
+settings = list(initialParticles = 10000, iterations = 2, resampling=T)
+
+tPn <- tPd <- numeric(10)
+
+
+for(i in 1:10){
+  print(i)
+  tPn[i]<-system.time(out <- runMCMC(bayesianSetup = BSPreles, sampler = "SMC", settings =
+                                       settings))[3]
+  
+  tPd[i]<-system.time(out <- runMCMC(bayesianSetup = BSPrelesC, sampler = "SMC", settings =
+                                       settings))[3]
+  
+}
+
+``` 
+
+
+```{r}
+boxplot(tPn,tPd, main="PRELES", names=c("without catchDupl.", "catchDupl."), ylab="Runtime")
+```
+
+
+

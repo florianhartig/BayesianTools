@@ -1,0 +1,29 @@
+---
+title: "Test of basic functions"
+author: "Florian Hartig"
+date: "10 Jun 2016"
+output: html_document
+---
+
+```{r}
+set.seed(1)
+library(BayesianTools)
+```
+
+
+# 2-d distribution
+
+```{r, results='hide'}
+
+ll = function(x) sum(dnorm(x, log = T))
+setup = createBayesianSetup(ll, lower = rep(-10,1000), upper = rep(10,1000))
+
+settings = list(iterations = 1000, consoleUpdates = 1e+2, optimize = F)
+out <- runMCMC(bayesianSetup = setup, sampler = "Metropolis", settings = settings)
+```
+
+
+
+
+
+
