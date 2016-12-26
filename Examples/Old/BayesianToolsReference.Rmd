@@ -1,0 +1,351 @@
+---
+title: "Proposal"
+author: "Florian Hartig"
+date: "7 Jan 2016"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Put the title of your vignette here}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8](inputenc)
+---
+
+
+```{r, echo = F, message = F}
+set.seed(123)
+library(BayesianTools)
+```
+
+
+
+# Core classes 
+
+## The Bayesiansetup
+
+
+```{r}
+
+likelihood <- function(x) dnorm(x, log = T)
+prior <- createUniformPrior(0,5)
+bayesianSetup <- createBayesianSetup(likelihood, prior)
+str(bayesianSetup)
+
+```
+
+
+
+### Parallelization issues
+
+
+Create reference data
+
+```{r}
+PAR <- VSEMcreatePAR()
+plot(PAR)
+pars   = c(0.5 , 1.5, 0.002,   0.4, 1440., 27370.)
+referenceData <- VSEM(pars, PAR) 
+referenceDataError <- referenceData #* rnorm(dim(referenceData)[1] * dim(referenceData)[2], mean = 1, sd = 0.1)
+```
+
+Likelihood
+
+```{r}
+
+lower = c(0.3,1,0.001, 0.2, 1000, 10000, 0.1)
+upper = c(1, 3, 0.004, 1, 2000, 50000, 2)
+prior = createUniformPrior(lower = lower, upper = upper)
+
+likelihood <- function(x){
+  pars = x[1:6]
+  sd = x[7]
+  predicted <- VSEM(pars, PAR)
+  return(likelihoodIidNormal(predicted[,1], referenceDataError[,1], sd))
+}
+
+```
+
+BayesianSetup 
+
+
+```{r}
+bayesianSetup = createBayesianSetup(likelihood, prior)
+
+bayesianSetup$posterior$density(rbind(lower, lower))
+
+```
+
+
+
+## The proposalgenerator
+
+
+```{r}
+
+testMatrix = matrix(rep(c(0,0,0,0), 1000), ncol = 4)
+testVector = c(0,0,0,0)
+
+
+## Standard multivariate normal proposal generator
+
+testGenerator <- createProposalGenerator(covariance = c(1,1,1,1), message = T)
+
+methods(class = "proposalGenerator")
+print(testGenerator)
+
+testGenerator$returnProposal(testVector)
+x <- testGenerator$returnProposalMatrix(testMatrix)
+boxplot(x)
+
+## Changing the covariance
+testGenerator$covariance = diag(rep(100,4))
+testGenerator <- testGenerator$updateProposalGenerator(testGenerator, message = T)
+
+testGenerator$returnProposal(testVector)
+x <- testGenerator$returnProposalMatrix(testMatrix)
+boxplot(x)
+
+
+## Changing the gibbs probabilities / probability to modify 1-n parameters
+
+testGenerator$gibbsProbabilities = c(1,1,0,0)
+testGenerator <- testGenerator$updateProposalGenerator(testGenerator)
+
+testGenerator$returnProposal(testVector)
+x <- testGenerator$returnProposalMatrix(testMatrix)
+boxplot(x)
+
+
+## Changing the gibbs weights / probability to pick each parameter
+
+testGenerator$gibbsWeights = c(0.3,0.3,0.3,100)
+testGenerator <- testGenerator$updateProposalGenerator(testGenerator)
+
+testGenerator$returnProposal(testVector)
+x <- testGenerator$returnProposalMatrix(testMatrix)
+boxplot(x)
+
+
+## Adding another function
+
+otherFunction <- function(x) sample.int(10,1)
+
+testGenerator <- createProposalGenerator(
+                                            covariance = c(1,1,1), 
+                                            otherDistribution = otherFunction, 
+                                            otherDistributionLocation = c(0,0,0,1)
+)
+
+testGenerator$returnProposal(testVector)
+x <- testGenerator$returnProposalMatrix(testMatrix)
+boxplot(x)
+table(x[,4])
+
+```
+
+
+
+
+
+# The Metropolis sampler 
+
+
+
+
+
+
+
+
+
+
+
+
+## A more complicated problem, different options
+
+Correlated, 3-d multivariate normal function
+
+```{r}
+ll <- generateTestDensityMultiNormal(sample = T)
+pairs(ll(1000))
+```
+
+Setup
+
+```{r}
+ll <- generateTestDensityMultiNormal(sample = F)
+bayesianSetup = createBayesianSetup(likelihood = ll, best = c(1,1,0))
+```
+
+Run the sampler with prior optimization
+
+```{r}
+testSampler <- mcmcSampler(bayesianSetup = bayesianSetup, optimize = T)
+testSampler2 <- getSamples(testSampler, 10000, adapt = T)
+
+plot(testSampler2)
+correlationPlot(testSampler2)
+marginalPlot(testSampler2)
+```
+
+```{r}
+
+testSampler2 <- getSamples(testSampler, 10000, adapt = T, DRlevels = 2)
+
+plot(testSampler2)
+correlationPlot(testSampler2)
+marginalPlot(testSampler2)
+
+```
+
+
+
+
+
+
+
+
+# The SMC sampler 
+
+
+
+
+```{r, echo = F, message = F}
+set.seed(123)
+library(BayesianTools)
+```
+
+
+# Basic demonstration using Banana-shaped target function
+
+
+### Sequential evaluation
+
+
+```{r}
+bayesianSetup <- createBayesianSetup(testDensityBanana, lower = c(-5,-5), upper = c(5,5))
+system.time(finalParticles <- smcSampler(bayesianSetup, initialParticles = 1000, iterations = 5, resampling = T, adaptive = T))
+```
+
+### Plot result
+
+```{r}
+marginalPlot(finalParticles)
+correlationPlot(finalParticles)
+```
+
+
+### Parallel evaluation with automatic selection of cores
+
+n-1 of all n available cores will automatically be selected
+
+```{r}
+bayesianSetup <- createBayesianSetup(testDensityBanana, lower = c(-5,-5), upper = c(5,5), parallel = T)
+system.time(finalParticles <- smcSampler(bayesianSetup, initialParticles = 5000, iterations = 5, resampling = T, adaptive = T))
+```
+
+
+# SMC tests uniform 
+
+
+```{r}
+likelihood <- function(x) dnorm(x, log = T)
+prior <- createUniformPrior(0,5)
+
+bayesianSetup <- createBayesianSetup(likelihood, prior, parallel = T)
+finalParticles <- smcSampler(bayesianSetup, initialParticles = 10000, iterations = 10, resampling = T, parallel = T)
+
+hist(finalParticles$particles, breaks = 1000, freq = F, xlim = c(0,5))
+library(msm)
+curve(dtnorm(x, lower=0, upper = 5), from = 0, to = 5, add = T, col = "red")
+```
+
+
+
+```{r}
+likelihood <- function(x) dnorm(x, log = T)
+prior <- createUniformPrior(-10,10)
+
+bayesianSetup <- createBayesianSetup(likelihood, prior, parallel = T)
+finalParticles <- smcSampler(bayesianSetup, initialParticles = 10000, iterations = 10, resampling = T, parallel = T)
+
+hist(finalParticles$particles, breaks = 1000, freq = F, xlim = c(-5,5))
+curve(dnorm, from = -10, to = 10, add = T, col = "red")
+
+mean(finalParticles$particles)
+sd(finalParticles$particles)
+```
+
+
+
+
+```{r}
+likelihood <- function(x) sum(dunif(x, log = T))
+prior <- createUniformPrior(c(0,0),c(5,5))
+
+bayesianSetup <- createBayesianSetup(likelihood, prior, parallel = T)
+finalParticles <- smcSampler(bayesianSetup, initialParticles = 10000, iterations = 10, resampling = T, parallel = T)
+
+correlationPlot(finalParticles)
+```
+
+
+
+# Linear Regression 
+
+
+First, we define the problem:
+
+```{r}
+trueA <- 5
+trueB <- 2
+trueSd <- 10
+sampleSize <- 50
+ 
+# create independent x-values 
+x <- (-(sampleSize-1)/2):((sampleSize-1)/2)
+# create dependent values according to ax + b + N(0,sd)
+y <-  trueA * x + trueB + rnorm(n=sampleSize,mean=0,sd=trueSd)
+```
+
+Prior
+
+```{r}
+prior <- createUniformPrior(c(0,-10,0),c(10,5,30))
+```
+
+Likelihood function:
+
+```{r}
+likelihood <- function(param){
+    a = param[1]
+    b = param[2]
+    sd = param[3]
+     
+    pred = a*x + b
+    singlelikelihoods = dnorm(y, mean = pred, sd = sd, log = T)
+    sumll = sum(singlelikelihoods)
+    return(sumll)   
+}
+```
+
+And we can call the SMC function:
+
+```{r}
+bayesianSetup <- createBayesianSetup(likelihood, prior, parallel = F)
+
+bayesianSetup$likelihood$density(c(1,3,5))
+
+finalParticles <- smcSampler(bayesianSetup, initialParticles = 10000, iterations = 10, resampling = T)
+correlationPlot(finalParticles)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

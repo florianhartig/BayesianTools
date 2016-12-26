@@ -1,0 +1,184 @@
+---
+title: "Calibrating a forest model - a practical tutorial"
+author: "Florian Hartig"
+date: "23 Oct 2015"
+output:
+  html_document:
+    keep_md: yes
+---
+
+**Acknowledgements**: Many ideas in this script originate from tutorials / discussions of the COST FP1304 spring school on model calibration. Particularly noteworthy contributions are Francesco Minunno for providing a first tutorial on calibrating the Preles model, and Björn Reineking for the idea of displaying confidence / prediction bands for the fitted models. 
+
+**Used packages:** In this example, we will use the following packages
+
+* BayesianTools, containing MCMC sampler and plotting functions (obtain this via the PROFOUND github repo / contact Florian Hartig)
+* Sensitivity, an R package for sensitivity analysis
+* DEoptim, and R package for optimization
+
+```{r, warning=F,results="hide"}
+library(BayesianTools)
+library(sensitivity)
+library(DEoptim)
+set.seed(123)
+```
+
+## A forest model and data 
+
+We will calibrate the Preles mode, available in the package Rpreles maintained by Mikko Peltoniemi (available via the PROFOUND github repo). For a more detailed description, see the package.
+
+If you want to run this script with your own forest model, you should place it here. 
+
+* A tutorial on how to make your model callable from R is available [here](https://github.com/florianhartig/LearningBayes/blob/master/CommentedCode/09-BayesAndProcessBasedModels/LinkingAModelToR.md)
+* TG13 TODO - extend this tutorial
+
+```{r}
+library(Rpreles)
+```
+
+Some flux data provided by Francesco Minunno
+
+```{r}
+load("/Users/Florian/Home/Teaching/Vorlesungen/USM/USM/Code/PRELES/Sensitivity/Boreal_sites.rdata")
+load('/Users/Florian/Home/Teaching/Vorlesungen/USM/USM/Code/PRELES/Sensitivity/par.rdata')
+```
+
+I choose the parameters that we want to put under calibration
+
+```{r}
+parind <- c(5:8) #Indeces for PRELES parameters
+nparModel <- length(parind)
+print(par$name[parind])
+
+```
+
+Define a run Model function that will run the model with these parameters and return an output that we want to use for calibration, in this case GPP.
+
+
+```{r}
+runModel <- function(x){
+  paras<-par$def
+  paras[parind]<-x[1:nparModel]
+  predicted<-PRELES(PAR=s1$PAR, TAir=s1$TAir, VPD=s1$VPD,Precip=s1$Precip, CO2=s1$CO2, fAPAR=s1$fAPAR, p=paras)$GPP
+  return(predicted)
+}
+
+```
+
+
+Define observations that we want to calibrate to
+
+```{r}
+observed = s1$GPPobs
+```
+
+
+## Build likelihood function / calibration target
+
+Need a calibration target = distance between model and data.
+
+For statistical calibration, this is always the likelihood = p(data| model, parameters). The likelihood is calculated based on probability distribution that the user has to specify and that will typically be also optimized during calibration. For an explanation of this approach, see Hartig, F.; Dyke, J.; Hickler, T.; Higgins, S. I.; O'Hara, R. B.; Scheiter, S. & Huth, A. (2012) Connecting dynamic vegetation models to data - an inverse perspective. J. Biogeogr., 39, 2240-2252.
+
+For this example, I use a normal likelihood, but we will see later that this is not a perfect choice. More flexible / sophisticated likelihood functions are provided in the BayesianTools package.
+
+* TODO TG13 - tutorial on the choice of the likelihood
+
+#### Likelihood definition
+
+```{r}
+
+likelihood <- function(x){
+  predicted = runModel(x[1:nparModel])
+  ll <- likelihoodIidNormal(predicted = predicted, observed = observed, x[nparModel+1])
+  return(ll)
+}
+
+x <-c(par$def[parind],1) 
+likelihood(x)
+```
+
+## Sensitivity analysis
+
+Sensitivity analysis (SA) allows us to see which parameters affect the ouptut most strongly. If you don't know your model well, it makes sense to run a sensitivity analysis in advance of calibration / MCMC to see which parameters have a strong influence on the output. We could apply it on any output, but as we are interested in the likelihood, it makes sense to apply it on the likelihood directly.
+
+There are a large number of local and global SA methods. Here, I use the Morris screening, which gives a global estimate of importance (sensitivity) and nonlinearities (sigma) of each parameter. For details on (global) SA, see Saltelli, A. (2004) Sensitivity analysis in practice: a guide to assessing scientific models. John Wiley & Sons Inc, 
+
+* TODO TG13 - tutorial on SA?
+
+#### Running the SA
+
+```{r, cache = T}
+# This function of BayesianTools generates the form of the likelihood that is needed for the sensitivity package
+parLL <- generateParallelExecuter(likelihood)
+
+mins <- c(par$min[parind] , 0.001)
+maxs <- c(par$max[parind], 20)
+parNames <- c(par$name[parind] , "sd")
+
+system.time(morrisOut <- morris(model = parLL, factors = parNames, r = 500, design = list(type = "oat", levels = 5, grid.jump = 3), binf = mins, bsup = maxs, scale = TRUE)) 
+
+plot(morrisOut)
+```
+
+It seems the sd of the likelihood as well as beta and X0 are the most important parameters.
+
+## Optimization
+
+Running a global optimization, trying to find the point of highest likelihood, and plotting the result.
+
+```{r, cache = T,  warning=F, results='hide', fig.height=7, fig.width = 7}
+out<- DEoptim(function(x)-likelihood(x), lower = c(par$min[parind],0), upper =  c(par$max[parind],20) )
+paras<-par$def
+paras[parind]<-out$optim$bestmem[1:nparModel]
+
+pred = PRELES(PAR=s1$PAR, TAir=s1$TAir, VPD=s1$VPD, Precip=s1$Precip, CO2=s1$CO2, fAPAR=s1$fAPAR, p=paras)$GPP
+
+plotTimeSeries(observed = s1$GPPobs, predicted = pred)
+
+```
+
+TODO TG13 - tutorial on optimization?
+
+## Bayesian calibration / MCMC
+
+Running an MCMC for Bayesian calibration. The current examples assumes flat priors, but you can provide a different prior distribution to the MCMC. 
+
+* If you want to know more about Bayesian calibration in general the [Learning Bayes Website](http://florianhartig.github.io/LearningBayes/) TODO TG13 - tuturial on Bayesian Analysis.
+  
+* If you want to know more about prior choice see [here](https://github.com/florianhartig/LearningBayes/blob/master/CommentedCode/01-Principles/Priors.md) TODO TG13 - tutorial on prior choice.
+
+* If you want to know more about MCMC algorithms see the [tuturial MCMC](https://github.com/florianhartig/LearningBayes/blob/master/CommentedCode/02-Samplers/MCMC/Metropolis.md). The [tutorial rejection sampling](https://github.com/florianhartig/LearningBayes/blob/master/CommentedCode/02-Samplers/Rejection/ExampleRejectionSampler.md) and [tutorial SMC](https://github.com/florianhartig/LearningBayes/blob/master/CommentedCode/02-Samplers/SMC/SMC.md) demonstrate some alternatives to MCMC that are easier parallelizable. TODO TG13 - tutorial on MCMC / sampling in general.
+
+
+#### Running the MCMC
+
+
+
+```{r, cache = T, warning=F, results='hide'}
+proposalGenerator = createProposalGenerator((maxs - mins)/100)
+sampler <-mcmcSampler(likelihood = likelihood, startvalue = out$optim$bestmem, proposalGenerator = proposalGenerator, optimize = F)
+sampler<- getSamples(sampler, 2000)
+sampler<- getSamplesAdaptive(sampler, 5, 2000)
+```
+
+
+#### MCMC results
+
+* see [tutorial posterior interpretation](https://github.com/florianhartig/LearningBayes/blob/master/CommentedCode/01-Principles/Posterior.md)
+* TODO TG13 - tutorial on posterior interpretation
+
+
+```{r, fig.height = 7, fig.width = 7, cache=T}
+summary(sampler)
+plot(sampler)
+correlationPlot(sampler)
+marginalPlot(sampler)
+
+errorFunction <- function(mean, par) rnorm(length(mean), mean = mean, sd = par[nparModel+1])
+
+plotTimeSeriesAuto(mcmcSampler = sampler, model = runModel, observed = observed, error = errorFunction)
+```
+
+
+
+
+

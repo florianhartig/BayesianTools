@@ -1,0 +1,27 @@
+---
+title: "BT-MCMC-Automatic-Demo"
+author: "Florian Hartig"
+date: "9 Jan 2016"
+output: html_document
+---
+
+
+
+
+```{r}
+
+
+testAutomatic <- automaticMCMC(likelihood = testDensityMultiNormal, prior = NULL, startvalues = list(c(1,3,0), c(1,3,0), c(1,3,0)), maxiter = 10000)
+
+class(testAutomatic)
+
+summary(testAutomatic)
+plot(testAutomatic)
+densityPlot(testAutomatic)
+
+rejectionRate(testAutomatic$mcmclist)
+
+
+```
+
+

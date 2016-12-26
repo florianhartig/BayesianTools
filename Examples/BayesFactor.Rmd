@@ -1,0 +1,77 @@
+---
+title: "Bayes Factor"
+author: "Florian Hartig"
+date: "21 Jan 2016"
+output: html_document
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=6, fig.height=6, warning=FALSE, message=FALSE)
+```
+
+
+```{r}
+library(BayesianTools)
+```
+
+
+Data linear Regression with quadratic and linear effect
+
+```{r}
+sampleSize = 30
+x <- (-(sampleSize-1)/2):((sampleSize-1)/2)
+y <-  1 * x + 1*x^2 + rnorm(n=sampleSize,mean=0,sd=10)
+plot(x,y, main="Test Data")
+```
+
+Likelihoods for both
+
+```{r}
+likelihood1 <- function(param){
+    pred = param[1] + param[2]*x + param[3] * x^2
+    singlelikelihoods = dnorm(y, mean = pred, sd = 1/(param[4]^2), log = T)
+    return(sum(singlelikelihoods))  
+}
+
+likelihood2 <- function(param){
+    pred = param[1] + param[2]*x 
+    singlelikelihoods = dnorm(y, mean = pred, sd = 1/(param[3]^2), log = T)
+    return(sum(singlelikelihoods))  
+}
+```
+
+
+Posterior definitions
+
+
+```{r}
+setUp1 <- createBayesianSetup(likelihood1, lower = c(-5,-5,-5,0.01), upper = c(5,5,5,30))
+
+setUp2 <- createBayesianSetup(likelihood2, lower = c(-5,-5,0.01), upper = c(5,5,30))
+```
+
+MCMC and marginal likelihood calculation
+
+```{r, results = 'hide'}
+settings = list(iterations = 15000)
+out <- runMCMC(bayesianSetup = setUp1, sampler = "Metropolis", settings = settings)
+tracePlot(out, start = 5000)
+M1 = marginalLikelihood(out)
+M1
+
+settings = list(iterations = 15000)
+out <- runMCMC(bayesianSetup = setUp2, sampler = "Metropolis", settings = settings)
+tracePlot(out, start = 5000)
+M2 = marginalLikelihood(out)
+M2
+```
+
+Bayes factor (need to reverse the log)
+
+```{r}
+exp(M1$ln.m - M2$ln.m)
+```
+
+
+
+

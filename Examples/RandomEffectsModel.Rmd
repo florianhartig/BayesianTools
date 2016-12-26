@@ -1,0 +1,148 @@
+---
+title: "Estimation of a random effect model with the BT package"
+author: "Florian Hartig"
+date: "10 Jun 2016"
+output: html_document
+---
+
+```{r}
+set.seed(123)
+```
+
+* This example shows how to specify a random effect model with the BT package *
+
+
+
+```{r, eval = F}
+
+library(devtools)
+install_url("https://dl.dropboxusercontent.com/s/ccvpnvblf3vzuvs/BayesianTools_0.0.0.9000.tar.gz", dependencies = T)
+
+library(BayesianTools)
+?BayesianTools
+
+
+```
+
+
+
+## Creation of test data
+
+I create a test dataset with a linear dependency between x and y, with an additional effect that is applied on a grouping factor - you can think of this as a region or site. The structure conforms to a random intercept model.
+
+```{r, fig.width=5, fig.height=5}
+a <- 5
+b <- 10
+sigma <- 10
+rsigma = 30
+group = rep(1:11, each = 5)
+randomEffect = rnorm(11, sd = rsigma)
+
+x <- -27:27
+y <- a * x + b + rnorm(55,0,sd = sigma) + randomEffect[group]
+plot(x,y, col = group, pch = 3)
+```
+
+```{r}
+likelihood <- function(par){
+  
+  ax = par[1]
+  bx = par[2]
+  sigmax <- par[3]
+  rsigmax = par[4]
+  randomEffectx = par[5:15]
+  
+  llRandom = sum(dnorm(randomEffectx, sd = rsigmax, log = T))
+  
+  llObservation = sum(dnorm(ax * x + bx + randomEffectx[group] - y , sd = sigmax, log = T))
+  return(llRandom + llObservation)
+  
+}
+```
+
+
+```{r, message=F}
+library(BayesianTools)
+
+setup <- createBayesianSetup(likelihood = likelihood, lower = c(-20,-20,0,0,rep(-100,11)), upper = c(20,20,50,100,rep(100,11)))
+settings <- list(iterations = 10000)
+
+system.time(res <- runMCMC(bayesianSetup = setup, settings = settings))
+summary(res, start = 5000)
+marginalPlot(res)
+
+```
+
+
+
+# comparison jags
+
+```{r}
+  # 1) Model definition exactly how we created our data 
+  modelCode = "
+    model{
+      
+      # Likelihood
+      for(i in 1:i.max){
+        y[i] ~ dnorm(mu[i],tau)
+        mu[i] <- a*x[i] + b + r[group[i]]
+      }
+
+      # random effect
+      for(i in 1:nGroups){
+        r[i] ~ dnorm(0,rTau)
+      }
+
+      # Prior distributions
+      a ~ dnorm(0,0.001)
+      b ~ dnorm(0,0.001)
+
+      tau <- 1/(sigma*sigma)
+      sigma ~ dunif(0,100)
+
+      rTau <- 1/(rSigma*rSigma)
+      rSigma ~ dunif(0,100)
+    }
+  "
+  
+  # 2) Set up a list that contains all the necessary data (here, including parameters of the prior distribution)
+  Data = list(y = y, x = x, i.max = length(y), group = group, nGroups = 11)
+
+  # 3) Specify a function to generate inital values for the parameters
+  inits.fn <- function() list(a = rnorm(1), b = rnorm(1), sigma = runif(1,1,100), rSigma = runif(1,1,100))
+
+```
+
+
+
+
+# Running the model with R2jags
+
+For random effects and similar, I often prefer the R2jags package - not only that it has a bit simpler interface, but it also has different standard plots (those are taken from the STAN / Rstan package), which are a bit more complicated at first, but make it easier to display random effects. 
+
+```{r,  fig.width=18, fig.height=18}
+library(R2jags)
+system.time(R2JagsResults <- jags(data=Data, inits=inits.fn, parameters.to.save=c("a","b","sigma", "rSigma", "r"), n.chains=1, n.iter=10000, model.file=textConnection(modelCode)))
+
+plot(R2JagsResults)
+print(R2JagsResults)
+
+```
+
+
+
+
+## Non-Bayesian analysis of this model, linear mixed model
+
+Adding the random intercept on group. Note that the variances are not correctly estimated. 
+
+```{r, fig.width=5, fig.height=5}
+library(lme4)
+fit <- lmer(y ~ x + (1|group))
+summary(fit)
+plot(x,y, col = group,  pch = 3)
+for(i in 1:11){
+  abline(coef(fit)$group[i,1], coef(fit)$group[i,2], col = i)
+}
+
+```

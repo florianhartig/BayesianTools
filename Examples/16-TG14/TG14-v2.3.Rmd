@@ -1,0 +1,328 @@
+
+---
+title: "Template for TG14 runs - comparison of sampler convergence"
+author: "TG14"
+---
+
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=8, fig.height=8, warning=FALSE, message=FALSE, cache = T)
+```
+
+
+This template shows how to run the different MCMC algorithms for the TG14 MCMC sampler comparison. Throught the template, we use the VSEM toy model that is provided in the statistics R package of PROFOUND (BayesianTools). You will have to replace this model with your own forest model. 
+
+** Important hints **
+
+* At the end, each group should provide one mcmcSamplerList per sampler that contains the 3 independent MCMC runs (e.g. MHlist, DElist, DEzslist, ...). Store the mcmcSamplerLists with save() as an Rdata file.
+
+* You can automatically create an MCMC list with 3 runs in one go, but if your model is slow you probably want to break down the 3 mcmc runs in individual R scripts that you can run on your cluster. After that, combine the 3 samplers to an mcmcSamplerList object via resMH <- createMcmcSamplerList(chainMH1, chainMH2, chainMH3) (see more hints below)
+
+* If you want to save intermediate results of an MCMC run, use the restart option of the samplers (example below). E.g. when you want to run 100.000 iterations, you could do a for loop from 1:10 in which you always restart the sampler and save inbetween, so that you get a backup each 10.000 iterations. 
+
+* More background to Bayesian Analysis in general in the [TG13 tutorial](https://www.dropbox.com/s/y3d5fqh61eqdzz6/TG13-ModelCalibrationTutorial.pdf?dl=0)
+
+# The BayesianTools package
+
+The MCMCs that we will use are in the BayesianTools package. Instructions how to install it are in the TG14 workflow or the TG13 tutorial that you should have access to. 
+
+Load the BayesianTools package (note that this is the special TG14 version)
+
+```{r}
+# If you need to install the package, run
+
+#library(devtools)
+#install_url("https://dl.dropboxusercontent.com/s/3rbcbh8jmxjwzl6/BayesianTools_0.0.0.9000.tar.gz", dependencies = T)
+
+library(BayesianTools)
+?BayesianTools
+```
+
+For an overview of the options / workflow of the package, see the tutorial
+
+```{r, eval=FALSE}
+vignette("QuickStart", package="BayesianTools")
+
+# If the vignette does not appear try
+# devtools::build_vignettes("BayesianTools")
+# before executing the code above. This takes a while... 
+#
+# Or search for the vignette here:
+# ?BayesianTools
+```
+
+
+# A forest model
+
+For this demonstration, we will use the VSEM model in the BayesianTools package. If you are interested in the VSEM model see the help page:
+
+```{r, eval=F}
+?VSEM
+```
+
+In what follows, we will sometimes write data to the current working directory. Hence, set your working directory. You need to adapt this line to your system. 
+
+```{r, eval = F}
+setwd("C:/YourWorkingDirectory")
+```
+
+For what follows, you will have to replace VSEM with your model.  
+
+# Creating the BayesianSetup object
+
+To run the different MCMC samplers in the BayesianTools package, we first need to specify the BayesianSetup Object. To define the BayesianSetup we need to define a likelihood function as well as a prior. For the likelihood you will need data.
+
+### Creating a synthetic dataset
+
+First of all, we need data. We will use here synthetic data that is created from the model itself. This has the advantange that we know that the model can reproduce this data, and we know the "true" parameters. 
+
+```{r}
+# Create random radiation time series
+PAR <- VSEMcreatePAR(1:1000)
+
+# Get default parameter values
+refPars   <- VSEMgetDefaults()
+
+# Add error parameter
+refPars[12,] <- c(0.2, 0.001, 1)
+rownames(refPars)[12] <- "error-sd"
+
+# Predict with default parameter
+referenceData <- VSEM(refPars$best[1:11], PAR) 
+referenceData[,1] = 1000 * referenceData[,1] # to bring the data on the same scale
+
+# Add noise
+referenceData = referenceData + rnorm(length(referenceData), sd =  refPars$best[12])
+```
+
+To avoid artifacts created by errorenous or otherwise problematic data, we would recommend that you follow our example and create reference data from your model for TG14, unless you have a dataset that you know is of good quality and you also know that the model is able to reproduce it more or less OK. 
+
+### Defining the likelihood
+
+Next thing is that we need to create a likelihood from the data. Follow the instructions in the TG13 tutorial if you don't know how to set up the likelihood. You don't have to follow the example below. For stand data with one or very few observations, having a fixed value for the standard deviation may be more useful. You can mix different data types as well. 
+
+Remember - If you need more background, see the [TG13 tutorial](https://www.dropbox.com/s/y3d5fqh61eqdzz6/TG13-ModelCalibrationTutorial.pdf?dl=0)
+
+```{r}
+# Here we only use the first six parameters of the model.
+# We further add an additional parameter for the model error.
+parSel <- c(1:6, 12)
+likelihood <- function(x, sum = T){
+  x <- createMixWithDefaults(x, refPars$best, parSel)
+  predicted <- VSEM(x[1:11], PAR)
+  predicted[,1] = 1000 * predicted[,1]
+  diff <- c(predicted - referenceData)
+  llValues <- dnorm(diff, sd = x[12], log = T) 
+  if (sum == F) return(llValues)
+  else return(sum(llValues))
+}
+```
+
+### Define the prior
+
+This step is optional - you can also simply provide lower and upper values to the createBayesianSetup function, and a uniform prior will be created automatically. See the help of the package on how to create other priors.
+
+```{r}
+prior <- createUniformPrior(lower = refPars$lower[parSel], upper = refPars$upper[parSel])
+
+# Alternative prior options are
+
+#createBetaPrior()
+#createTruncatedNormalPrior()
+
+# or a completely user-specified prior with createPrior() - make sure to follow the instructions when using this, you MUST implement a sampling function for the examples below
+
+```
+
+*Important*: due to the settings that we run, you have to provide work with a bounded prior, i.e. you have to set min / max values in the prior, or in the createBayesianSetup function
+
+### Create Bayesian Setup
+
+The last step creates the standardized object that the package uses for the different samplers. Note that we are not using parallelization in this example. If you have a model with high computational cost it is recommended to use parallelization. Due to nature of the Metropolis based sampler it is not possible to use parallelization here. Hence, only DEzs and DREAMzs will profit from parallelization. Also you have to specify the packages and functions used in the likelihood while creating the bayesianSetup. For an example see the help of createbayesianSetup().
+
+```{r}
+BSVSEM <- createBayesianSetup(likelihood, prior, best = refPars$best[parSel], 
+                              names = rownames(refPars)[parSel], parallel = FALSE)
+```
+
+# Sampling from the BayesianSetup
+
+### Running the samplers
+
+For each sampler three independent chains should be run. This not only gives a better data basis but is also necessary for the convergence diagnostic. 
+
+You should start all samplers with the same start values because they can largely influence the sampler's performance.
+
+Some of the samplers need only one start value, others need several start values per sampler (because they have severa internal chains). Just copy this. 
+
+```{r}
+start = BSVSEM$prior$sampler(9)
+
+MetropolisStart = list(start[1,], start[4,], start[7,])
+
+DEStart = list( start[1:3,],start[4:6,], start[7:9,])
+
+TWalkStart = list(start[1:2,], start[4:5,], start[7:8,])
+
+# Get a LHS sample for the start values
+#nChain <- 3 # we use 3 chains
+#npar <- length(refPars$lower[parSel]) # numer of parameters
+#pValue_start <- randomLHS(n=nChain,k=npar)
+
+# Change the start values to fit prior bounds
+#for (i in 1:npar) pValue_start[,i] <- qunif(pValue_start[,i], min=refPars$lower[parSel[i]], max=refPars$upper[parSel[i]],log=FALSE) 
+```
+
+This runs the first set of MCMC chains. You can split this across several scripts / processes. 
+
+```{r, cache = TRUE, warning=F, message=F, results = 'hide'}
+settings <- list(iterations = 100000, adapt = F, optimize=F,startValue=MetropolisStart[[1]])
+chainMH1 <- runMCMC(BSVSEM, sampler = "Metropolis", settings = settings)
+
+settings <- list(iterations = 100000, adapt = F, optimize=F,startValue=MetropolisStart[[2]])
+chainMH2 <- runMCMC(BSVSEM, sampler = "Metropolis", settings = settings)
+
+settings <- list(iterations = 100000, adapt = F, optimize=F,startValue=MetropolisStart[[3]])
+chainMH3 <- runMCMC(BSVSEM, sampler = "Metropolis", settings = settings)
+```
+
+The results of the singe run are of class mcmcSampler. The BT tools package has a class mcmcSamplerList that combines several samplers. You can combine them via
+
+```{r, cache = TRUE, warning=F, message=F, results = 'hide'}
+resMH <- createMcmcSamplerList(chainMH1, chainMH2, chainMH3)
+```
+
+Once this is done, store the results as a .RData file. These files will be your contribution to TG14. 
+
+```{r, eval = F}
+save(resMH, file = "resMH.RData")
+```
+
+You can have a look at the results with.
+
+```{r}
+plot(resMH)
+```
+
+It is possible to run all three MCMC chains in one function, but this means that you cannot distribute them across three independent processors on your computer. If you have a fast model for which you can run the whole code on one computer node, the whole chunk above can be simplified to
+
+```{r, cache = TRUE, warning=F, message=F, results = 'hide'}
+settings <- list(iterations = 100000, adapt = F, optimize=F,startValue=MetropolisStart, nrChains = 3)
+resMH2 <- runMCMC(bayesianSetup = BSVSEM, sampler = "Metropolis", settings = settings)
+```
+
+
+The same procedure is repeated for all remaining samplers. Apply the following settings. We use here the shortcut that runs the 3 MCMCs together, but if you are limited by computing time, **split up the 3 chains across 3 cores as shown above**!
+
+
+```{r, cache = TRUE, warning=F, message=F, results = 'hide'}
+
+iterations = 100000
+
+## Running AM
+settings <- list(iterations = iterations, adapt =T, optimize=F, adaptationNotBefore = 5000, startValue=MetropolisStart, nrChains = 3)
+resAM <- runMCMC(BSVSEM, sampler = "Metropolis", settings = settings)
+
+# Save results
+save(resAM, file = "resAM.RData")
+
+## Running DRAM
+settings <- list(iterations = iterations, adapt =T, DRlevels = 2, optimize=F,  adaptationNotBefore = 5000, startValue=MetropolisStart, nrChains = 3)
+resDRAM <- runMCMC(BSVSEM, sampler = "Metropolis", settings = settings)
+
+#Save results
+save(resDRAM, file = "resDRAM.RData")
+
+## Running DEzs
+settings <- list(iterations = iterations, nrChains = 3, startValue = DEStart)
+resDE <- runMCMC(BSVSEM, sampler="DEzs", settings = settings)
+
+# Save results
+save(resDE, file = "resDE.RData")
+
+
+## Running DREAMzs
+settings <- list(iterations= iterations, nrChains = 3, startValue = DEStart)
+resDREAM <- runMCMC(BSVSEM, sampler ="DREAMzs", settings = settings)
+
+# Save results
+save(resDREAM, file = "resDREAM.RData")
+
+## Running TWalk
+settings <- list(iterations= iterations, nrChains = 3, startValue = TWalkStart)
+resTwalk <- runMCMC(BSVSEM, sampler ="Twalk", settings = settings)
+
+# Save results
+save(resTwalk, file = "resTwalk.RData")
+
+```
+
+## Restarting the sampler 
+
+For various reasons it can be necessary to break down the sampling into smaller chunks that are evaluated sequentially. The BayesianTools package comprises the possibility to start a sampler from a 'bayesianOutput'. All you have to to is to hand the output of your sampler to the runMCMC()-function.
+
+In the following example DREAMzs is run for 100.000 iterations using two chunks of 50.000 iterations. 
+You can restart all samplers used in this comparison in the same way.
+
+NOTE: this doesn't work with mcmcSamplerLists, so you need to run single chains to do this!
+
+```{r, cache = TRUE, warning=F, message=F, results = 'hide'}
+
+settings <- list(iterations= 50000)
+# Run the first chunk
+chainDREAM1 <- runMCMC(BSVSEM, sampler ="DREAMzs", settings = settings)
+chainDREAM2 <- runMCMC(BSVSEM, sampler ="DREAMzs", settings = settings)
+chainDREAM3 <- runMCMC(BSVSEM, sampler ="DREAMzs", settings = settings)
+
+# E.g. you could save the intermediate results here.
+
+# Run the second. You can overwrite the results of the first run
+# as these will be part of the second.
+
+chainDREAM1 <- runMCMC(bayesianSetup = chainDREAM1, sampler ="DREAMzs", settings = settings)
+chainDREAM2 <- runMCMC(bayesianSetup = chainDREAM2, sampler ="DREAMzs", settings = settings)
+chainDREAM3 <- runMCMC(bayesianSetup = chainDREAM3, sampler ="DREAMzs", settings = settings)
+
+
+```
+With these chains you can now continue as described above. I.e. create a list and save the results.
+
+# Extra trials
+
+The following trials will only be run for FAST models - in doubt, assume your model is slow. 
+
+## Using blocking based on correlation of parameters
+
+The DE algorithm in the package contains different variations of Gibbs sampling. Here we will use an automatic grouping based on the correlations of the parameter. For more possibilities see the help of DE.MCzs().
+
+```{r, cache = TRUE, warning=F, message=F, results = 'hide'}
+
+settings <- list(iterations = 100000, blockUpdate = list("correlation", h = 0.5, groupStart = 10000,
+                                                         groupIntervall = 5000), nrchais = 3)
+
+resDE_block <- runMCMC(BSVSEM, sampler = "DEzs", settings = settings)
+
+save(resDE_block, file = "resDE_block.RData")
+```
+
+
+## Run a optimization for the Metropolis based algorithms
+
+The package comprises the possibility to run a pre-optimization for the Metropolis based sampler. To run this you only need to specify the argument 'optimize = TRUE'. The following example shows a pre-optimization for AM. All other (Metropolis) samplers are called accordingly.
+
+```{r, cache = TRUE, warning=F, message=F, results = 'hide'}
+settings <- list(iterations = 100000, adapt = T, optimize = T, nrChains = 3)
+
+resAM_opt <- runMCMC(BSVSEM, sampler = "Metropolis", settings = settings)
+
+save(resAM_opt, file = "resAM_opt.RData")
+```
+
+
+
+ 
+ 
+
+
+
+
