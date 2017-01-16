@@ -1,5 +1,5 @@
 before_install:
- - cd DHARMa
+ - cd BayesianTools
  
 
 language: r
