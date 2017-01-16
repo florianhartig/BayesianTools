@@ -9,7 +9,7 @@ To get an overview about its functionality once the package is installed, run
 ```{r}
 library(BayesianTools)
 ?BayesianTools
-vignette("DHARMa", package="BayesianTools")
+vignette("QuickStart", package="BayesianTools")
 ```
 
 ### Development release 
