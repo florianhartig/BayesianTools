@@ -4,6 +4,12 @@ R package for performing Bayesian inference, including various MCMC and SMC samp
 
 ## Getting BayesianTools
 
+To install from a source package with the latest stable version, use 
+
+```{r}
+devtools::install_url("https://dl.dropboxusercontent.com/s/ccvpnvblf3vzuvs/BayesianTools_0.0.0.9000.tar.gz")
+```
+
 To get an overview about its functionality once the package is installed, run
 
 ```{r}
