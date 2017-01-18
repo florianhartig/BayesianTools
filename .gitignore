@@ -52,3 +52,4 @@ BayesianTools/examples/Effect_catchDuplicates-Dateien/MathJax.js
 examples/16-TG14/TG14-v2.2_files/figure-html
 *.png
 *.DS_Store
+BayesianTools.Rproj

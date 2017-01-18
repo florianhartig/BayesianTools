@@ -218,7 +218,7 @@ DREAMzs <- function(bayesianSetup,   settings = list(
   ##################### Start iterations ##############################
   for(iter in 2:n.iter){
     
-    XOld <- X
+    xOld <- X
     
     
     if(parallel == TRUE){

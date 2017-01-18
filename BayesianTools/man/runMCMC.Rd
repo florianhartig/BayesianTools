@@ -42,7 +42,7 @@ ll <- generateTestDensityMultiNormal(sigma = "no correlation")
 bayesianSetup <- createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
 
 ## Finally we can run the sampler and have a look
-settings = list(iterations = 10000, adapt = FALSE)
+settings = list(iterations = 1000, adapt = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 
 ## out is of class bayesianOutput. There are various standard functions 
@@ -56,7 +56,7 @@ summary(out)
 ## additionally, you can return the sample as a coda object, and make use of the coda functions
 # for plotting and analysis
 
-codaObject = getSample(out, start = 5000, coda = TRUE)
+codaObject = getSample(out, start = 500, coda = TRUE)
 }
 \seealso{
 \code{\link{createBayesianSetup}}
