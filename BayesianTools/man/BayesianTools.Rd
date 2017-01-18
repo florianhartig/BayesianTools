@@ -21,6 +21,8 @@ Those can be sampled with \code{\link{runMCMC}}, which can call a number of gene
 
 The output of runMCMC is of class mcmcSampler / smcSampler if one run is performed, or mcmcSamplerList / smcSamplerList if several sampler are run. Various functions are available for plotting, model comparison (DIC, marginal likelihood), or to use the output as a new prior.  
 
-For details on how to use the packgage, either got to index, vignettes, or run vignette("QuickStart", package="BayesianTools") and have a look at the QuickStart vignette. A more detailed vignette is vignette("ReferenceManual", package="BayesianTools")
+For details on how to use the packgage, either got to index, vignettes, or run vignette("BayesianTools", package="BayesianTools") and have a look at the BayesianTools vignette. A more detailed vignette is vignette("ReferenceManual", package="BayesianTools")
+
+Acknowledgements: The creation of this package was facilicated through meetings of Cost Action FP 1304 Profound.
 }
 
