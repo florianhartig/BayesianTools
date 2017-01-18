@@ -7,8 +7,6 @@
 #' @param method method for calculating correlations. Possible choices are "pearson" (default), "kendall" and "spearman"
 #' @param whichParameters indices of parameters that should be plotted
 #' @param ... additional parameters to pass on to the \code{\link{getSample}}, for example parametersOnly =F, or start = 1000
-#' @import IDPmisc
-#' @import ellipse
 #' @references The code for the correlation density plot originates from Hartig, F.; Dislich, C.; Wiegand, T. & Huth, A. (2014) Technical Note: Approximate Bayesian parameterization of a process-based tropical forest model. Biogeosciences, 11, 1261-1272.
 #' @export
 #' @seealso \code{\link{marginalPlot}} \cr
@@ -56,7 +54,7 @@ correlationPlot<- function(mat, density = "smooth", thin = "auto", method = "pea
   
   correlationEllipse <- function(x){
     cor = cor(x)
-    ToRGB <- function(x){rgb(x[1]/255, x[2]/255, x[3]/255)}
+    ToRGB <- function(x){grDevices::rgb(x[1]/255, x[2]/255, x[3]/255)}
     C1 <- ToRGB(c(178, 24, 43))
     C2 <- ToRGB(c(214, 96, 77))
     C3 <- ToRGB(c(244, 165, 130))
@@ -66,7 +64,7 @@ correlationPlot<- function(mat, density = "smooth", thin = "auto", method = "pea
     C7 <- ToRGB(c(146, 197, 222))
     C8 <- ToRGB(c(67, 147, 195))
     C9 <- ToRGB(c(33, 102, 172))
-    CustomPalette <- colorRampPalette(rev(c(C1, C2, C3, C4, C5, C6, C7, C8, C9)))
+    CustomPalette <- grDevices::colorRampPalette(rev(c(C1, C2, C3, C4, C5, C6, C7, C8, C9)))
     ord <- order(cor[1, ])
     xc <- cor[ord, ord]
     colors <- unlist(CustomPalette(100))

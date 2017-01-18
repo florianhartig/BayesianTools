@@ -40,7 +40,7 @@ M <- function(startValue, iterations, nBI , parmin, parmax, f, FUN, consoleUpdat
 
   for (j in 1:lChain) {
     if (j%%consoleUpdates == 0) print(c(j,postL1[1]))
-    candidatepValues <- rmvnorm(1, pValues, covPar)
+    candidatepValues <- mvtnorm::rmvnorm(1, pValues, covPar)
 
     # Call the model and calculate the likelihood
     postL1 <- FUN(candidatepValues, returnAll = T)
@@ -102,7 +102,7 @@ AM <- function(startValue, iterations, nBI, parmin, parmax, FUN, f, eps = 0) {
   covPar <- scalProp * diag((0.01*(parmax - parmin))^2)
   
   for (j in 1:n.iter) {
-    candidatepValues <- as.vector(rmvnorm(1, pValues, covPar))
+    candidatepValues <- as.vector(mvtnorm::rmvnorm(1, pValues, covPar))
     
     postL1 <- FUN(candidatepValues, returnAll = T)
 
@@ -168,7 +168,7 @@ DR <- function(startValue, iterations, nBI, parmin, parmax, f1, f2, FUN) {
   accept.prob <- 0
   
   for (j in 1:lChain) {
-    candidatepValues <- rmvnorm(1, pValues, sP[1] * covPar)
+    candidatepValues <- mvtnorm::rmvnorm(1, pValues, sP[1] * covPar)
     
     # Call the model and calculate the likelihood
     postL1 <- FUN(candidatepValues, returnAll = T)
@@ -181,7 +181,7 @@ DR <- function(startValue, iterations, nBI, parmin, parmax, f1, f2, FUN) {
       postL0 = postL1
       accept <- 1
     } else {        
-      candidatepValues2 <- rmvnorm(1, pValues, sP[2] * covPar)
+      candidatepValues2 <- mvtnorm::rmvnorm(1, pValues, sP[2] * covPar)
         
       # Call the model and calculate the likelihood
       postL2 <- FUN(candidatepValues2, returnAll = T)
@@ -189,7 +189,7 @@ DR <- function(startValue, iterations, nBI, parmin, parmax, f1, f2, FUN) {
       # Check whether the candidates are accepted. 
 
       alpha2 <- min(exp(postL1[1]-postL2[1]), 1.0)
-      temp <- dmvnorm(candidatepValues, candidatepValues2, sP[1] * covPar) / dmvnorm(candidatepValues, pValues, sP[1] * covPar)
+      temp <- mvtnorm::dmvnorm(candidatepValues, candidatepValues2, sP[1] * covPar) / mvtnorm::dmvnorm(candidatepValues, pValues, sP[1] * covPar)
       alpha <- min(exp(postL2[1]-postL0[1]) * temp * ((1.0-alpha2)/(1.0-alpha1)), 1.0)
       if(is.nan(alpha)) {
         alpha <- -1
@@ -243,7 +243,7 @@ DRAM <- function(startValue, iterations, nBI, parmin, parmax, FUN, f, eps = 0) {
   covPar <- scalProp * diag((0.01*(parmax - parmin))^2)
   
   for (j in 1:n.iter) {
-    candidatepValues <- as.vector(rmvnorm(1, pValues, covPar))
+    candidatepValues <- as.vector(mvtnorm::rmvnorm(1, pValues, covPar))
     
     postL1 <- FUN(candidatepValues, returnAll = T)
     
@@ -254,7 +254,7 @@ DRAM <- function(startValue, iterations, nBI, parmin, parmax, FUN, f, eps = 0) {
       pValues <- candidatepValues
       accept <-  1
     } else {        
-      candidatepValues2 <- as.vector(rmvnorm(1, pValues, 0.5 * covPar))
+      candidatepValues2 <- as.vector(mvtnorm::rmvnorm(1, pValues, 0.5 * covPar))
       
       # Call the model and calculate the likelihood
       postL2 <- FUN(candidatepValues2, returnAll = T)
@@ -262,7 +262,7 @@ DRAM <- function(startValue, iterations, nBI, parmin, parmax, FUN, f, eps = 0) {
       # Check whether the candidates are accepted. 
       
       alpha2 <- min(exp(postL1[1]-postL2[1]), 1.0)
-      temp <- dmvnorm(candidatepValues, candidatepValues2, covPar) / dmvnorm(candidatepValues, pValues, covPar)
+      temp <- mvtnorm::dmvnorm(candidatepValues, candidatepValues2, covPar) / mvtnorm::dmvnorm(candidatepValues, pValues, covPar)
       alpha <- min(exp(postL2[1]-postL0[1]) * temp * ((1.0-alpha2)/(1.0-alpha1)), 1.0)
       if(is.nan(alpha)) {
         alpha <- -1

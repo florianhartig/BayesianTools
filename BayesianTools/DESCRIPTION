@@ -23,7 +23,10 @@ Imports:
     numDeriv,
     msm,
     MASS,
-    Matrix
+    Matrix,
+    stats,
+    utils,
+    graphics
 Suggests:
     DEoptim,
     lhs,

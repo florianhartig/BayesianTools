@@ -11,8 +11,6 @@
 #' @param method method for covariance decomposition
 #' @param scalingFactor scaling factor for the proposals
 #' @seealso \code{\link{updateProposalGenerator}}
-#' @import mvtnorm
-#' @import Matrix
 #' @export 
 #' @example /inst/examples/proposalGeneratorHelp.R
 createProposalGenerator <- function(

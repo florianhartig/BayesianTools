@@ -18,7 +18,6 @@
 #' @param message logical determines whether the sampler's progress should be printed
 #' @details The 'Metropolis' function is the main function for all Metropolis based samplers in this package. To call the derivatives from the basic Metropolis-Hastings MCMC, you can either use the corresponding function (e.g. \code{\link{AM}} for an adaptive Metropolis sampler) or use the parameters to adapt the basic Metropolis-Hastings. The advantage of the latter case is that you can easily combine different properties (e.g. adapive sampling and delayed rejection sampling) without changing the function.
 #' @import coda
-#' @import MASS
 #' @example /inst/examples/MetropolisHelp.R
 #' @export
 Metropolis <- function(bayesianSetup, 

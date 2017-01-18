@@ -6,8 +6,6 @@
 #' @param sample should the function create samples
 #' @param n number of samples to create
 #' @param throwErrors parameter for test purpose
-#' @import mvtnorm
-#' @import emulator
 #' @details 3-d multivariate normal density function with mean 2,4,0 and either strong correlation (default), or no correlation.  
 #' @export
 #' @seealso \code{\link{testDensityBanana}} \cr
@@ -38,7 +36,6 @@ generateTestDensityMultiNormal <- function(mean = c(0,0,0), sigma = "strongcorre
 #' Banana-shaped density function 
 #' @author Florian Hartig
 #' @param p 2-dim parameter vector
-#' @import mvtnorm
 #' @note inspired from package FMEmcmc, sees to go back to Laine M (2008). Adaptive MCMC Methods with Applications in Environmental and Models. Finnish Meteorological Institute Contributions 69. ISBN 978-951-697-662-7.
 #' examples()
 #' @export

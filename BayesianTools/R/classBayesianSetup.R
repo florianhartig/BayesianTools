@@ -137,22 +137,21 @@ checkBayesianSetup <- function(bayesianSetup, parallel = F){
 }
 
 
-#' Function to remove objects of class BayesianSetup
-#' @description Function removes the BayesianSetup and closes 
+#' Function to close cluster in BayesianSetup
+#' @description Function closes 
 #' the parallel executer (if available)
 #' @param  bayesianSetup object of class BayesianSetup
-#' @param envir environment
 #' @export
-rmBayesianSetup <- function(bayesianSetup, envir = NULL){
+stopParallel <- function(bayesianSetup){
 
-  pos <- -1
-  if(is.null(envir)) envir <- as.environment(pos)
-  
   ## Stop cluster
   try(parallel::stopCluster(bayesianSetup$likelihood$cl), silent = TRUE)
   
   ## Remove object
-  .Internal(remove(deparse(substitute(bayesianSetup)), envir = envir, inherits = FALSE))
+ # pos <- -1
+#  if(is.null(envir)) envir <- as.environment(pos)
+  
+ # .Internal(remove(deparse(substitute(bayesianSetup)), envir = envir, inherits = FALSE))
   
 }
 

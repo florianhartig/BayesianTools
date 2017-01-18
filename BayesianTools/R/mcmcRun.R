@@ -439,7 +439,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   
   defaultSettings$nrChains = 1
   defaultSettings$runtime = 0
-  defaultSettings$sessionInfo = sessionInfo()
+  defaultSettings$sessionInfo = utils::sessionInfo()
   
   nam = names(defaultSettings)
   
@@ -458,6 +458,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
 #' @param proposalGenerator proposal generator
 #' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function 
 #' @param settings list with settings
+
 setupStartProposal <- function(proposalGenerator = NULL, bayesianSetup, settings){
   
   # Proposal

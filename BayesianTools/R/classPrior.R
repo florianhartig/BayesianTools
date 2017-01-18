@@ -113,8 +113,6 @@ createUniformPrior<- function(lower, upper, best = NULL){
 #' @param lower vector of lower prior range for all parameters
 #' @param upper vector of upper prior range for all parameters
 #' @note for details see createPrior
-#' @importFrom msm rtnorm
-#' @importFrom msm dtnorm
 #' @seealso \code{\link{createPriorDensity}} \cr
 #'          \code{\link{createPrior}} \cr
 #'          \code{\link{createBetaPrior}} \cr

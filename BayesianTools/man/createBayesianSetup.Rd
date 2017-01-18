@@ -106,6 +106,9 @@ BSVSEM <- createBayesianSetup(likelihood, prior, best = refPars$best[parSel],
 # Note that not all samplers can make use of parallel
 # computing.
 
+# Remove the Bayesian Setup and close the cluster
+stopParallel(BSVSEM)
+rm(BSVSEM)
 }
 \seealso{
 \code{\link{checkBayesianSetup}} \cr

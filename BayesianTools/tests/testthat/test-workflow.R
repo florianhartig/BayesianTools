@@ -127,43 +127,44 @@ test_that("2-D samplers with restarting works", {
 
 
 test_that("2-d with parallel chains works", {
-  
+
   ll = function(x, sum = TRUE) {
     if(sum) sum(dnorm(x, log = T))
     else dnorm(x, log = T)
   }
   setup = createBayesianSetup(ll, lower = c(-10,-10), upper = c(10,10), parallel = 2)
-  
+
   samp = getPossibleSamplerTypes()
-  
+
   for(i in 1:(length(samp$BTname)-1)){
-    
+
     settings = list(nrChains = 3, iterations = iter, consoleUpdates = 1e+8)
     if(samp$BTname[i] == "SMC") settings = list(nrChains = 3, iterations = iterSMC, consoleUpdates = 1e+8)
-    invisible(capture.output(suppressMessages(out <- runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)))) 
-    
-    
+    invisible(capture.output(suppressMessages(out <- runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings))))
+
+
     # run tests
     runEverything(out)
   }
-  # Stop cluster
-  rmBayesianSetup(setup)
-  
+  # Stop cluster and remove object
+  stopParallel(setup)
+  rm(setup)
+
 })
 
 
 test_that("2-d with parallel chains and restart works", {
-  
+
   ll = function(x, sum = TRUE){
     if(sum)  sum(dnorm(x, log = T))
     else dnorm(x, log = T)
   }
   setup = createBayesianSetup(ll, lower = c(-10,-10), upper = c(10,10), parallel = 2)
-  
+
   samp = getPossibleSamplerTypes()
-  
+
   for(i in 1:(length(samp$BTname)-1)){
-    
+
     if (samp$restartable[i] == T){
       settings = list(nrChains = 3, iterations = iter/2, consoleUpdates = 1e+8)
       if(samp$BTname[i] == "SMC") settings = list(nrChains = 3, iterations = iterSMC, consoleUpdates = 1e+8)
@@ -172,46 +173,47 @@ test_that("2-d with parallel chains and restart works", {
     }else{
       settings = list(nrChains = 3, iterations = iter, consoleUpdates = 1e+8)
       invisible(capture.output(suppressMessages(out <- runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings))))
-    } 
-    
+    }
+
     # run tests
     runEverything(out)
-    
+
   }
-  
-  # Stop cluster
-  rmBayesianSetup(setup)
-  
+
+  # Stop cluster and remove object
+  stopParallel(setup)
+  rm(setup)
+
 }
 )
 
 
 
 test_that("2-d with external parallelization and restart works", {
-  
+
   # Define function
   FUN <- function(x, sum = TRUE){
    if(sum) sum(dnorm(x, log = T))
    else dnorm(x, log = T)
   }
-  
+
   # Make cluster
   cl <- parallel::makeCluster(2)
-  
+
   # Likelihood function
   ll <- function(pars,...){
     if(is.matrix(pars)) res = parallel::parApply(cl = cl, pars, 1, FUN, ...)
     else res = FUN(pars, ...)
     return(res)
   }
-  
+
   setup <- createBayesianSetup(ll, lower = c(-10,-10), upper = c(10,10),
                                        parallel = "external")
-  
+
   samp = getPossibleSamplerTypes()
-  
+
   for(i in 1:(length(samp$BTname)-1)){
-    
+
     if (samp$restartable[i] == T){
       settings = list(nrChains = 1, iterations = iter/2, consoleUpdates = 1e+8)
       if(samp$BTname[i] == "SMC") settings = list(nrChains = 3, iterations = iterSMC, consoleUpdates = 1e+8)
@@ -220,46 +222,46 @@ test_that("2-d with external parallelization and restart works", {
     }else{
       settings = list(nrChains = 1, iterations = iter, consoleUpdates = 1e+8)
       invisible(capture.output(suppressMessages(out <- runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings))))
-    } 
-    
+    }
+
     # run tests
     runEverything(out)
-    
+
   }
-  
+
   # Stop cluster
   parallel::stopCluster(cl)
-  
+
 }
 )
 
 
 
 test_that("2-d with external parallelization, restart and multiple chains works", {
-  
+
   # Define function
   FUN <- function(x, sum = TRUE){
     if(sum) sum(dnorm(x, log = T))
     else dnorm(x, log = T)
   }
-  
+
   # Make cluster
   cl <- parallel::makeCluster(2)
-  
+
   # Likelihood function
   ll <- function(pars,...){
     if(is.matrix(pars)) res = parallel::parApply(cl = cl, pars, 1, FUN, ...)
     else res = FUN(pars, ...)
     return(res)
   }
-  
+
   setup <- createBayesianSetup(ll, lower = c(-10,-10), upper = c(10,10),
                                parallel = "external")
-  
+
   samp = getPossibleSamplerTypes()
-  
+
   for(i in 1:(length(samp$BTname)-1)){
-    
+
     if (samp$restartable[i] == T){
       settings = list(nrChains = 3, iterations = iter/2, consoleUpdates = 1e+8)
       if(samp$BTname[i] == "SMC") settings = list(nrChains = 3, iterations = iterSMC, consoleUpdates = 1e+8)
@@ -268,11 +270,11 @@ test_that("2-d with external parallelization, restart and multiple chains works"
     }else{
       settings = list(nrChains = 3, iterations = iter, consoleUpdates = 1e+8)
       invisible(capture.output(suppressMessages(out <- runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings))))
-    } 
-    
+    }
+
     # run tests
     runEverything(out)
-    
+
   }
   # Stop cluster
   parallel::stopCluster(cl)
