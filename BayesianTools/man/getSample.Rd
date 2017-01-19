@@ -25,9 +25,8 @@ getSample(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
 
 \item{whichParameters}{possibility to select parameters by index}
 
-\item{reportDiagnostics}{logical, determines whether settings should be included in the output}
-
-\item{...}{further arguments TODO}
+\item{reportDiagnostics}{logical, determines whether settings should be included in the output
+@param ... further arguments TODO}
 }
 \description{
 Extracts the sample from a bayesianOutput

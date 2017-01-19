@@ -15,21 +15,24 @@
 # @param x TODO not fully implemented yet! either the parameter vector if the function is used for density, or the number of replicates when sampling
 
 generateTestDensityMultiNormal <- function(mean = c(0,0,0), sigma = "strongcorrelation", sample = F, n = 1, throwErrors = -1){
+  # for test purposes
+  if(runif(1) < throwErrors ){
+    stop("TestError")
+  }
+  
   if (sigma == "strongcorrelation"){
     m <- c(0.2, 0.3, 0.3503)
     sigma = emulator::corr.matrix(cbind(m),scales=1)    
   }else if (sigma == "no correlation"){
     sigma = diag(rep(1,3))
   }
-  if (sample == F) out <- function(x) mvtnorm::dmvnorm(x, mean = mean, sigma = sigma, log=T)
-  else out <- function(n) mvtnorm::rmvnorm(n=n, mean = mean, sigma = sigma)
-  
-  # for test purposes
-  if(runif(1) < throwErrors ){
-    stop("TestError")
+  if (sample == F){
+    out <- function(x) mvtnorm::dmvnorm(x, mean = mean, sigma = sigma, log=T)
+    return(out)
+  }else{
+     out_sample <- function(n) mvtnorm::rmvnorm(n=n, mean = mean, sigma = sigma)
+     return(out_sample)
   }
-  
-  return(out)
 }
 
 
