@@ -7,7 +7,7 @@ Author: Florian Hartig [aut, cre],
     Francesco Minunno [ctb],
     David Cameron [ctb]
 Maintainer: Florian Hartig <florian.hartig@biologie.uni-regensburg.de>
-Description: 'BayesianTools' contains various MCMC and SMC samplers, plots and diagnostics
+Description: The 'BayesianTools' R package contains various MCMC and SMC samplers, plots and diagnostics
     for Bayesian analysis, with a particular focus on calibrating system models.
 Depends:
     R (>= 3.1.2)
