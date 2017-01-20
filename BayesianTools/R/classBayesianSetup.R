@@ -30,7 +30,7 @@ createBayesianSetup <- function(likelihood,
                                 upper = NULL, 
                                 best = NULL, 
                                 names = NULL, 
-                                parallelOptions = NULL, 
+                                parallelOptions = list(variables = "all", packages = "all", dlls = NULL), 
                                 catchDuplicates = FALSE){
   
   # TODO implement parameter "model" (function that makes predictions from the model)
