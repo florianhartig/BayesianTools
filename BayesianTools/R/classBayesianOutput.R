@@ -14,7 +14,7 @@
 #' @param ... further arguments TODO
 #' @export
 getSample <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
-                      thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE) UseMethod("getSample")
+                      thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...) UseMethod("getSample")
 
 
 getSample.matrix <- function(mat, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F){
@@ -53,6 +53,6 @@ getSample.matrix <- function(mat, parametersOnly = T, coda = F, start = 1, end =
 
 
 getSample.data.frame <- function(data, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F){
-  getSample(as.matrix(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
+  getSample(matrix(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
 
 }
