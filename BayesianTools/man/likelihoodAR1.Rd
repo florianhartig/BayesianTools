@@ -19,7 +19,7 @@ likelihoodAR1(predicted, observed, sd, a)
 AR1 type likelihood function
 }
 \note{
-The AR1 model considers the process y(t) = a y(t-1) + E, e = iid N(0,sd), |a| < 1. At the moment, no NA are allowed in the time series
+The AR1 model considers the process: \cr y(t) = a y(t-1) + E \cr e = i.i.d. N(0,sd) \cr |a| < 1 \cr At the moment, no NAs are allowed in the time series.
 }
 \author{
 Florian Hartig

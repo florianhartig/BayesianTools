@@ -38,7 +38,7 @@ Twalk(bayesianSetup, settings = list(iterations = 10000, at = 6, aw = 1.5, pn1
 \item{message}{logical determines whether the sampler's progress should be printed}
 }
 \value{
-Object of class bayesianOutput. The object is a list contaning the two chains (stored as a coda::mcmc.list), the acceptanceRate, the bayesianSetup and informations about the sampler.
+Object of class bayesianOutput.
 }
 \description{
 T-walk MCMC

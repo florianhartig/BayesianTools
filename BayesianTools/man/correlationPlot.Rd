@@ -2,14 +2,13 @@
 % Please edit documentation in R/plotCorrelationDensity.r
 \name{correlationPlot}
 \alias{correlationPlot}
-\title{Flexible function to create correlation density plots
-numeric matrix or data.frame}
+\title{Flexible function to create correlation density plots}
 \usage{
 correlationPlot(mat, density = "smooth", thin = "auto",
   method = "pearson", whichParameters = NULL, ...)
 }
 \arguments{
-\item{mat}{matrix or data frame of variables}
+\item{mat}{object of class "bayesianOutput" or a matrix or data frame of variables}
 
 \item{density}{type of plot to do. Either "smooth" (default), "corellipseCor", or "ellipse"}
 
@@ -23,7 +22,6 @@ correlationPlot(mat, density = "smooth", thin = "auto",
 }
 \description{
 Flexible function to create correlation density plots
-numeric matrix or data.frame
 }
 \examples{
 dat = generateTestDensityMultiNormal(n = 100000, sample = TRUE)

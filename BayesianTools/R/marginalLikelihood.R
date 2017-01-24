@@ -11,22 +11,28 @@
 #' @export
 #' @param sampler an object that implements the getSample function, i.e. a mcmc / smc Sampler (list)
 #' @param numSamples number of samples to use. How this works, and if it requires recalculating the likelihood, depends on the method
-#' @param method method to choose. Currently available are "Chib", the harmonic mean "HM", and sampling from the prior "prior". See details
+#' @param method method to choose. Currently available are "Chib" (default), the harmonic mean "HM", and sampling from the prior "prior". See details
 #' @param ... further arguments passed to \code{\link{getSample}}
-#' @details The function currently implements 3 ways to calculate the marginal likelihood. The recommended way is the method Chib, S. and Jeliazkov, I., Journal of the American Statistical Association, 2001, which is based on MCMC samples, but performs additional calculations. Despite being the current recommendation, note there are some numeric issues with this algorithm that may limit reliability for larger dimensions. We plan to implement further methods in the future. 
+#' @details The function currently implements three ways to calculate the marginal likelihood.\cr
+#'  The recommended way is the method "Chib" (Chib and Jeliazkov, 2001). which is based on MCMC samples, but performs additional calculations. 
+#'  Despite being the current recommendation, note there are some numeric issues with this algorithm that may limit reliability for larger dimensions.
+#'   
+#'  The harmonic mean approximation,
+#'   is implemented only for comparison. Note that the method is numerically 
+#'   unrealiable and usually should not be used. \cr
 #' 
-#' The second method, the harmonic mean approximation, is implemented only for comparison. As shown in the help, it is numerically unrealiable and should not be used. 
-#' 
-#' The third method is simply sampling from the prior. While in principle unbiased, it will only converge for a large number of samples, and is therefore numerically inefficient. 
+#' The third method is simply sampling from the prior. While in principle unbiased,
+#'  it will only converge for a large number of samples, and is therefore
+#'   numerically inefficient. \cr
+#'    
 #' @example /inst/examples/marginalLikelihoodHelp.R
+#' @references Chib, Siddhartha, and Ivan Jeliazkov. "Marginal likelihood from the Metropolis-Hastings output." Journal of the American Statistical Association 96.453 (2001): 270-281.
 #' @seealso \code{\link{WAIC}}, \code{\link{DIC}}, \code{\link{MAP}}
 marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...){
   
   if (method == "Chib"){
     
     chain = getSample(sampler = sampler, parametersOnly = F, ...)
-    
-    # chain = getSample(sampler = sampler, parametersOnly = F)
     
     if(class(sampler)[1] %in% c("mcmcSamplerList", "smcSamplerList")) sampler = sampler[[1]]
     

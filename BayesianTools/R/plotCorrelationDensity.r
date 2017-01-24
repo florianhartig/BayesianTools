@@ -1,7 +1,6 @@
 #' Flexible function to create correlation density plots
-#' numeric matrix or data.frame
 #' @author Florian Hartig
-#' @param mat matrix or data frame of variables
+#' @param mat object of class "bayesianOutput" or a matrix or data frame of variables 
 #' @param density type of plot to do. Either "smooth" (default), "corellipseCor", or "ellipse"
 #' @param thin thinning of the matrix to make things faster. Default is to thin to 5000 
 #' @param method method for calculating correlations. Possible choices are "pearson" (default), "kendall" and "spearman"

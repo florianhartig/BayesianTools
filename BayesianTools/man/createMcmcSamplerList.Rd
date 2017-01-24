@@ -2,7 +2,7 @@
 % Please edit documentation in R/classMcmcSamplerList.R
 \name{createMcmcSamplerList}
 \alias{createMcmcSamplerList}
-\title{Convenicen function to create an object of class mcmcSamplerList from a list of mcmc samplers}
+\title{Convenience function to create an object of class mcmcSamplerList from a list of mcmc samplers}
 \usage{
 createMcmcSamplerList(mcmcList)
 }
@@ -13,6 +13,6 @@ createMcmcSamplerList(mcmcList)
 Object of class "mcmcSamplerList"
 }
 \description{
-Convenicen function to create an object of class mcmcSamplerList from a list of mcmc samplers
+Convenience function to create an object of class mcmcSamplerList from a list of mcmc samplers
 }
 

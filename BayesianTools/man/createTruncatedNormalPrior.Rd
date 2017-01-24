@@ -19,7 +19,7 @@ createTruncatedNormalPrior(mean, sd, lower, upper)
 Convenience function to create a truncated normal prior
 }
 \note{
-for details see createPrior
+for details see \code{\link{createPrior}}
 }
 \examples{
 prior <- createTruncatedNormalPrior(c(0,0),c(0.4,5), lower = c(-2,-2), upper = c(1,1))

@@ -106,7 +106,7 @@ createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplic
 #' @author Florian Hartig
 #' @param predicted vector of predicted values
 #' @param observed vector of observed values
-#' @param sd standard deviation of the iid normal likelihood
+#' @param sd standard deviation of the i.i.d. normal likelihood
 #' @export
 likelihoodIidNormal <- function(predicted, observed, sd){
   notNAvalues = !is.na(observed)
@@ -122,7 +122,7 @@ likelihoodIidNormal <- function(predicted, observed, sd){
 #' @param observed vector of observed values
 #' @param sd standard deviation of the iid normal likelihood
 #' @param a temporal correlation in the AR1 model
-#' @note The AR1 model considers the process y(t) = a y(t-1) + E, e = iid N(0,sd), |a| < 1. At the moment, no NA are allowed in the time series
+#' @note The AR1 model considers the process: \cr y(t) = a y(t-1) + E \cr e = i.i.d. N(0,sd) \cr |a| < 1 \cr At the moment, no NAs are allowed in the time series.
 #' @export
 likelihoodAR1 <- function(predicted, observed, sd, a){
   if (any(is.na(observed))) stop("AR1 likelihood cannot work with NAs included, split up the likelihood")

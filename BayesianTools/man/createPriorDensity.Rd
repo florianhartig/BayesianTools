@@ -8,7 +8,7 @@ createPriorDensity(x, method = "multivariate", eps = 1e-10, lower = NULL,
   upper = NULL, best = NULL)
 }
 \arguments{
-\item{x}{a matrix or BayesianOutput}
+\item{x}{an object of class BayesianOutput or a matrix}
 
 \item{method}{method to generate prior - default and currently only option is multivariate}
 
