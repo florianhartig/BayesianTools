@@ -1,17 +1,17 @@
 Package: BayesianTools
 Title: General-Purpose MCMC and SMC Samplers and Tools for Bayesian Statistics
-Version: 0.0.10.0
+Version: 0.0.11.0
 Authors@R: c(person("Florian", "Hartig", email = "florian.hartig@biom.uni-freiburg.de", role = c("aut", "cre")), person("Francesco", "Minunno", role = c("aut")), person("David", "Cameron", role = "ctb"))
 Author: Florian Hartig [aut, cre],
     Stefan Paul [aut],
-    Francesco Minunno [ctb],
+    Francesco Minunno [aut],
     David Cameron [ctb]
 Maintainer: Florian Hartig <florian.hartig@biologie.uni-regensburg.de>
-Description: The 'BayesianTools' R package contains various MCMC and SMC samplers, plots and diagnostics
+Description: 'BayesianTools' contains various MCMC and SMC samplers, plots and diagnostics
     for Bayesian analysis, with a particular focus on calibrating system models.
 Depends:
     R (>= 3.1.2)
-License: file LICENSE
+License: CC-BY-SA-4.0
 Imports:
     coda,
     vioplot,
