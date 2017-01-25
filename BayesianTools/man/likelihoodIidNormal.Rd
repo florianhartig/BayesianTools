@@ -11,7 +11,7 @@ likelihoodIidNormal(predicted, observed, sd)
 
 \item{observed}{vector of observed values}
 
-\item{sd}{standard deviation of the iid normal likelihood}
+\item{sd}{standard deviation of the i.i.d. normal likelihood}
 }
 \description{
 Normal / Gaussian Likelihood function

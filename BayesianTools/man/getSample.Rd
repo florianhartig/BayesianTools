@@ -19,14 +19,13 @@ getSample(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
 
 \item{end}{for mcmc samplers end value in the chain. For SMC samplers, end particle}
 
-\item{thin}{thinning parameter}
+\item{thin}{thinning parameter. Either an integer determining the thinning intervall (default is 1) or "auto" for automatic thinning.}
 
 \item{numSamples}{sample size (only used if thin = 1)}
 
 \item{whichParameters}{possibility to select parameters by index}
 
-\item{reportDiagnostics}{logical, determines whether settings should be included in the output
-@param ... further arguments TODO}
+\item{reportDiagnostics}{logical, determines whether settings should be included in the output}
 }
 \description{
 Extracts the sample from a bayesianOutput

@@ -7,14 +7,15 @@
 runMCMC(bayesianSetup, sampler = "DEzs", settings = NULL)
 }
 \arguments{
-\item{bayesianSetup}{either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for further hints.}
+\item{bayesianSetup}{either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for further details.}
 
 \item{sampler}{sampling algorithm to be run. Default is DEzs. Recommended options are "Metropolis", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions. Not recommended options are "M", "AM", "DR", "DRAM".}
 
-\item{settings}{for each sampler. If a setting is not provided, defaults will be used. To see the defaults, use the function \code{\link{applySettingsDefault}} as in applySettingsDefault(sampler = "SAMPLERNAME")}
+\item{settings}{list with settings for each sampler (see help of sampler for details). If a setting is not provided, defaults (see \code{\link{applySettingsDefault}}) will be used.}
 }
 \value{
-The function returns an object of class mcmcSampler (if one chain is run) or mcmcSamplerList. Both have the superclass bayesianOutput. It is possible to extract the samples as coda or matrix with \code{\link{getSample}}. Possible to summarize the posterior as a new prior via \code{\link{createPriorDensity}}.
+The function returns an object of class mcmcSampler (if one chain is run) or mcmcSamplerList. Both have the superclass bayesianOutput. It is possible to extract the samples as a coda object or matrix with \code{\link{getSample}}. 
+It is also possible to summarize the posterior as a new prior via \code{\link{createPriorDensity}}.
 }
 \description{
 Main wrapper function to start MCMCs, particle MCMCs and SMCs
@@ -22,16 +23,20 @@ Main wrapper function to start MCMCs, particle MCMCs and SMCs
 \details{
 The runMCMC function can be started with either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. If a bayesianSetup is provided, check if appropriate parallization options are used - many samplers can make use of parallelization if this option is activated when the class is created.
 
-For details about the different samplers, see the help of the \code{\link{Metropolis}} sampler, the differential evolution Samplers \code{\link{DE.MC}}, \code{\link{DE.MCzs}}, and the DREAM samplers \code{\link{DREAM}} and \code{\link{DREAMzs}}, the \code{\link{Twalk}} MCMC, and a \code{\link{smcSampler}} sampler. Moreover, you can call four other specialized Metropolis-type samplers \code{\link{M}}, \code{\link{AM}}, \code{\link{DR}}, \code{\link{DRAM}}. However, the algorithms of these samplers can also be created through the settings of the \code{\link{Metropolis}} sampler, which offers more flexibility. The usual recommendation would therefore be to use the \code{\link{Metropolis}} sampler. 
+For details about the different MCMC samplers, see \code{\link{Metropolis}} for Metropolis based samplers,
+\code{\link{DE.MC}} and \code{\link{DE.MCzs}} for standard differential evolution samplers,
+\code{\link{DREAM}} and \code{\link{DREAMzs}} DREAM sampler or \code{\link{Twalk}} for the Twalk sampler.
+Further a Sequential Monte Carlo sampler (\code{\link{smcSampler}}) can be used.\cr
+Specialized Metropolis-type samplers can also be called directly by \code{\link{M}}, \code{\link{AM}}, \code{\link{DR}}, \code{\link{DRAM}}. However, the algorithms of these samplers can also be created through the settings of the \code{\link{Metropolis}} sampler, which offers more flexibility. The usual recommendation would therefore be to use the \code{\link{Metropolis}} sampler. 
 
 The settings list allows to change the settings for the MCMC samplers and some other options. For the MCMC sampler settings, see their help files. Global options that apply for all MCMC samplers are: iterations (number of MCMC iterations), and nrChains (number of chains to run). Note that running several chains is not done in parallel, so if time is an issue it will be better to run the MCMCs individually and then combine them via \code{\link{createMcmcSamplerList}} into one joint object. 
 
 
-Startvalues: all samplers allow to provide explicit startvalues. Note that DE and DREAM variants as well as SMC and T-walk require a population to start. zs variatns of DE and DREAM require two populations, in this case startvalue is a list with startvalue$X and startvalue$Z
+Startvalues: all samplers allow to provide explicit startvalues. Note that DE and DREAM variants as well as SMC and T-walk require a population to start. zs variants of DE and DREAM require two populations, in this case startvalue is a list with startvalue$X and startvalue$Z
 
-Options for DE / DEzs: provide start matrix as startvale. Default (NULL) sets Npop for DE to 3 x dimensions of parameters, and DEzs it will set the chains to 3 
+Options for DE / DEzs / DREAM / DREAMzs: provide start matrix as startvale. Default (NULL) sets the population size for DE to 3 x dimensions of parameters, for DREAM to 2 x dimensions of parameters and for DEzs and DREAMzs to three.
 
-Startvalues for sampling with nrChains > 1 : if you want to provide different start values for the 3 chains, provide a list
+Startvalues for sampling with nrChains > 1 : if you want to provide different start values for the different chains, provide a list
 }
 \examples{
 ## Generate a test likelihood function. 

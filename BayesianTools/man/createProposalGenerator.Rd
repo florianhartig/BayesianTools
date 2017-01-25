@@ -10,8 +10,7 @@ createProposalGenerator(covariance, gibbsProbabilities = NULL,
   message = F, method = "chol", scalingFactor = 2.38)
 }
 \arguments{
-\item{covariance}{covariance matrix. Can also be vector of the sqrt of diagonal elements --> standard deviation
-#@param covarianceDecomp composed covariance matrix. If provided, faster}
+\item{covariance}{covariance matrix. Can also be vector of the sqrt of diagonal elements --> standard deviation}
 
 \item{gibbsProbabilities}{optional probabilities for the number of parameters to vary in a Metropolis within gibbs style - for 4 parameters, c(1,1,0.5,0) means that at most 3 parameters will be varied, and it is double as likely to vary one or two than varying 3}
 

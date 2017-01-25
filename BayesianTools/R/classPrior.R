@@ -89,7 +89,7 @@ createPrior <- function(density = NULL, sampler = NULL, lower = NULL, upper = NU
 #' @param lower vector of lower prior range for all parameters
 #' @param upper vector of upper prior range for all parameters
 #' @param best vector with "best" values for all parameters
-#' @note for details see createPrior
+#' @note for details see \code{\link{createPrior}}
 #' @seealso \code{\link{createPriorDensity}}, \code{\link{createPrior}}, \code{\link{createBetaPrior}}, \code{\link{createTruncatedNormalPrior}}, \code{\link{createBayesianSetup}} 
 #' @example /inst/examples/createUniformPrior.R
 #' @export
@@ -112,7 +112,7 @@ createUniformPrior<- function(lower, upper, best = NULL){
 #' @param sd sdandard deviation
 #' @param lower vector of lower prior range for all parameters
 #' @param upper vector of upper prior range for all parameters
-#' @note for details see createPrior
+#' @note for details see \code{\link{createPrior}}
 #' @seealso \code{\link{createPriorDensity}} \cr
 #'          \code{\link{createPrior}} \cr
 #'          \code{\link{createBetaPrior}} \cr
@@ -137,11 +137,11 @@ createTruncatedNormalPrior<- function(mean, sd, lower, upper){
 
 #' Convenience function to create a beta prior
 #' 
-#' @param a shape1 of the beta
-#' @param b shape2 of the beta
+#' @param a shape1 of the beta distribution 
+#' @param b shape2 of the beta distribution 
 #' @param upper upper values for the parameters
 #' @param lower lower values for the parameters
-#' @note for details see createPrior
+#' @note for details see \code{\link{createPrior}}
 #' @details This creates a beta prior, assuming that lower / upper values for parameters are are fixed. The beta is the calculated relative to this lower / upper space. 
 #' @seealso \code{\link{createPriorDensity}} \cr
 #'          \code{\link{createPrior}} \cr
@@ -170,7 +170,7 @@ createBetaPrior<- function(a, b, lower=0, upper=1){
 
 #' Fits a density function to a multivariate sample
 #' @export
-#' @param x a matrix or BayesianOutput
+#' @param x an object of class BayesianOutput or a matrix 
 #' @param method method to generate prior - default and currently only option is multivariate
 #' @param eps numerical
 #' @param lower vector with lower bounds of parameter

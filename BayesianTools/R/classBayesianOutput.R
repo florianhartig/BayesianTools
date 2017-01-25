@@ -7,11 +7,11 @@
 #' @param coda works only for mcmc classes - provides output as a coda object. Note: if mcmcSamplerList contains mcmc samplers such as DE that have several chains, the internal chains will be collapsed. This may not be the desired behavior for all applications. 
 #' @param start for mcmc samplers start value in the chain. For SMC samplers, start particle
 #' @param end for mcmc samplers end value in the chain. For SMC samplers, end particle
-#' @param thin thinning parameter
+#' @param thin thinning parameter. Either an integer determining the thinning intervall (default is 1) or "auto" for automatic thinning.
 #' @param numSamples sample size (only used if thin = 1)
 #' @param whichParameters possibility to select parameters by index
 #' @param reportDiagnostics logical, determines whether settings should be included in the output
-#'  @param ... further arguments
+#' @param ... further arguments
 #' @export
 getSample <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
                       thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...) UseMethod("getSample")

@@ -1,6 +1,6 @@
 #' Trace plot for MCMC class
 #' @param sampler an object of class MCMC sampler
-#' @param thin determines the thinninh intervall of the chain
+#' @param thin determines the thinning intervall of the chain
 #' @param ... additional parameters to pass on to the \code{\link{getSample}}, for example parametersOnly =F, or start = 1000
 #' @export
 #' @seealso \code{\link{marginalPlot}} \cr

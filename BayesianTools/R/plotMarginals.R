@@ -3,11 +3,11 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 
 #' Plot MCMC marginals
 #' @author Florian Hartig
-#' @param mat matrix or data frame of variables
+#' @param mat object of class "bayesianOutput" or a matrix or data frame of variables 
 #' @param thin thinning of the matrix to make things faster. Default is to thin to 5000 
 #' @param scale should the results be scaled. Value can be either NULL (no scaling), T, or a matrix with upper / lower bounds as columns. If set to T, attempts to retrieve the scaling from the input object mat (requires that this is of class BayesianOutput)
 #' @param best if provided, will draw points at the given values (to display true / default parameter values). Value can be either NULL (no drawing), a vector with values, or T, in which case the function will attempt to retrieve the values from a BayesianOutput
-#' @param ... additional parameters to pass on to the \code{\link{getSample}}, for example parametersOnly = F, whichParameters, or start = 1000
+#' @param ... additional parameters to pass on to the \code{\link{getSample}}
 #' @export
 #' @seealso \code{\link{plotTimeSeries}} \cr
 #'          \code{\link{tracePlot}} \cr

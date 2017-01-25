@@ -7,9 +7,9 @@
 createBetaPrior(a, b, lower = 0, upper = 1)
 }
 \arguments{
-\item{a}{shape1 of the beta}
+\item{a}{shape1 of the beta distribution}
 
-\item{b}{shape2 of the beta}
+\item{b}{shape2 of the beta distribution}
 
 \item{lower}{lower values for the parameters}
 
@@ -22,7 +22,7 @@ Convenience function to create a beta prior
 This creates a beta prior, assuming that lower / upper values for parameters are are fixed. The beta is the calculated relative to this lower / upper space.
 }
 \note{
-for details see createPrior
+for details see \code{\link{createPrior}}
 }
 \seealso{
 \code{\link{createPriorDensity}} \cr

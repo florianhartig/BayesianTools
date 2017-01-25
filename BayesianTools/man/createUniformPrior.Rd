@@ -17,7 +17,7 @@ createUniformPrior(lower, upper, best = NULL)
 Convenience function to create a simple uniform prior distribution
 }
 \note{
-for details see createPrior
+for details see \code{\link{createPrior}}
 }
 \examples{
 prior <- createUniformPrior(c(0,0),c(0.4,5))

@@ -7,7 +7,7 @@
 applySettingsDefault(settings = NULL, sampler = "DEzs", check = FALSE)
 }
 \arguments{
-\item{settings}{optional list with parameter that will be used instead of the defaults}
+\item{settings}{optional list with parameters that will be used instead of the defaults}
 
 \item{sampler}{one of the samplers in \code{\link{runMCMC}}}
 

@@ -15,7 +15,7 @@
 #' @param message logical determines whether the sampler's progress should be printed
 #' @details  
 ##' The probability of "hop" moves is 1 minus the sum of all other probabilities.
-#' @return Object of class bayesianOutput. The object is a list contaning the two chains (stored as a coda::mcmc.list), the acceptanceRate, the bayesianSetup and informations about the sampler. 
+#' @return Object of class bayesianOutput.
 #' @references Christen, J. Andres, and Colin Fox. "A general purpose sampling algorithm for continuous distributions (the t-walk)." Bayesian Analysis 5.2 (2010): 263-281.
 #' @export
 Twalk <- function (bayesianSetup, settings = list(iterations = 10000, at = 6, aw = 1.5, 

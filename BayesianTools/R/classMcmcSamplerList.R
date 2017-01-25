@@ -1,4 +1,4 @@
-#' Convenicen function to create an object of class mcmcSamplerList from a list of mcmc samplers
+#' Convenience function to create an object of class mcmcSamplerList from a list of mcmc samplers
 #' @param mcmcList a list with each object being an mcmcSampler
 #' @return Object of class "mcmcSamplerList"
 #' @export

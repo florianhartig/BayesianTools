@@ -11,7 +11,7 @@ marginalLikelihood(sampler, numSamples = 1000, method = "Chib", ...)
 
 \item{numSamples}{number of samples to use. How this works, and if it requires recalculating the likelihood, depends on the method}
 
-\item{method}{method to choose. Currently available are "Chib", the harmonic mean "HM", and sampling from the prior "prior". See details}
+\item{method}{method to choose. Currently available are "Chib" (default), the harmonic mean "HM", and sampling from the prior "prior". See details}
 
 \item{...}{further arguments passed to \code{\link{getSample}}}
 }
@@ -19,11 +19,17 @@ marginalLikelihood(sampler, numSamples = 1000, method = "Chib", ...)
 Calcluated the marginal likelihood from a set of MCMC samples
 }
 \details{
-The function currently implements 3 ways to calculate the marginal likelihood. The recommended way is the method Chib, S. and Jeliazkov, I., Journal of the American Statistical Association, 2001, which is based on MCMC samples, but performs additional calculations. Despite being the current recommendation, note there are some numeric issues with this algorithm that may limit reliability for larger dimensions. We plan to implement further methods in the future. 
+The function currently implements three ways to calculate the marginal likelihood.\cr
+ The recommended way is the method "Chib" (Chib and Jeliazkov, 2001). which is based on MCMC samples, but performs additional calculations. 
+ Despite being the current recommendation, note there are some numeric issues with this algorithm that may limit reliability for larger dimensions.
+  
+ The harmonic mean approximation,
+  is implemented only for comparison. Note that the method is numerically 
+  unrealiable and usually should not be used. \cr
 
-The second method, the harmonic mean approximation, is implemented only for comparison. As shown in the help, it is numerically unrealiable and should not be used. 
-
-The third method is simply sampling from the prior. While in principle unbiased, it will only converge for a large number of samples, and is therefore numerically inefficient.
+The third method is simply sampling from the prior. While in principle unbiased,
+ it will only converge for a large number of samples, and is therefore
+  numerically inefficient. \cr
 }
 \examples{
 # Harmonic mean works OK for a low-dim case with 
@@ -64,6 +70,9 @@ marginalLikelihood(out, method = "Prior", numSamples =  500)[[1]]
 marginalLikelihood(out, method = "Prior", numSamples =  10000)[[1]]
 
 
+}
+\references{
+Chib, Siddhartha, and Ivan Jeliazkov. "Marginal likelihood from the Metropolis-Hastings output." Journal of the American Statistical Association 96.453 (2001): 270-281.
 }
 \seealso{
 \code{\link{WAIC}}, \code{\link{DIC}}, \code{\link{MAP}}

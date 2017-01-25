@@ -1,7 +1,6 @@
 #' Factory that creates a proposal generator
 #' @author Florian Hartig
 #' @param covariance covariance matrix. Can also be vector of the sqrt of diagonal elements --> standard deviation
-#' #@param covarianceDecomp composed covariance matrix. If provided, faster 
 #' @param gibbsProbabilities optional probabilities for the number of parameters to vary in a Metropolis within gibbs style - for 4 parameters, c(1,1,0.5,0) means that at most 3 parameters will be varied, and it is double as likely to vary one or two than varying 3 
 #' @param gibbsWeights optional probabilities for parameters to be varied in a Metropolis within gibbs style - default ist equal weight for all parameters - for 4 parameters, c(1,1,1,100) would mean that if 2 parameters would be selected, parameter 4 would be 100 times more likely to be picked than the others. If 4 is selected, the remaining parameters have equal probability.
 #' @param otherDistribution optional additinal distribution to be mixed with the default multivariate normal. The distribution needs to accept a parameter vector (to allow for the option of making the distribution dependend on the parameter values), but it is still assumed that the change from the current values is returned, not the new absolute values. 
@@ -13,6 +12,10 @@
 #' @seealso \code{\link{updateProposalGenerator}}
 #' @export 
 #' @example /inst/examples/proposalGeneratorHelp.R
+#'
+ 
+#@param covarianceDecomp composed covariance matrix. If provided, faster TODO?
+
 createProposalGenerator <- function(
   covariance, # covariance matrix for the multivariate proposal
   gibbsProbabilities = NULL, #  changes

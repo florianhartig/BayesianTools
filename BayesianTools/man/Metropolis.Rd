@@ -19,7 +19,7 @@ Metropolis(bayesianSetup, settings = list(startValue = NULL, optimize = T,
 
 \item{optimize}{logical, determines whether an optimization for start values and proposal function should be run before starting the sampling}
 
-\item{proposalGenerator}{option proposalgenerator object}
+\item{proposalGenerator}{option proposalgenerator object (see \code{\link{createProposalGenerator}})}
 
 \item{proposalScaling}{additional scaling parameter for the proposals, needs to be as long as DRlevels. Defaults to 0.5^(- 0:(mcmcSampler$settings$DRlevels -1)}
 
@@ -27,13 +27,13 @@ Metropolis(bayesianSetup, settings = list(startValue = NULL, optimize = T,
 
 \item{thin}{thinning parameter. Determines the interval in which values are recorded.}
 
-\item{consoleUpdates}{interger, determines the frequency with which sampler progress is printed to the console}
+\item{consoleUpdates}{integer, determines the frequency with which sampler progress is printed to the console}
 
 \item{adapt}{logical, determines wheter an adaptive algorithm should be implemented. Default is TRUE.}
 
 \item{adaptationInterval}{integer, determines the interval  of the adaption if adapt = TRUE.}
 
-\item{adaptationNotBefore}{interger, determines the start value for the adaption if adapt = TRUE.}
+\item{adaptationNotBefore}{integer, determines the start value for the adaption if adapt = TRUE.}
 
 \item{DRlevels}{integer, determines the number of levels for a delayed rejection sampler. Default is 1, which means no delayed rejection is used.}
 
