@@ -5,7 +5,7 @@
 \title{Factory to generate a parallel executer of an existing function}
 \usage{
 generateParallelExecuter(fun, parallel = F, parallelOptions = list(variables
-  = "all", packages = "all", dlls = "all"))
+  = "all", packages = "all", dlls = NULL))
 }
 \arguments{
 \item{fun}{function to be changed to parallel exectution}

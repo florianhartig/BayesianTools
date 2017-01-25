@@ -13,7 +13,7 @@
 #' @export
 #' @example /inst/examples/generateParallelExecuter.R
 
-generateParallelExecuter <- function(fun, parallel = F, parallelOptions = list(variables = "all", packages = "all", dlls = "all")){
+generateParallelExecuter <- function(fun, parallel = F, parallelOptions = list(variables = "all", packages = "all", dlls = NULL)){
   
   if (parallel == F){
     parallelFun <- function(parMat, ...){
@@ -41,7 +41,7 @@ generateParallelExecuter <- function(fun, parallel = F, parallelOptions = list(v
     
     
     # update the parallelOptions based on user settings.
-    defaultParallelOptions <- list(variables = "all", packages = "all", dlls = "all")
+    defaultParallelOptions <- list(variables = "all", packages = "all", dlls = NULL)
     parallelOptions <- modifyList(defaultParallelOptions, parallelOptions)
     
     

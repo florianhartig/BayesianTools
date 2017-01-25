@@ -6,7 +6,8 @@
 \usage{
 createBayesianSetup(likelihood, prior = NULL, priorSampler = NULL,
   parallel = FALSE, lower = NULL, upper = NULL, best = NULL,
-  names = NULL, parallelOptions = NULL, catchDuplicates = FALSE)
+  names = NULL, parallelOptions = list(variables = "all", packages = "all",
+  dlls = NULL), catchDuplicates = FALSE)
 }
 \arguments{
 \item{likelihood}{log likelihood density function}
