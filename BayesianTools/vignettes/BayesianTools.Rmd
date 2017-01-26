@@ -9,12 +9,13 @@ vignette: >
   %\VignetteIndexEntry{Manual for the BayesianTools R package}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8](inputenc)
-abstract: "The 'BayesianTools' R package contains various MCMC and SMC samplers, plots and diagnostics for Bayesian analysis, with a particular focus on calibrating system models.\n \n \n"
+abstract: "The BT package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques for system models. 
+\n \n \n"
 
 ---
 
 ```{r global_options, include=FALSE}
-knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE)
+knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
 ```
 
 ```{r, echo = F, message = F}
@@ -23,10 +24,7 @@ library(BayesianTools)
 ```
 
 
-
-The BT package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques.
-
-A more detailed tutorial on Bayesian inference with process-based models available [here](https://www.dropbox.com/s/y3d5fqh61eqdzz6/TG13-ModelCalibrationTutorial.pdf?dl=0). The tutorial also explains in detail the Bayesian philosophy, and issues such as Interpretation of parameter estimates and confidence intervals
+[comment]: # A more detailed tutorial on Bayesian inference with process-based models available [here](https://www.dropbox.com/s/y3d5fqh61eqdzz6/TG13-ModelCalibrationTutorial.pdf?dl=0). The tutorial also explains in detail the Bayesian philosophy, and issues such as Interpretation of parameter estimates and confidence intervals
 
 
 # Quick start
@@ -35,34 +33,34 @@ The purpose of this first section is to give you a quick overview of the most im
 
 ## The Bayesian Setup
 
-One central object in the package is the BayesianSetup. It contains the information about the model to be fit (likelihood), and the priors for the model parameters. 
+The central object in the BT package is the BayesianSetup. This class contains the information about the model to be fit (likelihood), and the priors for the model parameters. 
 
-A BayesianSetup is created throug the createBayesianSetup function. The function expects a log-likelihood and log-prior. It calculate automatically the posterior and various convenience functions for the samplers. 
+A BayesianSetup is created by the createBayesianSetup function. The function expects a log-likelihood and log-prior. It calculate automatically the posterior and various convenience functions for the samplers. 
 
 Advantages of the BayesianSetup include 1) support for parallelization, 2) functions are wrapped in try-catch statements to avoid crashes during long MCMC evaluations, 3) and the posterior checks if the parameter is outside the prior first, in which case the likelihood is not evaluated (makes the algorithms faster for slow likelihoods).
 
-If no prior information at all is provided, an infinite flat prior is created. If no explicit prior, but lower and upper values are provided, a standard uniform prior is created, including the option to sample from this prior, which is useful for SMC and also for getting starting values. This option is used in the follwoing example, which creates a multivariate normal likelihood density and a uniform prior for 3 parameters.
+If no prior information is provided, an unbounded flat prior is created. If no explicit prior, but lower and upper values are provided, a standard uniform prior with the respective bounds is created, including the option to sample from this prior, which is useful for SMC and also for getting starting values. This option is used in the following example, which creates a multivariate normal likelihood density and a uniform prior for 3 parameters.
 
 ```{r}
 ll <- generateTestDensityMultiNormal(sigma = "no correlation")
 bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
 ```
 
-If you want to use your own custom functions, note the following
+If you want to create your own BayesianSetup, note the following:
 
 ### Likelihood definition
 
-As likelihood function, you need to provide the log likelihood density of a parameter vector 
+The likelihood function needs to be provided as the log likelihood density of a parameter vector 
 
 ```{r, eval = F}
 ll = logDensity(x)
 ```
 
-Likelihoods are often costly to compute. If that is the case for you, you should think about parallelization possibilities. The BayesianSetup has the following options via the variable parallel
+Likelihoods are often costly to compute. If that is the case for you, you should think about parallelization possibilities. The 'createBayesianSetup' function has the input variable 'parallel', with the following options
 
-* F means no parallelization
-* T means that an automatic parallelization via R is attempted (will not work if your likelihood writes to file, or uses global variables or functions - see general R help on parallelization) 
-* "external", assumed that the likelihood is already parallelized. In this case it needs to accept a matrix with parameters as columns. This is for using complex models that cannot be parallelized via an R cluster, e.g. because they write to file. 
+* F / FALSE means no parallelization should be used
+* T / TRUE means that automatic parallelization options from R are used (careful: this will not work if your likelihood writes to file, or uses global variables or functions - see general R help on parallelization) 
+* "external", assumed that the likelihood is already parallelized. In this case, the function needs to accept a matrix with parameters as columns, and rows as the different model runs you want to evaluate. This is the most likely option to use if you have a complicated setup (file I/O, HPC cluster) that cannot be treated with the standard R parallelization.  
 
 ### Prior definition
 
@@ -72,16 +70,16 @@ You have 3 options to set priors
 * Use one of the predefinded priors, see ?createPrior for a list. One of the options here is to use a previous MCMC output as new prior
 * Use a user-define prior, see ?createPrior 
 
-In principle, the following information can be provided to priors:
+The following information can be provided to createPrior:
 
-* A log density function, as a function of a parameter vector x, as in the likelihood
-* Additinally, you should consider providing a function that samples from the prior, because many samplers (SMC, DE, DREAM) can make use of this function for initial conditions. For this purpose, there is the argument sampler in the createBayesianSetup. If you use one of the pre-defined priors, the sampling function is already implemented
-* lower / upper boundaries (can be set on top of any prior)
+* A log density function, as a function of a parameter vector x, same syntax as the likelihood
+* Additinally, you should consider providing a function that samples from the prior, because many samplers (SMC, DE, DREAM) can make use of this function for initial conditions. If you use one of the pre-defined priors, the sampling function is already implemented
+* lower / upper boundaries (can be set on top of any prior, to create truncation)
 * Additional info - best values, names of the parameters, ... 
 
 ## Running MCMC and SMC functions
 
-The runMCMC function is the main wrapper for all other implemented MCMC functions. It always takes the following arguments 
+Once you have your setup, you may want to run a calibration. The runMCMC function is the main wrapper for all other implemented MCMC/SMC functions. It always takes the following arguments 
 
 * A bayesianSetup (alternatively, the log target function)
 * The sampler name 
@@ -89,13 +87,15 @@ The runMCMC function is the main wrapper for all other implemented MCMC function
 
 ### The Metropolis MCMC
 
-A versatile Metropolis-type MCMC with options for covariance adaptation, delayed rejection, tempering and Metropolis-within-Gibbs sampling is available via the Metropolis option. For details, see the help of the Metropolis file
+As an example, the choosing the sampler name "Metropolis" calls a versatile Metropolis-type MCMC with options for covariance adaptation, delayed rejection, tempering and Metropolis-within-Gibbs sampling is available via the Metropolis option. For details, see the help. This is how we would call the base version of this sampler
 
 ```{r}
 iter = 10000
 settings = list(iterations = iter, consoleUpdates = 1e+8)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 ```
+
+### Summarizing outputs
 
 All samplers can be plotted and summarized via the console
 
@@ -145,7 +145,6 @@ summary(out)
 marginalLikelihood(out)
 DIC(out)
 ```
-
 
 For example, in the plot you now see 3 chains. 
 
@@ -223,6 +222,8 @@ gelmanDiagnostics(out, plot = T)
 ```
 
 ### T-walk
+
+The T-walk is another MCMC algorithm. 
 
 ```{r}
 settings = list(iterations = iter, consoleUpdates = 1e+8) # the rest of the parameters are default settings.

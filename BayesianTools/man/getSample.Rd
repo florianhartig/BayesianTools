@@ -6,7 +6,7 @@
 \usage{
 getSample(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
   thin = 1, numSamples = NULL, whichParameters = NULL,
-  reportDiagnostics = FALSE)
+  reportDiagnostics = FALSE, ...)
 }
 \arguments{
 \item{sampler}{an object of class mcmcSampler, mcmcSamplerList, smcSampler, smcSamplerList}
@@ -26,6 +26,8 @@ getSample(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
 \item{whichParameters}{possibility to select parameters by index}
 
 \item{reportDiagnostics}{logical, determines whether settings should be included in the output}
+
+\item{...}{further arguments}
 }
 \description{
 Extracts the sample from a bayesianOutput
