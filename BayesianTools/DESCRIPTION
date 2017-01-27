@@ -11,7 +11,7 @@ Description: 'BayesianTools' contains various MCMC and SMC samplers, plots and d
     for Bayesian analysis, with a particular focus on calibrating system models.
 Depends:
     R (>= 3.1.2)
-License: CC-BY-SA-4.0
+License: CC BY-SA 4.0
 Imports:
     coda,
     vioplot,
