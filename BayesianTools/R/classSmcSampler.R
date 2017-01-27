@@ -1,6 +1,5 @@
 #' @export
-getSample.smcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL,
-                                 whichParameters = NULL, reportDiagnostics = FALSE, ...){
+getSample.smcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...){
   
   if(is.null(end)) end = nrow(sampler$particles)
   

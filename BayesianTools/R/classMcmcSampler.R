@@ -1,9 +1,7 @@
 # Functions for class mcmcSamper
 
 #' @export
-getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, 
-                                  start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, 
-                                  reportDiagnostics= F){
+getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics= F, ...){
   
   if (class(sampler$chain) == "matrix"){
     

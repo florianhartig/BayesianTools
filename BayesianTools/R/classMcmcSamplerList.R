@@ -108,9 +108,7 @@ plot.mcmcSamplerList <- function(x, ...){
 }
 
 #' @export
-getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, 
-                                      end = NULL, thin = 1, numSamples, whichParameters = NULL, reportDiagnostics,
-                                      ...){
+getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples, whichParameters = NULL, reportDiagnostics, ...){
   
   if(coda == F){
     out = NULL
