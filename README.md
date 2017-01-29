@@ -15,7 +15,7 @@ To get an overview about its functionality once the package is installed, run
 ```{r}
 library(BayesianTools)
 ?BayesianTools
-vignette("QuickStart", package="BayesianTools")
+vignette("BayesianTools", package="BayesianTools")
 ```
 
 ### Development release 
