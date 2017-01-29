@@ -7,7 +7,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Manual for the BayesianTools R package}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8](inputenc)
+  %\VignetteEncoding{UTF-8}
 abstract: "The BT package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques for system models. 
 \n \n \n"
 
