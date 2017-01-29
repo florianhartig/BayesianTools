@@ -4,7 +4,7 @@
 #' @export
 
 createMcmcSamplerList <- function(mcmcList){
-  mcmcList <- list(mcmcList)
+  # mcmcList <- list(mcmcList) -> This line didn't make any sense at all. Better would be to allow the user to simply provide several inputs without a list, but I guess the list option should be maintained, as this is convenient when scripting.
   for (i in 1:length(mcmcList)){
     if (! ("mcmcSampler" %in% class(mcmcList[[i]])) ) stop("list objects are not of class mcmcSampler")
   }
@@ -21,9 +21,9 @@ summary.mcmcSamplerList <- function(object, ...){
   #effectiveSize(sampler$codaChain)
   #DIC(sampler)
   #max()
-  
+
   sampler <- object
-  
+
   DInf <- DIC(sampler)
   MAPvals <- format(round(MAP(sampler)$parametersMAP,3), nsmall = 3)
   mcmcsampler <- sampler[[1]]$settings$sampler
@@ -31,8 +31,8 @@ summary.mcmcSamplerList <- function(object, ...){
   for(i in 1:length(sampler)) runtime <- runtime+sampler[[i]]$settings$runtime[3]
 
   correlations <- round(cor(getSample(sampler)),3)
-  
-  
+
+
   sampler <- getSample(sampler, parametersOnly = T, coda = T)
   if("mcmc.list" %in% class(sampler)){
     nrChain <- length(sampler)
@@ -49,7 +49,7 @@ summary.mcmcSamplerList <- function(object, ...){
       medi[i] <- format(round(tmp[2],3), nsmall = 3)
       upperq[i] <- format(round(tmp[3],3), nsmall = 3)
     }
-    
+
   }else{
     nrChain <- 1
     nrIter <- nrow(sampler)
@@ -64,9 +64,9 @@ summary.mcmcSamplerList <- function(object, ...){
       medi[i] <- format(round(tmp[2],3), nsmall = 3)
       upperq[i] <- format(round(tmp[3],3), nsmall = 3)
     }
-    
+
   }
-  
+
   cat(rep("#", 25), "\n")
   cat("## MCMC chain summary ##","\n")
   cat(rep("#", 25), "\n", "\n")
@@ -87,8 +87,8 @@ summary.mcmcSamplerList <- function(object, ...){
   cat("## Convergence" ,"\n", "Gelman Rubin multivariate psrf: ", conv, "\n","\n")
   cat("## Correlations", "\n")
   print(correlations)
-  
-  
+
+
 }
 
 #' @method print mcmcSamplerList
@@ -109,28 +109,28 @@ plot.mcmcSamplerList <- function(x, ...){
 
 #' @export
 getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples, whichParameters = NULL, reportDiagnostics, ...){
-  
+
   if(coda == F){
     out = NULL
     for (i in 1:length(sampler)){
       out = rbind(out, getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, reportDiagnostics= F))
     }
     #out = BayesianTools:::combineChains(out)
-  }  
+  }
   if(coda == T){
-    
+
     out = list()
-    
+
     for (i in 1:length(sampler)){
-   
+
       out[[i]] = getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, reportDiagnostics= F)
     }
-    
+
     if(class(out[[1]]) == "mcmc.list") out = unlist(out, recursive = F)
-    class(out) = "mcmc.list" 
+    class(out) = "mcmc.list"
     out = out
-  } 
-    
+  }
+
   return(out)
 }
 
