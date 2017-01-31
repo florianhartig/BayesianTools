@@ -498,7 +498,18 @@ setupStartProposal <- function(proposalGenerator = NULL, bayesianSetup, settings
       proposalGenerator$covariance = as.matrix(Matrix::nearPD(MASS::ginv(-hessian))$mat)
       #proposalGenerator$covariance = MASS::ginv(-optresul$hessian)
       
-      message("BT runMCMC: Optimization finished, setting startValues to" , settings$startValue, " - Setting covariance to" , proposalGenerator$covariance)
+      # Create objects for startValues and covariance to add space between values
+      startV <-covV <- character()
+      
+      for(i in 1:length(settings$startValue)){
+        startV[i] <- paste(settings$startValue[i], "")
+      } 
+      for(i in 1:length( proposalGenerator$covariance)){
+        covV[i] <- paste( proposalGenerator$covariance[i], "")
+      } 
+      
+      message("BT runMCMC: Optimization finished, setting startValues to " , 
+              startV, " - Setting covariance to " , covV)
       
       proposalGenerator = updateProposalGenerator(proposalGenerator)
       
