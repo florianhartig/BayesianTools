@@ -72,7 +72,14 @@ createBayesianSetup <- function(likelihood,
   }
   
   # TODO - macht das Sinn numPars hier zu definieren?
-  if(is.null(priorSampler)) priorSampler <- function(x) return(NULL) # Avoids error in calculation of numPars
+  if(is.null(priorSampler)){
+    if(is.null(prior$sampler)){
+    priorSampler <- function(x) return(NULL) # Avoids error in calculation of numPars
+    }else{
+      priorSampler <- prior$sampler
+    }
+  }
+
   
   if("function" != class(prior)){
     numPars = max(length(best), length(lower), length(upper), length(prior$lower), length(prior$upper), length(names),
