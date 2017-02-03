@@ -245,9 +245,9 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
     }
 
     mcmcSampler$settings$runtime = mcmcSampler$settings$runtime + proc.time() - ptm
-    
+    if(is.null(settings$message) || settings$message == TRUE){
     message("runMCMC terminated after ", mcmcSampler$settings$runtime[3], "seconds")
-    
+    }
     return(mcmcSampler)
   }
 }
@@ -480,7 +480,9 @@ setupStartProposal <- function(proposalGenerator = NULL, bayesianSetup, settings
   ####### OPTIMIZATION
   
   if (settings$optimize == T){
+    if(is.null(settings$message) || settings$message == TRUE){
     cat("BT runMCMC: trying to find optimal start and covariance values", "\b")
+    }
     
     target <- function(x){
       out <- bayesianSetup$posterior$density(x)
@@ -508,8 +510,10 @@ setupStartProposal <- function(proposalGenerator = NULL, bayesianSetup, settings
         covV[i] <- paste( proposalGenerator$covariance[i], "")
       } 
       
+      if(is.null(settings$message) || settings$message == TRUE){
       message("BT runMCMC: Optimization finished, setting startValues to " , 
               startV, " - Setting covariance to " , covV)
+      }
       
       proposalGenerator = updateProposalGenerator(proposalGenerator)
       
