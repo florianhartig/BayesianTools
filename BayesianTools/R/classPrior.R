@@ -4,7 +4,8 @@
 #' @param lower vector with lower bounds of parameters
 #' @param upper vector with upper bounds of parameter
 #' @param best vector with "best" parameter values
-#' @note min and max don't update the absolute values of the prior density. Hence, if absolute values are a concern, trucated distributions should be used for the density
+#' @details This is the general prior generator. It is highly recommended to not only implement the density, but also the sampler function. If this is not done, the user will have to provide explicit starting values for many of the MCMC samplers. Note the existing, more specialized prior function. If your prior can be created by those, they are preferred. Note also that priors can be created from an existing MCMC output from BT, or another MCMC sample, via \code{\link{createPriorDensity}}. 
+#' @note min and max truncate, but not re-normalize the prior density (so, if a pdf that integrated to one is truncated, the integral will in general be smaller than one). For MCMC sampling, this doesn't make a difference, but if absolute values of the prior density are a concern, one should provide a truncated density function for the prior. 
 #' @export
 #' @seealso \code{\link{createPriorDensity}} \cr
 #'          \code{\link{createBetaPrior}} \cr
@@ -172,21 +173,21 @@ createBetaPrior<- function(a, b, lower=0, upper=1){
 #' @export
 #' @param x an object of class BayesianOutput or a matrix 
 #' @param method method to generate prior - default and currently only option is multivariate
-#' @param eps numerical
-#' @param lower vector with lower bounds of parameter
-#' @param upper vector with upper bounds of parameter
-#' @param best vector with "best" values of parameter
+#' @param eps numerical precision to avoid singularity
+#' @param lower vector with lower bounds of parameter for the new prior, independent of the input sample
+#' @param upper vector with upper bounds of parameter for the new prior, independent of the input sample
+#' @param best vector with "best" values of parameter for the new prior, independent of the input sample
+#' @param ... parameters to pass on to the getSample function
 #' @seealso \code{\link{createPrior}} \cr
 #'          \code{\link{createBetaPrior}} \cr
 #'          \code{\link{createTruncatedNormalPrior}} \cr
 #'          \code{\link{createUniformPrior}} \cr
 #'          \code{\link{createBayesianSetup}} \cr
 #' @example /inst/examples/createPriorDensity.R
-createPriorDensity <- function(x, method = "multivariate", eps = 1e-10, lower = NULL, upper = NULL, best = NULL){
+createPriorDensity <- function(sampler, method = "multivariate", eps = 1e-10, lower = NULL, upper = NULL, best = NULL, ...){
   
-  if(inherits(x,"bayesianOutput")) x = getSample(x)
-  
-  
+  x = getSample(sampler, ...)
+
   if(method == "multivariate"){
     nPars = ncol(x)
     covariance = cov(x)
@@ -201,7 +202,7 @@ createPriorDensity <- function(x, method = "multivariate", eps = 1e-10, lower = 
       par = as.vector(mvtnorm::rmvnorm(n = n, sigma = covar))
       return(par)
     }
-    
+
     out <- createPrior(density = density, sampler = sampler, lower = lower, upper = upper, best = best)
     return(out)
   }

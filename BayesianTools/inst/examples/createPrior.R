@@ -15,5 +15,16 @@ sampler = function(n=1){
 }
 
 prior <- createPrior(density = density, sampler = sampler, 
-                     lower = NULL, upper = NULL, best = NULL)
+                     lower = c(-3,-3), upper = c(3,3), best = NULL)
+
+
+# Use this prior in an MCMC 
+
+ll <- function(x) sum(dnorm(x, log = T)) # multivariate normal ll
+bayesianSetup <- createBayesianSetup(likelihood = ll, prior = prior)
+
+settings = list(iterations = 1000)
+out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+
+# see ?createPriorDensity for how to create a new prior from this output
 
