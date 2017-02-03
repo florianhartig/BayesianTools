@@ -171,7 +171,7 @@ createBetaPrior<- function(a, b, lower=0, upper=1){
 
 #' Fits a density function to a multivariate sample
 #' @export
-#' @param x an object of class BayesianOutput or a matrix 
+#' @param sampler an object of class BayesianOutput or a matrix 
 #' @param method method to generate prior - default and currently only option is multivariate
 #' @param eps numerical precision to avoid singularity
 #' @param lower vector with lower bounds of parameter for the new prior, independent of the input sample
