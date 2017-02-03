@@ -15,15 +15,15 @@ bayesianSetup <- createBayesianSetup(likelihood = parallelLL, lower = rep(-10, 3
 
 # Defining settings for the sampler
 # First we use the sampler for rejection sampling
-settings <- list(initialParticles = 10000, iterations = 1, resampling = FALSE)  
+settings <- list(initialParticles = 1000, iterations = 1, resampling = FALSE)  
    
 # Running the sampler
 out1 <- runMCMC(bayesianSetup = bayesianSetup, sampler = "SMC", settings = settings)
-plot(out1)
+#plot(out1)
 
 
 # Now for sequential Monte Carlo
-settings <- list(initialParticles = 1000, iterations = 5, resamplingSteps = 1)
+settings <- list(initialParticles = 100, iterations = 5, resamplingSteps = 1)
 out2 <- runMCMC(bayesianSetup = bayesianSetup, sampler = "SMC", settings = settings)
-plot(out2)
+#plot(out2)
 
