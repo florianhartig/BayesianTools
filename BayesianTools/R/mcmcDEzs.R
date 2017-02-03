@@ -20,7 +20,7 @@
 #' @details For parallel computing FUN needs to take a matrix of proposals
 #' @references ter  Braak C. J. F., and Vrugt J. A. (2008). Differential Evolution Markov Chain with snooker updater and fewer chains. Statistics and Computing http://dx.doi.org/10.1007/s11222-008-9104-9 
 #' @export
-#' @seealso \code{\link{DE.MC}}
+#' @seealso \code{\link{DE}}
 #' @details For blockUpdate the first element in the list determines the type of blocking.
 #' Possible choices are
 #' \itemize{
@@ -42,7 +42,7 @@
 #'  to be updated. By default all groups have the same probability.
 #'  Finally "groupStart" defines the starting point of the groupUpdate and "groupIntervall" the intervall
 #'  in which the groups are evaluated.
-DE.MCzs <- function(bayesianSetup, 
+DEzs <- function(bayesianSetup, 
                     settings = list(iterations=10000, 
                                     Z = NULL, 
                                     startValue = NULL,

@@ -24,7 +24,7 @@ Main wrapper function to start MCMCs, particle MCMCs and SMCs
 The runMCMC function can be started with either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. If a bayesianSetup is provided, check if appropriate parallization options are used - many samplers can make use of parallelization if this option is activated when the class is created.
 
 For details about the different MCMC samplers, see \code{\link{Metropolis}} for Metropolis based samplers,
-\code{\link{DE.MC}} and \code{\link{DE.MCzs}} for standard differential evolution samplers,
+\code{\link{DE}} and \code{\link{DEzs}} for standard differential evolution samplers,
 \code{\link{DREAM}} and \code{\link{DREAMzs}} DREAM sampler or \code{\link{Twalk}} for the Twalk sampler.
 Further a Sequential Monte Carlo sampler (\code{\link{smcSampler}}) can be used.\cr
 Specialized Metropolis-type samplers can also be called directly by \code{\link{M}}, \code{\link{AM}}, \code{\link{DR}}, \code{\link{DRAM}}. However, the algorithms of these samplers can also be created through the settings of the \code{\link{Metropolis}} sampler, which offers more flexibility. The usual recommendation would therefore be to use the \code{\link{Metropolis}} sampler. 

@@ -5,7 +5,7 @@
 #' @details The runMCMC function can be started with either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. If a bayesianSetup is provided, check if appropriate parallization options are used - many samplers can make use of parallelization if this option is activated when the class is created.
 #' 
 #' For details about the different MCMC samplers, see \code{\link{Metropolis}} for Metropolis based samplers,
-#' \code{\link{DE.MC}} and \code{\link{DE.MCzs}} for standard differential evolution samplers,
+#' \code{\link{DE}} and \code{\link{DEzs}} for standard differential evolution samplers,
 #' \code{\link{DREAM}} and \code{\link{DREAMzs}} DREAM sampler or \code{\link{Twalk}} for the Twalk sampler.
 #' Further a Sequential Monte Carlo sampler (\code{\link{smcSampler}}) can be used.\cr
 #' Specialized Metropolis-type samplers can also be called directly by \code{\link{M}}, \code{\link{AM}}, \code{\link{DR}}, \code{\link{DRAM}}. However, the algorithms of these samplers can also be created through the settings of the \code{\link{Metropolis}} sampler, which offers more flexibility. The usual recommendation would therefore be to use the \code{\link{Metropolis}} sampler. 
@@ -148,10 +148,10 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
     ############## Differential Evolution #####################
     if (sampler == "DE"){
       
-      if(restart == F) out <- DE.MC(bayesianSetup = setup, settings = settings)
-      else out <- DE.MC(bayesianSetup = previousMcmcSampler, settings = settings)
+      if(restart == F) out <- DE(bayesianSetup = setup, settings = settings)
+      else out <- DE(bayesianSetup = previousMcmcSampler, settings = settings)
       
-      #out <- DE.MC(bayesianSetup = bayesianSetup, settings = list(startValue = NULL, iterations = settings$iterations, burnin = settings$burnin, eps = settings$eps, parallel = settings$parallel, consoleUpdates = settings$consoleUpdates,
+      #out <- DE(bayesianSetup = bayesianSetup, settings = list(startValue = NULL, iterations = settings$iterations, burnin = settings$burnin, eps = settings$eps, parallel = settings$parallel, consoleUpdates = settings$consoleUpdates,
        #            blockUpdate = settings$blockUpdate, currentChain = settings$currentChain))
       
       mcmcSampler = list(
@@ -167,8 +167,8 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
     ############## Differential Evolution with snooker update
     if (sampler == "DEzs"){
       
-      if(restart == F) out <- DE.MCzs(bayesianSetup = setup, settings = settings)
-      else out <- DE.MCzs(bayesianSetup = previousMcmcSampler, settings = settings)
+      if(restart == F) out <- DEzs(bayesianSetup = setup, settings = settings)
+      else out <- DEzs(bayesianSetup = previousMcmcSampler, settings = settings)
       
       mcmcSampler = list(
         setup = setup,
