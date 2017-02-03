@@ -4,21 +4,23 @@
 \alias{createPriorDensity}
 \title{Fits a density function to a multivariate sample}
 \usage{
-createPriorDensity(x, method = "multivariate", eps = 1e-10, lower = NULL,
-  upper = NULL, best = NULL)
+createPriorDensity(sampler, method = "multivariate", eps = 1e-10,
+  lower = NULL, upper = NULL, best = NULL, ...)
 }
 \arguments{
-\item{x}{an object of class BayesianOutput or a matrix}
+\item{sampler}{an object of class BayesianOutput or a matrix}
 
 \item{method}{method to generate prior - default and currently only option is multivariate}
 
-\item{eps}{numerical}
+\item{eps}{numerical precision to avoid singularity}
 
-\item{lower}{vector with lower bounds of parameter}
+\item{lower}{vector with lower bounds of parameter for the new prior, independent of the input sample}
 
-\item{upper}{vector with upper bounds of parameter}
+\item{upper}{vector with upper bounds of parameter for the new prior, independent of the input sample}
 
-\item{best}{vector with "best" values of parameter}
+\item{best}{vector with "best" values of parameter for the new prior, independent of the input sample}
+
+\item{...}{parameters to pass on to the getSample function}
 }
 \description{
 Fits a density function to a multivariate sample
@@ -26,14 +28,22 @@ Fits a density function to a multivariate sample
 \examples{
 # Create a BayesianSetup
 ll <- generateTestDensityMultiNormal(sigma = "no correlation")
-bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
+bayesianSetup = createBayesianSetup(likelihood = ll, 
+                                    lower = rep(-10, 3), 
+                                    upper = rep(10, 3))
+
+settings = list(iterations = 2500)
+out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+
+
+newPrior = createPriorDensity(out, method = "multivariate",
+                              eps = 1e-10, lower = rep(-10, 3),
+                              upper =  rep(10, 3), best = NULL)
+
+bayesianSetup <- createBayesianSetup(likelihood = ll, prior = newPrior)
 
 settings = list(iterations = 1000)
-out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
-
-# now use the output as a new prior TODO
-#bayesianSetup = createBayesianSetup(likelihood = ll, prior = out)
-#out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
+out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 
 }
 \seealso{

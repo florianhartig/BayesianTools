@@ -21,8 +21,11 @@ createPrior(density = NULL, sampler = NULL, lower = NULL, upper = NULL,
 \description{
 Creates a standardized prior class
 }
+\details{
+This is the general prior generator. It is highly recommended to not only implement the density, but also the sampler function. If this is not done, the user will have to provide explicit starting values for many of the MCMC samplers. Note the existing, more specialized prior function. If your prior can be created by those, they are preferred. Note also that priors can be created from an existing MCMC output from BT, or another MCMC sample, via \code{\link{createPriorDensity}}.
+}
 \note{
-min and max don't update the absolute values of the prior density. Hence, if absolute values are a concern, trucated distributions should be used for the density
+min and max truncate, but not re-normalize the prior density (so, if a pdf that integrated to one is truncated, the integral will in general be smaller than one). For MCMC sampling, this doesn't make a difference, but if absolute values of the prior density are a concern, one should provide a truncated density function for the prior.
 }
 \examples{
 # Create a general prior distribution by specifying an arbitrary density function and a
@@ -42,7 +45,18 @@ sampler = function(n=1){
 }
 
 prior <- createPrior(density = density, sampler = sampler, 
-                     lower = NULL, upper = NULL, best = NULL)
+                     lower = c(-3,-3), upper = c(3,3), best = NULL)
+
+
+# Use this prior in an MCMC 
+
+ll <- function(x) sum(dnorm(x, log = T)) # multivariate normal ll
+bayesianSetup <- createBayesianSetup(likelihood = ll, prior = prior)
+
+settings = list(iterations = 1000)
+out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+
+# see ?createPriorDensity for how to create a new prior from this output
 
 }
 \seealso{
