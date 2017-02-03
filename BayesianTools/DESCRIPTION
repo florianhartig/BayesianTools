@@ -1,7 +1,7 @@
 Package: BayesianTools
 Title: General-Purpose MCMC and SMC Samplers and Tools for Bayesian Statistics
-Version: 0.0.12.1
-Authors@R: c(person("Florian", "Hartig", email = "biologie.uni-regensburg.de", role = c("aut", "cre")), person("Stefan", " Paul", role = c("aut") ) person("Francesco", "Minunno", role = c("aut")), person("David", "Cameron", role = "ctb"))
+Version: 0.0.12.2
+Authors@R: c(person("Florian", "Hartig", email = "biologie.uni-regensburg.de", role = c("aut", "cre")), person("Stefan", " Paul", role = c("aut") ), person("Francesco", "Minunno", role = c("aut")), person("David", "Cameron", role = "ctb"))
 Author: Florian Hartig [aut, cre],
     Stefan Paul [aut],
     Francesco Minunno [aut],
@@ -38,7 +38,7 @@ Suggests:
     gap
 LinkingTo: Rcpp
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.0
 URL: https://github.com/florianhartig/BayesianTools
 BugReports: https://github.com/florianhartig/BayesianTools/issues
 VignetteBuilder: knitr
