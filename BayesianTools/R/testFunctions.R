@@ -39,8 +39,7 @@ generateTestDensityMultiNormal <- function(mean = c(0,0,0), sigma = "strongcorre
 #' Banana-shaped density function 
 #' @author Florian Hartig
 #' @param p 2-dim parameter vector
-#' @note inspired from package FMEmcmc, sees to go back to Laine M (2008). Adaptive MCMC Methods with Applications in Environmental and Models. Finnish Meteorological Institute Contributions 69. ISBN 978-951-697-662-7.
-#' examples()
+#' @note inspired from package FMEmcmc, seems to go back to Laine M (2008). Adaptive MCMC Methods with Applications in Environmental and Models. Finnish Meteorological Institute Contributions 69. ISBN 978-951-697-662-7.
 #' @export
 #' @seealso \code{\link{generateTestDensityMultiNormal}} \cr
 #'          \code{\link{testLinearModel}}
@@ -60,6 +59,24 @@ testDensityNormal <- function(x, sum = T){
   if(sum == T) return(sum(dnorm(x, log = T)))
   else return(dnorm(x, log = T))
 }
+
+
+#' 3d Mutivariate Normal likelihood
+#' @param x a parameter vector of arbitrary length
+#' @param sigma either a correlation matrix, or "strongcorrelation", or "no correlation"
+#' @export
+testDensityMultiNormal <- function(x, sigma = "strongcorrelation"){
+  if (sigma == "strongcorrelation"){
+    m <- c(0.2, 0.3, 0.3503)
+    sigma = emulator::corr.matrix(cbind(m),scales=1)    
+  }else if (sigma == "no correlation"){
+    sigma = diag(rep(1,3))
+  }
+  return(mvtnorm::dmvnorm(x, mean = c(0,0,0), sigma = sigma, log=T))
+
+}
+
+
 
 
 #' Fake model, returns a ax + b linear response to 2-param vector

@@ -8,7 +8,7 @@ vignette: >
   %\VignetteIndexEntry{Manual for the BayesianTools R package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-abstract: "The BT package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques for system models. 
+abstract: "The BayesianTools (BT) package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques for system models. 
 \n \n \n"
 
 ---
@@ -25,7 +25,7 @@ library(BayesianTools)
 
 # Quick start
 
-The purpose of this first section is to give you a quick overview of the most important functions of the BayesianTools package. For a more detailed description, see the later sections
+The purpose of this first section is to give you a quick overview of the most important functions of the BayesianTools (BT) package. For a more detailed description, see the later sections
 
 ## The Bayesian Setup
 
@@ -56,7 +56,7 @@ As an example, choosing the sampler name "Metropolis" calls a versatile Metropol
 
 ```{r}
 iter = 10000
-settings = list(iterations = iter, consoleUpdates = 1e+8)
+settings = list(iterations = iter, message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 ```
 
@@ -96,7 +96,7 @@ For all samplers, you can perform multiple runs via the nrChains argument
 
 ```{r, echo = F}
 iter = 1000
-settings = list(iterations = iter, nrChains = 3, consoleUpdates = 1e+8)
+settings = list(iterations = iter, nrChains = 3, message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 
 ```
@@ -126,11 +126,11 @@ gelmanDiagnostics(out, plot = T)
 
 #### Bayesian model selection and model averaging
 
-The package provides functions to calculate DIC and the marginal Likelihood (for the calculation of the Bayesi factor. See Reference Manual for more details)
+The package provides functions to calculate DIC and the marginal Likelihood (for the calculation of the Bayes factor. See Reference Manual for more details)
 
 
 ```{r}
-settings = list(consoleUpdates = 1e+8)
+settings = list(message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 
 DIC(out)
@@ -172,13 +172,13 @@ Likelihoods are often costly to compute. If that is the case for you, you should
 * T / TRUE means that automatic parallelization options from R are used (careful: this will not work if your likelihood writes to file, or uses global variables or functions - see general R help on parallelization) 
 * "external", assumed that the likelihood is already parallelized. In this case, the function needs to accept a matrix with parameters as columns, and rows as the different model runs you want to evaluate. This is the most likely option to use if you have a complicated setup (file I/O, HPC cluster) that cannot be treated with the standard R parallelization.  
 
-Algorithms in the BayesianTools package can make use of parallel computing if this option is specified in the BayesianSetup. Note that currently, parallelization is used by the following algorithms: SMC, DE and DREAM sampler. It can also be used through the BayesianSetup with the functions of the sensitivity package. 
+Algorithms in the BayesianTools package can make use of parallel computing if this option is specified in the BayesianSetup. Note that currently, parallelization is used by the following algorithms: SMC, DEzs and DREAMzs sampler. It can also be used through the BayesianSetup with the functions of the sensitivity package. 
 
 Here some more details on the parallelization
 
 #### 1. In-build parallelization:
 
-The in-build parallelization is the easiest way to make use of parallel computing.  In the "parallel" argument you can choose the number of cores used for parallelization. Alternatively for TRUE or "auto" all available cores except for one will be used. Now the proposals are evaluated in parallel. Technically, the in-build parallelization uses an R cluster to evaluate the posterior density function. The input for the parallel function is a matrix, where each column represents a parameter and each row a proposal. In this way, the proposals can be evaluated in parallel. For sampler, where only one proposal is evaluated at a time (namely the Metropolis based algorithms), no parallelization can be used.
+The in-build parallelization is the easiest way to make use of parallel computing.  In the "parallel" argument you can choose the number of cores used for parallelization. Alternatively for TRUE or "auto" all available cores except for one will be used. Now the proposals are evaluated in parallel. Technically, the in-build parallelization uses an R cluster to evaluate the posterior density function. The input for the parallel function is a matrix, where each column represents a parameter and each row a proposal. In this way, the proposals can be evaluated in parallel. For sampler, where only one proposal is evaluated at a time (namely the Metropolis based algorithms as well as DE/DREAM without the zs extension), no parallelization can be used.
 
 #### 2. External parallelization
 
@@ -226,7 +226,7 @@ You have 4 options to create a prior
 If creating a user-defined prior, the following information can/should be provided to createPrior:
 
 * A log density function, as a function of a parameter vector x, same syntax as the likelihood
-* Additinally, you should consider providing a function that samples from the prior, because many samplers (SMC, DE, DREAM) can make use of this function for initial conditions. If you use one of the pre-defined priors, the sampling function is already implemented
+* Additionally, you should consider providing a function that samples from the prior, because many samplers (SMC, DE, DREAM) can make use of this function for initial conditions. If you use one of the pre-defined priors, the sampling function is already implemented
 * lower / upper boundaries (can be set on top of any prior, to create truncation)
 * Additional info - best values, names of the parameters, ... 
 
@@ -246,7 +246,7 @@ ll <- generateTestDensityMultiNormal(sigma = "no correlation")
 
 bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
 
-settings = list(iterations = 10000, nrChains= 3, consoleUpdates = 1e+8)
+settings = list(iterations = 10000, nrChains= 3, message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 
 plot(out)
@@ -256,7 +256,7 @@ gelmanDiagnostics(out, plot=T)
 
 # option to restart the sampler
 
-settings = list(iterations = 1000, nrChains= 1, consoleUpdates = 1e+8)
+settings = list(iterations = 1000, nrChains= 1, message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 
 out2 <- runMCMC(bayesianSetup = out)
@@ -290,12 +290,12 @@ The following code gives an overview about the default settings of the MH sample
 applySettingsDefault(sampler = "Metropolis")
 ```
 
-The following examples show how the different settings can be used. As you will see different options can be activated singlely or in combination. 
+The following examples show how the different settings can be used. As you will see different options can be activated singly or in combination. 
 
 #### Standard MH MCMC
 
 ```{r, results = 'hide', eval = F}
-settings <- list(iterations = iter, adapt = F, DRlevels = 1, gibbsProbabilities = NULL, temperingFunction = NULL, optimize = F, consoleUpdates = 1e+8)
+settings <- list(iterations = iter, adapt = F, DRlevels = 1, gibbsProbabilities = NULL, temperingFunction = NULL, optimize = F, message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 plot(out) 
 ```
@@ -304,7 +304,7 @@ plot(out)
 #### Standard MH MCMC, prior optimization
 
 ```{r, results = 'hide', eval = F}
-settings <- list(iterations = iter, adapt = F, DRlevels = 1, gibbsProbabilities = NULL, temperingFunction = NULL, optimize = T, consoleUpdates = 1e+8)
+settings <- list(iterations = iter, adapt = F, DRlevels = 1, gibbsProbabilities = NULL, temperingFunction = NULL, optimize = T, message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 plot(out) 
 ```
@@ -313,7 +313,7 @@ plot(out)
 #### Adaptive MCMC, prior optimization
 
 ```{r, results = 'hide', eval = F}
-settings <- list(iterations = iter, adapt = T, DRlevels = 1, gibbsProbabilities = NULL, temperingFunction = NULL, optimize = T, consoleUpdates = 1e+8)
+settings <- list(iterations = iter, adapt = T, DRlevels = 1, gibbsProbabilities = NULL, temperingFunction = NULL, optimize = T,  message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 plot(out) 
 ```
@@ -321,7 +321,7 @@ plot(out)
 #### Adaptive MCMC, prior optimization, delayed rejection
 
 ```{r, results = 'hide', eval = F}
-settings <- list(iterations = iter, adapt = T, DRlevels = 2, gibbsProbabilities = NULL, temperingFunction = NULL, optimize = T, consoleUpdates = 1e+8)
+settings <- list(iterations = iter, adapt = T, DRlevels = 2, gibbsProbabilities = NULL, temperingFunction = NULL, optimize = T,  message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 plot(out) 
 ```
@@ -332,7 +332,7 @@ plot(out)
 Currently adaptive cannot be mixed with Gibbs updating
 
 ```{r, results = 'hide', eval = F}
-settings <- list(iterations = iter, adapt = T, DRlevels = 1, gibbsProbabilities = c(1,1,0), temperingFunction = NULL, optimize = T, consoleUpdates = 1e+8)
+settings <- list(iterations = iter, adapt = T, DRlevels = 1, gibbsProbabilities = c(1,1,0), temperingFunction = NULL, optimize = T,  message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 plot(out) 
 ```
@@ -342,7 +342,7 @@ plot(out)
 
 ```{r, results = 'hide', eval = F}
 temperingFunction <- function(x) 5 * exp(-0.01*x) + 1
-settings <- list(iterations = iter, adapt = T, DRlevels = 1, gibbsProbabilities = c(1,1,0), temperingFunction = temperingFunction, optimize = T, consoleUpdates = 1e+8)
+settings <- list(iterations = iter, adapt = T, DRlevels = 1, gibbsProbabilities = c(1,1,0), temperingFunction = temperingFunction, optimize = T,  message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 plot(out) 
 ```
@@ -350,7 +350,7 @@ plot(out)
 
 ### Other Metropolis MCMC implementations
 
-Only for comparison, there are a number of other Metropolis-type algorithms implemented in the BT. In principle, either of these algorithms can be emulated via the options of the main Metropolis functions. We do not recommend using these algorithms except for comparisons. 
+Only for comparison, there are a number of other Metropolis-type algorithms implemented in the BT package. In principle, either of these algorithms can be emulated via the options of the main Metropolis functions. We do not recommend using these algorithms except for comparisons. 
 
 ```{r, eval = F}
 settings = list(iterations = iter, consoleUpdates = 1e+8)
@@ -371,54 +371,67 @@ summary(out)
 The BT package implements two versions of the differential evolution MCMC. In doubt, you should use the DEzs option. 
 
 The first is the normal DE MCMC, corresponding to Ter Braak, Cajo JF. "A Markov Chain Monte Carlo version of the genetic algorithm Differential Evolution: easy Bayesian computing for real parameter spaces." Statistics and Computing 16.3 (2006): 239-249.
+In this sampler multiple chains are run in parallel (but not in the sense of parallel computing). The main diference to the Metrpolis based algorithms is the creation of the propsal. Generally all samplers use the current positin of the chain and add a step in the parameter space to generate a new proposal. Whereas in the Metropolis based sampler this step is usually drawn from a multivariate normal distribution (yet every distribution is possible), the DE sampler uses the current position of two other chains to generate the step for each chain. For sucessful sampling at least 2*d chains, with d being the number of parameters, need to be run in parallel. 
+
 
 
 ```{r, results = 'hide', eval = F}
-settings <- list(iterations = iter, consoleUpdates = 1e+8)
+settings <- list(iterations = iter,  message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DE", settings = settings)
 plot(out) 
 ```
 
-The second is the Differential Evolution MCMC with snooker update, corresponding to ter Braak, Cajo JF, and Jasper A. Vrugt. "Differential evolution Markov chain with snooker updater and fewer chains." Statistics and Computing 18.4 (2008): 435-446.
+The second is the Differential Evolution MCMC with snooker update and sampling from past states, corresponding to ter Braak, Cajo JF, and Jasper A. Vrugt. "Differential evolution Markov chain with snooker updater and fewer chains." Statistics and Computing 18.4 (2008): 435-446.
+This extension covers two differences to the normal DE MCMC. First a snooker update is used based on a user defined probability. Second also past states of other chains are respected in the creation of the proposal. These extensions allow for fewer chains (i.e. 3 chains are usually enough for up to 200 parameters) and parallel computing as the current position of each chain is only dependent on the past states of the other chains.
+
 
 ```{r, results = 'hide', eval = F}
-settings <- list(iterations = iter, consoleUpdates = 1e+8)
+settings <- list(iterations = iter,  message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
 plot(out) 
 ```
 
 
-### T-walk
-
-The T-walk is another MCMC algorithm. See Christen, J. Andrés, and Colin Fox. "A general purpose sampling algorithm for continuous distributions (the t-walk)." Bayesian Analysis 5.2 (2010): 263-281.
-
-```{r, eval = F}
-settings = list(iterations = iter, consoleUpdates = 1e+8) # the rest of the parameters are default settings.
-
-out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Twalk", settings = settings)
-```
-
-
 ### DREAM sampler
 
-Also for the DREAM sampler, there are two versions included. First of all, the standard, see Vrugt, Jasper A. "Markov chain Monte Carlo simulation using the DREAM software package: Theory, concepts, and MATLAB implementation." Environmental Modelling & Software 75 (2016): 273-316.
+Also for the DREAM sampler, there are two versions included. First of all, the standard DREAM sampler, see Vrugt, Jasper A., et al. "Accelerating Markov chain Monte Carlo simulation by differential evolution with self-adaptive randomized subspace sampling." International Journal of Nonlinear Sciences and Numerical Simulation 10.3 (2009): 273-290.
+This sampler is largely build on the DE sampler with some significant differences:
+1) More than two chains can be used to generate a proposal.
+2) A randomized subspace sampling can be used to enhance the efficiency for high dimensional posteriors. Each dimension is updated with a crossover probalitity CR. To speed up the exploration of the posterior DREAM adapts the distribution of CR values during burn-in to favor large jumps over small ones.
+3) Outlier chains can be removed during burn-in.
 
 
 ```{r, results = 'hide', eval = F}
-settings <- list(iterations = iter, consoleUpdates = 1e+8)
+settings <- list(iterations = iter,  message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DREAM", settings = settings)
 plot(out) 
 ```
 
-DREAM with snooker update, see Laloy, Eric, and Jasper A. Vrugt. "High‐dimensional posterior exploration of hydrologic models using multiple‐try DREAM (ZS) and high‐performance computing." Water Resources Research 48.1 (2012).
+The second implementation uses the same extension as the DEzs sampler. Namely sampling from past states and a snooker update. Also here this extension allows for the use of fewer chains and parallel computing.
+Again, in doubt you should prefer "DREAMzs". 
 
 ```{r, results = 'hide', eval = FALSE}
-settings <- list(iterations = iter, consoleUpdates = 1e+8)
+settings <- list(iterations = iter,  message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DREAMzs", settings = settings)
 #plot(out) 
 ```
 
-Again, in doubt you should prefer "DREAMzs". 
+
+
+### T-walk
+
+The T-walk is a MCMC algorithm developed by Christen, J. Andrés, and Colin Fox. "A general purpose sampling algorithm for continuous distributions (the t-walk)." Bayesian Analysis 5.2 (2010): 263-281.
+In the sampler two independent points are used to explore the posterior space.
+Based on probabilities four different moves are used to generate proposals for the two points. As for the DE sampler this procedure requires no tuning of the proposal distribution for efficient sampling in complex posterior distributions.
+
+
+
+```{r, eval = F}
+settings = list(iterations = iter,  message = FALSE) 
+
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Twalk", settings = settings)
+```
+
 
 ### Convergence checks for MCMCs
 
@@ -436,14 +449,14 @@ gelmanDiagnostics(out, plot = F)
 
 ## Non-MCMC sampling algorithms 
 
-MCMCs sample the posterior space by creating a chain in parameter space. While this allows "learning" from past steps, it does not permit the pallel execution of a large number of posterior values at the same time. 
+MCMCs sample the posterior space by creating a chain in parameter space. While this allows "learning" from past steps, it does not permit the parallel execution of a large number of posterior values at the same time. 
 
 An alternative to MCMCs are particle filters, aka Sequential Monte-Carlo (SMC) algorithms. See Hartig, F.; Calabrese, J. M.; Reineking, B.; Wiegand, T. & Huth, A. Statistical inference for stochastic simulation models - theory and application Ecol. Lett., 2011, 14, 816-827
 
 
 ### Rejection samling
 
-The easiest option is to simply sample a large number of parameters and accept them according to their posterior value. This option can be emulated with the implemented SMC, seeting iterations to 1. 
+The easiest option is to simply sample a large number of parameters and accept them according to their posterior value. This option can be emulated with the implemented SMC, setting iterations to 1. 
 
 ```{r, results = 'hide', eval = F}
 settings <- list(initialParticles = iter, iterations= 1)

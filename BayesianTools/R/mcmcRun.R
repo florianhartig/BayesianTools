@@ -429,7 +429,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
 
   if(check){
   nam = c(names(defaultSettings), "sampler", "nrChains",
-          "runtime", "sessionInfo")
+          "runtime", "sessionInfo", "parallel")
   
   ind <- which((names(settings) %in% nam == FALSE))
   
@@ -498,7 +498,18 @@ setupStartProposal <- function(proposalGenerator = NULL, bayesianSetup, settings
       proposalGenerator$covariance = as.matrix(Matrix::nearPD(MASS::ginv(-hessian))$mat)
       #proposalGenerator$covariance = MASS::ginv(-optresul$hessian)
       
-      message("BT runMCMC: Optimization finished, setting startValues to" , settings$startValue, " - Setting covariance to" , proposalGenerator$covariance)
+      # Create objects for startValues and covariance to add space between values
+      startV <-covV <- character()
+      
+      for(i in 1:length(settings$startValue)){
+        startV[i] <- paste(settings$startValue[i], "")
+      } 
+      for(i in 1:length( proposalGenerator$covariance)){
+        covV[i] <- paste( proposalGenerator$covariance[i], "")
+      } 
+      
+      message("BT runMCMC: Optimization finished, setting startValues to " , 
+              startV, " - Setting covariance to " , covV)
       
       proposalGenerator = updateProposalGenerator(proposalGenerator)
       
@@ -517,7 +528,7 @@ getPossibleSamplerTypes <- function(){
                possibleSettings = list() ,
                possibleSettingsName = list() ,
                 
-               univariatePossible = c(T,F,F,F,F,T,T,F,F,T,F),
+               univariatePossible = c(T,F,F,F,F,T,T,T,T,T,F),
                restartable = c(T,F,F,F,F,T,T,T,T,T,F)
                )
 
