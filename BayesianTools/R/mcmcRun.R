@@ -429,7 +429,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
 
   if(check){
   nam = c(names(defaultSettings), "sampler", "nrChains",
-          "runtime", "sessionInfo")
+          "runtime", "sessionInfo", "parallel")
   
   ind <- which((names(settings) %in% nam == FALSE))
   
@@ -528,7 +528,7 @@ getPossibleSamplerTypes <- function(){
                possibleSettings = list() ,
                possibleSettingsName = list() ,
                 
-               univariatePossible = c(T,F,F,F,F,T,T,F,F,T,F),
+               univariatePossible = c(T,F,F,F,F,T,T,T,T,T,F),
                restartable = c(T,F,F,F,F,T,T,T,T,T,F)
                )
 

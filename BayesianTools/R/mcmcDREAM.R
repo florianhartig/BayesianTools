@@ -93,7 +93,7 @@ DREAM <- function(bayesianSetup,   settings = list(
   if(!restart){
     if(is.null(settings$startValue)){
       parLen = length(bayesianSetup$prior$sampler(1))
-      X = bayesianSetup$prior$sampler(2 * parLen)
+      X = bayesianSetup$prior$sampler(max(4,2 * parLen))
     }
     if(is.function(settings$startValue)){
       X = settings$startValue()
