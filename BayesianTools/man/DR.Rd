@@ -4,24 +4,25 @@
 \alias{DR}
 \title{The Delayed Rejection Algorithm}
 \usage{
-DR(startValue, iterations, nBI, parmin, parmax, f1, f2, FUN)
+DR(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL,
+  parmax = NULL, f1 = 1, f2 = 0.5, FUN)
 }
 \arguments{
-\item{startValue}{vector with the start values for the algorithm}
+\item{startValue}{vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.}
 
 \item{iterations}{iterations to run}
 
 \item{nBI}{number of burnin}
 
-\item{parmin}{minimum values for the parameter vector}
+\item{parmin}{minimum values for the parameter vector or NULL if FUN is of class BayesianSetup}
 
-\item{parmax}{maximum values for the parameter vector}
+\item{parmax}{maximum values for the parameter vector or NULL if FUN is of class BayesianSetup}
 
 \item{f1}{scaling factor for first proposal}
 
 \item{f2}{scaling factor for second proposal}
 
-\item{FUN}{function to be sampled from}
+\item{FUN}{function to be sampled from or object of class bayesianSetup}
 }
 \description{
 The Delayed Rejection Algorithm (Tierney and Mira, 1999)

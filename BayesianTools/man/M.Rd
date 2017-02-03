@@ -4,22 +4,23 @@
 \alias{M}
 \title{The Metropolis Algorithm}
 \usage{
-M(startValue, iterations, nBI, parmin, parmax, f, FUN, consoleUpdates = 1000)
+M(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL,
+  parmax = NULL, f = 1, FUN, consoleUpdates = 1000)
 }
 \arguments{
-\item{startValue}{vector with the start values for the algorithm}
+\item{startValue}{vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.}
 
 \item{iterations}{iterations to run}
 
 \item{nBI}{number of burnin}
 
-\item{parmin}{minimum values for the parameter vector}
+\item{parmin}{minimum values for the parameter vector or NULL if FUN is of class BayesianSetup}
 
-\item{parmax}{maximum values for the parameter vector}
+\item{parmax}{maximum values for the parameter vector or NULL if FUN is of class BayesianSetup}
 
 \item{f}{scaling factor}
 
-\item{FUN}{function to be sampled from}
+\item{FUN}{function to be sampled from or object of class bayesianSetup}
 
 \item{consoleUpdates}{interger, determines the frequency with which sampler progress is printed to the console}
 }

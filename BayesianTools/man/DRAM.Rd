@@ -4,24 +4,25 @@
 \alias{DRAM}
 \title{The Delayed Rejection Adaptive Metropolis Algorithm}
 \usage{
-DRAM(startValue, iterations, nBI, parmin, parmax, FUN, f, eps = 0)
+DRAM(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL,
+  parmax = NULL, FUN, f = 1, eps = 0)
 }
 \arguments{
-\item{startValue}{vector with the start values for the algorithm}
+\item{startValue}{vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.}
 
 \item{iterations}{iterations to run}
 
 \item{nBI}{number of burnin}
 
-\item{parmin}{minimum values for the parameter vector}
+\item{parmin}{minimum values for the parameter vector or NULL if FUN is of class BayesianSetup}
 
-\item{parmax}{maximum values for the parameter vector}
+\item{parmax}{maximum values for the parameter vector or NULL if FUN is of class BayesianSetup}
 
 \item{FUN}{function to be sampled from}
 
 \item{f}{scaling factor}
 
-\item{eps}{small number to avoid singularity}
+\item{eps}{small number to avoid singularity or object of class bayesianSetup}
 }
 \description{
 The Delayed Rejection Adaptive Metropolis Algorithm (Haario et al. 2001)

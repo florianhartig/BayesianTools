@@ -4,20 +4,19 @@
 \alias{AM}
 \title{The Adaptive Metropolis Algorithm}
 \usage{
-AM(startValue, iterations, nBI, parmin, parmax, FUN, f, eps = 0)
 }
 \arguments{
-\item{startValue}{vector with the start values for the algorithm}
+\item{startValue}{vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.}
 
 \item{iterations}{iterations to run}
 
 \item{nBI}{number of burnin}
 
-\item{parmin}{minimum values for the parameter vector}
+\item{parmin}{minimum values for the parameter vector or NULL if FUN is of class BayesianSetup}
 
-\item{parmax}{maximum values for the parameter vector}
+\item{parmax}{maximum values for the parameter vector or NULL if FUN is of class BayesianSetup}
 
-\item{FUN}{function to be sampled from}
+\item{FUN}{function to be sampled from or object of class bayesianSetup}
 
 \item{f}{scaling factor}
 

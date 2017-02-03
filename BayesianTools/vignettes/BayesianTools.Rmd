@@ -348,23 +348,6 @@ plot(out)
 ```
 
 
-### Other Metropolis MCMC implementations
-
-Only for comparison, there are a number of other Metropolis-type algorithms implemented in the BT package. In principle, either of these algorithms can be emulated via the options of the main Metropolis functions. We do not recommend using these algorithms except for comparisons. 
-
-```{r, eval = F}
-settings = list(iterations = iter, consoleUpdates = 1e+8)
-out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "M", settings = settings)
-out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "AM", settings = settings)
-out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DR", settings = settings)
-out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DRAM", settings = settings)
-
-plot(out)
-correlationPlot(out)
-marginalPlot(out)
-summary(out)
-```
-
 
 ### Differential Evolution MCMC
 

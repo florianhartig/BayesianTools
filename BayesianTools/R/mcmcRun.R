@@ -1,6 +1,6 @@
 #' Main wrapper function to start MCMCs, particle MCMCs and SMCs
 #' @param bayesianSetup either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for further details. 
-#' @param sampler sampling algorithm to be run. Default is DEzs. Recommended options are "Metropolis", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions. Not recommended options are "M", "AM", "DR", "DRAM".
+#' @param sampler sampling algorithm to be run. Default is DEzs. Options are "Metropolis", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions. 
 #' @param settings list with settings for each sampler (see help of sampler for details). If a setting is not provided, defaults (see \code{\link{applySettingsDefault}}) will be used. 
 #' @details The runMCMC function can be started with either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. If a bayesianSetup is provided, check if appropriate parallization options are used - many samplers can make use of parallelization if this option is activated when the class is created.
 #' 
@@ -8,7 +8,7 @@
 #' \code{\link{DE}} and \code{\link{DEzs}} for standard differential evolution samplers,
 #' \code{\link{DREAM}} and \code{\link{DREAMzs}} DREAM sampler or \code{\link{Twalk}} for the Twalk sampler.
 #' Further a Sequential Monte Carlo sampler (\code{\link{smcSampler}}) can be used.\cr
-#' Specialized Metropolis-type samplers can also be called directly by \code{\link{M}}, \code{\link{AM}}, \code{\link{DR}}, \code{\link{DRAM}}. However, the algorithms of these samplers can also be created through the settings of the \code{\link{Metropolis}} sampler, which offers more flexibility. The usual recommendation would therefore be to use the \code{\link{Metropolis}} sampler. 
+#' 
 #' 
 #' The settings list allows to change the settings for the MCMC samplers and some other options. For the MCMC sampler settings, see their help files. Global options that apply for all MCMC samplers are: iterations (number of MCMC iterations), and nrChains (number of chains to run). Note that running several chains is not done in parallel, so if time is an issue it will be better to run the MCMCs individually and then combine them via \code{\link{createMcmcSamplerList}} into one joint object. 
 #' 
@@ -118,32 +118,7 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
       }
     }
     
-    if (sampler %in% c("AM", "M", "DRAM", "DR")){
-      
-      if(restart == T) stop("restart option not supported this sampler")
-      
-      if(is.null(settings$startValue)){
-        settings$startValue = setup$prior$sampler()
-      }
-      
-      FUN = setup$posterior$density
-      parmin = setup$prior$lower
-      parmax = setup$prior$upper
-      
-      if(is.null(parmin) | is.null(parmax)) stop("Please provide lower and upper bounds or use sampler 'Metropolis'.")
-      
-      if (sampler == "M") out <- M(startValue = settings$startValue, iterations  = settings$iterations, nBI = settings$nBI , parmin = parmin, parmax = parmax, f = settings$f, FUN = FUN)
-      if (sampler == "AM") out <- AM(startValue = settings$startValue, iterations  = settings$iterations, nBI = settings$nBI , parmin = parmin, parmax = parmax, f = settings$f, FUN = FUN, eps = settings$eps) 
-      if (sampler == "DR") out <- DR(startValue = settings$startValue, iterations  = settings$iterations, nBI = settings$nBI , parmin = parmin, parmax = parmax, f1 = settings$f1,  f2 = settings$f2, FUN = FUN)
-      if (sampler == "DRAM") out <- DRAM(startValue = settings$startValue, iterations  = settings$iterations, nBI = settings$nBI , parmin = parmin, parmax = parmax, f = settings$f, FUN = FUN, eps = settings$eps) 
-      
-      mcmcSampler = list(
-        setup = setup,
-        settings = settings,
-        chain = out$Draws,
-        summaries = list(acceptance = out$accept.prob, psetMAP = out$psetMAP)
-      )
-    }
+    
 
     ############## Differential Evolution #####################
     if (sampler == "DE"){
@@ -296,15 +271,6 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   }
   
 
-  if (settings$sampler %in% c("AM", "M", "DRAM", "DR")){
-    defaultSettings = list(startValue = NULL, 
-                           iterations = 10000, 
-                           f = 1,           
-                           f1 = 1,
-                           f2 = 0.5,
-                           nBI = 0,
-                           eps = 1e-10)
-  }
   
   if (settings$sampler == "DE"){
     defaultSettings = list(startValue = NULL,
@@ -528,12 +494,12 @@ setupStartProposal <- function(proposalGenerator = NULL, bayesianSetup, settings
 #' @export
 getPossibleSamplerTypes <- function(){
   
-  out = list(  BTname =   c("Metropolis", "M", "AM", "DR", "DRAM", "DE", "DEzs", "DREAM", "DREAMzs", "Twalk", "SMC"),
+  out = list(  BTname =   c("Metropolis", "DE", "DEzs", "DREAM", "DREAMzs", "Twalk", "SMC"),
                possibleSettings = list() ,
                possibleSettingsName = list() ,
                 
-               univariatePossible = c(T,F,F,F,F,T,T,T,T,T,F),
-               restartable = c(T,F,F,F,F,T,T,T,T,T,F)
+               univariatePossible = c(T,T,T,T,T,T,F),
+               restartable = c(T,T,T,T,T,T,F)
                )
 
   return(out)

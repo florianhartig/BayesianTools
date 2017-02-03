@@ -1,16 +1,29 @@
 #' The Metropolis Algorithm
 #' @description The Metropolis Algorithm (Metropolis et al. 1953)
-#' @param startValue vector with the start values for the algorithm
+#' @param startValue vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.
 #' @param iterations iterations to run
 #' @param nBI number of burnin
-#' @param parmin minimum values for the parameter vector
-#' @param parmax maximum values for the parameter vector
+#' @param parmin minimum values for the parameter vector or NULL if FUN is of class BayesianSetup
+#' @param parmax maximum values for the parameter vector or NULL if FUN is of class BayesianSetup
 #' @param f scaling factor
-#' @param FUN function to be sampled from
+#' @param FUN function to be sampled from or object of class bayesianSetup
 #' @param consoleUpdates interger, determines the frequency with which sampler progress is printed to the console
 #' @references Metropolis, Nicholas, et al. "Equation of state calculations by fast computing machines." The journal of chemical physics 21.6 (1953): 1087-1092.
 #' @export
-M <- function(startValue, iterations, nBI , parmin, parmax, f, FUN, consoleUpdates=1000) {
+M <- function(startValue = NULL, iterations  = 10000, nBI = 0 , parmin = NULL, parmax= NULL, f = 1, FUN, consoleUpdates=1000) {
+  
+  
+  if(class(FUN) == "BayesianSetup"){
+     if(FUN$numPars==1) stop("Sampler cannot be started for 1 parameter")
+      
+    if(is.null(startValue)){
+      startValue <- FUN$prior$sampler()
+    }
+    parmin <- FUN$prior$lower
+    parmax <- FUN$prior$upper
+    FUN <- FUN$posterior$density
+  }
+  
   
   pValues = startValue
   lChain = iterations
@@ -71,17 +84,29 @@ M <- function(startValue, iterations, nBI , parmin, parmax, f, FUN, consoleUpdat
 
 #' The Adaptive Metropolis Algorithm
 #' @description The Adaptive Metropolis Algorithm (Haario et al. 2001)
-#' @param startValue vector with the start values for the algorithm
+#' @param startValue vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.
 #' @param iterations iterations to run
 #' @param nBI number of burnin
-#' @param parmin minimum values for the parameter vector
-#' @param parmax maximum values for the parameter vector
+#' @param parmin minimum values for the parameter vector or NULL if FUN is of class BayesianSetup
+#' @param parmax maximum values for the parameter vector or NULL if FUN is of class BayesianSetup
 #' @param f scaling factor
-#' @param FUN function to be sampled from
+#' @param FUN function to be sampled from or object of class bayesianSetup
 #' @param eps small number to avoid singularity
 #' @references  Haario, Heikki, Eero Saksman, and Johanna Tamminen. "An adaptive Metropolis algorithm." Bernoulli (2001): 223-242.
 #' @export
-AM <- function(startValue, iterations, nBI, parmin, parmax, FUN, f, eps = 0) {
+AM <- function(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL, parmax = NULL, FUN, f = 1, eps = 0) {
+  
+  if(class(FUN) == "BayesianSetup"){
+    if(FUN$numPars==1) stop("Sampler cannot be started for 1 parameter")
+    if(is.null(startValue)){
+      startValue <- FUN$prior$sampler()
+    }
+    parmin <- FUN$prior$lower
+    parmax <- FUN$prior$upper
+    FUN <- FUN$posterior$density
+  }
+  
+  
   
   pValues = startValue
   lChain = iterations
@@ -138,17 +163,27 @@ AM <- function(startValue, iterations, nBI, parmin, parmax, FUN, f, eps = 0) {
 
 #' The Delayed Rejection Algorithm 
 #' @description The Delayed Rejection Algorithm (Tierney and Mira, 1999)
-#' @param startValue vector with the start values for the algorithm
+#' @param startValue vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.
 #' @param iterations iterations to run
 #' @param nBI number of burnin
-#' @param parmin minimum values for the parameter vector
-#' @param parmax maximum values for the parameter vector
+#' @param parmin minimum values for the parameter vector or NULL if FUN is of class BayesianSetup
+#' @param parmax maximum values for the parameter vector or NULL if FUN is of class BayesianSetup
 #' @param f1 scaling factor for first proposal
 #' @param f2 scaling factor for second proposal
-#' @param FUN function to be sampled from
+#' @param FUN function to be sampled from or object of class bayesianSetup
 #' @references Tierney, Luke, and Antonietta Mira. "Some adaptive Monte Carlo methods for Bayesian inference." Statistics in medicine 18.1718 (1999): 2507-2515.
 #' @export
-DR <- function(startValue, iterations, nBI, parmin, parmax, f1, f2, FUN) {
+DR <- function(startValue = NULL, iterations = 10000, nBI=0, parmin = NULL, parmax =NULL, f1 = 1, f2= 0.5, FUN) {
+  
+  if(class(FUN) == "BayesianSetup"){
+    if(FUN$numPars==1) stop("Sampler cannot be started for 1 parameter")
+    if(is.null(startValue)){
+      startValue <- FUN$prior$sampler()
+    }
+    parmin <- FUN$prior$lower
+    parmax <- FUN$prior$upper
+    FUN <- FUN$posterior$density
+  }
   
   pValues = startValue
   lChain = iterations
@@ -212,17 +247,27 @@ DR <- function(startValue, iterations, nBI, parmin, parmax, f1, f2, FUN) {
         
 #' The Delayed Rejection Adaptive Metropolis Algorithm 
 #' @description The Delayed Rejection Adaptive Metropolis Algorithm (Haario et al. 2001)
-#' @param startValue vector with the start values for the algorithm
+#' @param startValue vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.
 #' @param iterations iterations to run
 #' @param nBI number of burnin
-#' @param parmin minimum values for the parameter vector
-#' @param parmax maximum values for the parameter vector
+#' @param parmin minimum values for the parameter vector or NULL if FUN is of class BayesianSetup
+#' @param parmax maximum values for the parameter vector or NULL if FUN is of class BayesianSetup
 #' @param f scaling factor
 #' @param FUN function to be sampled from
-#' @param eps small number to avoid singularity
+#' @param eps small number to avoid singularity or object of class bayesianSetup
 #' @references  Haario, Heikki, Eero Saksman, and Johanna Tamminen. "An adaptive Metropolis algorithm." Bernoulli (2001): 223-242.
 #' @export
-DRAM <- function(startValue, iterations, nBI, parmin, parmax, FUN, f, eps = 0) {
+DRAM <- function(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL, parmax = NULL, FUN, f = 1, eps = 0) {
+  
+  if(class(FUN) == "BayesianSetup"){
+    if(FUN$numPars==1) stop("Sampler cannot be started for 1 parameter")
+    if(is.null(startValue)){
+      startValue <- FUN$prior$sampler()
+    }
+    parmin <- FUN$prior$lower
+    parmax <- FUN$prior$upper
+    FUN <- FUN$posterior$density
+  }
   
   pValues = startValue
   lChain = iterations
