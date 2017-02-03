@@ -19,13 +19,43 @@ knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
 
 ```{r, echo = F, message = F}
 set.seed(123)
-library(BayesianTools)
 ```
 
 
 # Quick start
 
 The purpose of this first section is to give you a quick overview of the most important functions of the BayesianTools (BT) package. For a more detailed description, see the later sections
+
+## Installing, loading and citing the package
+
+If you haven't installed the package yet, either run
+
+```{r, eval = F}
+install.packages("BayesianTools")
+```
+
+Or follow the instructions on [https://github.com/florianhartig/BayesianTools](https://github.com/florianhartig/BayesianTools) to install a development or an older version. 
+
+Loading and citation
+
+```{r}
+library(BayesianTools)
+citation("BayesianTools")
+```
+
+Pro-tip: if you running a stochastic algorithms such as an MCMC, you should always set or record your random seed to make your results reproducible (otherwise, results will change slightly every time you run the code)
+
+```{r}
+set.seed(123)
+```
+
+In a real application, to ensure reproducibility, it would also be useful to record the session
+
+```{r, eval = F}
+sessionInfo()
+```
+
+which lists the version number of R and all loaded packages. 
 
 ## The Bayesian Setup
 
@@ -214,12 +244,13 @@ These information can passed by first creating an a extra object, via createPrio
 
 #### Creating priors
 
-You have 4 options to create a prior
+You have 5 options to create a prior
 
 * Do not set a prior - in this case, an infinite prior will be created
 * Set min/max values - a bounded flat prior and the corresponding sampling function will be created
 * Use one of the pre-definded priors, see ?createPrior for a list. One of the options here is to use a previous MCMC output as new prior. Pre-defined priors will usually come with a sampling function
 * Use a user-define prior, see ?createPrior 
+* Create a prior from a previous MCMC sample
 
 #### Creating user-defined priors
 
@@ -229,6 +260,29 @@ If creating a user-defined prior, the following information can/should be provid
 * Additionally, you should consider providing a function that samples from the prior, because many samplers (SMC, DE, DREAM) can make use of this function for initial conditions. If you use one of the pre-defined priors, the sampling function is already implemented
 * lower / upper boundaries (can be set on top of any prior, to create truncation)
 * Additional info - best values, names of the parameters, ... 
+
+#### Creating a prior from a previous MCMC sample
+
+The following example from the help shows how this works
+
+```{r}
+# Create a BayesianSetup
+ll <- generateTestDensityMultiNormal(sigma = "no correlation")
+bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
+
+settings = list(iterations = 2500)
+out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+
+
+newPrior = createPriorDensity(out, method = "multivariate", eps = 1e-10, lower = rep(-10, 3), upper =  rep(10, 3), best = NULL)
+bayesianSetup <- createBayesianSetup(likelihood = ll, prior = newPrior)
+
+settings = list(iterations = 1000)
+out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+```
+
+
+
 
 # MCMC sampler reference
 

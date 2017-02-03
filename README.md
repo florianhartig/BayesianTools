@@ -23,7 +23,7 @@ vignette("BayesianTools", package="BayesianTools")
 If you want to install the current (development) version from this repository, run
 
 ```{r}
-devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", dependencies = T)
+devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", dependencies = T, build_vignettes = T)
 ```
 Below the status of the automatic Travis CI tests on the development version in the master branch (if this doesn load see [here](https://travis-ci.org/florianhartig/BayesianTools))
 
@@ -34,7 +34,7 @@ Below the status of the automatic Travis CI tests on the development version in 
 To install a specific (older) release, decide for the version number that you want to install in [https://github.com/florianhartig/BayesianTools/releases](https://github.com/florianhartig/BayesianTools/releases) (version numbering corresponds to CRAN, but there may be smaller releases that were not pushed to CRAN) and run, e.g.  
 
 ```{r}
-devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", ref = "v0.0.10")
+devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", ref = "v0.0.10", dependencies = T, build_vignettes = T)
 ```
 with v0.0.10 replaced by the appropriate version number. 
 
