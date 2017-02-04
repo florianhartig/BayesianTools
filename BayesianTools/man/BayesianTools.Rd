@@ -6,10 +6,10 @@
 \alias{BayesianTools-package}
 \title{BayesianTools}
 \description{
-Package with MCMC and SMC samplers,  as well as plots and diagnostic functions for Bayesian statistics
+A package with general-purpose MCMC and SMC samplers,  as well as plots and diagnostic functions for Bayesian statistics
 }
 \details{
-A package with MCMC and SMC samplers, as well as plots and diagnostic functions for Bayesian statistics, particularly for process-based models. 
+A package with  general-purpose MCMC and SMC samplers, as well as plots and diagnostic functions for Bayesian statistics, particularly for process-based models. 
 
 The package contains 2 central functions, \code{\link{createBayesianSetup}}, which creates a standardized Bayesian setup with likelihood and priors, and \code{\link{runMCMC}}, which allows to run various MCMC and SMC samplers.
 
