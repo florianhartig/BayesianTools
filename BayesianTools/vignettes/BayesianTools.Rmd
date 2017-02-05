@@ -414,6 +414,7 @@ plot(out)
 ### DREAM sampler
 
 Also for the DREAM sampler, there are two versions included. First of all, the standard DREAM sampler, see Vrugt, Jasper A., et al. "Accelerating Markov chain Monte Carlo simulation by differential evolution with self-adaptive randomized subspace sampling." International Journal of Nonlinear Sciences and Numerical Simulation 10.3 (2009): 273-290.
+
 This sampler is largely build on the DE sampler with some significant differences:
 1) More than two chains can be used to generate a proposal.
 2) A randomized subspace sampling can be used to enhance the efficiency for high dimensional posteriors. Each dimension is updated with a crossover probalitity CR. To speed up the exploration of the posterior DREAM adapts the distribution of CR values during burn-in to favor large jumps over small ones.
@@ -427,6 +428,7 @@ plot(out)
 ```
 
 The second implementation uses the same extension as the DEzs sampler. Namely sampling from past states and a snooker update. Also here this extension allows for the use of fewer chains and parallel computing.
+
 Again, in doubt you should prefer "DREAMzs". 
 
 ```{r, results = 'hide', eval = FALSE}
