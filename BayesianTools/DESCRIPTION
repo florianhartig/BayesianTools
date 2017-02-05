@@ -1,15 +1,15 @@
 Package: BayesianTools
 Title: General-Purpose MCMC and SMC Samplers and Tools for Bayesian Statistics
 Version: 0.0.12.2
-Authors@R: c(person("Florian", "Hartig", email = "florian.hartig@biologie.uni-regensburg.de", role = c("aut", "cre")), person("Stefan", " Paul", role = c("aut") ), person("Francesco", "Minunno", role = c("aut")), person("David", "Cameron", role = "ctb"))
+Date: 2017-02-5
+Authors@R: c(person("Florian", "Hartig", email = "florian.hartig@biologie.uni-regensburg.de", role = c("aut", "cre")), person("Francesco", "Minunno", role = c("aut")), person("Stefan", " Paul", role = c("aut") ),  person("David", "Cameron", role = "ctb"))
 Author: Florian Hartig [aut, cre],
-    Stefan Paul [aut],
     Francesco Minunno [aut],
+    Stefan Paul [aut],
     David Cameron [ctb]
 Maintainer: Florian Hartig <florian.hartig@biologie.uni-regensburg.de>
-Description: 'BayesianTools' contains various MCMC and SMC samplers, plots and
-    diagnostics for Bayesian analysis, with a particular focus on calibrating system
-    models.
+Description: The R package 'BayesianTools' contains various general-purpose MCMC and SMC samplers, plots and diagnostics
+    for Bayesian analysis, with a particular focus on calibrating complex system models.
 Depends:
     R (>= 3.1.2)
 License: CC BY-SA 4.0
@@ -39,7 +39,7 @@ Suggests:
     gap
 LinkingTo: Rcpp
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.0
 URL: https://github.com/florianhartig/BayesianTools
 BugReports: https://github.com/florianhartig/BayesianTools/issues
 VignetteBuilder: knitr
