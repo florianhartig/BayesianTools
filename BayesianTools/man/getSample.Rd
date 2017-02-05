@@ -32,4 +32,3 @@ getSample(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
 \description{
 Extracts the sample from a bayesianOutput
 }
-

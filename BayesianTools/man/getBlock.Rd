@@ -15,4 +15,3 @@ vector containing the parameter to be updated
 \description{
 Determine the parameters in the block update
 }
-

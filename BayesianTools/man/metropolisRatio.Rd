@@ -16,4 +16,3 @@ metropolisRatio(LP2, LP1, tempering = 1)
 \description{
 Funktion to calculate the metropolis ratio
 }
-

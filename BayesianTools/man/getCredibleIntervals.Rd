@@ -14,11 +14,10 @@ getCredibleIntervals(sampleMatrix, quantiles = c(0.025, 0.975))
 \description{
 Calculate confidence region from an MCMC or similar sample
 }
-\author{
-Florian Hartig
-}
 \seealso{
 \code{\link{getPredictiveDistribution}} \cr
          \code{\link{getPredictiveIntervals}} \cr
 }
-
+\author{
+Florian Hartig
+}

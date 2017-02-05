@@ -94,10 +94,9 @@ x <- testGenerator$returnProposalMatrix(testMatrix)
 boxplot(x)
 table(x[,4])
 }
-\author{
-Florian Hartig
-}
 \seealso{
 \code{\link{updateProposalGenerator}}
 }
-
+\author{
+Florian Hartig
+}

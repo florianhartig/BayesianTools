@@ -19,4 +19,3 @@ Normal / Gaussian Likelihood function
 \author{
 Florian Hartig
 }
-

@@ -60,4 +60,3 @@ Watanabe, S. (2010). "Asymptotic Equivalence of Bayes Cross Validation and Widel
 \seealso{
 \code{\link{DIC}}, \code{\link{MAP}}, \code{\link{marginalLikelihood}}
 }
-

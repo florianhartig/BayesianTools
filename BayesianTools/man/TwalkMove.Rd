@@ -41,4 +41,3 @@ Wrapper for step function
 \references{
 Christen, J. Andres, and Colin Fox. "A general purpose sampling algorithm for continuous distributions (the t-walk)." Bayesian Analysis 5.2 (2010): 263-281.
 }
-

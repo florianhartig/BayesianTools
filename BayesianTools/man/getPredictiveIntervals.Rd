@@ -21,11 +21,10 @@ getPredictiveIntervals(parMatrix, model, thin = 1000, quantiles = c(0.025,
 \description{
 Calculates Bayesian credible (confidence) and predictive intervals based on parameter sample
 }
-\author{
-Florian Hartig
-}
 \seealso{
 \code{\link{getPredictiveDistribution}} \cr
          \code{\link{getCredibleIntervals}} \cr
 }
-
+\author{
+Florian Hartig
+}

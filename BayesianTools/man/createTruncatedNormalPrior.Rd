@@ -34,4 +34,3 @@ prior$sampler()
          \code{\link{createUniformPrior}} \cr
          \code{\link{createBayesianSetup}} \cr
 }
-

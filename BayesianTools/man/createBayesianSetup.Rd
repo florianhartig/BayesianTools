@@ -116,4 +116,3 @@ rm(BSVSEM)
          \code{\link{createLikelihood}} \cr
          \code{\link{createPrior}} \cr
 }
-

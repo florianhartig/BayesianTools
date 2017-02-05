@@ -69,4 +69,3 @@ out = runMCMC(bayesianSetup = setup, sampler = "Metropolis", settings = settings
 \author{
 Florian Hartig
 }
-

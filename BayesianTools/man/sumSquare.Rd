@@ -12,4 +12,3 @@ sumSquare(x)
 \description{
 Helper function for sum of x*x
 }
-

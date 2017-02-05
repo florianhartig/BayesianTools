@@ -24,4 +24,3 @@ Helper function to change an object to a coda mcmc class,
 \details{
 Very similar to coda::mcmc but with less overhead
 }
-

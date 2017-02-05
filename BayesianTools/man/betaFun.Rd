@@ -12,4 +12,3 @@ betaFun(at)
 \description{
 Helper function for calculating beta
 }
-

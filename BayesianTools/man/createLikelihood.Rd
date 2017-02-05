@@ -27,4 +27,3 @@ Creates a standardized likelihood class
 \code{\link{likelihoodIidNormal}} \cr
          \code{\link{likelihoodAR1}} \cr
 }
-

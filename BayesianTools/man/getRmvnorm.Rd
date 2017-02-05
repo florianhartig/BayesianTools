@@ -17,4 +17,3 @@ X
 \description{
 Produce multivariate normal proposal
 }
-

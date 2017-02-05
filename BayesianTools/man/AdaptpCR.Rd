@@ -23,4 +23,3 @@ Matrix with CR values
 \description{
 Adapts pCR values
 }
-

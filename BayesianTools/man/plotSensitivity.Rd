@@ -17,4 +17,3 @@ Performs a one-factor-at-a-time sensitivity analysis for the posterior of a give
 \note{
 This function can also be used for sensitivity analysis of an arbitrary output - just create a BayesianSetup with this output.
 }
-

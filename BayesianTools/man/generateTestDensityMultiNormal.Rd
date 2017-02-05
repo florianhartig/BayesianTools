@@ -34,11 +34,10 @@ marginalPlot(x)
 density = generateTestDensityMultiNormal(sample  = FALSE)
 density(x[1,])
 }
-\author{
-Florian Hartig
-}
 \seealso{
 \code{\link{testDensityBanana}} \cr
          \code{\link{testLinearModel}}
 }
-
+\author{
+Florian Hartig
+}

@@ -14,4 +14,3 @@ logSumExp(x, mean = F)
 \description{
 Funktion to compute log(sum(exp(x))
 }
-

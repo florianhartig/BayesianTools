@@ -24,4 +24,3 @@ To update settings of an existing proposal genenerator
 \details{
 The this function can be applied in 2 ways 1) update the covariance given an MCMC chain, and 2) update the proposal generator after parameters have been changed
 }
-

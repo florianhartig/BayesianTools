@@ -24,4 +24,3 @@ The AR1 model considers the process: \cr y(t) = a y(t-1) + E \cr e = i.i.d. N(0,
 \author{
 Florian Hartig
 }
-

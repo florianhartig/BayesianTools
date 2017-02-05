@@ -14,11 +14,10 @@ testDensityInfinity(x, error = F)
 \description{
 Test function infinity ragged
 }
-\author{
-Florian Hartig
-}
 \seealso{
 \code{\link{generateTestDensityMultiNormal}} \cr
          \code{\link{testDensityBanana}}
 }
-
+\author{
+Florian Hartig
+}

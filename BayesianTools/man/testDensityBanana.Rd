@@ -15,11 +15,10 @@ Banana-shaped density function
 \note{
 inspired from package FMEmcmc, seems to go back to Laine M (2008). Adaptive MCMC Methods with Applications in Environmental and Models. Finnish Meteorological Institute Contributions 69. ISBN 978-951-697-662-7.
 }
-\author{
-Florian Hartig
-}
 \seealso{
 \code{\link{generateTestDensityMultiNormal}} \cr
          \code{\link{testLinearModel}}
 }
-
+\author{
+Florian Hartig
+}

@@ -28,13 +28,12 @@ plotTimeSeries(observed = NULL, predicted = NULL, x = NULL,
 \description{
 Plots a time series, with the option to include confidence and prediction band
 }
-\author{
-Florian Hartig
-}
 \seealso{
 \code{\link{plotTimeSeriesResults}}  \cr
          \code{\link{marginalPlot}} \cr
          \code{\link{tracePlot}} \cr
          \code{\link{correlationPlot}}
 }
-
+\author{
+Florian Hartig
+}

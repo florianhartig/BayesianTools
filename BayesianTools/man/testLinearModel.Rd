@@ -19,11 +19,10 @@ x = c(1,2)
 y = testLinearModel(x)
 plot(y)
 }
-\author{
-Florian Hartig
-}
 \seealso{
 \code{\link{generateTestDensityMultiNormal}} \cr
          \code{\link{testDensityBanana}}
 }
-
+\author{
+Florian Hartig
+}

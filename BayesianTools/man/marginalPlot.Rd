@@ -24,12 +24,11 @@ Plot MCMC marginals
 dat = generateTestDensityMultiNormal(n = 100000, sample = TRUE)
 marginalPlot(dat(10000))
 }
-\author{
-Florian Hartig
-}
 \seealso{
 \code{\link{plotTimeSeries}} \cr
          \code{\link{tracePlot}} \cr
          \code{\link{correlationPlot}}
 }
-
+\author{
+Florian Hartig
+}

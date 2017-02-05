@@ -65,4 +65,3 @@ out2 <- runMCMC(bayesianSetup = bayesianSetup, sampler = "SMC", settings = setti
 #plot(out2)
 
 }
-

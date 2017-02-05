@@ -17,4 +17,3 @@ thinned matrix
 \description{
 Function to thin matrices
 }
-

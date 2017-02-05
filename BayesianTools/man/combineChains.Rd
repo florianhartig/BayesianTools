@@ -17,4 +17,3 @@ combined chains
 \description{
 Function to combine chains
 }
-

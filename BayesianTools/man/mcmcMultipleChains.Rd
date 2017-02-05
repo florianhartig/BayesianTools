@@ -19,4 +19,3 @@ list containing the single runs ($sampler) and the chains in a coda::mcmc.list (
 \description{
 Run multiple chains
 }
-

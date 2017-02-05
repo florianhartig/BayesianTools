@@ -22,4 +22,3 @@ The purpose of this function is to be able to conveniently create a likelihood f
 \author{
 Florian Hartig
 }
-

@@ -19,4 +19,3 @@ Matrix with CR values
 \description{
 Generates matrix of CR values based on pCR
 }
-

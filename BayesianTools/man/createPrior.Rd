@@ -66,4 +66,3 @@ out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
          \code{\link{createTruncatedNormalPrior}}\cr
          \code{\link{createBayesianSetup}}\cr
 }
-

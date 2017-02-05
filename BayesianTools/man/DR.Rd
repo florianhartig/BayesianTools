@@ -30,4 +30,3 @@ The Delayed Rejection Algorithm (Tierney and Mira, 1999)
 \references{
 Tierney, Luke, and Antonietta Mira. "Some adaptive Monte Carlo methods for Bayesian inference." Statistics in medicine 18.1718 (1999): 2507-2515.
 }
-

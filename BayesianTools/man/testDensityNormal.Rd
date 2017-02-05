@@ -17,4 +17,3 @@ Normal likelihood
 \author{
 Florian Hartig
 }
-

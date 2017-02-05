@@ -19,4 +19,3 @@ sclaed matrix
 \description{
 Function to scale matrices
 }
-

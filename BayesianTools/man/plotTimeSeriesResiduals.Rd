@@ -19,4 +19,3 @@ Plots residuals of a time series
 \author{
 Florian Hartig
 }
-

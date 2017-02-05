@@ -14,4 +14,3 @@ factorMatrice(sigma, method)
 \description{
 factorMatrice
 }
-
