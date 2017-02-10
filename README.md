@@ -4,7 +4,7 @@ R package for performing Bayesian inference, including various MCMC and SMC samp
 
 ## Getting BayesianTools
 
-BayesianTools is on CRAN. To install the latest CRAN release, type
+BayesianTools is on CRAN (see [here](https://github.com/florianhartig/BayesianTools)). To install the latest CRAN release, type
 
 ```{r}
 install.packages("BayesianTools")
