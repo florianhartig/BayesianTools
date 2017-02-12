@@ -1,15 +1,19 @@
 Package: BayesianTools
 Title: General-Purpose MCMC and SMC Samplers and Tools for Bayesian Statistics
-Version: 0.0.12.2
-Authors@R: c(person("Florian", "Hartig", email = "florian.hartig@biologie.uni-regensburg.de", role = c("aut", "cre")), person("Stefan", " Paul", role = c("aut") ), person("Francesco", "Minunno", role = c("aut")), person("David", "Cameron", role = "ctb"))
+Version: 0.1.0
+Date: 2017-02-5
+Authors@R: c(person("Florian", "Hartig", email = "florian.hartig@biologie.uni-regensburg.de", role = c("aut", "cre")), person("Francesco", "Minunno", role = c("aut")), person("Stefan", " Paul", role = c("aut") ),  person("David", "Cameron", role = "ctb"))
 Author: Florian Hartig [aut, cre],
-    Stefan Paul [aut],
     Francesco Minunno [aut],
+    Stefan Paul [aut],
     David Cameron [ctb]
 Maintainer: Florian Hartig <florian.hartig@biologie.uni-regensburg.de>
-Description: 'BayesianTools' contains various MCMC and SMC samplers, plots and
-    diagnostics for Bayesian analysis, with a particular focus on calibrating system
-    models.
+Description: General-purpose MCMC and SMC samplers, as well as plot and
+    diagnostic functions for Bayesian statistics, with a particular focus on
+    calibrating complex system models. Implemented samplers include various
+    Metropolis MCMC variants (including adaptive and/or delayed rejection MH), the
+    T-walk, two differential evolution MCMCs, two DREAM MCMCs, and a sequential
+    Monte Carlo (SMC) particle filter.
 Depends:
     R (>= 3.1.2)
 License: CC BY-SA 4.0

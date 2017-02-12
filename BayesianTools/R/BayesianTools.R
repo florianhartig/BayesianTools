@@ -10,11 +10,11 @@
 #' 
 #' To use the package, a first step to use \code{\link{createBayesianSetup}} to create a BayesianSetup, which usually contains prior and likelihood densities, or in general a target function. 
 #'
-#' Those can be sampled with \code{\link{runMCMC}}, which can call a number of general purpose Metropolis sampler, including the \code{\link{Metropolis}} that allows to specify various popular Metropolis variants such as adaptive and/or delayed rejection Metropolis; two variants of differential evolution MCMC \code{\link{DE}}, \code{\link{DEzs}}, two variants of DREAM  \code{\link{DREAM}} and \code{\link{DREAMzs}}, and a Sequential Monte Carlo sampler \code{\link{smcSampler}}. 
+#' Those can be sampled with \code{\link{runMCMC}}, which can call a number of general purpose Metropolis sampler, including the \code{\link{Metropolis}} that allows to specify various popular Metropolis variants such as adaptive and/or delayed rejection Metropolis; two variants of differential evolution MCMC \code{\link{DE}}, \code{\link{DEzs}}, two variants of DREAM  \code{\link{DREAM}} and \code{\link{DREAMzs}}, the \code{\link{Twalk}} MCMC, and a Sequential Monte Carlo sampler \code{\link{smcSampler}}. 
 #'
 #' The output of runMCMC is of class mcmcSampler / smcSampler if one run is performed, or mcmcSamplerList / smcSamplerList if several sampler are run. Various functions are available for plotting, model comparison (DIC, marginal likelihood), or to use the output as a new prior.  
 #'
-#'For details on how to use the packgage, either got to index, vignettes, or run vignette("BayesianTools", package="BayesianTools") and have a look at the BayesianTools vignette.
+#'For details on how to use the packgage, run vignette("BayesianTools", package="BayesianTools").
 #'
 #'Acknowledgements: The creation of this package was facilicated through meetings of Cost Action FP 1304 Profound. 
 NULL

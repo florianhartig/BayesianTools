@@ -43,7 +43,7 @@ library(BayesianTools)
 citation("BayesianTools")
 ```
 
-Pro-tip: if you running a stochastic algorithms such as an MCMC, you should always set or record your random seed to make your results reproducible (otherwise, results will change slightly every time you run the code)
+Pro-tip: if you are running a stochastic algorithms such as an MCMC, you should always set or record your random seed to make your results reproducible (otherwise, results will change slightly every time you run the code)
 
 ```{r}
 set.seed(123)
@@ -82,7 +82,7 @@ Once you have your setup, you may want to run a calibration. The runMCMC functio
 * The sampler name 
 * A list with settings - if a parameter is not provided, the default will be used
 
-As an example, choosing the sampler name "Metropolis" calls a versatile Metropolis-type MCMC with options for covariance adaptation, delayed rejection, tempering and Metropolis-within-Gibbs sampling is available via the Metropolis option. For details, see the the later reference on MCMC samplers. This is how we would call the base version of this sampler
+As an example, choosing the sampler name "Metropolis" calls a versatile Metropolis-type MCMC with options for covariance adaptation, delayed rejection, tempering and Metropolis-within-Gibbs sampling. For details, see the the later reference on MCMC samplers. This is how we would call this sampler with default settings
 
 ```{r}
 iter = 10000
@@ -92,14 +92,14 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings =
 
 #### Summarizing outputs
 
-All samplers can be plotted and summarized via the console
+All samplers can be plotted and summarized via the console with the standard print, and summary commands
 
 ```{r}
 print(out)
 summary(out)
 ```
 
-and plotted with the following plot functions
+and plottted with several plot functions
 
 ```{r}
 plot(out) # plot internally calls tracePlot(out)
@@ -107,7 +107,7 @@ correlationPlot(out)
 marginalPlot(out)
 ```
 
-Other Functions that can be applied to all samplers include
+Other Functions that can be applied to all samplers include model selection scores such as the DIC and the marginal Likelihood (for the calculation of the Bayes factor, see later section for more details), and the Maximum Aposteriori Value (MAP).
 
 ```{r}
 marginalLikelihood(out)
@@ -117,14 +117,13 @@ MAP(out)
 
 You can extract (a part of) the sampled parameter values by
 
-```{r}
-#getSample(out, start = 100, end = NULL, thin = 5, whichParameters = 1:2)
+```{r, eval = F}
+getSample(out, start = 100, end = NULL, thin = 5, whichParameters = 1:2)
 ```
 
-For all samplers, you can perform multiple runs via the nrChains argument
+For all samplers, you can conveniently perform multiple runs via the nrChains argument
 
-
-```{r, echo = F}
+```{r, echo = T}
 iter = 1000
 settings = list(iterations = iter, nrChains = 3, message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
@@ -136,8 +135,6 @@ The result is an object of mcmcSamplerList, which should allow to do everything 
 ```{r}
 print(out)
 summary(out)
-marginalLikelihood(out)
-DIC(out)
 ```
 
 For example, in the plot you now see 3 chains. 
@@ -146,26 +143,11 @@ For example, in the plot you now see 3 chains.
 plot(out)
 ```
 
-There are a few additional functions that may only be available for lists, for example 
+There are a few additional functions that may only be available for lists, for example convergence checks
 
 ```{r}
 #getSample(out, coda = F)
 gelmanDiagnostics(out, plot = T)
-```
-
-
-#### Bayesian model selection and model averaging
-
-The package provides functions to calculate DIC and the marginal Likelihood (for the calculation of the Bayes factor. See Reference Manual for more details)
-
-
-```{r}
-settings = list(message = FALSE)
-out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
-
-DIC(out)
-
-marginalLikelihood(out)
 ```
 
 
@@ -270,14 +252,14 @@ The following example from the help shows how this works
 ll <- generateTestDensityMultiNormal(sigma = "no correlation")
 bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
 
-settings = list(iterations = 2500)
+settings = list(iterations = 2500,  message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 
 
 newPrior = createPriorDensity(out, method = "multivariate", eps = 1e-10, lower = rep(-10, 3), upper =  rep(10, 3), best = NULL)
 bayesianSetup <- createBayesianSetup(likelihood = ll, prior = newPrior)
 
-settings = list(iterations = 1000)
+settings = list(iterations = 1000,  message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 ```
 
@@ -482,6 +464,7 @@ plot(out)
 ### DREAM sampler
 
 Also for the DREAM sampler, there are two versions included. First of all, the standard DREAM sampler, see Vrugt, Jasper A., et al. "Accelerating Markov chain Monte Carlo simulation by differential evolution with self-adaptive randomized subspace sampling." International Journal of Nonlinear Sciences and Numerical Simulation 10.3 (2009): 273-290.
+
 This sampler is largely build on the DE sampler with some significant differences:
 1) More than two chains can be used to generate a proposal.
 2) A randomized subspace sampling can be used to enhance the efficiency for high dimensional posteriors. Each dimension is updated with a crossover probalitity CR. To speed up the exploration of the posterior DREAM adapts the distribution of CR values during burn-in to favor large jumps over small ones.
@@ -495,6 +478,7 @@ plot(out)
 ```
 
 The second implementation uses the same extension as the DEzs sampler. Namely sampling from past states and a snooker update. Also here this extension allows for the use of fewer chains and parallel computing.
+
 Again, in doubt you should prefer "DREAMzs". 
 
 ```{r, results = 'hide', eval = FALSE}
@@ -525,7 +509,7 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Twalk", settings = sett
 All MCMCs should be checked for convergence. We recommend the standard procedure of Gelmal-Rubin. This procedure requires running several MCMCs (we recommend 3). This can be achieved either directly in the runMCMC (nrChains = 3), or, for runtime reasons, by combining the results of three independent runMCMC evaluations with nrChains = 1.
 
 ```{r, eval = T}
-settings <- list(iterations = iter, nrChains = 3, consoleUpdates = 1e+8)
+settings <- list(iterations = iter, nrChains = 3,  message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 plot(out)
 
@@ -574,6 +558,14 @@ There are a number of Bayesian model selection and model comparison methods. The
 * An overview on DIC and WAIC is given in Gelman, A.; Hwang, J. & Vehtari, A. (2014) Understanding predictive information criteria for Bayesian models. Statistics and Computing, 24, 997-1016-. On DIC, see also the original reference by Spiegelhalter, D. J.; Best, N. G.; Carlin, B. P. & van der Linde, A. (2002) Bayesian measures of model complexity and fit. J. Roy. Stat. Soc. B, 64, 583-639.
 
 
+The Bayes factor relies on the calculation of marginal likelihoods, which is numerically not without problems. The BT package currently implements three methods
+
+* The recommended way is the method "Chib" (Chib and Jeliazkov, 2001). which is based on MCMC samples, but performs additional calculations. Despite being the current recommendation, note there are some numeric issues with this algorithm that may limit reliability for larger dimensions.
+
+* The harmonic mean approximation, is implemented only for comparison. Note that the method is numerically unrealiable and usually should not be used. 
+
+* The third method is simply sampling from the prior. While in principle unbiased, it will only converge for a large number of samples, and is therefore numerically inefficient.
+
 
 ## Example
 
@@ -615,13 +607,13 @@ setUp2 <- createBayesianSetup(likelihood2, lower = c(-5,-5,0.01), upper = c(5,5,
 MCMC and marginal likelihood calculation
 
 ```{r, results = 'hide'}
-settings = list(iterations = 15000, consoleUpdates = 1e+8)
+settings = list(iterations = 15000,  message = FALSE)
 out1 <- runMCMC(bayesianSetup = setUp1, sampler = "Metropolis", settings = settings)
 #tracePlot(out1, start = 5000)
 M1 = marginalLikelihood(out1)
 M1
 
-settings = list(iterations = 15000, consoleUpdates = 1e+8)
+settings = list(iterations = 15000,  message = FALSE)
 out2 <- runMCMC(bayesianSetup = setUp2, sampler = "Metropolis", settings = settings)
 #tracePlot(out2, start = 5000)
 M2 = marginalLikelihood(out2)
@@ -637,6 +629,8 @@ exp(M1$ln.m - M2$ln.m)
 ```
 
 BF > 1 means the evidence is in favor of M1. See Kass, R. E. & Raftery, A. E. (1995) Bayes Factors. J. Am. Stat. Assoc., Amer Statist Assn, 90, 773-795.
+
+Note that we would have to multiply still with the model priors to arrive at Bayesian model weights. 
 
 
 ### Model comparison via DIC
