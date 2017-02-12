@@ -2,7 +2,7 @@
 % Please edit documentation in R/diagnosticsGelman.R
 \name{gelmanDiagnostics}
 \alias{gelmanDiagnostics}
-\title{Runs Gelman Diagnotics over an Bayesianutput}
+\title{Runs Gelman Diagnotics over an BayesianOutput}
 \usage{
 gelmanDiagnostics(sampler, thin = "auto", plot = F, ...)
 }
@@ -16,7 +16,7 @@ gelmanDiagnostics(sampler, thin = "auto", plot = F, ...)
 \item{...}{further arguments passed to \code{\link{getSample}}}
 }
 \description{
-Runs Gelman Diagnotics over an Bayesianutput
+Runs Gelman Diagnotics over an BayesianOutput
 }
 \details{
 The function calls the coda package to calculate Gelman diagnostics and plots

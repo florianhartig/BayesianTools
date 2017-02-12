@@ -205,19 +205,19 @@ updateProposalGenerator <- function(proposal,chain = NULL,  message = F, eps = 1
 
 
 
-#' Produce multivariate normal proposal
-#' @param n n
-#' @param R R
-#' @return X
+# #' Produce multivariate normal proposal
+# #' @param n n
+# #' @param R R
+# #' @return X
 
 getRmvnorm <- function(n=1, R){
   X <- matrix(rnorm(n * ncol(R)), nrow=n )%*%  R
   return(X)
 }
 
-#' factorMatrice
-#' @param sigma sigma
-#' @param method either "eigen", "svd" or "chol"
+# #' factorMatrice
+# #' @param sigma sigma
+# #' @param method either "eigen", "svd" or "chol"
 factorMatrice <- function(sigma, method){
   if(method == "eigen") {
     ev <- eigen(sigma, symmetric = TRUE)

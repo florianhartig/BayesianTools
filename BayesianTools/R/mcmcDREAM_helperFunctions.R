@@ -1,10 +1,10 @@
 
 
-##' Generates matrix of CR values based on pCR 
-##' @param pCR Vector of crossover probabilities. Needs to be of length nCR. 
-##' @param settings settings list
-##' @param Npop number of chains
-##' @return Matrix with CR values
+# ##' Generates matrix of CR values based on pCR 
+# ##' @param pCR Vector of crossover probabilities. Needs to be of length nCR. 
+# ##' @param settings settings list
+# ##' @param Npop number of chains
+# ##' @return Matrix with CR values
 
 generateCRvalues <- function(pCR,settings, Npop){
   
@@ -36,13 +36,13 @@ generateCRvalues <- function(pCR,settings, Npop){
 
 
 
-##' Adapts pCR values
-##' @param CR Vector of crossover probabilities. Needs to be of length nCR. 
-##' @param settings settings list
-##' @param delta vector with differences
-##' @param lCR values to weight delta
-##' @param Npop number of chains.
-##' @return Matrix with CR values
+# #' Adapts pCR values
+# #' @param CR Vector of crossover probabilities. Needs to be of length nCR. 
+# #' @param settings settings list
+# #' @param delta vector with differences
+# #' @param lCR values to weight delta
+# #' @param Npop number of chains.
+# #' @return Matrix with CR values
 
 AdaptpCR <- function(CR, delta ,lCR, settings, Npop){
   if(any(delta >0)){  ## Adaptions can only be made if there are changes in X

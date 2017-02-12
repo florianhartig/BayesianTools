@@ -2,21 +2,21 @@
 # Twalk helper functions
 ######
 
-#' Wrapper for step function
-#' @param Npar Number of parameters
-#' @param FUN Log posterior density
-#' @param x parameter vector of chain 1
-#' @param Eval last evaluation of x
-#' @param x2 parameter vector of chain 2
-#' @param Eval2 last evaluation of x
-#' @param at "traverse" move proposal parameter.
-#' @param aw "walk" move proposal parameter.
-#' @param pn1 Probability determining the number of parameters that are changed.
-#' @param Ptrav Move probability of "traverse" moves, default to 0.4918
-#' @param Pwalk Move probability of "walk" moves, default to 0.4918
-#' @param Pblow Move probability of "blow" moves, default to 0.0082
-#' @param Phop Move probability of "hop" moves
-#' @references Christen, J. Andres, and Colin Fox. "A general purpose sampling algorithm for continuous distributions (the t-walk)." Bayesian Analysis 5.2 (2010): 263-281.
+# #' Wrapper for step function
+# #' @param Npar Number of parameters
+# #' @param FUN Log posterior density
+# #' @param x parameter vector of chain 1
+# #' @param Eval last evaluation of x
+# #' @param x2 parameter vector of chain 2
+# #' @param Eval2 last evaluation of x
+# #' @param at "traverse" move proposal parameter.
+# #' @param aw "walk" move proposal parameter.
+# #' @param pn1 Probability determining the number of parameters that are changed.
+# #' @param Ptrav Move probability of "traverse" moves, default to 0.4918
+# #' @param Pwalk Move probability of "walk" moves, default to 0.4918
+# #' @param Pblow Move probability of "blow" moves, default to 0.0082
+# #' @param Phop Move probability of "hop" moves
+# #' @references Christen, J. Andres, and Colin Fox. "A general purpose sampling algorithm for continuous distributions (the t-walk)." Bayesian Analysis 5.2 (2010): 263-281.
 
 TwalkMove <- function (Npar, FUN, x, Eval, x2, Eval2, at = 6, aw = 1.5, pn1 = min(Npar, 4)/Npar,
                   Ptrav = 0.4918, Pwalk = 0.4918, Pblow = 0.0082, Phop = 0.0082) 
@@ -38,19 +38,19 @@ TwalkMove <- function (Npar, FUN, x, Eval, x2, Eval2, at = 6, aw = 1.5, pn1 = mi
 }
 
 
-
-#' Main function that is executing and evaluating the moves
-#' @param case Type of Twalk move. Either "walk", "traverse", "hop" or "blow"
-#' @param Npar number of parameters
-#' @param FUN Log posterior density
-#' @param x parameter vector of chain 1
-#' @param Eval last evaluation of x
-#' @param x2 parameter vector of chain 2
-#' @param Eval2 last evaluation of x
-#' @param at "traverse" move proposal parameter.
-#' @param aw "walk" move proposal parameter.
-#' @param pn1 Probability determining the number of parameters that are changed.
-#' @references Christen, J. Andres, and Colin Fox. "A general purpose sampling algorithm for continuous distributions (the t-walk)." Bayesian Analysis 5.2 (2010): 263-281.
+ 
+# #' Main function that is executing and evaluating the moves
+# #' @param case Type of Twalk move. Either "walk", "traverse", "hop" or "blow"
+# #' @param Npar number of parameters
+# #' @param FUN Log posterior density
+# #' @param x parameter vector of chain 1
+# #' @param Eval last evaluation of x
+# #' @param x2 parameter vector of chain 2
+# #' @param Eval2 last evaluation of x
+# #' @param at "traverse" move proposal parameter.
+# #' @param aw "walk" move proposal parameter.
+# #' @param pn1 Probability determining the number of parameters that are changed.
+# #' @references Christen, J. Andres, and Colin Fox. "A general purpose sampling algorithm for continuous distributions (the t-walk)." Bayesian Analysis 5.2 (2010): 263-281.
 
 Twalksteps <- function(case, Npar, FUN, x,
                   Eval, x2, Eval2, at, aw, pn1){
@@ -204,20 +204,20 @@ Twalksteps <- function(case, Npar, FUN, x,
 ################## Helper functions 
 ###############################################################
 
-#' Helper function for sum of x*x
-#' @param x vector of values
+# #' Helper function for sum of x*x
+# #' @param x vector of values
 sumSquare <- function(x){return(sum(x*x))}
 
-
-#' Helper function to create proposal
-#' @param case  Type of Twalk move. Either "walk", "traverse", "hop" or "blow"
-#' @param Npar number of parameters
-#' @param pn1 Probability determining the number of parameters that are changed.
-#' @param aw "walk" move proposal parameter.
-#' @param beta parameter for "traverse" move proposals.
-#' @param x parameter vector of chain 1
-#' @param x2 parameter vector of chain 2
-#' @references Christen, J. Andres, and Colin Fox. "A general purpose sampling algorithm for continuous distributions (the t-walk)." Bayesian Analysis 5.2 (2010): 263-281.
+ 
+#  #' Helper function to create proposal
+#  #' @param case  Type of Twalk move. Either "walk", "traverse", "hop" or "blow"
+#  #' @param Npar number of parameters
+#  #' @param pn1 Probability determining the number of parameters that are changed.
+#  #' @param aw "walk" move proposal parameter.
+#  #' @param beta parameter for "traverse" move proposals.
+#  #' @param x parameter vector of chain 1
+#  #' @param x2 parameter vector of chain 2
+#  #' @references Christen, J. Andres, and Colin Fox. "A general purpose sampling algorithm for continuous distributions (the t-walk)." Bayesian Analysis 5.2 (2010): 263-281.
 
 propFun <- function(case, Npar, pn1, x, x2, beta = NULL, aw = NULL){
   
@@ -260,23 +260,25 @@ propFun <- function(case, Npar, pn1, x, x2, beta = NULL, aw = NULL){
   )
 }
 
-#' Helper function for calculating beta
-#' @param at "traverse" move proposal parameter.
+ 
+# #' Helper function for calculating beta
+# #' @param at "traverse" move proposal parameter.
 betaFun <- function(at)
 {
   if (runif(1) < (at-1)/(2*at)) return(exp(1/(at + 1)*log(runif(1))))
   else return(exp(1/(1 - at)*log(runif(1)))) 
 }
 
+ 
+#  #' Helper function for blow and hop moves
+#  #' @param case  Type of Twalk move. Either "hop" or "blow"
+#  #' @param npSel number of parameters that are changed.
+#  #' @param pSel vector containing information about which parameters are changed.
+#  #' @param h Parameter for "blow" and hop moves
+#  #' @param x parameter vector of chain 1
+#  #' @param x2 parameter vector of chain 2
+#  #' @references Christen, J. Andres, and Colin Fox. "A general purpose sampling algorithm for continuous distributions (the t-walk)." Bayesian Analysis 5.2 (2010): 263-281.
 
-#' Helper function for blow and hop moves
-#' @param case  Type of Twalk move. Either "hop" or "blow"
-#' @param npSel number of parameters that are changed.
-#' @param pSel vector containing information about which parameters are changed.
-#' @param h Parameter for "blow" and hop moves
-#' @param x parameter vector of chain 1
-#' @param x2 parameter vector of chain 2
-#' @references Christen, J. Andres, and Colin Fox. "A general purpose sampling algorithm for continuous distributions (the t-walk)." Bayesian Analysis 5.2 (2010): 263-281.
 Gfun <- function(case, npSel, pSel, h, x, x2){
   switch(case, 
          "blow"= {

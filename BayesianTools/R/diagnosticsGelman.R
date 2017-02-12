@@ -1,4 +1,4 @@
-#' Runs Gelman Diagnotics over an Bayesianutput
+#' Runs Gelman Diagnotics over an BayesianOutput
 #' 
 #' @param sampler an object of class mcmcSampler or mcmcSamplerList
 #' @param thin parameter determining the thinning intervall. Either an integer or "auto" (default) for automatic thinning.

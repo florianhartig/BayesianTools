@@ -1,7 +1,7 @@
-#' Function to thin matrices
-#' @param mat matrix to thin
-#' @param thin thinning parameter
-#' @return thinned matrix
+# #' Function to thin matrices
+# #' @param mat matrix to thin
+# #' @param thin thinning parameter
+# #' @return thinned matrix
 
 thinMatrix <- function(mat, thin = "auto"){
   if (thin == "auto"){
@@ -16,11 +16,11 @@ thinMatrix <- function(mat, thin = "auto"){
 }
 
 
-#' Function to scale matrices
-#' @param mat matrix to scale
-#' @param min minimum value
-#' @param max maximum value
-#' @return sclaed matrix
+# #' Function to scale matrices
+# #' @param mat matrix to scale
+# #' @param min minimum value
+# #' @param max maximum value
+# #' @return sclaed matrix
 
 scaleMatrix <- function(mat, min, max){
   if(class(mat) %in% c("matrix", "data.frame")){
