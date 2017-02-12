@@ -20,6 +20,15 @@
 #' @import coda
 #' @example /inst/examples/MetropolisHelp.R
 #' @export
+#' @references Haario, H., E. Saksman, and J. Tamminen (2001). An adaptive metropolis algorithm. Bernoulli , 223-242.
+#' @references Haario, Heikki, et al. "DRAM: efficient adaptive MCMC." Statistics and Computing 16.4 (2006): 339-354.
+#' @references Hastings, W. K. (1970). Monte carlo sampling methods using markov chains and their applications. Biometrika 57 (1), 97-109.
+#' @references Green, Peter J., and Antonietta Mira. "Delayed rejection in reversible jump Metropolis-Hastings." Biometrika (2001): 1035-1053.
+#' @references Metropolis, N., A. W. Rosenbluth, M. N. Rosenbluth, A. H. Teller, and E. Teller (1953). Equation of state calculations by fast computing machines. The journal of chemical physics 21 (6), 1087 - 1092.
+
+
+
+
 Metropolis <- function(bayesianSetup, 
                        settings = list(startValue = NULL, 
                                        optimize = T, 

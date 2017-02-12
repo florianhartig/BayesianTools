@@ -347,6 +347,16 @@ applySettingsDefault(sampler = "Metropolis")
 The following examples show how the different settings can be used. As you will see different options can be activated singly or in combination. 
 
 #### Standard MH MCMC
+The following settings will run the standard Metropolis Hastings MCMC. 
+
+Refernences:
+Hastings, W. K. (1970). Monte carlo sampling methods using markov chains
+and their applications. Biometrika 57 (1), 97-109.
+
+Metropolis, N., A. W. Rosenbluth, M. N. Rosenbluth, A. H. Teller, and E. Teller
+(1953). Equation of state calculations by fast computing machines. The journal
+of chemical physics 21 (6), 1087 - 1092.
+
 
 ```{r, results = 'hide', eval = F}
 settings <- list(iterations = iter, adapt = F, DRlevels = 1, gibbsProbabilities = NULL, temperingFunction = NULL, optimize = F, message = FALSE)
@@ -356,6 +366,9 @@ plot(out)
 
 
 #### Standard MH MCMC, prior optimization
+This sampler uses an optimization step prior to the sampling process.
+The optimization aims at improving the starting values and the covariance of the proposal distribution.
+
 
 ```{r, results = 'hide', eval = F}
 settings <- list(iterations = iter, adapt = F, DRlevels = 1, gibbsProbabilities = NULL, temperingFunction = NULL, optimize = T, message = FALSE)
@@ -365,6 +378,11 @@ plot(out)
 
 
 #### Adaptive MCMC, prior optimization
+In the adaptive Metropolis sampler (AM) the information already acquired in the sampling process is used to improve (or adapt) the proposal function. In the BayesianTools package the history of the chain is used to adapt the covariance of the propoasal distribution.
+
+References:
+Haario, H., E. Saksman, and J. Tamminen (2001). An adaptive metropolis
+algorithm. Bernoulli , 223-242.
 
 ```{r, results = 'hide', eval = F}
 settings <- list(iterations = iter, adapt = T, DRlevels = 1, gibbsProbabilities = NULL, temperingFunction = NULL, optimize = T,  message = FALSE)
@@ -372,7 +390,27 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings =
 plot(out) 
 ```
 
+#### Standard MCMC, prior optimization, delayed rejection
+Even though rejection is an essential step of a MCMC algorithm it can also mean that the proposal distribution is (locally) badly tuned to the target distribution. In a delayed rejection (DR) sampler a second (or third, etc.) proposal is made before rejection. This proposal is usually drawn from a different distribution, allowing for a greater flexibility of the sampler. In the BayesianTools package the number of delayed rejection steps as well as the scaling of the proposals can be determined.
+** Note that the current version only supports two delayed rejection steps. **
+
+
+References:
+Green, Peter J., and Antonietta Mira. "Delayed rejection in reversible jump Metropolis-Hastings." Biometrika (2001): 1035-1053.
+
+```{r, results = 'hide', eval = F}
+settings <- list(iterations = iter, adapt = F, DRlevels = 2, gibbsProbabilities = NULL, temperingFunction = NULL, optimize = T,  message = FALSE)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
+plot(out) 
+```
+
+
+
 #### Adaptive MCMC, prior optimization, delayed rejection
+The delayed rejection adaptive Metropolis (DRAM) sampler is merely a combination of the two previous sampler (DR and AM). 
+
+References:
+Haario, Heikki, et al. "DRAM: efficient adaptive MCMC." Statistics and Computing 16.4 (2006): 339-354.
 
 ```{r, results = 'hide', eval = F}
 settings <- list(iterations = iter, adapt = T, DRlevels = 2, gibbsProbabilities = NULL, temperingFunction = NULL, optimize = T,  message = FALSE)
@@ -381,22 +419,34 @@ plot(out)
 ```
 
 
-#### Adaptive MCMC, prior optimization, Gibbs updating
+#### Standard MCMC, prior optimization, Gibbs updating
+To reduce the dimensions of the target function a Metropolis-within-Gibbs sampler
+can be run with the BayesianTools package. This means in each iteration only a subset of the parameter vector is updated. In the example below at most two (of the three) parameters are updated each step, and it is double as likely to vary one than varying two.
 
-Currently adaptive cannot be mixed with Gibbs updating
+** Note that currently adaptive cannot be mixed with Gibbs updating! **
 
 ```{r, results = 'hide', eval = F}
-settings <- list(iterations = iter, adapt = T, DRlevels = 1, gibbsProbabilities = c(1,1,0), temperingFunction = NULL, optimize = T,  message = FALSE)
+settings <- list(iterations = iter, adapt = T, DRlevels = 1, gibbsProbabilities = c(1,0.5,0), temperingFunction = NULL, optimize = T,  message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 plot(out) 
 ```
 
 
-#### Adaptive MCMC, prior optimization, gibbs updating, tempering
+#### Standard MCMC, prior optimization, gibbs updating, tempering
+Simulated tempering is closely related to simulated annealing (e.g. Bélisle, 1992) in optimization algorithms. 
+The idea of tempering is to increase the acceptance rate during burn-in. This should result in a faster initial scanning of the target function. 
+To include this a tempering function needs to be supplied by the user.
+The function describes how the acceptance rate is influenced during burn-in. In the example below an exponential decline approaching 1 (= no influece on the acceptance rate)is used.
+
+References:
+Bélisle, C. J. (1992). Convergence theorems for a class of simulated
+annealing algorithms on rd. Journal of Applied Probability, 885–895.
+
+C. J. Geyer (2011) Importance sampling, simulated tempering, and umbrella sampling, in the Handbook of Markov Chain Monte Carlo, S. P. Brooks, et al (eds), Chapman & Hall/CRC. 
 
 ```{r, results = 'hide', eval = F}
 temperingFunction <- function(x) 5 * exp(-0.01*x) + 1
-settings <- list(iterations = iter, adapt = T, DRlevels = 1, gibbsProbabilities = c(1,1,0), temperingFunction = temperingFunction, optimize = T,  message = FALSE)
+settings <- list(iterations = iter, adapt = F, DRlevels = 1, gibbsProbabilities = c(1,1,0), temperingFunction = temperingFunction, optimize = T,  message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 plot(out) 
 ```
