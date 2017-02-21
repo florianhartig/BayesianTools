@@ -1,7 +1,7 @@
-##' Function to combine chains
-##' @param x chains
-##' @param merge logical determines whether chains should be merged
-##' @return combined chains
+# #' Function to combine chains
+# #' @param x chains
+# #' @param merge logical determines whether chains should be merged
+# #' @return combined chains
 
 combineChains <- function(x, merge = T){
   
