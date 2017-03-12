@@ -1,5 +1,16 @@
 NOTE: for more news about the package, see https://github.com/florianhartig/BayesianTools/releases
 
+
+BayesianTools 0.1.1 
+
+Minor changes
+
+- implemented method for estimating posterior volume
+
+Bugfixes
+
+- removed errorenously created help files
+
 BayesianTools 0.1.0 
 
 - initial release
