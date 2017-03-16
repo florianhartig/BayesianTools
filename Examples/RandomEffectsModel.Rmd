@@ -2,31 +2,21 @@
 title: "Estimation of a random effect model with the BT package"
 author: "Florian Hartig"
 date: "10 Jun 2016"
-output: html_document
+output: 
+  html_document:
+    keep_md: yes
+    toc: yes
+abstract: "This example shows how to specify a random effect model with the BT package" 
 ---
 
 ```{r}
 set.seed(123)
-```
-
-* This example shows how to specify a random effect model with the BT package *
-
-
-
-```{r, eval = F}
-
-library(devtools)
-install_url("https://dl.dropboxusercontent.com/s/ccvpnvblf3vzuvs/BayesianTools_0.0.0.9000.tar.gz", dependencies = T)
-
 library(BayesianTools)
-?BayesianTools
-
 
 ```
 
 
-
-## Creation of test data
+# Creation of test case
 
 I create a test dataset with a linear dependency between x and y, with an additional effect that is applied on a grouping factor - you can think of this as a region or site. The structure conforms to a random intercept model.
 
@@ -42,6 +32,8 @@ x <- -27:27
 y <- a * x + b + rnorm(55,0,sd = sigma) + randomEffect[group]
 plot(x,y, col = group, pch = 3)
 ```
+
+# Fitting the random effects model with BayesianTools 
 
 ```{r}
 likelihood <- function(par){
@@ -65,17 +57,18 @@ likelihood <- function(par){
 library(BayesianTools)
 
 setup <- createBayesianSetup(likelihood = likelihood, lower = c(-20,-20,0,0,rep(-100,11)), upper = c(20,20,50,100,rep(100,11)))
-settings <- list(iterations = 10000)
+settings <- list(iterations = 10000, message=F)
 
-system.time(res <- runMCMC(bayesianSetup = setup, settings = settings))
-summary(res, start = 5000)
+res <- runMCMC(bayesianSetup = setup, settings = settings)
+summary(res)
 marginalPlot(res)
 
 ```
 
 
+# Fitting the model with alternative options
 
-# comparison jags
+## Bayesian fit with JAGS
 
 ```{r}
   # 1) Model definition exactly how we created our data 
@@ -114,10 +107,6 @@ marginalPlot(res)
 ```
 
 
-
-
-# Running the model with R2jags
-
 For random effects and similar, I often prefer the R2jags package - not only that it has a bit simpler interface, but it also has different standard plots (those are taken from the STAN / Rstan package), which are a bit more complicated at first, but make it easier to display random effects. 
 
 ```{r,  fig.width=18, fig.height=18}
@@ -130,9 +119,7 @@ print(R2JagsResults)
 ```
 
 
-
-
-## Non-Bayesian analysis of this model, linear mixed model
+## Fitting the model with Maximum Likelihood, lme4
 
 Adding the random intercept on group. Note that the variances are not correctly estimated. 
 

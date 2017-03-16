@@ -6,20 +6,25 @@ BayesianTools.Rcheck/
 soobench/
 
 *.html
-
-preles.log
+*.gz
+*.dll
+*.DS_Store
+*.pdf
+*.rdb
+*.rdx
+*.so
+*.o
+*.log
 
 BayesianTools/examples/ForestModel/ForestModel_cache/
-*.so
 
-*.o
 
 BayesianTools/inst/doc/QuickStart.R
 
 BayesianTools/vignettes/QuickStart_files/
 
 BayesianTools/examples/BT-VSEM_cache/
-BayesianTools_0.0.0.9000.tar.gz
+
 
 BayesianTools/vignettes/VSEM-Calibration_files/
 
@@ -30,12 +35,8 @@ BayesianTools/inst/doc/
 
 BayesianTools/vignettes/ReferenceManual.R
 
-BayesianTools_0.0.9.tar.gz
 
-*.gz
-*.dll
 
-*.pdf
 
 BayesianTools/vignettes/ReferenceManual_files/
 
@@ -43,15 +44,12 @@ BayesianTools/examples/16-TG14/TG14-v2.2_cache/
 
 BayesianTools/examples/16-TG14/TG14-v2.2_files/
 examples/16-TG14/TG14-v2.2_cache/
-*.rdb
 
-*.rdx
 
 BayesianTools/examples/Effect_catchDuplicates-Dateien/MathJax.js
 
 examples/16-TG14/TG14-v2.2_files/figure-html
-*.png
-*.DS_Store
+
 BayesianTools.Rproj
 
 
