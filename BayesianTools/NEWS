@@ -5,11 +5,12 @@ BayesianTools 0.1.1
 
 Minor changes
 
-- implemented method for estimating posterior volume
+- implemented method for estimating posterior volume (0.1.0.1)
+- implemented GOF (0.1.0.2)
 
 Bugfixes
 
-- removed errorenously created help files
+- removed errorenously created help files (0.1.0.1)
 
 BayesianTools 0.1.0 
 
