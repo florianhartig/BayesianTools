@@ -12,4 +12,3 @@ a data.frame
 \description{
 returns the default values for the VSEM
 }
-

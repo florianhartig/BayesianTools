@@ -15,4 +15,3 @@ a list of class smcSamplerList with each object being an smcSampler
 \description{
 Convenience function to create an object of class SMCSamplerList from a list of mcmc samplers
 }
-

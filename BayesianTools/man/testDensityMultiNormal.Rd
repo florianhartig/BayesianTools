@@ -14,4 +14,3 @@ testDensityMultiNormal(x, sigma = "strongcorrelation")
 \description{
 3d Mutivariate Normal likelihood
 }
-

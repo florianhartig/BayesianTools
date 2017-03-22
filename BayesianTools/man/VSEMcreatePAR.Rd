@@ -15,4 +15,3 @@ Create a random radiation (PAR) time series
 \author{
 David Cameron, R implementation by Florian Hartig
 }
-

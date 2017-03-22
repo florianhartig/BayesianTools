@@ -21,4 +21,3 @@ Trace plot for MCMC class
          \code{\link{plotTimeSeries}} \cr
          \code{\link{correlationPlot}}
 }
-

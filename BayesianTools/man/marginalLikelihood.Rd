@@ -77,4 +77,3 @@ Chib, Siddhartha, and Ivan Jeliazkov. "Marginal likelihood from the Metropolis-H
 \seealso{
 \code{\link{WAIC}}, \code{\link{DIC}}, \code{\link{MAP}}
 }
-

@@ -95,10 +95,9 @@ NPP   Net Primary Productivity kg C /m2 /day
 
 NEE   Net Ecosystem Exchange kg C /m2 /day
 }
-\author{
-David Cameron, R and C implementation by Florian Hartig
-}
 \seealso{
 \code{\link{VSEMgetDefaults}}, \code{\link{VSEMcreatePAR}}, , \code{\link{VSEMcreateLikelihood}}
 }
-
+\author{
+David Cameron, R and C implementation by Florian Hartig
+}

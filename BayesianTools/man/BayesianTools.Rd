@@ -25,4 +25,3 @@ For details on how to use the packgage, run vignette("BayesianTools", package="B
 
 Acknowledgements: The creation of this package was facilicated through meetings of Cost Action FP 1304 Profound.
 }
-

@@ -63,4 +63,3 @@ codaObject = getSample(out, start = 500, coda = TRUE)
 \seealso{
 \code{\link{createBayesianSetup}}
 }
-

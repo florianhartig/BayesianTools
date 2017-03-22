@@ -16,11 +16,10 @@ getPredictiveDistribution(parMatrix, model, thin = 1000)
 \description{
 Calculates predictive distribution based on the parameters
 }
-\author{
-Florian Hartig
-}
 \seealso{
 \code{\link{getPredictiveIntervals}} \cr
          \code{\link{getCredibleIntervals}} \cr
 }
-
+\author{
+Florian Hartig
+}

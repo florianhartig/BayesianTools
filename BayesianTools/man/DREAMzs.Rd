@@ -83,4 +83,3 @@ ter  Braak C. J. F., and Vrugt J. A. (2008). Differential Evolution Markov Chain
 \seealso{
 \code{\link{DREAM}}
 }
-

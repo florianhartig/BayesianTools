@@ -66,9 +66,6 @@ settings =  list(proposalGenerator = generator, optimize = FALSE, iterations = 5
 
 out = runMCMC(bayesianSetup = setup, sampler = "Metropolis", settings = settings)
 }
-\author{
-Florian Hartig
-}
 \references{
 Haario, H., E. Saksman, and J. Tamminen (2001). An adaptive metropolis algorithm. Bernoulli , 223-242.
 
@@ -80,4 +77,6 @@ Green, Peter J., and Antonietta Mira. "Delayed rejection in reversible jump Metr
 
 Metropolis, N., A. W. Rosenbluth, M. N. Rosenbluth, A. H. Teller, and E. Teller (1953). Equation of state calculations by fast computing machines. The journal of chemical physics 21 (6), 1087 - 1092.
 }
-
+\author{
+Florian Hartig
+}

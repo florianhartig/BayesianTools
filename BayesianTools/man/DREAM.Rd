@@ -75,4 +75,3 @@ Vrugt, Jasper A., et al. "Accelerating Markov chain Monte Carlo simulation by di
 \seealso{
 \code{\link{DREAMzs}}
 }
-

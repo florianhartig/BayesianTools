@@ -31,4 +31,3 @@ Gelman, A.; Hwang, J. & Vehtari, A. (2014) Understanding predictive information 
 \seealso{
 \code{\link{WAIC}}, \code{\link{MAP}}, \code{\link{marginalLikelihood}}
 }
-

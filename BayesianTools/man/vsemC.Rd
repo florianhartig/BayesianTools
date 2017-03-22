@@ -14,4 +14,3 @@ vsemC(par, PAR)
 \description{
 C version of the VSEM model
 }
-

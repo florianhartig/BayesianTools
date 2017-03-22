@@ -12,4 +12,3 @@ getPanels(x)
 \description{
 Calculates the panel combination for par(mfrow = )
 }
-

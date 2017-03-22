@@ -16,4 +16,3 @@ createMixWithDefaults(pars, defaults, locations)
 \description{
 Allows to mix a given parameter vector with a default parameter vector
 }
-

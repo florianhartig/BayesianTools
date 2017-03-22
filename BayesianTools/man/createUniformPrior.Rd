@@ -27,4 +27,3 @@ prior$density(c(0.2,2))
 \seealso{
 \code{\link{createPriorDensity}}, \code{\link{createPrior}}, \code{\link{createBetaPrior}}, \code{\link{createTruncatedNormalPrior}}, \code{\link{createBayesianSetup}}
 }
-

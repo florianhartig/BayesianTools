@@ -40,4 +40,3 @@ parDen(x)
 \author{
 Florian Hartig
 }
-

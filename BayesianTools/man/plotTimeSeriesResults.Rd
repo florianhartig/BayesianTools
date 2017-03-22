@@ -26,4 +26,3 @@ Creates a time series plot typical for an MCMC / SMC fit
 \author{
 Florian Hartig
 }
-

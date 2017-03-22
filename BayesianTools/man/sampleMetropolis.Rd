@@ -17,4 +17,3 @@ Function to sample with cobinations of the basic Metropolis-Hastings MCMC algori
 \author{
 Florian Hartig
 }
-
