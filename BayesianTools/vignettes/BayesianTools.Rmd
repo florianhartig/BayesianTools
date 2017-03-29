@@ -74,6 +74,8 @@ bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper 
 
 See later more detailed description about the BayesianSetup. 
 
+**Hint:** for an example how to run this steps for dynamic ecological model, see ?VSEM
+
 ## Running MCMC and SMC functions
 
 Once you have your setup, you may want to run a calibration. The runMCMC function is the main wrapper for all other implemented MCMC/SMC functions. It always takes the following arguments 
