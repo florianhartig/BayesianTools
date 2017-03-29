@@ -12,6 +12,8 @@ getVolume(sampler, prior = F, method = "MVN", ...)
 \item{prior}{schould also prior volume be calculated}
 
 \item{method}{method for volume estimation. Currently, the only option is "MVN"}
+
+\item{...}{additional parameters to pass on to the \code{\link{getSample}}}
 }
 \description{
 Calculate posterior volume

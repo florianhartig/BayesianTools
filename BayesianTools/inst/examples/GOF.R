@@ -6,4 +6,4 @@ summary(lm(y ~ x))
 
 GOF(x,y)
 
-GOF(x,y, plot = T)
+GOF(x,y, plot = TRUE)
