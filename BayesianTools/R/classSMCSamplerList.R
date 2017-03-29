@@ -29,7 +29,7 @@ print.smcSamplerList <- function(x, ...){
 #' @method plot smcSamplerList
 #' @export
 plot.smcSamplerList <- function(x, ...){
-  marginalPlot(x, parametersOnly = T, ...)
+  marginalPlot(x, ...)
 }
 
 #' @export

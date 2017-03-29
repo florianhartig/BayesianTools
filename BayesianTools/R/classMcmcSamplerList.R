@@ -104,7 +104,7 @@ print.mcmcSamplerList <- function(x, ...){
 #' @method plot mcmcSamplerList
 #' @export
 plot.mcmcSamplerList <- function(x, ...){
-  tracePlot(x, parametersOnly = T, ...)
+  tracePlot(x, ...)
 }
 
 #' @export
