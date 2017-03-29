@@ -1,14 +1,7 @@
 #' Very simple ecosystem model
 #' @description A very simple ecosystem model, based on three carbon pools and a basic LUE model 
-#' @param pars a parameter vector
-#' @param PAR Photosynthetically active radiation (PAR) MJ /m2 /day
-#' @param KEXT Light extinction coefficient m2 ground area / m2 leaf area 
-#' @param LAR Leaf area ratio m2 leaf area / kg aboveground vegetation
-#' @param LUE Light-Use Efficiency (kg C MJ-1 PAR)
-#' @param GAMMA Autotrophic respiration as a fraction of GPP
-#' @param tauV Longevity of aboveground vegetation days
-#' @param tauR Longevity of belowground vegetation days
-#' @param tauS   Residence time of soil organic matter d
+#' @param pars a parameter vector with parameters and initial states
+#' @param PAR Forcing, photosynthetically active radiation (PAR) MJ /m2 /day
 #' @param C switch to choose whether to use the C or R version of the model. C is much faster. 
 #' @return a matrix with colums NEE, CV, CR and CS units and explanations see details
 #' @import Rcpp
