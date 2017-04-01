@@ -22,7 +22,7 @@ getVolume <- function(sampler, prior = F, method = "MVN", ...){
     }else stop("BayesianTools: unknown method argument in getVolume")
       
     if(prior == T){
-      x = out$setup$prior$sampler(5000)
+      x = sampler$setup$prior$sampler(5000)
       
       if(method == "MVN"){
         nPars = ncol(x)
