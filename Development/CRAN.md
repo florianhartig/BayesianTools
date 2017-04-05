@@ -1,3 +1,17 @@
+# Version 0.1.1
+
+## Submission 1
+
+Mostly a bugfix release
+
+Tested under Mac (3.3.2), http://win-builder.r-project.org/ (oldrel / release / devel) and Travis CI  (oldrel / release / devel) without apparent problems.
+
+## Submission 2
+
+This is release introduces a few smaller fixes and improvements. A previous upload of this release was rejected due to the new dynload policies in R 3.4, see https://github.com/florianhartig/BayesianTools/issues/31. This is now fixed. 
+
+The package was tested under Mac (3.3.2), http://win-builder.r-project.org/ (oldrel / release / devel) and Travis CI  (oldrel / release / devel) without apparent problems.
+
 # Version 0.1.0
 
 ## Submission 2

@@ -3,8 +3,9 @@ NOTE: for more news about the package, see https://github.com/florianhartig/Baye
 
 BayesianTools 0.1.1 
 
-Minor changes
+Mostly a bugfix release
 
+Minor changes
 
 - implemented method for estimating posterior volume (0.1.0.1)
 - implemented GOF (0.1.0.2)
