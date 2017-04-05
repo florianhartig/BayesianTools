@@ -5,7 +5,7 @@
 #' @param C switch to choose whether to use the C or R version of the model. C is much faster. 
 #' @return a matrix with colums NEE, CV, CR and CS units and explanations see details
 #' @import Rcpp
-#' @useDynLib BayesianTools
+#' @useDynLib BayesianTools, .registration = TRUE
 #' @details This Very Simple Ecosystem Model (VSEM) is a 'toy' model designed to be very simple but yet bear some resemblance to deterministic processed based ecosystem models (PBMs) that are commonly used in forest modelling.
 #' 
 #' The model determines the accumulation of carbon in the plant and soil from the growth of the plant via photosynthesis and senescence to the soil which respires carbon back to the atmosphere.
