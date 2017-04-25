@@ -34,7 +34,9 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, ...){
   
   numPars = ncol(mat)
   names = colnames(mat)
-  
+
+  # TODO this is a hack to make the is.numeric(scale) below work for data.frame inputs, e.g. marginalPlot(out, scale = refPars[parSel, 2:3], best = refPars[parSel,1], start = 5000) . In general, the type conversion in this function should be cleaned up.
+  if(is.data.frame(scale)) scale = as.matrix(scale)  
   
   if(is.numeric(scale)) {
     min = scale[,1]
