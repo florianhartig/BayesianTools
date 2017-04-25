@@ -1,7 +1,14 @@
 NOTE: for more news about the package, see https://github.com/florianhartig/BayesianTools/releases
 
+# BayesianTools 0.1.2 
 
-BayesianTools 0.1.1 
+Minor changes
+
+Bugfixes
+
+- bugfix in marginal plots (0.1.1.1)
+
+# BayesianTools 0.1.1 
 
 Mostly a bugfix release
 
@@ -9,12 +16,13 @@ Minor changes
 
 - implemented method for estimating posterior volume (0.1.0.1)
 - implemented GOF (0.1.0.2)
-- bugxfixes and help updates (0.1.1)
 
 Bugfixes
 
-- removed errorenously created help files (0.1.0.1)
+- removed erroneously created help files (0.1.0.1)
+- dynload change to conform to R 3.4.x requirements (0.1.1)
+- smaller bugxfixes and help updates (0.1.1)
 
-BayesianTools 0.1.0 
+# BayesianTools 0.1.0 
 
 - initial release
