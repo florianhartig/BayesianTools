@@ -26,7 +26,7 @@ likelihood <- function(x, sum = TRUE){
   predicted[,1] = 1000 * predicted[,1]
   diff <- c(predicted[,1:4] - obs[,1:4])
   llValues <- dnorm(diff, sd = x[12], log = T) 
-  if(runif(1) < 0.4) return(-Inf)
+  # if(runif(1) < 0.4) stop()
   if (sum == FALSE) return(llValues)
   else return(sum(llValues))
 }
@@ -38,9 +38,11 @@ prior <- createUniformPrior(lower = refPars$lower[parSel], upper = refPars$upper
 bayesianSetup <- createBayesianSetup(likelihood, prior, names = rownames(refPars)[parSel])
 
 
-settings <- list(iterations = 10000, nrChains = 2)
-out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
-getSample(out, parametersOnly = F)[,13]
+settings <- list(iterations = 10000, nrChains = 3)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DREAMzs", settings = settings)
+getSample(out, parametersOnly = F)[,13:15]
+
+
 
 plot(out)
 summary(out)

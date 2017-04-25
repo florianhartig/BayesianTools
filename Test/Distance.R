@@ -59,12 +59,12 @@ getSampleDistance <- function(sample1, sample2, type = "KL"){
   
 }
 
-
+#' 
 #' KL Distance 
 #' There are at least three options in R
 #' 1.https://artax.karlin.mff.cuni.cz/r-help/library/LaplacesDemon/html/KLD.html
 #' 2. http://svitsrv25.epfl.ch/R-doc/library/flexmix/html/KLdiv.html
-#' 3. 
+#' 3. FNN::KL.dist, which is used here
 #' 
 #' Mahalanobis distance
 #' 
