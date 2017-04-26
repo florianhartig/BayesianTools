@@ -126,7 +126,7 @@ DE <- function(bayesianSetup,
  
   Npar <- ncol(X)
   Npop <- nrow(X)
-  burnin <- settings$burnin
+  burnin <- settings$burnin/Npop
   n.iter <- ceiling(settings$iterations/Npop)
   
   lChain <- ceiling((n.iter - burnin)/settings$thin)+1
