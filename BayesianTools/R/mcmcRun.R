@@ -10,11 +10,11 @@
 #' The settings list allows to change the settings for the MCMC samplers and some other options. For the MCMC sampler settings, see their help files. Global options that apply for all MCMC samplers are: iterations (number of MCMC iterations), and nrChains (number of chains to run). Note that running several chains is not done in parallel, so if time is an issue it will be better to run the MCMCs individually and then combine them via \code{\link{createMcmcSamplerList}} into one joint object. 
 #' 
 #' 
-#' Startvalues: all samplers allow to provide explicit startvalues. Note that DE and DREAM variants as well as SMC and T-walk require a population to start. zs variants of DE and DREAM require two populations, in this case startvalue is a list with startvalue$X and startvalue$Z
+#' Startvalues: all samplers allow to provide explicit startvalues. If startvalues are not provided, they are sampled from the prior. Usually, this is a good choice, so don't feel compelled to provide startvalues. 
 #' 
-#' Options for DE / DEzs / DREAM / DREAMzs: provide start matrix as startvale. Default (NULL) sets the population size for DE to 3 x dimensions of parameters, for DREAM to 2 x dimensions of parameters and for DEzs and DREAMzs to three.
+#' Note that DE and DREAM variants as well as SMC and T-walk require a population to start, which should be provided as a matrix. Default (NULL) sets the population size for DE to 3 x dimensions of parameters, for DREAM to 2 x dimensions of parameters and for DEzs and DREAMzs to three, sampled from the prior. Note also that the zs variants of DE and DREAM require two populations, the current population and the z matrix (a kind of memory) - if you want to set both, provide a list with startvalue$X and startvalue$Z. 
 #' 
-#' Startvalues for sampling with nrChains > 1 : if you want to provide different start values for the different chains, provide a list
+#' Startvalues for sampling with nrChains > 1 : if you want to provide different start values for the different chains, provide them as a list
 #' 
 #' @return The function returns an object of class mcmcSampler (if one chain is run) or mcmcSamplerList. Both have the superclass bayesianOutput. It is possible to extract the samples as a coda object or matrix with \code{\link{getSample}}. 
 #' It is also possible to summarize the posterior as a new prior via \code{\link{createPriorDensity}}.
@@ -385,10 +385,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   }
   
   
-
-
   ## CHECK DEFAULTS
-  
 
   if(check){
   nam = c(names(defaultSettings), "sampler", "nrChains",
@@ -418,7 +415,16 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
       settings = c(settings, addition)
     }
   }    
-  return(settings)
+
+  
+  if (! is.null(settings$burnin)){
+    if (settings$burnin > settings$iterations) stop("BayesianToools::applySettingsDefault - setting burnin cannnot be larger than setting iteration")
+    if (! is.null(settings$adaptationNotBefore)){
+      if (settings$burnin >= settings$adaptationNotBefore) stop("BayesianToools::applySettingsDefault - setting burnin cannnot be larger than setting adaptationNotBefore") 
+    }    
+  } 
+
+  return(settings)  
 }
 
 

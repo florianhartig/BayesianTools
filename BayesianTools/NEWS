@@ -6,6 +6,7 @@ Minor changes
 
 Bugfixes
 
+- warnings / bugfixes associated to burnin arguments (0.1.1.2)
 - bugfix in marginal plots (0.1.1.1)
 
 # BayesianTools 0.1.1 

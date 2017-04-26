@@ -4,8 +4,8 @@
 #' @param settings a list of settings - possible options follow below
 #' @param startValue startValue for the MCMC and optimization (if optimize = T). If not provided, the sampler will attempt to obtain the startValue from the bayesianSetup
 #' @param optimize logical, determines whether an optimization for start values and proposal function should be run before starting the sampling
-#' @param proposalGenerator option proposalgenerator object (see \code{\link{createProposalGenerator}})
-#' @param proposalScaling additional scaling parameter for the proposals, needs to be as long as DRlevels. Defaults to 0.5^(- 0:(mcmcSampler$settings$DRlevels -1)
+#' @param proposalGenerator optional proposalgenerator object (see \code{\link{createProposalGenerator}})
+#' @param proposalScaling additional scaling parameter for the proposals that controls the different scales of the proposals after delayed rejection (typical, after a rejection, one would want to try a smaller scale). Needs to be as long as DRlevels. Defaults to 0.5^(- 0:(mcmcSampler$settings$DRlevels -1)
 #' @param burnin number of iterations treated as burn-in. These iterations are not recorded in the chain.
 #' @param thin thinning parameter. Determines the interval in which values are recorded.
 #' @param consoleUpdates integer, determines the frequency with which sampler progress is printed to the console
