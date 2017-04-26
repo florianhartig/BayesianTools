@@ -126,6 +126,7 @@ DREAM <- function(bayesianSetup,   settings = list(
   
   # Set number of iterations and initialize chain
   n.iter <- ceiling(settings$iterations/Npop)
+  settings$burnin <- settings$burnin/Npop
   lChain <- ceiling((n.iter - settings$burnin)/settings$thin)+1
   pChain <- array(NA, dim=c(lChain, Npar+3, Npop))
   colnames(pChain) <- c(setup$names, "LP", "LL", "LPr")

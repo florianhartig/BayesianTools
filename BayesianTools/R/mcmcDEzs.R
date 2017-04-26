@@ -160,7 +160,6 @@ DEzs <- function(bayesianSetup,
   # Initialize parameter values. Because they are called in
   # the loop this saves time in comparison to referencing them 
   # every iteration using settings$...
-  burnin <- settings$burnin
   iterations <- settings$iterations
   consoleUpdates <- settings$currentChain
   currentChain <- settings$currentChain
@@ -187,7 +186,7 @@ DEzs <- function(bayesianSetup,
   
   #if(burnin != 0) stop("burnin option is currently not implemented")
   
-  burnin <- settings$burnin
+  burnin <- settings$burnin/Npop
   n.iter <- ceiling(settings$iterations/Npop)
   
   lChain <- ceiling((n.iter - burnin)/settings$thin)+1
