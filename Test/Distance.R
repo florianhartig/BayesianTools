@@ -75,8 +75,15 @@ getSampleDistance <- function(sample1, sample2, type = "KL"){
 library(mvtnorm)
 
 sigma <- matrix(c(4,2,2,3), ncol=2)
-X <- rmvnorm(n=5000, mean=c(1,2), sigma=sigma)
-Y <- rmvnorm(n=5000, mean=c(5,2), sigma=sigma)
+X <- rmvnorm(n=2500, mean=c(1,2), sigma=sigma)
+X = rbind(X,X)
+Y <- rmvnorm(n=2500, mean=c(5,2), sigma=sigma)
+Y = rbind(Y,X)
+
+FNN::KL.dist(X, Y, k=10)
+
+X = getSample(out, start = 1000, end = 2000)
+Y = getSample(out, start = 2000, end = 3000)
 
 
 getSampleDistance(X,Y, type = "KL")

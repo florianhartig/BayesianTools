@@ -40,7 +40,9 @@ bayesianSetup <- createBayesianSetup(likelihood, prior, names = rownames(refPars
 
 settings <- list(iterations = 10000, nrChains = 3)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DREAMzs", settings = settings)
-getSample(out, parametersOnly = F)[,13:15]
+
+
+x = getSample(out, start = 1000, end = 2000)
 
 
 
