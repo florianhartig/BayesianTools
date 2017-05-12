@@ -1,6 +1,5 @@
 ---
 title: "Bayesian Tools"
-date: "10 Jan 2016"
 output: 
   rmarkdown::html_vignette:
     toc: true

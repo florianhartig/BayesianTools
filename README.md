@@ -18,6 +18,12 @@ library(BayesianTools)
 vignette("BayesianTools", package="BayesianTools")
 ```
 
+As for every R package, you can get the suggested citation via
+
+```{r}
+citation("BayesianTools")
+```
+
 ### Development release 
 
 If you want to install the current (development) version from this repository, run
@@ -40,9 +46,17 @@ devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "Bayesia
 ```
 with v0.0.10 replaced by the appropriate version number. 
 
+
+## Getting help
+
+We highly welcome questions by users, so don't be shy - any questions, even if it feels "stupid", helps us to understand how we can improve the interface, documentation, or code of the package. 
+
+If you want to ask a question or report a bug, the most convenient way for us would be to provide a [reproducible example](http://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example) via the GitHub [issues](https://github.com/florianhartig/BayesianTools/issues)
+
 ## Acknowledgements
 
 Work on this package was facilicated through meetings of [Cost Action FP 1304 Profound](http://www.cost.eu/COST_Actions/fps/FP1304). 
+
 
 
 
