@@ -151,7 +151,7 @@ createTruncatedNormalPrior<- function(mean, sd, lower, upper){
 #'          \code{\link{createBayesianSetup}} \cr
 #' @export
 createBetaPrior<- function(a, b, lower=0, upper=1){
-  len = length(a)
+  len = length(lower)
   if (! any(upper > lower)) stop("wrong values in beta prior")
   range = upper - lower
   density <- function(x){
@@ -164,7 +164,7 @@ createBetaPrior<- function(a, b, lower=0, upper=1){
     out = (out * range) + lower
     return(out)
   }
-  out <- createPrior(density = density, sampler = sampler, lower = NULL, upper = NULL)
+  out <- createPrior(density = density, sampler = sampler, lower = lower, upper = upper)
   return(out)
 }
 
