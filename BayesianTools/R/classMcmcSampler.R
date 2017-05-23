@@ -79,7 +79,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       
       if (!is.null(whichParameters)) temp = temp[,whichParameters]
       
-      out[[i]] = coda::mcmc(temp)
+      out[[i]] = coda::mcmc(temp, start = start, end = end, thin = thin)
     }
     class(out) = "mcmc.list" 
     
