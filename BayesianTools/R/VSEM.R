@@ -190,6 +190,7 @@ VSEMcreateLikelihood <- function(likelihoodOnly = F, plot = F, selection =  c(1:
   if(plot == T){
     oldpar <- par(mfrow = c(2,2))
     for (i in 1:4) plotTimeSeries(observed = obs[,i], predicted = referenceData[,i], main = colnames(referenceData)[i])
+    par(oldpar)
   }
   
   # Create likelihood for reference data
