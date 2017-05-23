@@ -2,6 +2,8 @@ library(BayesianTools)
 
 ll <- generateTestDensityMultiNormal(sigma = "no correlation")
 
+ll <- function(par) return(0)
+
 bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
 
 
@@ -23,3 +25,11 @@ getSeett
 
 
 applySettingsDefault(sampler = "Metropolis")
+
+
+ll <- generateTestDensityMultiNormal(sigma = "no correlation")
+bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
+settings = list(iterations = 30000)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+plot(out)
+x = getSample(out, coda = T, thin = "auto")
