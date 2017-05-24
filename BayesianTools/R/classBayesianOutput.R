@@ -13,6 +13,7 @@
 #' @param whichParameters possibility to select parameters by index
 #' @param reportDiagnostics logical, determines whether settings should be included in the output
 #' @param ... further arguments
+#' @example /inst/examples/getSampleHelp.R
 #' @export
 getSample <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...) UseMethod("getSample")
 

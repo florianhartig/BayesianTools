@@ -32,6 +32,20 @@ getSample(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
 \description{
 Extracts the sample from a bayesianOutput
 }
+\examples{
+ll = function(x) sum(dnorm(x, log = T))
+
+setup = createBayesianSetup(ll, lower = c(-10,-10), upper = c(10,10))
+
+samp = getPossibleSamplerTypes()
+
+settings = list(nrChains = 2, iterations = 1000)
+out <- runMCMC(bayesianSetup = setup, sampler = "DEzs", settings = settings)
+
+# run tests
+sample <- getSample(out, start = 100, numSamples = 60, coda = T)
+plot(sample)
+}
 \author{
 Florian Hartig
 }
