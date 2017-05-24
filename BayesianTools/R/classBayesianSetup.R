@@ -1,7 +1,7 @@
 #' Creates a standardized collection of prior, likelihood and posterior functions, including error checks etc.
 #' @param likelihood log likelihood density function
-#' @param prior log prior density
-#' @param priorSampler prior sampling function
+#' @param prior either a prior class or a log prior density
+#' @param priorSampler if a prior density (and not a prior class) is provided to prior, the optional prior sampling function can be provided here
 #' @param lower vector with lower prior limits
 #' @param upper vector with upper prior limits
 #' @param best vector with best values
