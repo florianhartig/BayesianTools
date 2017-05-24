@@ -2,7 +2,7 @@
 % Please edit documentation in R/classLikelihood.R
 \name{createLikelihood}
 \alias{createLikelihood}
-\title{Creates a standardized likelihood class}
+\title{Creates a standardized likelihood class#'}
 \usage{
 createLikelihood(likelihood, names = NULL, parallel = F,
   catchDuplicates = T, sampler = NULL, parallelOptions = NULL)
@@ -21,9 +21,12 @@ createLikelihood(likelihood, names = NULL, parallel = F,
 \item{parallelOptions}{list containing two lists. First "packages" determines the R packages necessary to run the likelihood function. Second "objects" the objects in the global envirnment needed to run the likelihood function (for details see \code{\link{createBayesianSetup}}).}
 }
 \description{
-Creates a standardized likelihood class
+Creates a standardized likelihood class#'
 }
 \seealso{
 \code{\link{likelihoodIidNormal}} \cr
          \code{\link{likelihoodAR1}} \cr
+}
+\author{
+Florian Hartig
 }

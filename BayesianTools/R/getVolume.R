@@ -1,5 +1,5 @@
 #' Calculate posterior volume
-#' 
+#' @author Florian Hartig
 #' @param sampler an object of superclass bayesianOutput or any other class that has the getSample function implemented (e.g. Matrix)
 #' @param prior schould also prior volume be calculated
 #' @param method method for volume estimation. Currently, the only option is "MVN"

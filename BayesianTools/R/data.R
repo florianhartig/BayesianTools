@@ -1,0 +1,3 @@
+#' Example MCMC output
+#'
+"mcmcOutput"

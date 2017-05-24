@@ -1,6 +1,7 @@
-# from https://gist.github.com/doobwa/941125
+# inspired from https://gist.github.com/doobwa/941125
 # maybe replace with logSumExp {matrixStats} which might be faster?
 #' Funktion to compute log(sum(exp(x))
+#' @author Florian Hartig
 #' @param x values
 #' @param mean logical, determines whether the mean should be used
 #' @export

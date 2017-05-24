@@ -1,4 +1,5 @@
 #' SMC sampler
+#' @author Florian Hartig
 #' @description Sequential Monte Carlo Sampler
 #' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function 
 #' @param initialParticles initial particles - either a draw from the prior, provided as a matrix with the single parameters as columns and each row being one particle (parameter vector), or a numeric value with the number of desired particles. In this case, the sampling option must be provided in the prior of the BayesianSetup. 

@@ -3,6 +3,7 @@
 
 
 #' calculates the WAIC 
+#' @author Florian Hartig
 #' @param bayesianOutput an object of class BayesianOutput
 #' @param numSamples the number of samples to calculate the WAIC
 #' @param ... optional values to be passed on the the getSample function 

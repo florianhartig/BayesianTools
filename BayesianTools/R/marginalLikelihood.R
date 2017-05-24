@@ -9,6 +9,7 @@
 
 #' Calcluated the marginal likelihood from a set of MCMC samples
 #' @export
+#' @author Florian Hartig
 #' @param sampler an object that implements the getSample function, i.e. a mcmc / smc Sampler (list)
 #' @param numSamples number of samples to use. How this works, and if it requires recalculating the likelihood, depends on the method
 #' @param method method to choose. Currently available are "Chib" (default), the harmonic mean "HM", and sampling from the prior "prior". See details

@@ -1,6 +1,6 @@
 #' Standard GOF metrics
-#' 
 #' Startvalues for sampling with nrChains > 1 : if you want to provide different start values for the different chains, provide a list
+#' @author Florian Hartig
 #' @param predicted predicted values
 #' @param observed observed values
 #' @param plot should a plot be created
@@ -14,7 +14,6 @@
 #' For the linear regression, the x axis is centered, meaning that the intercept is the difference between observed / predicted for the MEAN predicted value. This setting avoids a correlation between slope and intercept (that the intercept is != 0 as soon as the slope is !=0)   
 #' 
 #' @return A list with the following entries: rmse = root mean squared error, mae = mean absolute error, slope = slope of regression, offset = intercept of regression, R2 = R2 of regression  
-
 #' @example /inst/examples/GOF.R
 #' @export
 GOF<- function(observed, predicted, plot = F){

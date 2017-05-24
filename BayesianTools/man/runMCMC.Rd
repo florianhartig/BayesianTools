@@ -29,11 +29,11 @@ For details about the different MCMC samplers, make sure you have read the Vigne
 The settings list allows to change the settings for the MCMC samplers and some other options. For the MCMC sampler settings, see their help files. Global options that apply for all MCMC samplers are: iterations (number of MCMC iterations), and nrChains (number of chains to run). Note that running several chains is not done in parallel, so if time is an issue it will be better to run the MCMCs individually and then combine them via \code{\link{createMcmcSamplerList}} into one joint object. 
 
 
-Startvalues: all samplers allow to provide explicit startvalues. Note that DE and DREAM variants as well as SMC and T-walk require a population to start. zs variants of DE and DREAM require two populations, in this case startvalue is a list with startvalue$X and startvalue$Z
+Startvalues: all samplers allow to provide explicit startvalues. If startvalues are not provided, they are sampled from the prior. Usually, this is a good choice, so don't feel compelled to provide startvalues. 
 
-Options for DE / DEzs / DREAM / DREAMzs: provide start matrix as startvale. Default (NULL) sets the population size for DE to 3 x dimensions of parameters, for DREAM to 2 x dimensions of parameters and for DEzs and DREAMzs to three.
+Note that DE and DREAM variants as well as SMC and T-walk require a population to start, which should be provided as a matrix. Default (NULL) sets the population size for DE to 3 x dimensions of parameters, for DREAM to 2 x dimensions of parameters and for DEzs and DREAMzs to three, sampled from the prior. Note also that the zs variants of DE and DREAM require two populations, the current population and the z matrix (a kind of memory) - if you want to set both, provide a list with startvalue$X and startvalue$Z. 
 
-Startvalues for sampling with nrChains > 1 : if you want to provide different start values for the different chains, provide a list
+Startvalues for sampling with nrChains > 1 : if you want to provide different start values for the different chains, provide them as a list
 }
 \examples{
 ## Generate a test likelihood function. 

@@ -1,4 +1,5 @@
 #' calculates the Maxiumum APosteriori value (MAP)
+#' @author Florian Hartig
 #' @param bayesianOutput an object of class BayesianOutput (mcmcSampler, smcSampler, or mcmcList)
 #' @param ... optional values to be passed on the the getSample function 
 #' @details Currently, this function simply returns the parameter combination with the highest posterior in the chain. A more refined option would be to take the MCMC sample and do additional calculations, e.g. use an optimizer, a kerne delnsity estimator, or some other tool to search / interpolate around the best value in the chain

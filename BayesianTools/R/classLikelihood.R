@@ -1,4 +1,5 @@
-#' Creates a standardized likelihood class
+#' Creates a standardized likelihood class#'
+#' @author Florian Hartig
 #' @param likelihood Log likelihood density
 #' @param names Parameter names (optional)
 #' @param parallel parallelization , either i) no parallelization --> F, ii) native R parallelization --> T / "auto" will select n-1 of your available cores, or provide a number for how many cores to use, or iii) external parallelization --> "external". External means that the likelihood is already able to execute parallel runs in form of a matrix with 

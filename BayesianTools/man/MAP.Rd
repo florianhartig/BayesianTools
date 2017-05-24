@@ -20,3 +20,6 @@ Currently, this function simply returns the parameter combination with the highe
 \seealso{
 \code{\link{WAIC}}, \code{\link{DIC}}, \code{\link{marginalLikelihood}}
 }
+\author{
+Florian Hartig
+}

@@ -17,3 +17,6 @@ Creates a standardized posterior class
 \details{
 Function is internally used in \code{\link{createBayesianSetup}} to create a standarized posterior class.
 }
+\author{
+Florian Hartig
+}

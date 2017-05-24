@@ -1,4 +1,5 @@
 #' Creates a standardized prior class
+#' @author Florian Hartig
 #' @param density Prior density
 #' @param sampler Sampling function for density (optional)
 #' @param lower vector with lower bounds of parameters
@@ -87,6 +88,7 @@ createPrior <- function(density = NULL, sampler = NULL, lower = NULL, upper = NU
 
 
 #' Convenience function to create a simple uniform prior distribution
+#' @author Florian Hartig
 #' @param lower vector of lower prior range for all parameters
 #' @param upper vector of upper prior range for all parameters
 #' @param best vector with "best" values for all parameters
@@ -137,7 +139,7 @@ createTruncatedNormalPrior<- function(mean, sd, lower, upper){
 
 
 #' Convenience function to create a beta prior
-#' 
+#' @author Florian Hartig
 #' @param a shape1 of the beta distribution 
 #' @param b shape2 of the beta distribution 
 #' @param upper upper values for the parameters
@@ -170,6 +172,7 @@ createBetaPrior<- function(a, b, lower=0, upper=1){
 
 
 #' Fits a density function to a multivariate sample
+#' @author Florian Hartig
 #' @export
 #' @param sampler an object of class BayesianOutput or a matrix 
 #' @param method method to generate prior - default and currently only option is multivariate

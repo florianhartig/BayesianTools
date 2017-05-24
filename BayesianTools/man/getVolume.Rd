@@ -45,3 +45,6 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis",
 getVolume(out, prior = TRUE)
 
 }
+\author{
+Florian Hartig
+}

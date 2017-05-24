@@ -1,3 +1,4 @@
+#' @author Florian Hartig
 #' @export
 getSample.smcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...){
   
@@ -37,6 +38,7 @@ getSample.smcSampler <- function(sampler, parametersOnly = T, coda = F, start = 
   } else return(out)
 }
 
+#' @author Florian Hartig
 #' @method summary smcSampler
 #' @export
 summary.smcSampler<- function(object, ...){
@@ -51,7 +53,7 @@ plot.smcSampler<- function(x, ...){
   marginalPlot(x, ...)
 }
 
-
+#' @author Florian Hartig
 #' @method print smcSampler
 #' @export
 print.smcSampler <- function(x, ...){

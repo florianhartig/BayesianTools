@@ -15,3 +15,6 @@ Object of class "mcmcSamplerList"
 \description{
 Convenience function to create an object of class mcmcSamplerList from a list of mcmc samplers
 }
+\author{
+Florian Hartig
+}

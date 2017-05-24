@@ -53,3 +53,6 @@ out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
          \code{\link{createUniformPrior}} \cr
          \code{\link{createBayesianSetup}} \cr
 }
+\author{
+Florian Hartig
+}

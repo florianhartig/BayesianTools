@@ -2,7 +2,8 @@
 % Please edit documentation in R/GOF.R
 \name{GOF}
 \alias{GOF}
-\title{Standard GOF metrics}
+\title{Standard GOF metrics
+Startvalues for sampling with nrChains > 1 : if you want to provide different start values for the different chains, provide a list}
 \usage{
 GOF(observed, predicted, plot = F)
 }
@@ -17,6 +18,7 @@ GOF(observed, predicted, plot = F)
 A list with the following entries: rmse = root mean squared error, mae = mean absolute error, slope = slope of regression, offset = intercept of regression, R2 = R2 of regression
 }
 \description{
+Standard GOF metrics
 Startvalues for sampling with nrChains > 1 : if you want to provide different start values for the different chains, provide a list
 }
 \details{
@@ -38,4 +40,7 @@ summary(lm(y ~ x))
 GOF(x,y)
 
 GOF(x,y, plot = TRUE)
+}
+\author{
+Florian Hartig
 }

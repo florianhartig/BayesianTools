@@ -1,6 +1,7 @@
 ### DREAMzs algorithm
 
 ##' DREAMzs
+##' @author Stefan Paul
 ##' @param bayesianSetup Object of class 'bayesianSetup' or 'bayesianOuput'.
 ##' @param settings list with parameter values
 ##' @param iterations Number of model evaluations

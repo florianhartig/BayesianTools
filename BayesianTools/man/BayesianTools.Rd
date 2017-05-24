@@ -23,5 +23,9 @@ The output of runMCMC is of class mcmcSampler / smcSampler if one run is perform
 
 For details on how to use the packgage, run vignette("BayesianTools", package="BayesianTools").
 
+To get the suggested citation, run citation("BayesianTools")
+
+To report bugs or ask for help, post a \href{http://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example}{reproducible example} via the BayesianTools \href{https://github.com/florianhartig/BayesianTools/issues}{issue tracker} on GitHub. 
+
 Acknowledgements: The creation of this package was facilicated through meetings of Cost Action FP 1304 Profound.
 }
