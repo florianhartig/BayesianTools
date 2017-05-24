@@ -1,8 +1,8 @@
 #' Convenience function to create an object of class mcmcSamplerList from a list of mcmc samplers
+#' @author Florian Hartig
 #' @param mcmcList a list with each object being an mcmcSampler
 #' @return Object of class "mcmcSamplerList"
 #' @export
-
 createMcmcSamplerList <- function(mcmcList){
   # mcmcList <- list(mcmcList) -> This line didn't make any sense at all. Better would be to allow the user to simply provide several inputs without a list, but I guess the list option should be maintained, as this is convenient when scripting.
   for (i in 1:length(mcmcList)){
@@ -12,6 +12,7 @@ createMcmcSamplerList <- function(mcmcList){
   return(mcmcList)
 }
 
+#' @author Florian Hartig
 #' @method summary mcmcSamplerList
 #' @export
 summary.mcmcSamplerList <- function(object, ...){
@@ -91,6 +92,7 @@ summary.mcmcSamplerList <- function(object, ...){
 
 }
 
+#' @author Florian Hartig
 #' @method print mcmcSamplerList
 #' @export
 print.mcmcSamplerList <- function(x, ...){
@@ -107,23 +109,27 @@ plot.mcmcSamplerList <- function(x, ...){
   tracePlot(x, ...)
 }
 
+#' @author Florian Hartig
 #' @export
-getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples, whichParameters = NULL, reportDiagnostics, ...){
+getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics, ...){
 
+  if(!is.null(numSamples)) numSamples = ceiling(numSamples/length(sampler))
+  
   if(coda == F){
     out = NULL
     for (i in 1:length(sampler)){
-      out = rbind(out, getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, reportDiagnostics= F))
+      out = rbind(out, getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F))
     }
     #out = BayesianTools:::combineChains(out)
   }
+
   if(coda == T){
 
     out = list()
 
     for (i in 1:length(sampler)){
 
-      out[[i]] = getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, reportDiagnostics= F)
+      out[[i]] = getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F)
     }
 
     if(class(out[[1]]) == "mcmc.list") out = unlist(out, recursive = F)

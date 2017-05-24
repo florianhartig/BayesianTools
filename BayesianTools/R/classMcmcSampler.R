@@ -1,5 +1,6 @@
 # Functions for class mcmcSamper
 
+#' @author Florian Hartig
 #' @export
 getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics= F, ...){
   
@@ -70,7 +71,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       
       # Sample size
       if(thin == 1 && !is.null(numSamples)){
-        sel <- seq(1,dim(temp)[1], len = (floor(numSamples/length(sampler$chain))))
+        sel <- seq(1,dim(temp)[1], len = (ceiling(numSamples/length(sampler$chain))))
         temp <- temp[sel,] 
       }
       
@@ -79,7 +80,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       
       if (!is.null(whichParameters)) temp = temp[,whichParameters]
       
-      out[[i]] = coda::mcmc(temp, start = start, end = end, thin = thin)
+      out[[i]] = makeObjectClassCodaMCMC(temp, start = start, end = end, thin = thin)
     }
     class(out) = "mcmc.list" 
     
@@ -194,7 +195,7 @@ summary.mcmcSampler <- function(object, ...){
   print(correlations)
 }
 
-
+#' @author Florian Hartig
 #' @method print mcmcSampler
 #' @export
 print.mcmcSampler <- function(x, ...){
@@ -205,6 +206,7 @@ print.mcmcSampler <- function(x, ...){
   #effectiveSize(sampler$codaChain)
 }
 
+#' @author Florian Hartig
 #' @method plot mcmcSampler
 #' @export
 plot.mcmcSampler <- function(x, ...){
