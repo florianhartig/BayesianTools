@@ -1,7 +1,7 @@
 #' Creates a standardized collection of prior, likelihood and posterior functions, including error checks etc.
 #' @author Florian Hartig
 #' @param likelihood log likelihood density function
-#' @param prior either a prior class or a log prior density
+#' @param prior either a prior class (see \code{\link{createPrior}}) or a log prior density
 #' @param priorSampler if a prior density (and not a prior class) is provided to prior, the optional prior sampling function can be provided here
 #' @param lower vector with lower prior limits
 #' @param upper vector with upper prior limits
@@ -10,6 +10,7 @@
 #' @param parallel parallelization option. Default is F. Other options are T, or "external". See details.
 #' @param parallelOptions list containing three lists. First "packages" determines the R packages necessary to run the likelihood function. Second "variables" the objects in the global envirnment needed to run the likelihood function and third "dlls" the DLLs needed to run the likelihood function (see Details and Examples). 
 #' @param catchDuplicates Logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns. 
+#' @details If lower and upper (and optionally best) but not a prior object are passed, the function will create an uniform prior with the limits lower and upper. If a prior object and lower and upper are passed, the function will ignore lower and upper, and will only use the prior object.
 #' @details For parallelization, option T means that an automatic parallelization via R is attempted, or "external", in which case it is assumed that the likelihood is already parallelized. In this case it needs to accept a matrix with parameters as columns.
 #' Further you can specify the packages, objects and DLLs that are exported to the cluster. 
 #' By default a copy of your workspace is exported. However, depending on your workspace this can be very inefficient.
