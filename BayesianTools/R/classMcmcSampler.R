@@ -100,6 +100,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
 
 
 #' @method summary mcmcSampler
+#' @author Stefan Paul
 #' @export
 summary.mcmcSampler <- function(object, ...){
     #codaChain = getSample(sampler, parametersOnly = parametersOnly, coda = T, ...)

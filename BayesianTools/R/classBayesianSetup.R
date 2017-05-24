@@ -1,4 +1,5 @@
 #' Creates a standardized collection of prior, likelihood and posterior functions, including error checks etc.
+#' @author Florian Hartig
 #' @param likelihood log likelihood density function
 #' @param prior either a prior class or a log prior density
 #' @param priorSampler if a prior density (and not a prior class) is provided to prior, the optional prior sampling function can be provided here
@@ -125,6 +126,7 @@ createBayesianSetup <- function(likelihood,
   # this with the createBayesianSetup 
   
 #' Checks if an object is of class 'BayesianSetup'
+#' @author Florian Hartig
 #' @description Function used to assure that an object is of class 'BayesianSetup'. If you pass a function, it is coverted to an object of class 'BayesianSetup' (using \code{\link{createBayesianSetup}}) before it is returned.
 #' @param bayesianSetup either object of class bayesianSetup or a log posterior function
 #' @param parallel if bayesianSetup is a function, this will set the parallelization option for the class BayesianSetup that is created internally. If bayesianSetup is already a BayesianSetup, then this will check if parallel = T is requested but not supported by the BayesianSetup. This option is for internal use in the samplers
@@ -147,6 +149,7 @@ checkBayesianSetup <- function(bayesianSetup, parallel = F){
 
 
 #' Function to close cluster in BayesianSetup
+#' @author Stefan Paul
 #' @description Function closes 
 #' the parallel executer (if available)
 #' @param  bayesianSetup object of class BayesianSetup

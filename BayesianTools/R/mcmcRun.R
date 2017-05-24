@@ -1,4 +1,5 @@
 #' Main wrapper function to start MCMCs, particle MCMCs and SMCs
+#' @author Florian Hartig
 #' @param bayesianSetup either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for further details. 
 #' @param sampler sampling algorithm to be run. Default is DEzs. Options are "Metropolis", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions. 
 #' @param settings list with settings for each sampler (see help of sampler for details). If a setting is not provided, defaults (see \code{\link{applySettingsDefault}}) will be used. 
@@ -229,6 +230,7 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
 
 
 #' Provides the default settings for the different samplers in runMCMC
+#' @author Florian Hartig
 #' @param settings optional list with parameters that will be used instead of the defaults
 #' @param sampler one of the samplers in \code{\link{runMCMC}} 
 #' @param check logical determines whether parameters should be checked for consistency
@@ -429,6 +431,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
 
 
 #' Help function to find starvalues and proposalGenerator settings
+#' @author Florian Hartig
 #' @param proposalGenerator proposal generator
 #' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function 
 #' @param settings list with settings
@@ -495,6 +498,7 @@ setupStartProposal <- function(proposalGenerator = NULL, bayesianSetup, settings
 
 #' Returns possible sampler types
 #' @export
+#' @author Florian Hartig
 getPossibleSamplerTypes <- function(){
   
   out = list(  BTname =   c("Metropolis", "DE", "DEzs", "DREAM", "DREAMzs", "Twalk", "SMC"),

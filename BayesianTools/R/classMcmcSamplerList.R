@@ -12,7 +12,7 @@ createMcmcSamplerList <- function(mcmcList){
   return(mcmcList)
 }
 
-#' @author Florian Hartig
+#' @author Stefan Paul
 #' @method summary mcmcSamplerList
 #' @export
 summary.mcmcSamplerList <- function(object, ...){

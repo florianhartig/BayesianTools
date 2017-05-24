@@ -32,6 +32,7 @@
 
 
 #' Deviance information criterion
+#' @author Florian Hartig
 #' @param sampler An object of class bayesianOutput (mcmcSampler, smcSampler, or mcmcList) 
 #' @param ... further arguments passed to \code{\link{getSample}}
 #' @references Spiegelhalter, D. J.; Best, N. G.; Carlin, B. P. & van der Linde, A. (2002) Bayesian measures of model complexity and fit. J. Roy. Stat. Soc. B, 64, 583-639.\cr\cr

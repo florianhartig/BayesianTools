@@ -1,6 +1,7 @@
 
 
 #' Differential-Evolution MCMC
+#' @author Francesco Minunno and Stefan Paul
 #' @param bayesianSetup a BayesianSetup with the posterior density function to be sampled from
 #' @param settings list with parameter settings
 #' @param startValue (optional) eiter a matrix with start population, a number to define the number of chains that are run or a function that samples a starting population.

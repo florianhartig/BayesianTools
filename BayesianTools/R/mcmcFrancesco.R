@@ -1,4 +1,5 @@
 #' The Metropolis Algorithm
+#' @author Francesco Minunno
 #' @description The Metropolis Algorithm (Metropolis et al. 1953)
 #' @param startValue vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.
 #' @param iterations iterations to run
@@ -83,6 +84,7 @@ M <- function(startValue = NULL, iterations  = 10000, nBI = 0 , parmin = NULL, p
 
 
 #' The Adaptive Metropolis Algorithm
+#' @author Francesco Minunno
 #' @description The Adaptive Metropolis Algorithm (Haario et al. 2001)
 #' @param startValue vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.
 #' @param iterations iterations to run
@@ -162,6 +164,7 @@ AM <- function(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL, pa
                      
 
 #' The Delayed Rejection Algorithm 
+#' @author Francesco Minunno
 #' @description The Delayed Rejection Algorithm (Tierney and Mira, 1999)
 #' @param startValue vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.
 #' @param iterations iterations to run
@@ -246,6 +249,7 @@ DR <- function(startValue = NULL, iterations = 10000, nBI=0, parmin = NULL, parm
 
         
 #' The Delayed Rejection Adaptive Metropolis Algorithm 
+#' @author Francesco Minunno
 #' @description The Delayed Rejection Adaptive Metropolis Algorithm (Haario et al. 2001)
 #' @param startValue vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.
 #' @param iterations iterations to run

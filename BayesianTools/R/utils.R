@@ -35,6 +35,7 @@ scaleMatrix <- function(mat, min, max){
 
 
 #' Funktion to calculate the metropolis ratio
+#' @author Florian Hartig
 #' @param LP2 log posterior old position
 #' @param LP1 log posterior of proposal
 #' @param tempering value for tempering
@@ -48,6 +49,7 @@ metropolisRatio <- function(LP2, LP1, tempering = 1){
 
 
 #' Calculates the panel combination for par(mfrow = )
+#' @author Florian Hartig
 #' @param x the desired number of panels 
 #' @export
 getPanels <- function(x){

@@ -1,5 +1,5 @@
 #' Runs Gelman Diagnotics over an BayesianOutput
-#' 
+#' @author Florian Hartig
 #' @param sampler an object of class mcmcSampler or mcmcSamplerList
 #' @param thin parameter determining the thinning intervall. Either an integer or "auto" (default) for automatic thinning.
 #' @param plot should a Gelman plot be generated

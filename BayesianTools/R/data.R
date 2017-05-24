@@ -1,3 +1,3 @@
 #' Example MCMC output
 #'
-"mcmcOutput"
+#"mcmcOutput"

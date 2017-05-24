@@ -110,7 +110,7 @@ createUniformPrior<- function(lower, upper, best = NULL){
 
 
 #' Convenience function to create a truncated normal prior
-#' 
+#' @author Florian Hartig
 #' @param mean best estimate for each parameter
 #' @param sd sdandard deviation
 #' @param lower vector of lower prior range for all parameters
