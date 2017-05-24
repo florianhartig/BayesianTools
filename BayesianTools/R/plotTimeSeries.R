@@ -63,16 +63,29 @@ plotTimeSeriesResiduals <- function(residuals, x = NULL, main = "residuals"){
 #' @param error function with signature f(mean, par) that generates error expectations from mean model predictions. Par is a vector from the matrix with the parameter samples (full length). f needs to know which of these parameters are parameters of the error function
 #' @param start numeric start value for the plot (see \code{\link{getSample}})
 #' @param plotResiduals logical determining whether residuals should be plotted
+#' @param prior if a prior sampler is implemented, setting this parameter to T will draw model parameters from the prior instead of the posterior distribution
 #' @export
-plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotResiduals = T, start = 1){
+plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotResiduals = T, start = 1, prior = F){
   
-  if(inherits(sampler,"bayesianOutput")) parMatrix = getSample(sampler, start = start)
-  else if (class(sampler) == "matrix") parMatrix = sampler
-  else stop("wrong type give to variable sampler")
+  if(prior == F){
+    if(inherits(sampler,"bayesianOutput")) parMatrix = getSample(sampler, start = start)
+    else if (class(sampler) == "matrix") parMatrix = sampler
+    else stop("wrong type give to variable sampler")    
+  }else if (prior == T){
+    if(class(sampler)[1] == "mcmcSamplerList") parMatrix = sampler[[1]]$setup$prior$sampler(1000)
+    else parMatrix = sampler$setup$prior$sampler(1000)
+  }else stop("BayesianTools::plotTimeSeriesResults - wrong argument to prior")
+
+  thin = min(1000, nrow(parMatrix))
   
-  pred <- getPredictiveIntervals(parMatrix = parMatrix, model = model, thin = 1000, quantiles = c(0.025, 0.5, 0.975), error = error)
+  pred <- getPredictiveIntervals(parMatrix = parMatrix, model = model, thin = thin, quantiles = c(0.025, 0.5, 0.975), error = error)
   
-  plotTimeSeries(observed = observed, predicted = pred[2,], confidenceBand = pred[c(1,3),], predictionBand = pred[c(4,6),] )
+  if(!is.null(error)) plotTimeSeries(observed = observed, predicted = pred[2,], confidenceBand = pred[c(1,3),], predictionBand = pred[c(4,6),] )
+  else plotTimeSeries(observed = observed, predicted = pred[2,], confidenceBand = pred[c(1,3),])
+  
+  
+  # TODO - plotResiduals needs to be implemented
+  
 }
 
 

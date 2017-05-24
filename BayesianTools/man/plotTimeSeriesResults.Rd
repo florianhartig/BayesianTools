@@ -5,7 +5,7 @@
 \title{Creates a time series plot typical for an MCMC / SMC fit}
 \usage{
 plotTimeSeriesResults(sampler, model, observed, error = NULL,
-  plotResiduals = T, start = 1)
+  plotResiduals = T, start = 1, prior = F)
 }
 \arguments{
 \item{sampler}{Either a) a matrix b) an MCMC object (list or not), or c) an SMC object}
@@ -19,6 +19,8 @@ plotTimeSeriesResults(sampler, model, observed, error = NULL,
 \item{plotResiduals}{logical determining whether residuals should be plotted}
 
 \item{start}{numeric start value for the plot (see \code{\link{getSample}})}
+
+\item{prior}{if a prior sampler is implemented, setting this parameter to T will draw model parameters from the prior instead of the posterior distribution}
 }
 \description{
 Creates a time series plot typical for an MCMC / SMC fit
