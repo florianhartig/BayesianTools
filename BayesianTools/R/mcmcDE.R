@@ -102,21 +102,21 @@ DE <- function(bayesianSetup,
   blockdefault <- list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
        groupStart = 1000, groupIntervall = 1000)
   if(!is.null(settings$blockUpdate)){
-  blockUpdate <- modifyList(blockdefault, settings$blockUpdate)
-  blockUpdate[[1]] <- settings$blockUpdate[[1]] # to catch first argument
-  if(blockUpdate[[1]] == "none"){
-    blockUpdateType <- "none"
-    blocks = FALSE
-    BlockStart = FALSE
-  }else{
-  groupStart <- blockUpdate$groupStart
-  groupIntervall <- blockUpdate$groupIntervall
-  blockUpdateType = blockUpdate[[1]] 
-  blocks = TRUE
-  ## Initialize BlockStart
-  BlockStart = FALSE
-  Bcount = 0
-  }
+    blockUpdate <- modifyList(blockdefault, settings$blockUpdate)
+    blockUpdate[[1]] <- settings$blockUpdate[[1]] # to catch first argument
+    if(blockUpdate[[1]] == "none"){
+      blockUpdateType <- "none"
+      blocks = FALSE
+      BlockStart = FALSE
+    }else{
+      groupStart <- blockUpdate$groupStart
+      groupIntervall <- blockUpdate$groupIntervall
+      blockUpdateType = blockUpdate[[1]] 
+      blocks = TRUE
+      ## Initialize BlockStart
+      BlockStart = FALSE
+      Bcount = 0
+    }
   }else{
     blockUpdateType <- "none"
     blocks = FALSE
@@ -164,41 +164,41 @@ DE <- function(bayesianSetup,
 
     
     if(blocks){
-    ### Update the groups. 
-    if(iter == groupStart+ Bcount*groupIntervall){
-    blockSettings <- updateGroups(chain = pChain[1:counter,, ], blockUpdate)
-    BlockStart <- TRUE
-    Bcount <- Bcount + 1
-    }
+      ### Update the groups. 
+      if(iter == groupStart+ Bcount*groupIntervall){
+        blockSettings <- updateGroups(chain = pChain[1:counter,, ], blockUpdate)
+        BlockStart <- TRUE
+        Bcount <- Bcount + 1
+      }
     }
    ####
      
-      for (i in iseq){
-        # select to random different individuals (and different from i) in rr, a 2-vector
-        
-        rr <- sample(iseq[-i], 2, replace = FALSE)
-        x_prop <- X[i,] + F * (X[rr[1],]-X[rr[2],]) + eps * rnorm(Npar,0,1)
-        
-        if(BlockStart){
+    for (i in iseq){
+      # select to random different individuals (and different from i) in rr, a 2-vector
+      
+      rr <- sample(iseq[-i], 2, replace = FALSE)
+      x_prop <- X[i,] + F * (X[rr[1],]-X[rr[2],]) + eps * rnorm(Npar,0,1)
+      
+      if(BlockStart){
         # Get the current group and update the proposal accordingly
         Member <- getBlock(blockSettings)
         x_prop[-Member] <- X[i,-Member]
         ####
-        }
-        
-        logfitness_x_prop <- FUN(x_prop, returnAll = T)
-        if(!is.na(logfitness_x_prop[1] - logfitness_X[i,1])){ # To catch possible error
+      }
+      
+      logfitness_x_prop <- FUN(x_prop, returnAll = T)
+      if(!is.na(logfitness_x_prop[1] - logfitness_X[i,1])){ # To catch possible error
         if ((logfitness_x_prop[1] - logfitness_X[i,1] ) > log(runif(1))){
           X[i,] <- x_prop
           logfitness_X[i,] <- logfitness_x_prop
         }
-        }
-      } #iseq
+      }
+    } #iseq
     if ((iter > burnin) && (iter %% settings$thin == 0) ) { # retain sample
       counter <- counter+1
       pChain[counter,,] <- t(cbind(X,logfitness_X))
       
-      }
+    }
     
     if(settings$message){  
       if( (iter %% settings$consoleUpdates == 0) | (iter == n.iter)) cat("\r","Running DE-MCMC, chain ", currentChain, 
