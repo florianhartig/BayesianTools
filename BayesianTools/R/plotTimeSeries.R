@@ -66,7 +66,7 @@ plotTimeSeriesResiduals <- function(residuals, x = NULL, main = "residuals"){
 #' @param plotResiduals logical determining whether residuals should be plotted
 #' @param prior if a prior sampler is implemented, setting this parameter to T will draw model parameters from the prior instead of the posterior distribution
 #' @export
-plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotResiduals = T, start = 1, prior = F){
+plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotResiduals = T, start = 1, prior = F, ...){
   
   if(prior == F){
     if(inherits(sampler,"bayesianOutput")) parMatrix = getSample(sampler, start = start)
@@ -81,8 +81,8 @@ plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotRe
   
   pred <- getPredictiveIntervals(parMatrix = parMatrix, model = model, thin = thin, quantiles = c(0.025, 0.5, 0.975), error = error)
   
-  if(!is.null(error)) plotTimeSeries(observed = observed, predicted = pred[2,], confidenceBand = pred[c(1,3),], predictionBand = pred[c(4,6),] )
-  else plotTimeSeries(observed = observed, predicted = pred[2,], confidenceBand = pred[c(1,3),])
+  if(!is.null(error)) plotTimeSeries(observed = observed, predicted = pred[2,], confidenceBand = pred[c(1,3),], predictionBand = pred[c(4,6),], ...)
+  else plotTimeSeries(observed = observed, predicted = pred[2,], confidenceBand = pred[c(1,3),], ...)
   
   
   # TODO - plotResiduals needs to be implemented
