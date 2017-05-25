@@ -51,7 +51,7 @@ DE <- function(bayesianSetup,
                     currentChain = 1,
                     message = TRUE
                   )
-                  ){
+               ){
 
   if("bayesianOutput" %in% class(bayesianSetup)){
     restart <- TRUE
@@ -97,10 +97,11 @@ DE <- function(bayesianSetup,
  if (!is.matrix(X)) stop("wrong starting values")
 
   FUN = setup$posterior$density
- 
+  
   ## Initialize blockUpdate parameters and settings
   blockdefault <- list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
-       groupStart = 1000, groupIntervall = 1000)
+                       groupStart = 1000, groupIntervall = 1000)
+  
   if(!is.null(settings$blockUpdate)){
     blockUpdate <- modifyList(blockdefault, settings$blockUpdate)
     blockUpdate[[1]] <- settings$blockUpdate[[1]] # to catch first argument
@@ -160,7 +161,7 @@ DE <- function(bayesianSetup,
   
   for (iter in 2:n.iter) {
     
-    if (iter%%10) F = F2 else F = F1
+    if (iter%%10) F_cur = F2 else F_cur = F1
 
     
     if(blocks){
@@ -177,7 +178,7 @@ DE <- function(bayesianSetup,
       # select to random different individuals (and different from i) in rr, a 2-vector
       
       rr <- sample(iseq[-i], 2, replace = FALSE)
-      x_prop <- X[i,] + F * (X[rr[1],]-X[rr[2],]) + eps * rnorm(Npar,0,1)
+      x_prop <- X[i,] + F_cur * (X[rr[1],]-X[rr[2],]) + eps * rnorm(Npar,0,1)
       
       if(BlockStart){
         # Get the current group and update the proposal accordingly
