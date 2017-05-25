@@ -33,7 +33,7 @@ getSample(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
 Extracts the sample from a bayesianOutput
 }
 \examples{
-ll = function(x) sum(dnorm(x, log = T))
+ll = function(x) sum(dnorm(x, log = TRUE))
 
 setup = createBayesianSetup(ll, lower = c(-10,-10), upper = c(10,10))
 
@@ -45,7 +45,7 @@ out <- runMCMC(bayesianSetup = setup, sampler = "DEzs", settings = settings)
 sample <- getSample(out, start = 100, end = 334, thin = 10) 
 
 # 
-sample <- getSample(out, start = 100, numSamples = 60, coda = T)
+sample <- getSample(out, start = 100, numSamples = 60, coda = TRUE)
 plot(sample)
 }
 \author{

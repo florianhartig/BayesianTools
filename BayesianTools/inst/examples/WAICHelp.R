@@ -2,7 +2,7 @@ bayesianSetup <- createBayesianSetup(likelihood = testDensityNormal,
                                      prior = createUniformPrior(lower = rep(-10,2),
                                                                 upper = rep(10,2)))
 
-# likelihood density needs to have option sum = F
+# likelihood density needs to have option sum = FALSE
 
 testDensityNormal(c(1,1,1), sum = FALSE)
 bayesianSetup$likelihood$density(c(1,1,1), sum = FALSE)

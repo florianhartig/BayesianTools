@@ -41,7 +41,7 @@ prior$sampler()
 ## the prior object can be passed to createBayesianSetup()
 
 # log-likelihood density function (needed for createBayesianSetup)
-ll <- function(x) sum(dnorm(x, log = T))
+ll <- function(x) sum(dnorm(x, log = TRUE))
 
 setup <- createBayesianSetup(prior = prior, likelihood = ll)
 }

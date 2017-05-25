@@ -42,7 +42,7 @@ likelihood <- function(x, sum = TRUE){
   predicted <- VSEM(x[1:11], PAR)
   diff = c(predicted[,1:3] - obs[,1:3])
   llValues = dnorm(diff, sd = max(abs(c(predicted[,1:3])),0.0001) * x[12], log = TRUE) 
-  if (sum == F) return(llValues)
+  if (sum == False) return(llValues)
   else return(sum(llValues))
 }
 
