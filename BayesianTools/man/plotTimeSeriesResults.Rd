@@ -21,6 +21,8 @@ plotTimeSeriesResults(sampler, model, observed, error = NULL,
 \item{start}{numeric start value for the plot (see \code{\link{getSample}})}
 
 \item{prior}{if a prior sampler is implemented, setting this parameter to TRUE will draw model parameters from the prior instead of the posterior distribution}
+
+\item{...}{further arguments passed to \code{\link[graphics]{plot}}}
 }
 \description{
 Creates a time series plot typical for an MCMC / SMC fit
