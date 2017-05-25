@@ -16,7 +16,7 @@
 #' @export
 plotTimeSeries <- function(observed = NULL, predicted = NULL, x = NULL, confidenceBand = NULL, predictionBand = NULL, xlab = "Time", ylab = "Observed / predicted values", ...){
   
-  ylim = range(observed, predicted, confidenceBand, predictionBand,na.rm=T)
+  ylim = range(observed, predicted, confidenceBand, predictionBand,na.rm=TRUE)
   
   if (is.null(x)){
     if(!is.null(observed)) x = 1:length(observed)
@@ -64,15 +64,15 @@ plotTimeSeriesResiduals <- function(residuals, x = NULL, main = "residuals"){
 #' @param error function with signature f(mean, par) that generates error expectations from mean model predictions. Par is a vector from the matrix with the parameter samples (full length). f needs to know which of these parameters are parameters of the error function
 #' @param start numeric start value for the plot (see \code{\link{getSample}})
 #' @param plotResiduals logical determining whether residuals should be plotted
-#' @param prior if a prior sampler is implemented, setting this parameter to T will draw model parameters from the prior instead of the posterior distribution
+#' @param prior if a prior sampler is implemented, setting this parameter to TRUE will draw model parameters from the prior instead of the posterior distribution
 #' @export
-plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotResiduals = T, start = 1, prior = F, ...){
+plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotResiduals = TRUE, start = 1, prior = FALSE, ...){
   
-  if(prior == F){
+  if(prior == FALSE){
     if(inherits(sampler,"bayesianOutput")) parMatrix = getSample(sampler, start = start)
     else if (class(sampler) == "matrix") parMatrix = sampler
     else stop("wrong type give to variable sampler")    
-  }else if (prior == T){
+  }else if (prior == TRUE){
     if(class(sampler)[1] == "mcmcSamplerList") parMatrix = sampler[[1]]$setup$prior$sampler(1000)
     else parMatrix = sampler$setup$prior$sampler(1000)
   }else stop("BayesianTools::plotTimeSeriesResults - wrong argument to prior")
