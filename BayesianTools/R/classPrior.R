@@ -94,7 +94,7 @@ createPrior <- function(density = NULL, sampler = NULL, lower = NULL, upper = NU
 #' @param best vector with "best" values for all parameters
 #' @note for details see \code{\link{createPrior}}
 #' @seealso \code{\link{createPriorDensity}}, \code{\link{createPrior}}, \code{\link{createBetaPrior}}, \code{\link{createTruncatedNormalPrior}}, \code{\link{createBayesianSetup}} 
-#' @example /inst/examples/createUniformPrior.R
+#' @example /inst/examples/createUniformPriorHelp.R
 #' @export
 createUniformPrior<- function(lower, upper, best = NULL){
   len = length(lower)
@@ -102,7 +102,7 @@ createUniformPrior<- function(lower, upper, best = NULL){
     if (length(x) != len) stop("parameter vector does not match prior")
     else return(sum(dunif(x, min = lower, max = upper, log = T)))
   }
-  sampler <- function() runif(length(lower), lower, upper)
+  sampler <- function() runif(len, lower, upper)
   
   out <- createPrior(density = density, sampler = sampler, lower = lower, upper = upper, best = best)
   return(out)

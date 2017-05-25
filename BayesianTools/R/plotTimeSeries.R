@@ -12,6 +12,7 @@
 #'          \code{\link{marginalPlot}} \cr
 #'          \code{\link{tracePlot}} \cr
 #'          \code{\link{correlationPlot}}
+#' @example /inst/examples/plotTimeSeriesHelp.R
 #' @export
 plotTimeSeries <- function(observed = NULL, predicted = NULL, x = NULL, confidenceBand = NULL, predictionBand = NULL, xlab = "Time", ylab = "Observed / predicted values", ...){
   
