@@ -13,3 +13,6 @@ stopParallel(bayesianSetup)
 Function closes 
 the parallel executer (if available)
 }
+\author{
+Stefan Paul
+}

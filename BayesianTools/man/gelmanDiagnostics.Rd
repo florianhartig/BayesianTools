@@ -25,3 +25,6 @@ The original idea is that this function is applied to the outcome of several ind
 
 ter Braak, Cajo JF, and Jasper A. Vrugt. "Differential evolution Markov chain with snooker updater and fewer chains." Statistics and Computing 18.4 (2008): 435-446.
 }
+\author{
+Florian Hartig
+}

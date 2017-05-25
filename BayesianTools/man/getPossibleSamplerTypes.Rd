@@ -9,3 +9,6 @@ getPossibleSamplerTypes()
 \description{
 Returns possible sampler types
 }
+\author{
+Florian Hartig
+}

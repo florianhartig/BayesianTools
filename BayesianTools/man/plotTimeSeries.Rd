@@ -28,6 +28,21 @@ plotTimeSeries(observed = NULL, predicted = NULL, x = NULL,
 \description{
 Plots a time series, with the option to include confidence and prediction band
 }
+\examples{
+# Create time series
+ts <- VSEMcreatePAR(1:100)
+
+# create fake "predictions"
+pred <- ts + rnorm(length(ts), mean = 0, sd = 2)
+
+# plot time series
+par(mfrow=c(1,2))
+
+plotTimeSeries(observed = ts, main="Observed")
+plotTimeSeries(observed = ts, predicted = pred, main = "Observed and predicted")
+
+par(mfrow=c(1,1))
+}
 \seealso{
 \code{\link{plotTimeSeriesResults}}  \cr
          \code{\link{marginalPlot}} \cr

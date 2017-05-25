@@ -19,3 +19,6 @@ Provides the default settings for the different samplers in runMCMC
 \details{
 see \code{\link{runMCMC}}
 }
+\author{
+Florian Hartig
+}

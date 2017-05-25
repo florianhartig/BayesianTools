@@ -20,3 +20,6 @@ The recommended option to use this function in the samplers is to have parallel 
 \seealso{
 \code{\link{createBayesianSetup}}
 }
+\author{
+Florian Hartig
+}

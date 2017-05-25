@@ -16,3 +16,6 @@ setupStartProposal(proposalGenerator = NULL, bayesianSetup, settings)
 \description{
 Help function to find starvalues and proposalGenerator settings
 }
+\author{
+Florian Hartig
+}

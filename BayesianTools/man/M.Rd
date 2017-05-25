@@ -30,3 +30,6 @@ The Metropolis Algorithm (Metropolis et al. 1953)
 \references{
 Metropolis, Nicholas, et al. "Equation of state calculations by fast computing machines." The journal of chemical physics 21.6 (1953): 1087-1092.
 }
+\author{
+Francesco Minunno
+}

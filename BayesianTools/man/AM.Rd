@@ -30,3 +30,6 @@ The Adaptive Metropolis Algorithm (Haario et al. 2001)
 \references{
 Haario, Heikki, Eero Saksman, and Johanna Tamminen. "An adaptive Metropolis algorithm." Bernoulli (2001): 223-242.
 }
+\author{
+Francesco Minunno
+}
