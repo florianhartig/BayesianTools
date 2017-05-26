@@ -6,6 +6,7 @@
 #' @seealso \code{\link{marginalPlot}} \cr
 #'          \code{\link{plotTimeSeries}} \cr
 #'          \code{\link{correlationPlot}}
+#' @example /inst/examples/tracePlotHelp.R
 tracePlot <- function(sampler, thin = "auto", ...){
   codaChain = getSample(sampler, coda = T, thin = thin, ...)
   plot(codaChain)
