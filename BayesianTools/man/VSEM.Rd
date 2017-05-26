@@ -82,7 +82,8 @@ NPP   Net Primary Productivity kg C /m2 /day
 NEE   Net Ecosystem Exchange kg C /m2 /day
 }
 \examples{
-
+\dontrun{
+  
 ## This example shows how to run and calibrate the VSEM model 
 
 library(BayesianTools)
@@ -157,13 +158,14 @@ createError <- function(mean, par){
 }
 
 # plot prior predictive distribution and prior predictive simulations
-plotTimeSeriesResults(sampler = out, model = createPredictions, observed = referenceData[,1], error = createError, prior = TRUE, main = "Prior predictive")
+plotTimeSeriesResults(sampler = out, model = createPredictions, observed = referenceData[,1],
+                      error = createError, prior = TRUE, main = "Prior predictive")
 
 # plot posterior predictive distribution and posterior predictive simulations
-plotTimeSeriesResults(sampler = out, model = createPredictions, observed = referenceData[,1], error = createError, main = "Posterior predictive")
+plotTimeSeriesResults(sampler = out, model = createPredictions, observed = referenceData[,1],
+                      error = createError, main = "Posterior predictive")
 
-
-
+}
 
 }
 \seealso{

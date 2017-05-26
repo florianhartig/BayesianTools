@@ -6,7 +6,8 @@ settings = list(nrChains = 2, iterations = 1000)
 out <- runMCMC(bayesianSetup = setup, sampler = "DEzs", settings = settings)
 
 
-# population MCMCs divide the interations by the number of internal chains, so the end of the 3 chains is 1000/3 = 334
+# population MCMCs divide the interations by the number of internal chains,
+# so the end of the 3 chains is 1000/3 = 334
 sample <- getSample(out, start = 100, end = 334, thin = 10) 
 
 # 
