@@ -2,10 +2,9 @@ NOTE: for more news about the package, see https://github.com/florianhartig/Baye
 
 # BayesianTools 0.1.2 
 
-Minor changes
-
 Bugfixes
 
+- various smaller improvement / bugfixes in getSample, plot functions / Help (0.1.2)
 - warnings / bugfixes associated to burnin arguments (0.1.1.2)
 - bugfix in marginal plots (0.1.1.1)
 

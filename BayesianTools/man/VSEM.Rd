@@ -82,7 +82,7 @@ NPP   Net Primary Productivity kg C /m2 /day
 NEE   Net Ecosystem Exchange kg C /m2 /day
 }
 \examples{
-\dontrun{
+
   
 ## This example shows how to run and calibrate the VSEM model 
 
@@ -136,6 +136,8 @@ bayesianSetup <- createBayesianSetup(likelihood, prior, names = rownames(refPars
 settings <- list(iterations = 2000, nrChains = 2)
 
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+
+\dontrun{
 
 plot(out)
 summary(out)

@@ -1,3 +1,12 @@
+# 
+
+
+## Submission 1
+
+Mostly a bugfix release
+
+Tested under Mac (3.3.2), http://win-builder.r-project.org/ (oldrel / release / devel) and Travis CI  (oldrel / release / devel) without apparent problems.
+
 # Version 0.1.1
 
 ## Submission 1
