@@ -1,36 +1,35 @@
-# 
+This file contains CRAN submission info / communication
 
+## Version 0.1.2
 
-## Submission 1
+### Submission 1
+
+A bugfix release, fixing a few smaller inconsistencies in the user interface and class behavior
+
+Tested under Mac (3.3.2), http://win-builder.r-project.org/ (oldrel / release / devel) and Travis CI  (oldrel / release / devel) without apparent problems.
+
+## Version 0.1.1
+
+### Submission 1
 
 Mostly a bugfix release
 
 Tested under Mac (3.3.2), http://win-builder.r-project.org/ (oldrel / release / devel) and Travis CI  (oldrel / release / devel) without apparent problems.
 
-# Version 0.1.1
-
-## Submission 1
-
-Mostly a bugfix release
-
-Tested under Mac (3.3.2), http://win-builder.r-project.org/ (oldrel / release / devel) and Travis CI  (oldrel / release / devel) without apparent problems.
-
-## Submission 2
+### Submission 2
 
 This is release introduces a few smaller fixes and improvements. A previous upload of this release was rejected due to the new dynload policies in R 3.4, see https://github.com/florianhartig/BayesianTools/issues/31. This is now fixed. 
 
 The package was tested under Mac (3.3.2), http://win-builder.r-project.org/ (oldrel / release / devel) and Travis CI  (oldrel / release / devel) without apparent problems.
 
-# Version 0.1.0
+## Version 0.1.0
 
-## Submission 2
+### Submission 2
 
 
 This is a new (re)submission. 
 
 I have removed the non-standard folder and added details on samplers as requested
-
-### Tested without problems under
 
 * local R version 3.3.2 (2016-10-31), Platform: x86_64-apple-darwin13.4.0 (64-bit), Running under: macOS Sierra 10.12.2
 * http://win-builder.r-project.org/
@@ -39,9 +38,7 @@ I have removed the non-standard folder and added details on samplers as requeste
  * oldrel / release / devel
  * See https://travis-ci.org/florianhartig/BayesianTools
 
-
-
-## Submission 1
+### Submission 1
 
 This is a new submission. 
 
