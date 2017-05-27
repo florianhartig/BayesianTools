@@ -30,7 +30,7 @@ parSel = c(1:6, 12)
 
 # here is the likelihood 
 likelihood <- function(par, sum = TRUE){
-  # createMixWithDefaults sets the parameters that are not calibrated on default values 
+  # set parameters that are not calibrated on default values 
   x = refPars$best
   x[parSel] = par
   predicted <- VSEM(x[1:11], PAR) # replace here VSEM with your model 
@@ -63,7 +63,7 @@ gelmanDiagnostics(out) # should be below 1.05 for all parameters to demonstrate 
 
 # Create a prediction function
 createPredictions <- function(par){
-  # createMixWithDefaults sets the parameters that are not calibrated on default values 
+  # set the parameters that are not calibrated on default values 
   x = refPars$best
   x[parSel] = par
   predicted <- VSEM(x[1:11], PAR) # replace here VSEM with your model 

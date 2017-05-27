@@ -36,9 +36,9 @@ parSel = c(1:6, 12)
 
 
 ## Builidng the likelihood function
-likelihood <- function(x, sum = TRUE){
-  parSel = c(1:6, 12)
-  x = createMixWithDefaults(x, refPars$best, parSel)
+likelihood <- function(par, sum = TRUE){
+  x = refPars$best
+  x[parSel] = par
   predicted <- VSEM(x[1:11], PAR)
   diff = c(predicted[,1:3] - obs[,1:3])
   llValues = dnorm(diff, sd = max(abs(c(predicted[,1:3])),0.0001) * x[12], log = TRUE) 
