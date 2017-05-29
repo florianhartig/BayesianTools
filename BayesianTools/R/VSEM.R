@@ -199,7 +199,6 @@ VSEMcreateLikelihood <- function(likelihoodOnly = F, plot = F, selection =  c(1:
   # Create likelihood for reference data
   
   likelihood <- function(x){
-    #x <- createMixWithDefaults(x, refPars$best, selection)
     mix = refPars$best
     mix[selection] = x
     

@@ -108,7 +108,6 @@ Remember - If you need more background, see the [TG13 tutorial](https://www.drop
 # We further add an additional parameter for the model error.
 parSel <- c(1:6, 12)
 likelihood <- function(x, sum = T){
-  #x <- createMixWithDefaults(x, refPars$best, parSel)
   mix = refPars$best
   mix[parSel] = x
   predicted <- VSEM(x[1:11], PAR)

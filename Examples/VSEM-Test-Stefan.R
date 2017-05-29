@@ -29,7 +29,6 @@ likelihood <- function(x, sum = T){
   
   # Selecting parameters
   parSel = c(1:6, 12)
-  #x = BayesianTools::createMixWithDefaults(x, refPars$best, parSel)
   mix = refPars$best
   mix[parSel] = x
   predicted <- BayesianTools::VSEM(mix[1:11], PAR)

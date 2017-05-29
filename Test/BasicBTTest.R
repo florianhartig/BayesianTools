@@ -21,7 +21,6 @@ for (i in 1:4) plotTimeSeries(observed = obs[,i], predicted = referenceData[,i],
 parSel = c(1:12)
 
 likelihood <- function(x, sum = TRUE){
-  #x <- createMixWithDefaults(x, refPars$best, parSel)
   mix = refPars$best
   mix[parSel] = x
   predicted <- VSEM(mix[1:11], PAR)
