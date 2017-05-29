@@ -110,10 +110,12 @@ Remember - If you need more background, see the [TG13 tutorial](https://www.drop
 # We further add an additional parameter for the model error.
 parSel <- c(1:6, 12)
 likelihood <- function(x, sum = T){
-  x <- createMixWithDefaults(x, refPars$best, parSel)
-  predicted <- VSEM(x[1:11], PAR)
+  #x <- createMixWithDefaults(x, refPars$best, parSel)
+  mix = refPars$best
+  mix[parSel] = x
+  predicted <- VSEM(mix[1:11], PAR)
   diff <- c(predicted[,1:3] - obs[,1:3])
-  llValues <- dnorm(diff, sd = max(abs(c(predicted[,1:3])),0.0001) * x[12], log = T) 
+  llValues <- dnorm(diff, sd = max(abs(c(predicted[,1:3])),0.0001) * mix[12], log = T) 
   if (sum == F) return(llValues)
   else return(sum(llValues))
 }

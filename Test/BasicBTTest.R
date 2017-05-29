@@ -21,11 +21,13 @@ for (i in 1:4) plotTimeSeries(observed = obs[,i], predicted = referenceData[,i],
 parSel = c(1:12)
 
 likelihood <- function(x, sum = TRUE){
-  x <- createMixWithDefaults(x, refPars$best, parSel)
-  predicted <- VSEM(x[1:11], PAR)
+  #x <- createMixWithDefaults(x, refPars$best, parSel)
+  mix = refPars$best
+  mix[parSel] = x
+  predicted <- VSEM(mix[1:11], PAR)
   predicted[,1] = 1000 * predicted[,1]
   diff <- c(predicted[,1:4] - obs[,1:4])
-  llValues <- dnorm(diff, sd = x[12], log = T) 
+  llValues <- dnorm(diff, sd = mix[12], log = T) 
   # if(runif(1) < 0.4) stop()
   if (sum == FALSE) return(llValues)
   else return(sum(llValues))

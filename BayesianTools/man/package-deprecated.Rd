@@ -14,5 +14,5 @@ createMixWithDefaults(pars, defaults, locations)
 \item{locations}{indices of the new parameter values}
 }
 \description{
-Allows to mix a given parameter vector with a default parameter vector
+This function is deprecated and will be removed by v0.2.
 }

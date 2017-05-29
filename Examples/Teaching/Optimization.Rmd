@@ -62,7 +62,9 @@ for (i in 1:4) plotTimeSeries(observed = obs[,i], predicted = referenceData[,i],
 parSel = c(1:6)
 
 sensitivityTarget <- function(par){
-  x <- createMixWithDefaults(par, refPars$best, parSel)
+  #x <- createMixWithDefaults(par, refPars$best, parSel)
+  x = refPars$best
+  x[parSel] = par
   predicted <- VSEM(x[1:11], PAR)
   return(sum(predicted[,2]))
 }
@@ -107,7 +109,9 @@ Let's for the moment only change 2 parameters (parameters 1,3) to make it easy
 parSel = c(1,3)
 
 optimizationTarget <- function(par){
-  x <- createMixWithDefaults(par, refPars$best, parSel)
+  #x <- createMixWithDefaults(par, refPars$best, parSel)
+  x = refPars$best
+  x[parSel] = par
   predicted <- VSEM(x[1:11], PAR)[,1]
   return(sum(abs(predicted - observation)))
 }
