@@ -25,7 +25,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       thin = max(floor(nrow(out) / 5000),1)
     }
     if(is.null(thin) | thin == F) thin = 1
-    if(thin > nrow(out)) stop("thin must not be greater than the total number of samples")
+    if(thin > nrow(out)) warning("thin is greater than the total number of samples")
     if (! thin == 1){
       sel = seq(1,dim(out)[1], by = thin )
       out = out[sel,]
@@ -72,7 +72,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       }
       if(is.null(thin) | thin == F) thin = 1
 
-      if(thin > nrow(temp)) stop("thin must not be greater than the total number of samples per chain")
+      if(thin > nrow(temp)) warning("thin is greater than the total number of samples")
       
       if (! thin == 1){
         sel = seq(1,dim(temp)[1], by = thin )
