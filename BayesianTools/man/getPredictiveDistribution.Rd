@@ -4,17 +4,20 @@
 \alias{getPredictiveDistribution}
 \title{Calculates predictive distribution based on the parameters}
 \usage{
-getPredictiveDistribution(parMatrix, model, thin = 1000)
+getPredictiveDistribution(parMatrix, model, numSamples = 1000)
 }
 \arguments{
 \item{parMatrix}{matrix of parameter values}
 
 \item{model}{model / function to calculate predictions. Outcome should be a vector}
 
-\item{thin}{thinning}
+\item{numSamples}{number of samples to be drawn}
 }
 \description{
 Calculates predictive distribution based on the parameters
+}
+\details{
+If numSamples is greater than the number of rows in parMatrix, or NULL, or FALSE, or less than 1 all samples in parMatrix will be used.
 }
 \seealso{
 \code{\link{getPredictiveIntervals}} \cr

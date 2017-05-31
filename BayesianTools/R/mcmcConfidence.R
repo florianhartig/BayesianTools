@@ -22,15 +22,16 @@ getCredibleIntervals <- function(sampleMatrix, quantiles = c(0.025, 0.975)){
 #' @author Florian Hartig
 #' @param parMatrix matrix of parameter values
 #' @param model model / function to calculate predictions. Outcome should be a vector
-#' @param thin thinning 
+#' @param numSamples number of samples to be drawn 
+#' @details If numSamples is greater than the number of rows in parMatrix, or NULL, or FALSE, or less than 1 all samples in parMatrix will be used.
 #' @export
 #' @seealso \code{\link{getPredictiveIntervals}} \cr
 #'          \code{\link{getCredibleIntervals}} \cr
-getPredictiveDistribution<-function(parMatrix, model, thin = 1000){
+getPredictiveDistribution<-function(parMatrix, model, numSamples = 1000){
   
   # Do thinning if wanted and neccessary
-  if (thin != F & nrow(parMatrix) > 2*thin){
-    sel = round(seq(1,nrow(parMatrix), len = thin ))
+  if (numSamples != F && nrow(parMatrix) > 2*numSamples && !is.null(numSamples) && numSamples > 0){
+    sel = round(seq(1,nrow(parMatrix), len = numSamples ))
     parMatrixSel = parMatrix[sel,]
   }else{
     parMatrixSel = parMatrix
@@ -56,14 +57,15 @@ getPredictiveDistribution<-function(parMatrix, model, thin = 1000){
 #' @author Florian Hartig
 #' @param parMatrix matrix of parameter values
 #' @param model model / function to calculate predictions. Outcome should be a vector
-#' @param thin thinning 
+#' @param numSamples number of samples to be drawn
 #' @param quantiles quantiles to calculate
 #' @param error function that accepts a vector as in observation. If supplied, will calculate also predictive intervals additional to credible intervals
+#' @details If numSamples is greater than the number of rows in parMatrix, or NULL, or FALSE, or less than 1 all samples in parMatrix will be used.
 #' @export
 #' @seealso \code{\link{getPredictiveDistribution}} \cr
 #'          \code{\link{getCredibleIntervals}} \cr
-getPredictiveIntervals<-function(parMatrix, model, thin = 1000, quantiles = c(0.025, 0.975), error = NULL){
-  pred = getPredictiveDistribution(parMatrix, model = model, thin = thin)
+getPredictiveIntervals<-function(parMatrix, model, numSamples = 1000, quantiles = c(0.025, 0.975), error = NULL){
+  pred = getPredictiveDistribution(parMatrix, model = model, numSamples = numSamples)
   out = getCredibleIntervals(sampleMatrix = pred, quantiles = quantiles)
   
   if(!is.null(error)){
