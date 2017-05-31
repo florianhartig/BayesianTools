@@ -169,6 +169,7 @@ plotTimeSeriesResults(sampler = out, model = createPredictions, observed = refer
 
 }
 
+par(oldpar)
 }
 \seealso{
 \code{\link{VSEMgetDefaults}}, \code{\link{VSEMcreatePAR}}, , \code{\link{VSEMcreateLikelihood}}

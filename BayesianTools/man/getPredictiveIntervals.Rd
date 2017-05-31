@@ -4,15 +4,15 @@
 \alias{getPredictiveIntervals}
 \title{Calculates Bayesian credible (confidence) and predictive intervals based on parameter sample}
 \usage{
-getPredictiveIntervals(parMatrix, model, thin = 1000, quantiles = c(0.025,
-  0.975), error = NULL)
+getPredictiveIntervals(parMatrix, model, numSamples = 1000,
+  quantiles = c(0.025, 0.975), error = NULL)
 }
 \arguments{
 \item{parMatrix}{matrix of parameter values}
 
 \item{model}{model / function to calculate predictions. Outcome should be a vector}
 
-\item{thin}{thinning}
+\item{numSamples}{number of samples to be drawn}
 
 \item{quantiles}{quantiles to calculate}
 
@@ -20,6 +20,9 @@ getPredictiveIntervals(parMatrix, model, thin = 1000, quantiles = c(0.025,
 }
 \description{
 Calculates Bayesian credible (confidence) and predictive intervals based on parameter sample
+}
+\details{
+If numSamples is greater than the number of rows in parMatrix, or NULL, or FALSE, or less than 1 all samples in parMatrix will be used.
 }
 \seealso{
 \code{\link{getPredictiveDistribution}} \cr

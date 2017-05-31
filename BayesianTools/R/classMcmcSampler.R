@@ -24,8 +24,8 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     if (thin == "auto"){
       thin = max(floor(nrow(out) / 5000),1)
     }
-    if(is.null(thin) | thin == F) thin = 1
-    if(thin > nrow(out)) stop("thin must not be greater than the total number of samples")
+    if(is.null(thin) || thin == F || thin < 1) thin = 1
+    if(thin > nrow(out)) warning("thin is greater than the total number of samples!")
     if (! thin == 1){
       sel = seq(1,dim(out)[1], by = thin )
       out = out[sel,]
@@ -33,10 +33,11 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     # Sample size
     if(thin == 1 && !is.null(numSamples)){
       # wrong user input: numSamples > total number of samples
-      if(numSamples > nrow(out)) {
+      if (numSamples > nrow(out)) {
         numSamples = nrow(out)
-        warning("numSamples is greater than the total number of samples. All samples were selected.")
+        warning("numSamples is greater than the total number of samples! All samples were selected.")
       }
+      if (numSamples < 1) numSamples = 1;
       sel <- seq(1,dim(out)[1], len = numSamples)
       out <- out[sel,] 
     }
@@ -70,9 +71,9 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       if (thin == "auto"){
         thin = max(floor(nrow(temp) / 5000),1)
       }
-      if(is.null(thin) | thin == F) thin = 1
+      if(is.null(thin) || thin == F || thin < 1) thin = 1
 
-      if(thin > nrow(temp)) stop("thin must not be greater than the total number of samples per chain")
+      if(thin > nrow(temp)) warning("thin is greater than the total number of samples!")
       
       if (! thin == 1){
         sel = seq(1,dim(temp)[1], by = thin )
@@ -84,8 +85,9 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
         # wrong user input: numSamples > total number of samples
         if(ceiling(numSamples/length(sampler$chain)) > nrow(temp)) {
           numSamples = nrow(temp) * length(sampler$chain)
-          warning("numSamples is greater than the total number of samples. All samples were selected.")
+          warning("numSamples is greater than the total number of samples! All samples were selected.")
         }
+        if (numSamples < 1) numSamples = 1;
         sel <- seq(1,dim(temp)[1], len = (ceiling(numSamples/length(sampler$chain))))
         temp <- temp[sel,] 
       }
@@ -99,7 +101,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     class(out) = "mcmc.list" 
     
     trueNumSamples <- sum(unlist(lapply(out, FUN = nrow)))
-    if (!is.null(numSamples) && trueNumSamples > numSamples) warning(paste(c("Could not draw ", numSamples, " samples due to rounding errors. Instead ", trueNumSamples," were drawn.")))
+    #if (!is.null(numSamples) && trueNumSamples > numSamples) warning(paste(c("Could not draw ", numSamples, " samples due to rounding errors. Instead ", trueNumSamples," were drawn.")))
     
     if(coda == F){
       out = combineChains(out)

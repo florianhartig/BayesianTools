@@ -18,13 +18,18 @@ getSample.smcSampler <- function(sampler, parametersOnly = T, coda = F, start = 
   if (thin == "auto"){
     thin = max(floor(nrow(out) / 5000),1)
   }
-  if(is.null(thin) | thin == F) thin = 1
+  if(is.null(thin) || thin == F || thin < 1) thin = 1
   if (! thin == 1){
     sel = seq(1,dim(out)[1], by = thin )
     out = out[sel,]
   }
   # Sample size
   if(thin == 1 && !is.null(numSamples)){
+    if (numSamples > nrow(out)) {
+      numSamples = nrow(out)
+      warning("numSamples is greater than the total number of samples! All samples were selected.")
+    }
+    if (numSamples < 1) numSamples = 1;
     sel <- seq(1,dim(out)[1], len = numSamples)
     out <- out[sel,] 
   }
