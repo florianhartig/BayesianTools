@@ -33,10 +33,11 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     # Sample size
     if(thin == 1 && !is.null(numSamples)){
       # wrong user input: numSamples > total number of samples
-      if(numSamples > nrow(out)) {
+      if (numSamples > nrow(out)) {
         numSamples = nrow(out)
         warning("numSamples is greater than the total number of samples! All samples were selected.")
       }
+      if (numSamples < 1) numSamples = 1;
       sel <- seq(1,dim(out)[1], len = numSamples)
       out <- out[sel,] 
     }
@@ -86,6 +87,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
           numSamples = nrow(temp) * length(sampler$chain)
           warning("numSamples is greater than the total number of samples! All samples were selected.")
         }
+        if (numSamples < 1) numSamples = 1;
         sel <- seq(1,dim(temp)[1], len = (ceiling(numSamples/length(sampler$chain))))
         temp <- temp[sel,] 
       }

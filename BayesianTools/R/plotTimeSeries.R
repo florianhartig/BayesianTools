@@ -78,9 +78,9 @@ plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotRe
     else parMatrix = sampler$setup$prior$sampler(1000)
   }else stop("BayesianTools::plotTimeSeriesResults - wrong argument to prior")
 
-  thin = min(1000, nrow(parMatrix))
+  numSamples = min(1000, nrow(parMatrix))
   
-  pred <- getPredictiveIntervals(parMatrix = parMatrix, model = model, thin = thin, quantiles = c(0.025, 0.5, 0.975), error = error)
+  pred <- getPredictiveIntervals(parMatrix = parMatrix, model = model, numSamples = numSamples, quantiles = c(0.025, 0.5, 0.975), error = error)
   
   if(!is.null(error)) plotTimeSeries(observed = observed, predicted = pred[2,], confidenceBand = pred[c(1,3),], predictionBand = pred[c(4,6),], ...)
   else plotTimeSeries(observed = observed, predicted = pred[2,], confidenceBand = pred[c(1,3),], ...)

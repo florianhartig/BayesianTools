@@ -85,3 +85,4 @@ plotTimeSeriesResults(sampler = out, model = createPredictions, observed = refer
 
 }
 
+par(oldpar)
