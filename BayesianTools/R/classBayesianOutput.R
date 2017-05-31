@@ -14,6 +14,7 @@
 #' @param reportDiagnostics logical, determines whether settings should be included in the output
 #' @param ... further arguments
 #' @example /inst/examples/getSampleHelp.R
+#' @details If thin is greater than the total number of samples in the sampler object the first and the last element (of each chain if a sampler with multiples chains is used) are sampled. If numSamples is greater than the total number of samples all samples are selected. In both cases a warning is displayed.
 #' @export
 getSample <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...) UseMethod("getSample")
 
@@ -37,7 +38,8 @@ getSample.matrix <- function(mat, parametersOnly = T, coda = F, start = 1, end =
     if (thin == "auto"){
       thin = max(floor(nrow(out) / 5000),1)
     }
-    if(is.null(thin) | thin == F) thin = 1
+    if(is.null(thin) || thin == F || thin < 1) thin = 1
+    if (thin > nrow(mat)) warning("thin is greater than the total number of samples!")
     if (! thin == 1){
       sel = seq(1,dim(out)[1], by = thin )
       out = out[sel,]

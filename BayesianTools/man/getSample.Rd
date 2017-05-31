@@ -32,6 +32,9 @@ getSample(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
 \description{
 Extracts the sample from a bayesianOutput
 }
+\details{
+If thin is greater than the total number of samples in the sampler object the first and the last element (of each chain if a sampler with multiples chains is used) are sampled. If numSamples is greater than the total number of samples all samples are selected. In both cases a warning is displayed.
+}
 \examples{
 ll = function(x) sum(dnorm(x, log = TRUE))
 
