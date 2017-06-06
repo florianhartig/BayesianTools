@@ -58,3 +58,36 @@ getSample.matrix <- function(mat, parametersOnly = T, coda = F, start = 1, end =
 getSample.data.frame <- function(data, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   getSample(matrix(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
 }
+
+# The following two S3 implementations make getSample compatible with coda::mcmc and coda::mcmc.list
+
+
+
+getSample.mcmc <- function(data, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
+  
+  if(coda == T){
+    
+    # TODO - if the object is already coda, don't convert, but just select, potentially using http://svitsrv25.epfl.ch/R-doc/library/coda/html/window.mcmc.html
+    
+  } else if(coda == F){
+    getSample(as.matrix(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)    
+  }
+}
+
+getSample.mcmc.list <- function(data, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
+  
+  if(coda == T){
+    
+    # TODO - if the object is already coda, don't convert, but just select, potentially using http://svitsrv25.epfl.ch/R-doc/library/coda/html/window.mcmc.html
+    
+  } else if(coda == F){
+    
+    # TODO - this doesn't work properly, the chains are either ordered one after the other  (as.matrix), or with as.array as 3-dim array, but they should be shuffled according to BT Logic
+    
+    # see http://svitsrv25.epfl.ch/R-doc/library/coda/html/mcmc.convert.html
+    
+    getSample(as.array(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
+  }
+}
+  
+
