@@ -65,7 +65,7 @@
 #' 
 #' NEE   Net Ecosystem Exchange kg C /m2 /day
 #' @seealso \code{\link{VSEMgetDefaults}}, \code{\link{VSEMcreatePAR}}, , \code{\link{VSEMcreateLikelihood}} 
-#' @example /inst/examples/VSEM.R
+#' @example /inst/examples/VSEMHelp.R
 #' @export
 #' @author David Cameron, R and C implementation by Florian Hartig
 VSEM <- function(pars =  c(KEXT = 0.5,
