@@ -34,7 +34,7 @@ scaleMatrix <- function(mat, min, max){
 }
 
 
-#' Funktion to calculate the metropolis ratio
+#' Function to calculate the metropolis ratio
 #' @author Florian Hartig
 #' @param LP2 log posterior old position
 #' @param LP1 log posterior of proposal
@@ -65,11 +65,11 @@ getPanels <- function(x){
   }
 }  
 
-#' Gets n equally spaced samples (rows) from a mcmc-object (matrix)
+#' Gets n equally spaced samples (rows) from a matrix
 #' @author Tankred Ott
-#' @param x mcmc-object/matrix
-#' @param numSamples number of samples to be drawn
-#' @details Gets n equally spaced samples (rows) from a mcmc-object (matrix) and returns a mcmc-object/matrix only containing those samples
+#' @param x matrix
+#' @param numSamples number of samples (rows) to be drawn
+#' @details Gets n equally spaced samples (rows) from a matrix and returns a new matrix (or vector) containing those samples
 #' @export
 sampleEquallySpaced <- function(x, numSamples) {
   # wrong input: numSamples > total number of samples
@@ -86,3 +86,18 @@ sampleEquallySpaced <- function(x, numSamples) {
   return(x[sel,])
 }
 
+#' Checks if thin is conistent with nTotalSamples samples and if not corrects it.
+#' @author Tankred Ott
+#' @param nTotalSamples total number of rows/samples 
+#' @param thin thinning
+#' @details Checks if the thin argument is consistent with the data consisting of nTotalSamples samples/rows and corrects thin if not.
+#' @author Tankred Ott
+#' @export
+correctThin <- function(nTotalSamples, thin, fraction = 5000) {
+  if (thin == "auto"){
+    thin = max(floor(nTotalSamples / 5000),1)
+  } else if (is.null(thin) || thin == F || thin < 1) {
+    thin = 1
+  } else if (thin > nTotalSamples) warning("thin is greater than the total number of samples! Only the first row was selected.")
+  return(thin)
+}
