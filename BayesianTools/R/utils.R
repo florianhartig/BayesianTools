@@ -64,6 +64,25 @@ getPanels <- function(x){
     else return(c(upper, upper))    
   }
 }  
-  
 
+#' Gets n equally spaced samples (rows) from a mcmc-object (matrix)
+#' @author Tankred Ott
+#' @param x mcmc-object/matrix
+#' @param numSamples number of samples to be drawn
+#' @details Gets n equally spaced samples (rows) from a mcmc-object (matrix) and returns a mcmc-object/matrix only containing those samples
+#' @export
+sampleEquallySpaced <- function(x, numSamples) {
+  # wrong input: numSamples > total number of samples
+  if (numSamples > nrow(x)) {
+    numSamples = nrow(x)
+    warning("numSamples is greater than the total number of samples! All rows were selected.")
+  # wrong input: numsaples 0 or negative
+  } else if (numSamples < 1) { 
+    numSamples = 1;
+    warning("numSamples is less than 1! Only the first row was selected.")
+  }
+  
+  sel <- seq(1, dim(x)[1], len = numSamples)
+  return(x[sel,])
+}
 
