@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{correctThin}
 \alias{correctThin}
-\title{Checks if thin is conistent with the data consisting of nTotalSamples samples.}
+\title{Checks if thin is conistent with nTotalSamples samples and if not corrects it.}
 \usage{
 correctThin(nTotalSamples, thin, fraction = 5000)
 }
@@ -12,7 +12,7 @@ correctThin(nTotalSamples, thin, fraction = 5000)
 \item{thin}{thinning}
 }
 \description{
-Checks if thin is conistent with the data consisting of nTotalSamples samples.
+Checks if thin is conistent with nTotalSamples samples and if not corrects it.
 }
 \details{
 Checks if the thin argument is consistent with the data consisting of nTotalSamples samples/rows and corrects thin if not.

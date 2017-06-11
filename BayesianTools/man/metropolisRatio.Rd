@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{metropolisRatio}
 \alias{metropolisRatio}
-\title{Funktion to calculate the metropolis ratio}
+\title{Function to calculate the metropolis ratio}
 \usage{
 metropolisRatio(LP2, LP1, tempering = 1)
 }
@@ -14,7 +14,7 @@ metropolisRatio(LP2, LP1, tempering = 1)
 \item{tempering}{value for tempering}
 }
 \description{
-Funktion to calculate the metropolis ratio
+Function to calculate the metropolis ratio
 }
 \author{
 Florian Hartig

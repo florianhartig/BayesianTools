@@ -62,15 +62,27 @@ getSample.data.frame <- function(data, parametersOnly = T, coda = F, start = 1, 
 # The following two S3 implementations make getSample compatible with coda::mcmc and coda::mcmc.list
 
 
-
 getSample.mcmc <- function(data, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   
   if(coda == T){
     
-    # TODO - if the object is already coda, don't convert, but just select, potentially using http://svitsrv25.epfl.ch/R-doc/library/coda/html/window.mcmc.html
+    # coda objects can contain matrices or vectors
+    if (is.matrix(data)) {
+      nTotalSamples <- nrow(data)
+    } else {
+      nTotalSamples <- length(data)
+    }
+    
+    thin <- correctThin(nTotalSamples, thin)
+    
+    if (is.null(end)) end = nTotalSamples
+    
+    # see http://svitsrv25.epfl.ch/R-doc/library/coda/html/window.mcmc.html
+    # for coda's window implementation
+    return(window(data, start = start, end = end, thin = thin))
     
   } else if(coda == F){
-    getSample(as.matrix(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)    
+    return(getSample(as.matrix(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics))
   }
 }
 
