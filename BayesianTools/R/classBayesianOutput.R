@@ -64,6 +64,8 @@ getSample.data.frame <- function(data, parametersOnly = T, coda = F, start = 1, 
 
 getSample.mcmc <- function(data, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   
+  # TODO: implement handling of wrong inputs?
+  
   if(coda == T){
     
     # coda objects can contain matrices or vectors
@@ -88,9 +90,24 @@ getSample.mcmc <- function(data, parametersOnly = T, coda = F, start = 1, end = 
 
 getSample.mcmc.list <- function(data, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   
+  # TODO: implement handling of wrong inputs?
+  
   if(coda == T){
     
     # TODO - if the object is already coda, don't convert, but just select, potentially using http://svitsrv25.epfl.ch/R-doc/library/coda/html/window.mcmc.html
+    if (is.matrix(data[[1]])) {
+      nTotalSamples <- nrow(data[[1]])
+    } else {
+      nTotalSamples <- length(data[[1]])
+    }
+    
+    thin <- correctThin(nTotalSamples, thin)
+    
+    if (is.null(end)) end = nTotalSamples
+    
+    # see http://svitsrv25.epfl.ch/R-doc/library/coda/html/window.mcmc.html
+    # for coda's window implementation
+    return(window(data, start = start, end = end, thin = thin))
     
   } else if(coda == F){
     
@@ -98,7 +115,8 @@ getSample.mcmc.list <- function(data, parametersOnly = T, coda = F, start = 1, e
     
     # see http://svitsrv25.epfl.ch/R-doc/library/coda/html/mcmc.convert.html
     
-    getSample(as.array(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
+    # TODO - is this now working as intended?
+    getSample(combineChains(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
   }
 }
   
