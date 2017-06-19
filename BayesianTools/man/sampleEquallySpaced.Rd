@@ -7,7 +7,7 @@
 sampleEquallySpaced(x, numSamples)
 }
 \arguments{
-\item{x}{matrix}
+\item{x}{matrix or vector}
 
 \item{numSamples}{number of samples (rows) to be drawn}
 }

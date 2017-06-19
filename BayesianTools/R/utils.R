@@ -67,23 +67,53 @@ getPanels <- function(x){
 
 #' Gets n equally spaced samples (rows) from a matrix
 #' @author Tankred Ott
-#' @param x matrix
+#' @param x matrix or vector
 #' @param numSamples number of samples (rows) to be drawn
 #' @details Gets n equally spaced samples (rows) from a matrix and returns a new matrix (or vector) containing those samples
 #' @export
 sampleEquallySpaced <- function(x, numSamples) {
+  # wrong input: x is neither vector nor matrix
+  if (!is.matrix(x) && !is.vector(x)) {
+    stop("Expected matrix or vector for x!")
+  }
+  # wrong input: numSamples is not single numeric value
+  if (!is.vector(numSamples) || !is.numeric(numSamples) || length(numSamples) > 1) {
+    stop("Expected a single numeric value for numSamples!")
+  }
+  
+  len = 0
+  if (is.matrix(x)) {
+    len = nrow(x)
+    if (len == 1) {
+      return(x)
+    }
+  } else {
+    len = length(x)
+  }
+  
   # wrong input: numSamples > total number of samples
-  if (numSamples > nrow(x)) {
-    numSamples = nrow(x)
-    warning("numSamples is greater than the total number of samples! All rows were selected.")
+  if (numSamples > len) {
+    numSamples = len
+    warning("numSamples is greater than the total number of samples! All samples were selected.")
   # wrong input: numsaples 0 or negative
   } else if (numSamples < 1) { 
     numSamples = 1;
-    warning("numSamples is less than 1! Only the first row was selected.")
+    warning("numSamples is less than 1! Only the first sample was selected.")
   }
   
-  sel <- seq(1, dim(x)[1], len = numSamples)
-  return(x[sel,])
+  sel <- seq(1, len, len = numSamples)
+  if (is.matrix(x)) {
+    out <- x[sel,]
+    # if x is only a single row x[sel,] is a vector and needs to
+    # be converted
+    if(is.matrix(out)) {
+      return(out)
+    } else {
+      return(matrix(out, byrow = FALSE))
+    }
+  } else {
+    return(x[sel])
+  }
 }
 
 #' Checks if thin is conistent with nTotalSamples samples and if not corrects it.
