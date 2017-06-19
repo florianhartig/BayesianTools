@@ -2,6 +2,8 @@ context("tests getSample.mcmc and getSample.mcmc.list")
 
 test_that("getSample works for mcmc and mcmc.list", {
   
+  skip()
+  
   n_tests = 100
   
   ## mcmc
