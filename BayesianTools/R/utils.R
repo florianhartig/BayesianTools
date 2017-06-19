@@ -129,6 +129,8 @@ correctThin <- function(nTotalSamples, thin, autoThinFraction = 5000) {
     thin = max(floor(nTotalSamples / 5000),1)
   } else if (is.null(thin) || thin == F || thin < 1) {
     thin = 1
-  } else if (thin > nTotalSamples) warning("thin is greater than the total number of samples! Only the first row was selected.")
+  } else if (thin > nTotalSamples) {
+    warning("thin is greater than the total number of samples! Only the first sample/row was selected.")
+  }
   return(thin)
 }
