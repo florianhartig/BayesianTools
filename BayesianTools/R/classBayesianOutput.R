@@ -20,7 +20,6 @@ getSample <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NU
 
 
 getSample.matrix <- function(mat, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
-
     if(is.null(end)) end = nrow(mat)
 
     if(includesProbabilities) nPars = ncol(mat) - 3 else nPars = ncol(mat)
@@ -36,7 +35,7 @@ getSample.matrix <- function(mat, parametersOnly = T, coda = F, start = 1, end =
     ########################
     # THINNING
     if (thin == "auto"){
-      thin = max(floor(nrow(out) / 5000),1)
+      thin = max(floor(nrow(out) / 5000), 1)
     }
     if(is.null(thin) || thin == F || thin < 1) thin = 1
     if (thin > nrow(mat)) warning("thin is greater than the total number of samples!")
@@ -46,6 +45,8 @@ getSample.matrix <- function(mat, parametersOnly = T, coda = F, start = 1, end =
     }
     #############
     
+    if (!is.matrix(out)) out <- matrix(out, nrow = 1)
+        
     if (!is.null(whichParameters)) out = out[,whichParameters]
     if(coda == T) out = makeObjectClassCodaMCMC(out, start = start, end = end, thin = thin)
 
@@ -55,39 +56,82 @@ getSample.matrix <- function(mat, parametersOnly = T, coda = F, start = 1, end =
 }
 
 
+#' @author Tankred Ott
+#' @export
+# TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector istead of a matrix, if 
+#       the mcmc object passed to getSample.mcmc contains a vector.
+getSample.double <- function(vec, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
+  if(is.null(end)) end = length(vec)
+  
+  nTotalSamples <- length(vec)
+  
+  thin = correctThin(nTotalSamples, thin)
+  
+  sel = seq(1, nTotalSamples, by = thin)
+  return(vec[sel])
+}
+
+
+#' @author Tankred Ott
+#' @export
+# TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector istead of a matrix, if 
+#       the mcmc object passed to getSample.mcmc contains a vector.
+getSample.integer <- function(vec, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
+  if(is.null(end)) end = length(vec)
+  
+  nTotalSamples <- length(vec)
+  
+  thin = correctThin(nTotalSamples, thin)
+  
+  sel = seq(1, nTotalSamples, by = thin)
+  return(vec[sel])
+}
+
+
 getSample.data.frame <- function(data, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   getSample(matrix(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
 }
 
+
 # The following two S3 implementations make getSample compatible with coda::mcmc and coda::mcmc.list
 
-
+#' @author Tankred Ott
+#' @export
 getSample.mcmc <- function(data, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
-  
+
   # TODO: implement handling of wrong inputs?
   
   if(coda == T){
-    
-    # coda objects can contain matrices or vectors
+    # mcmc objects can contain matrices or vectors
     if (is.matrix(data)) {
       nTotalSamples <- nrow(data)
     } else {
       nTotalSamples <- length(data)
     }
     
-    thin <- correctThin(nTotalSamples, thin)
-    
     if (is.null(end)) end = nTotalSamples
+    
+    # check/correct thin
+    thin <- correctThin(nTotalSamples, thin)
     
     # see http://svitsrv25.epfl.ch/R-doc/library/coda/html/window.mcmc.html
     # for coda's window implementation
     return(window(data, start = start, end = end, thin = thin))
     
   } else if(coda == F){
-    return(getSample(as.matrix(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics))
+    # mcmc objects can contain matrices or vectors
+    if (is.matrix(data)) {
+      out <- getSample(as.matrix(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
+    } else {
+      out <- getSample(as.vector(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
+    }
+    return(out)
   }
 }
 
+
+#' @author Tankred Ott
+#' @export
 getSample.mcmc.list <- function(data, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   
   # TODO: implement handling of wrong inputs?
@@ -101,21 +145,16 @@ getSample.mcmc.list <- function(data, parametersOnly = T, coda = F, start = 1, e
       nTotalSamples <- length(data[[1]])
     }
     
-    thin <- correctThin(nTotalSamples, thin)
-    
     if (is.null(end)) end = nTotalSamples
+    
+    # check/correct thin
+    thin <- correctThin(nTotalSamples, thin)
     
     # see http://svitsrv25.epfl.ch/R-doc/library/coda/html/window.mcmc.html
     # for coda's window implementation
     return(window(data, start = start, end = end, thin = thin))
     
   } else if(coda == F){
-    
-    # TODO - this doesn't work properly, the chains are either ordered one after the other  (as.matrix), or with as.array as 3-dim array, but they should be shuffled according to BT Logic
-    
-    # see http://svitsrv25.epfl.ch/R-doc/library/coda/html/mcmc.convert.html
-    
-    # TODO - is this now working as intended?
     getSample(combineChains(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
   }
 }
