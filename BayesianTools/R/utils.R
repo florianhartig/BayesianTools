@@ -120,17 +120,23 @@ sampleEquallySpaced <- function(x, numSamples) {
 #' @author Tankred Ott
 #' @param nTotalSamples total number of rows/samples 
 #' @param thin thinning
-#' @param autoThinFraction fraction of the data that will be sampled when thin is set to "auto". E.g. 10 means thin will be nTotalSamples / 10.
+#' @param autoThinFraction fraction of the data that will be sampled when thin is set to "auto". E.g. 0.5 means thin will be nTotalSamples * 0.5.
 #' @details Checks if the thin argument is consistent with the data consisting of nTotalSamples samples/rows and corrects thin if not.
 #' @author Tankred Ott
 #' @export
-correctThin <- function(nTotalSamples, thin, autoThinFraction = 5000) {
+correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.01) {
+  if (autoThinFraction > 1 || autoThinFraction <= 0) {
+    stop("autoThinFraction must be greater than 0 and less than 1!")
+  }
+  
   if (thin == "auto"){
-    thin = max(floor(nTotalSamples / 5000),1)
+    thin = max(floor(nTotalSamples * 0.1), 1)
   } else if (is.null(thin) || thin == F || thin < 1) {
     thin = 1
   } else if (thin > nTotalSamples) {
     warning("thin is greater than the total number of samples! Only the first sample/row was selected.")
+    thin = nTotalSamples
   }
+  
   return(thin)
 }
