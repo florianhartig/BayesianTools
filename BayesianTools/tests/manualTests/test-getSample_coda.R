@@ -6,7 +6,7 @@ test_that("getSample works for mcmc", {
   
   # VECTOR
   
-  # mcmc coda = FALSE
+  # mcmc coda = TRUE
   for (i in 1:n_tests) {
     # create random vector
     dat <- coda::mcmc(rnorm(max(rnorm(n = 1, mean = 1000, sd = 1000), 10), 10, 5))
@@ -15,28 +15,28 @@ test_that("getSample works for mcmc", {
     # "realistic" sample/thin
     thin <- sample(1:(len/5), 1)
     
-    res_gs <- getSample(dat, coda = FALSE, thin = thin)
+    res_gs <- getSample(dat, coda = TRUE, thin = thin)
     res_coda <- window(x = dat, start = 1, end = len, thin = thin)
     expect_equal(res_gs, res_coda)
     expect_true(class(res_gs) == "mcmc")
     
     # thinning == number of samples
-    r <- getSample(dat, coda = FALSE, thin = len)
+    r <- getSample(dat, coda = TRUE, thin = len)
     expect_true(r[1] == dat[1] && length(r) == 1)
     expect_true(class(res_gs) == "mcmc")
     
     # thinning too large
-    r <- suppressWarnings(getSample(dat, coda = FALSE, thin = sample((len+1):(len + len/5), 1)))
+    r <- suppressWarnings(getSample(dat, coda = TRUE, thin = sample((len+1):(len + len/5), 1)))
     expect_true(r[1] == dat[1] && length(r) == 1)
     expect_true(class(res_gs) == "mcmc")
     
     # thinning to low
-    r <- suppressWarnings(getSample(dat, coda = FALSE, thin = sample((-len/5):0, 1)))
+    r <- suppressWarnings(getSample(dat, coda = TRUE, thin = sample((-len/5):0, 1)))
     expect_equal(r, dat)
     expect_true(class(res_gs) == "mcmc")
     
     # thinning == 1
-    r <- getSample(dat, coda = FALSE, thin = 1)
+    r <- getSample(dat, coda = TRUE, thin = 1)
     expect_equal(r, dat)
     expect_true(class(res_gs) == "mcmc")
   }
@@ -83,7 +83,7 @@ test_that("getSample works for mcmc", {
   # max number of columns in test matrix
   max_n_col = 10;
   
-  # coda = FALSE
+  # coda = TRUE
   for (i in 1:n_tests) {
     # random number of columns
     n_col = sample(2:max_n_col, 1)
@@ -98,28 +98,28 @@ test_that("getSample works for mcmc", {
     # "realistic" sample/thin
     thin <- sample(1:(len/5), 1)
     
-    res_gs <- getSample(dat, coda = FALSE, thin = thin)
+    res_gs <- getSample(dat, coda = TRUE, thin = thin)
     res_coda <- window(x = dat, start = 1, end = len, thin = thin)
     expect_equal(res_gs, res_coda)
     expect_true(class(res_gs) == "mcmc")
     
     # thinning == number of samples
-    r <- getSample(dat, coda = FALSE, thin = len)
+    r <- getSample(dat, coda = TRUE, thin = len)
     expect_true(r[1,] == dat[1,] && nrow(r) == 1)
     expect_true(class(res_gs) == "mcmc")
     
     # thinning too large
-    r <- suppressWarnings(getSample(dat, coda = FALSE, thin = sample((len+1):(len + len/5), 1)))
+    r <- suppressWarnings(getSample(dat, coda = TRUE, thin = sample((len+1):(len + len/5), 1)))
     expect_true(r[1,] == dat[1,] && nrow(r) == 1)
     expect_true(class(res_gs) == "mcmc")
     
     # thinning to low
-    r <- suppressWarnings(getSample(dat, coda = FALSE, thin = sample((-len/5):0, 1)))
+    r <- suppressWarnings(getSample(dat, coda = TRUE, thin = sample((-len/5):0, 1)))
     expect_equal(r, dat)
     expect_true(class(res_gs) == "mcmc")
     
     # thinning == 1
-    r <- getSample(dat, coda = FALSE, thin = 1)
+    r <- getSample(dat, coda = TRUE, thin = 1)
     expect_equal(r, dat)
     expect_true(class(res_gs) == "mcmc")
   }

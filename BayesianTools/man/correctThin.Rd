@@ -4,14 +4,14 @@
 \alias{correctThin}
 \title{Checks if thin is conistent with nTotalSamples samples and if not corrects it.}
 \usage{
-correctThin(nTotalSamples, thin, autoThinFraction = 5000)
+correctThin(nTotalSamples, thin, autoThinFraction = 0.01)
 }
 \arguments{
 \item{nTotalSamples}{total number of rows/samples}
 
 \item{thin}{thinning}
 
-\item{autoThinFraction}{fraction of the data that will be sampled when thin is set to "auto". E.g. 10 means thin will be nTotalSamples / 10.}
+\item{autoThinFraction}{fraction of the data that will be sampled when thin is set to "auto". E.g. 0.5 means thin will be nTotalSamples * 0.5.}
 }
 \description{
 Checks if thin is conistent with nTotalSamples samples and if not corrects it.
