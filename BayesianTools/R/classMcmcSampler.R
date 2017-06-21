@@ -24,7 +24,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     if (thin == "auto"){
       thin = max(floor(nrow(out) / 5000),1)
     }
-    if(is.null(thin) || thin == F || thin < 1) thin = 1
+    if(is.null(thin) || thin == F || thin < 1 || is.nan(thin)) thin = 1
     if(thin > nrow(out)) warning("thin is greater than the total number of samples!")
     if (! thin == 1){
       sel = seq(1,dim(out)[1], by = thin )
@@ -65,7 +65,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       if (thin == "auto"){
         thin = max(floor(nrow(temp) / 5000),1)
       }
-      if(is.null(thin) || thin == F || thin < 1) thin = 1
+      if(is.null(thin) || thin == F || thin < 1 || is.nan(thin)) thin = 1
 
       if(thin > nrow(temp)) warning("thin is greater than the total number of samples!")
       

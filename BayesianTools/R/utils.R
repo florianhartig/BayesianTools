@@ -131,7 +131,7 @@ correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.01) {
   
   if (thin == "auto"){
     thin = max(floor(nTotalSamples * 0.1), 1)
-  } else if (is.null(thin) || thin == F || thin < 1) {
+  } else if (is.null(thin) || thin == F || thin < 1 || is.nan(thin)) {
     thin = 1
   } else if (thin > nTotalSamples) {
     warning("thin is greater than the total number of samples! Only the first sample/row was selected.")

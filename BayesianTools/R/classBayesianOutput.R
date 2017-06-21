@@ -37,7 +37,7 @@ getSample.matrix <- function(mat, parametersOnly = T, coda = F, start = 1, end =
     if (thin == "auto"){
       thin = max(floor(nrow(out) / 5000), 1)
     }
-    if(is.null(thin) || thin == F || thin < 1) thin = 1
+    if(is.null(thin) || thin == F || thin < 1 || is.nan(thin)) thin = 1
     if (thin > nrow(mat)) warning("thin is greater than the total number of samples!")
     if (! thin == 1){
       sel = seq(1,dim(out)[1], by = thin )
@@ -138,7 +138,6 @@ getSample.mcmc.list <- function(data, parametersOnly = T, coda = F, start = 1, e
   
   if(coda == T){
     
-    # TODO - if the object is already coda, don't convert, but just select, potentially using http://svitsrv25.epfl.ch/R-doc/library/coda/html/window.mcmc.html
     if (is.matrix(data[[1]])) {
       nTotalSamples <- nrow(data[[1]])
     } else {
@@ -155,7 +154,11 @@ getSample.mcmc.list <- function(data, parametersOnly = T, coda = F, start = 1, e
     return(window(data, start = start, end = end, thin = thin))
     
   } else if(coda == F){
-    getSample(combineChains(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
+    if(is.matrix(data[[1]])) {
+      return(getSample(combineChains(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics))
+    } else {
+      return(as.vector(getSample(combineChains(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)))
+    }
   }
 }
   
