@@ -169,11 +169,124 @@ test_that("getSample works for mcmc", {
 
 ## mcmc.list
 
-# TODO: Add tests for vector
+test_that("getSample works for mcmc.list", {
+  
+  n_tests = 100
+  
+  # mcmc.list of mcmc objects containing vectors
+  for (i in 1:n_tests) {
+    
+    # create random vectors
+    len = sample(1:1000, 1)
+    a <- coda::mcmc(rnorm(len, 0, 5))
+    b <- coda::mcmc(rnorm(len, 0, 5))
+    c <- coda::mcmc(rnorm(len, 0, 5))
+    
+    # create mcmc.list
+    dat <- coda::mcmc.list(list(a,b,c))
+    
+    # coda = FALSE
+    
+    # "realistic" thinning
+    thin <- round(runif(1, 1, len/3))
+    r <- getSample(dat, thin = thin, coda=FALSE)
+    expect_true(is.vector(r))
+    
+    # thinning too large
+    thin <- length(dat) * len + 1
+    r <- suppressWarnings(getSample(dat, thin = thin, coda=FALSE))
+    expect_true(is.vector(r))
+    expect_true(length(r) == 1)
+    
+    #thinning too small
+    thin <- sample(-10:0, 1)
+    r <- suppressWarnings(getSample(dat, thin = thin, coda=FALSE))
+    expect_true(is.vector(r))
+    expect_true(length(r) == len *length(dat))
+    
+    
+    # coda = TRUE
+    
+    # "realistic" thinning
+    thin <- round(runif(1, 1, len/3))
+    r <- getSample(dat, thin = thin, coda=TRUE)
+    expect_true(class(r) == "mcmc.list")
+    
+    # thinning too large
+    thin <- length(dat) * len + 1
+    r <- suppressWarnings(getSample(dat, thin = thin, coda=TRUE))
+    expect_true(class(r) == "mcmc.list")
+    expect_true(length(dat) == Reduce(function(acc, val) acc + length(val), r, 0))
+    
+    #thinning too small
+    thin <- sample(-10:0, 1)
+    r <- suppressWarnings(getSample(dat, thin = thin, coda=TRUE))
+    expect_true(class(r) == "mcmc.list")
+    expect_true(len * length(dat) == Reduce(function(acc, val) acc + length(val), r, 0))
+  }
+  
+  
+  # mcmc.list of mcmc objects containing matrices
+  for (i in 1:n_tests) {
+    
+    # create random matrices
+    len = sample(1:1000, 1)
+    n_col = sample(2:10, 1)
+    
+    a <- coda::mcmc(matrix(rnorm(len * n_col, 0, 5), ncol = n_col))
+    b <- coda::mcmc(matrix(rnorm(len * n_col, 0, 5), ncol = n_col))
+    c <- coda::mcmc(matrix(rnorm(len * n_col, 0, 5), ncol = n_col))
+    
+    # create mcmc.list
+    dat <- coda::mcmc.list(list(a,b,c))
+    
+    # coda = FALSE
+    
+    # "realistic" thinning
+    thin <- round(runif(1, 1, len/3))
+    r <- getSample(dat, thin = thin, coda=FALSE)
+    expect_true(is.matrix(r))
+    
+    # thinning too large
+    thin <- length(dat) * len + 1
+    r <- suppressWarnings(getSample(dat, thin = thin, coda=FALSE))
+    expect_true(is.matrix(r))
+    expect_true(nrow(r) == 1)
+    
+    #thinning too small
+    thin <- sample(-10:0, 1)
+    r <- suppressWarnings(getSample(dat, thin = thin, coda=FALSE))
+    expect_true(is.matrix(r))
+    expect_true(nrow(r) == len * length(dat))
+    
+    
+    # coda = TRUE
+    
+    # "realistic" thinning
+    thin <- round(runif(1, 1, len/3))
+    r <- getSample(dat, thin = thin, coda=TRUE)
+    expect_true(class(r) == "mcmc.list")
+    
+    # thinning too large
+    thin <- length(dat) * len + 1
+    r <- suppressWarnings(getSample(dat, thin = thin, coda=TRUE))
+    expect_true(class(r) == "mcmc.list")
+    expect_true(length(dat) == Reduce(function(acc, val) acc + nrow(val), r, 0))
+    
+    #thinning too small
+    thin <- sample(-10:0, 1)
+    r <- suppressWarnings(getSample(dat, thin = thin, coda=TRUE))
+    expect_true(class(r) == "mcmc.list")
+    expect_true(len * length(dat) == Reduce(function(acc, val) acc + nrow(val), r, 0))
+  }
+  
+})
 
-# TODO: Add tests for coda=FALSE
-# TODO: Add tests for coda=FALSE
 
-# TODO: Add tests for matrix
-# TODO: Add tests for coda=FALSE
-# TODO: Add tests for coda=FALSE
+
+
+
+
+
+
+
