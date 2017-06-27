@@ -6,10 +6,10 @@
 \usage{
 getSample(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
   thin = 1, numSamples = NULL, whichParameters = NULL,
-  reportDiagnostics = FALSE, ...)
+  includesProbabilities = F, reportDiagnostics = FALSE, ...)
 }
 \arguments{
-\item{sampler}{an object of class mcmcSampler, mcmcSamplerList, smcSampler, smcSamplerList}
+\item{sampler}{an object of class mcmcSampler, mcmcSamplerList, smcSampler, smcSamplerList, mcmc, mcmc.list, double, numeric}
 
 \item{parametersOnly}{if F, likelihood, posterior and prior values are also provided in the output}
 
@@ -24,6 +24,8 @@ getSample(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
 \item{numSamples}{sample size (only used if thin = 1)}
 
 \item{whichParameters}{possibility to select parameters by index}
+
+\item{includesProbabilities}{applies only to getSample.Matrix. logical, determining whether probabilities should be included in the result.}
 
 \item{reportDiagnostics}{logical, determines whether settings should be included in the output}
 

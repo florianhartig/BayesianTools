@@ -2,6 +2,7 @@
 
 S3method(getSample,double)
 S3method(getSample,integer)
+S3method(getSample,matrix)
 S3method(getSample,mcmc)
 S3method(getSample,mcmc.list)
 S3method(getSample,mcmcSampler)
