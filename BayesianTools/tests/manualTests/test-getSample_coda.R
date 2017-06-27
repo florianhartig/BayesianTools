@@ -91,7 +91,7 @@ test_that("getSample works for mcmc", {
     # create matrix of random length
     n_row = round(max(rnorm(n = 1, mean = 1000, sd = 1000), 10))
     vec <- rnorm(n_row * n_col, 10, 5)
-    dat <- mcmc(matrix(vec, ncol = n_col))
+    dat <- coda::mcmc(matrix(vec, ncol = n_col))
     
     len = n_row
     
@@ -132,7 +132,7 @@ test_that("getSample works for mcmc", {
     # create matrix of random length
     n_row = round(max(rnorm(n = 1, mean = 1000, sd = 1000), 10))
     vec <- rnorm(n_row * n_col, 10, 5)
-    dat <- mcmc(matrix(vec, ncol = n_col))
+    dat <- coda::mcmc(matrix(vec, ncol = n_col))
     
     len = n_row
     
