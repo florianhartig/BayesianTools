@@ -60,15 +60,15 @@ getSample.matrix <- function(mat, parametersOnly = T, coda = F, start = 1, end =
 #' @export
 # TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector istead of a matrix, if 
 #       the mcmc object passed to getSample.mcmc contains a vector.
-getSample.double <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...){
-  if(is.null(end)) end = length(sampler)
+getSample.double <- function(vec, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
+  if(is.null(end)) end = length(vec)
   
-  nTotalSamples <- length(sampler)
+  nTotalSamples <- length(vec)
   
   thin = correctThin(nTotalSamples, thin)
   
   sel = seq(1, nTotalSamples, by = thin)
-  return(sampler[sel])
+  return(vec[sel])
 }
 
 
@@ -76,15 +76,15 @@ getSample.double <- function(sampler, parametersOnly = T, coda = F, start = 1, e
 #' @export
 # TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector istead of a matrix, if 
 #       the mcmc object passed to getSample.mcmc contains a vector.
-getSample.integer <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...){
-  if(is.null(sampler)) end = length(sampler)
+getSample.integer <- function(vec, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
+  if(is.null(end)) end = length(vec)
   
-  nTotalSamples <- length(sampler)
+  nTotalSamples <- length(vec)
   
   thin = correctThin(nTotalSamples, thin)
   
   sel = seq(1, nTotalSamples, by = thin)
-  return(sampler[sel])
+  return(vec[sel])
 }
 
 
@@ -97,16 +97,16 @@ getSample.data.frame <- function(data, parametersOnly = T, coda = F, start = 1, 
 
 #' @author Tankred Ott
 #' @export
-getSample.mcmc <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...){
+getSample.mcmc <- function(data, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
 
   # TODO: implement handling of wrong inputs?
   
   if(coda == T){
     # mcmc objects can contain matrices or vectors
-    if (is.matrix(sampler)) {
-      nTotalSamples <- nrow(sampler)
+    if (is.matrix(data)) {
+      nTotalSamples <- nrow(data)
     } else {
-      nTotalSamples <- length(sampler)
+      nTotalSamples <- length(data)
     }
     
     if (is.null(end)) end = nTotalSamples
@@ -116,14 +116,14 @@ getSample.mcmc <- function(sampler, parametersOnly = T, coda = F, start = 1, end
     
     # see http://svitsrv25.epfl.ch/R-doc/library/coda/html/window.mcmc.html
     # for coda's window implementation
-    return(window(sampler, start = start, end = end, thin = thin))
+    return(window(data, start = start, end = end, thin = thin))
     
   } else if(coda == F){
     # mcmc objects can contain matrices or vectors
-    if (is.matrix(sampler)) {
-      out <- getSample(as.matrix(sampler), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
+    if (is.matrix(data)) {
+      out <- getSample(as.matrix(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
     } else {
-      out <- getSample(as.vector(sampler), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
+      out <- getSample(as.vector(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
     }
     return(out)
   }
@@ -132,16 +132,16 @@ getSample.mcmc <- function(sampler, parametersOnly = T, coda = F, start = 1, end
 
 #' @author Tankred Ott
 #' @export
-getSample.mcmc.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...){
+getSample.mcmc.list <- function(data, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   
   # TODO: implement handling of wrong inputs?
   
   if(coda == T){
     
-    if (is.matrix(sampler[[1]])) {
-      nTotalSamples <- nrow(sampler[[1]])
+    if (is.matrix(data[[1]])) {
+      nTotalSamples <- nrow(data[[1]])
     } else {
-      nTotalSamples <- length(sampler[[1]])
+      nTotalSamples <- length(data[[1]])
     }
     
     if (is.null(end)) end = nTotalSamples
@@ -151,13 +151,13 @@ getSample.mcmc.list <- function(sampler, parametersOnly = T, coda = F, start = 1
     
     # see http://svitsrv25.epfl.ch/R-doc/library/coda/html/window.mcmc.html
     # for coda's window implementation
-    return(window(sampler, start = start, end = end, thin = thin))
+    return(window(data, start = start, end = end, thin = thin))
     
   } else if(coda == F){
     if(is.matrix(data[[1]])) {
-      return(getSample(combineChains(sampler), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics))
+      return(getSample(combineChains(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics))
     } else {
-      return(as.vector(getSample(combineChains(sampler), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)))
+      return(as.vector(getSample(combineChains(data), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)))
     }
   }
 }
