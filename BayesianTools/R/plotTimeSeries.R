@@ -140,11 +140,11 @@ getDharmaResiduals <- function(model, parMatrix, numSamples, observed, error, pl
                                          numSamples = numSamples)
   # apply error to predictions
   for (i in 1:nrow(predDistr)){
-    predDistr[i,] = createError(mean = predDistr[i,], par = parMatrix[i,]) 
+    predDistr[i,] = error(mean = predDistr[i,], par = parMatrix[i,]) 
   }
   
   fittedPars = apply(parMatrix, 2, median)
-  fittedPredictedResponse = createPredictions(fittedPars)
+  fittedPredictedResponse = model(fittedPars)
   
   dh = DHARMa::createDHARMa(simulatedResponse = t(predDistr),
                             observedResponse = observed,

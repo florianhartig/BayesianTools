@@ -31,7 +31,8 @@ Imports:
     Matrix,
     stats,
     utils,
-    graphics
+    graphics,
+    DHARMa
 Suggests:
     DEoptim,
     lhs,
