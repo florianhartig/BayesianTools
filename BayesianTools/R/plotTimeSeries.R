@@ -68,6 +68,14 @@ plotTimeSeriesResiduals <- function(residuals, x = NULL, main = "residuals"){
 #' @param ... further arguments passed to \code{\link[graphics]{plot}}
 #' @export
 plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotResiduals = TRUE, start = 1, prior = FALSE, ...){
+  oldPar = par(no.readonly = TRUE)
+  
+  if (plotResiduals == TRUE) {
+    layout(matrix(c(1, 1, 1, 2, 3, 4), 2, 3, byrow = TRUE))
+    par(mar = c(3, 3, 3, 3), oma = c(2, 2, 2, 2))
+  }
+  
+  # ... can we pass on to both getSample and plot? 
   
   if(prior == FALSE){
     if(inherits(sampler,"bayesianOutput")) parMatrix = getSample(sampler, start = start)
@@ -80,15 +88,77 @@ plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotRe
 
   numSamples = min(1000, nrow(parMatrix))
   
-  pred <- getPredictiveIntervals(parMatrix = parMatrix, model = model, numSamples = numSamples, quantiles = c(0.025, 0.5, 0.975), error = error)
+  pred <- getPredictiveIntervals(parMatrix = parMatrix,
+                                 model = model,
+                                 numSamples = numSamples,
+                                 quantiles = c(0.025, 0.5, 0.975),
+                                 error = error)
   
-  if(!is.null(error)) plotTimeSeries(observed = observed, predicted = pred[2,], confidenceBand = pred[c(1,3),], predictionBand = pred[c(4,6),], ...)
-  else plotTimeSeries(observed = observed, predicted = pred[2,], confidenceBand = pred[c(1,3),], ...)
+  if(!is.null(error)) plotTimeSeries(observed = observed,
+                                     predicted = pred$posteriorPredictivePredictionInterval[2,],
+                                     confidenceBand = pred$posteriorPredictiveCredibleInterval[c(1,3),],
+                                     predictionBand = pred$posteriorPredictivePredictionInterval[c(1,3),],
+                                     ...)
+  else plotTimeSeries(observed = observed, predicted = pred$posteriorPredictiveSimulations,
+                      confidenceBand = pred$posteriorPredictiveSimulations[c(1,3),],
+                      ...)
   
-  
-  # TODO - plotResiduals needs to be implemented
-  
+  if (plotResiduals) {
+    dh = getDharmaResiduals(model = model,
+                            parMatrix = parMatrix,
+                            numSamples = numSamples,
+                            observed = observed,
+                            error = error,
+                            plot = FALSE)
+    # qq-plot
+    gap::qqunif(dh$scaledResiduals, pch=2, bty="n", logscale = F, col = "black", cex = 0.6, main = "QQ plot residuals", cex.main = 1)
+    
+    # residuals vs fitted
+    DHARMa::plotResiduals(dh$fittedPredictedResponse, dh$scaledResiduals, main = "Residual vs. predicted\n quantile lines should be\n horizontal lines at 0.25, 0.5, 0.75", cex.main = 1, xlab = "Predicted value", ylab = "Standardized residual")
+    
+    # residuals vs time
+    t <- 1:length(dh$fittedPredictedResponse)
+    DHARMa::plotResiduals(t, dh$scaledResiduals, xlab = "Time", ylab = "Standardized residual", main = "Residual vs. time\n quantile lines should be\n horizontal lines at 0.25, 0.5, 0.75", cex.main = 1)
+    
+  }
+  par(oldPar)
 }
+
+#' Creates a DHARMa object
+#' @author Tankred Ott
+#' @param model function that calculates model predictions for a given parameter vector
+#' @param parMatrix a parameter matrix from which the simulations will be generated
+#' @param numSamples the number of samples
+#' @param observed a vector of observed values
+#' @param error function with signature f(mean, par) that generates error expectations from mean model predictions. Par is a vector from the matrix with the parameter samples (full length). f needs to know which of these parameters are parameters of the error function
+#' @param plot logical, determining whether the simulated residuals should be plotted
+#' @export
+getDharmaResiduals <- function(model, parMatrix, numSamples, observed, error, plot = TRUE){
+
+  predDistr <- getPredictiveDistribution(parMatrix = parMatrix,
+                                         model = model,
+                                         numSamples = numSamples)
+  # apply error to predictions
+  for (i in 1:nrow(predDistr)){
+    predDistr[i,] = createError(mean = predDistr[i,], par = parMatrix[i,]) 
+  }
+  
+  fittedPars = apply(parMatrix, 2, median)
+  fittedPredictedResponse = createPredictions(fittedPars)
+  
+  dh = DHARMa::createDHARMa(simulatedResponse = t(predDistr),
+                            observedResponse = observed,
+                            fittedPredictedResponse = fittedPredictedResponse)
+  if (plot == TRUE) {
+    DHARMa::plotSimulatedResiduals(dh)
+  }
+
+  return(dh)
+}
+
+
+
+
 
 
 
