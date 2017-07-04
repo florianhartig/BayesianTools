@@ -45,7 +45,7 @@ test_that("getSample works for mcmc", {
   
   for (i in 1:n_tests) {
     # create random vector
-    dat <- mcmc(rnorm(max(rnorm(n = 1, mean = 1000, sd = 1000), 10), 10, 5))
+    dat <- coda::mcmc(rnorm(max(rnorm(n = 1, mean = 1000, sd = 1000), 10), 10, 5))
     len = length(dat)
     
     # "realistic" sample

@@ -81,7 +81,6 @@ sampleEquallySpaced <- function(x, numSamples) {
     stop("Expected a single numeric value for numSamples!")
   }
   
-  
   len = 0
   if (is.matrix(x)) {
     len = nrow(x)
@@ -106,14 +105,14 @@ sampleEquallySpaced <- function(x, numSamples) {
   sel <- seq(1, len, len = numSamples)
   if (is.matrix(x)) {
     out <- x[sel,]
-    # if x has only a single col, x[sel,] is a vector and needs to
-    # be converted
+    # if x has only a single col, x[sel,] is a vector and needs to be converted
     if(!is.matrix(out)) {
       out <- matrix(out, ncol = ncol(x))
     }
   } else {
     out <- x[sel]
   }
+  
   return(out)
 }
 
@@ -132,9 +131,6 @@ correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.1) {
   
   if (thin == "auto"){
     thin = max(floor(nTotalSamples * autoThinFraction), 1)
-    #
-    print(thin)
-    print(nTotalSamples)
   } else if (is.null(thin) || thin == F || thin < 1 || is.nan(thin)) {
     thin = 1
   } else if (thin > nTotalSamples) {
