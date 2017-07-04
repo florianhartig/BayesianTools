@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{sampleEquallySpaced}
 \alias{sampleEquallySpaced}
-\title{Gets n equally spaced samples (rows) from a matrix}
+\title{Gets n equally spaced samples (rows) from a matrix or vector}
 \usage{
 sampleEquallySpaced(x, numSamples)
 }
@@ -12,7 +12,7 @@ sampleEquallySpaced(x, numSamples)
 \item{numSamples}{number of samples (rows) to be drawn}
 }
 \description{
-Gets n equally spaced samples (rows) from a matrix
+Gets n equally spaced samples (rows) from a matrix or vector
 }
 \details{
 Gets n equally spaced samples (rows) from a matrix and returns a new matrix (or vector) containing those samples
