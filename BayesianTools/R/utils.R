@@ -65,7 +65,7 @@ getPanels <- function(x){
   }
 }  
 
-#' Gets n equally spaced samples (rows) from a matrix
+#' Gets n equally spaced samples (rows) from a matrix or vector
 #' @author Tankred Ott
 #' @param x matrix or vector
 #' @param numSamples number of samples (rows) to be drawn
@@ -81,14 +81,16 @@ sampleEquallySpaced <- function(x, numSamples) {
     stop("Expected a single numeric value for numSamples!")
   }
   
+  
   len = 0
   if (is.matrix(x)) {
     len = nrow(x)
-    if (len == 1) {
-      return(x)
-    }
   } else {
     len = length(x)
+  }
+  
+  if (len == 1) {
+    return(x)
   }
   
   # wrong input: numSamples > total number of samples
@@ -104,33 +106,35 @@ sampleEquallySpaced <- function(x, numSamples) {
   sel <- seq(1, len, len = numSamples)
   if (is.matrix(x)) {
     out <- x[sel,]
-    # if x is only a single row x[sel,] is a vector and needs to
+    # if x has only a single col, x[sel,] is a vector and needs to
     # be converted
-    if(is.matrix(out)) {
-      return(out)
-    } else {
-      return(matrix(out, byrow = FALSE))
+    if(!is.matrix(out)) {
+      out <- matrix(out, ncol = ncol(x))
     }
   } else {
-    return(x[sel])
+    out <- x[sel]
   }
+  return(out)
 }
 
 #' Checks if thin is conistent with nTotalSamples samples and if not corrects it.
 #' @author Tankred Ott
 #' @param nTotalSamples total number of rows/samples 
 #' @param thin thinning
-#' @param autoThinFraction fraction of the data that will be sampled when thin is set to "auto". E.g. 0.5 means thin will be nTotalSamples * 0.5.
+#' @param autoThinFraction fraction of the data that will be sampled when thin is set to "auto". E.g. 0.5 means thin will be nTotalSamples * 0.5. The resulting thin value is rounded down to the next integer.
 #' @details Checks if the thin argument is consistent with the data consisting of nTotalSamples samples/rows and corrects thin if not.
 #' @author Tankred Ott
 #' @export
-correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.01) {
+correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.1) {
   if (autoThinFraction > 1 || autoThinFraction <= 0) {
     stop("autoThinFraction must be greater than 0 and less than 1!")
   }
   
   if (thin == "auto"){
-    thin = max(floor(nTotalSamples * 0.1), 1)
+    thin = max(floor(nTotalSamples * autoThinFraction), 1)
+    #
+    print(thin)
+    print(nTotalSamples)
   } else if (is.null(thin) || thin == F || thin < 1 || is.nan(thin)) {
     thin = 1
   } else if (thin > nTotalSamples) {
