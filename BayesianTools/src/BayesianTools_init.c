@@ -8,10 +8,10 @@ Check these declarations against the C/Fortran source code.
 */
 
 /* .Call calls */
-extern SEXP BayesianTools_vsemC(SEXP, SEXP);
+extern SEXP _BayesianTools_vsemC(SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
-  {"BayesianTools_vsemC", (DL_FUNC) &BayesianTools_vsemC, 2},
+  {"BayesianTools_vsemC", (DL_FUNC) &_BayesianTools_vsemC, 2},
   {NULL, NULL, 0}
 };
 

@@ -6,6 +6,6 @@
 #' @param PAR 	Photosynthetically active radiation (PAR) MJ /m2 /day
 #' @export
 vsemC <- function(par, PAR) {
-    .Call(BayesianTools_vsemC, par, PAR)
+    .Call(`_BayesianTools_vsemC`, par, PAR)
 }
 
