@@ -16,7 +16,7 @@ getPredictiveIntervals(parMatrix, model, numSamples = 1000,
 
 \item{quantiles}{quantiles to calculate}
 
-\item{error}{function that accepts a vector as in observation. If supplied, will calculate also predictive intervals additional to credible intervals}
+\item{error}{function with signature f(mean, par) that generates error expectations from mean model predictions. Par is a vector from the matrix with the parameter samples (full length). f needs to know which of these parameters are parameters of the error function. If supplied, will calculate also predictive intervals additional to credible intervals}
 }
 \description{
 Calculates Bayesian credible (confidence) and predictive intervals based on parameter sample

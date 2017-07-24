@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // vsemC
 NumericMatrix vsemC(NumericVector par, NumericVector PAR);
-RcppExport SEXP BayesianTools_vsemC(SEXP parSEXP, SEXP PARSEXP) {
+RcppExport SEXP _BayesianTools_vsemC(SEXP parSEXP, SEXP PARSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;

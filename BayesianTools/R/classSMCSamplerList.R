@@ -37,7 +37,7 @@ plot.smcSamplerList <- function(x, ...){
 
 #' @export
 getSample.smcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1,
-                                     numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...){
+                                     numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = FALSE, ...){
   
   out = list()
 

@@ -23,7 +23,7 @@ Imports:
     emulator,
     mvtnorm,
     IDPmisc,
-    Rcpp,
+    Rcpp (>= 0.12.12),
     ellipse,
     numDeriv,
     msm,
@@ -31,7 +31,8 @@ Imports:
     Matrix,
     stats,
     utils,
-    graphics
+    graphics,
+    DHARMa
 Suggests:
     DEoptim,
     lhs,

@@ -28,6 +28,8 @@ runEverything <- function(bayesianOutput){
   
   # Test sample
   sam <- getSample(out, numSamples = 60)
+  sam <- getSample(out, numSamples = 60, coda = T)
+  
   
   # Test diagnostics
   test_that("Diagnostic functions work for all outputs",{

@@ -1,0 +1,102 @@
+---
+title: "Demonstration of plotTimeSeriesResults"
+author: "Tankred Ott"
+date: "3 Jul 2017"
+output: 
+  html_document:
+    keep_md: yes
+    toc: yes
+---
+
+# ATTENTION
+
+This doesn't really make sense as the model used is not a time series
+
+```{r}
+set.seed(123)
+library(BayesianTools)
+
+```
+
+
+# Creation of test case
+
+
+```{r, fig.width=5, fig.height=5}
+a <- 5
+b <- 10
+sigma <- 10
+rsigma = 30
+group = rep(1:11, each = 5)
+
+x <- -27:27
+y <- a * x + b + rnorm(55,0,sd = sigma)
+plot(x,y, col = group, pch = 3)
+```
+
+# Fitting the model with BayesianTools 
+
+```{r}
+likelihood <- function(par){
+  
+  ax = par[1]
+  bx = par[2]
+  sigmax <- par[3]
+  
+  llObservation = sum(dnorm(ax * x + bx - y , sd = sigmax, log = T))
+  return(llObservation)
+  
+}
+```
+
+
+```{r, message=F}
+library(BayesianTools)
+
+setup <- createBayesianSetup(likelihood = likelihood, lower = c(-20,-20,0), upper = c(20,20,50))
+settings <- list(iterations = 10000, message=F)
+
+res <- runMCMC(bayesianSetup = setup, settings = settings)
+summary(res)
+marginalPlot(res)
+```
+
+
+```{r}
+createPredictions <- function (par) {
+  ax = par[1]
+  bx = par[2]
+  sigmax <- par[3]
+  predicted <- ax * x  + bx
+  return(predicted)
+}
+
+createError <- function(mean, par){
+  return(rnorm(length(mean), mean = mean, sd = par[3]))
+}
+
+```
+
+# Plot with DHARMa's simulated residuals
+
+```{r}
+plotTimeSeriesResults(sampler = res,
+                      model = createPredictions,
+                      observed = y,
+                      error = createError,
+                      start = 2500,
+                      plotResiduals = TRUE)
+```
+
+# Plot without DHARMa's simulated residuals
+
+```{r}
+plotTimeSeriesResults(sampler = res,
+                      model = createPredictions,
+                      observed = y,
+                      error = createError,
+                      start = 2500,
+                      plotResiduals = FALSE)
+```
+
+

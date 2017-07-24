@@ -6,10 +6,10 @@
 \usage{
 getSample(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
   thin = 1, numSamples = NULL, whichParameters = NULL,
-  reportDiagnostics = FALSE, ...)
+  includesProbabilities = F, reportDiagnostics = FALSE, ...)
 }
 \arguments{
-\item{sampler}{an object of class mcmcSampler, mcmcSamplerList, smcSampler, smcSamplerList}
+\item{sampler}{an object of class mcmcSampler, mcmcSamplerList, smcSampler, smcSamplerList, mcmc, mcmc.list, double, numeric}
 
 \item{parametersOnly}{if F, likelihood, posterior and prior values are also provided in the output}
 
@@ -21,9 +21,11 @@ getSample(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
 
 \item{thin}{thinning parameter. Either an integer determining the thinning intervall (default is 1) or "auto" for automatic thinning.}
 
-\item{numSamples}{sample size (only used if thin = 1)}
+\item{numSamples}{sample size (only used if thin = 1). If you want to use numSamples set thin to 1.}
 
 \item{whichParameters}{possibility to select parameters by index}
+
+\item{includesProbabilities}{applies only to getSample.Matrix. logical, determining whether probabilities should be included in the result.}
 
 \item{reportDiagnostics}{logical, determines whether settings should be included in the output}
 
@@ -34,6 +36,8 @@ Extracts the sample from a bayesianOutput
 }
 \details{
 If thin is greater than the total number of samples in the sampler object the first and the last element (of each chain if a sampler with multiples chains is used) are sampled. If numSamples is greater than the total number of samples all samples are selected. In both cases a warning is displayed.
+
+If thin and numSamples is passed, the function will use the thin argument if it is valid and greater than 1, else numSamples will be used.
 }
 \examples{
 ll = function(x) sum(dnorm(x, log = TRUE))
@@ -43,14 +47,21 @@ setup = createBayesianSetup(ll, lower = c(-10,-10), upper = c(10,10))
 settings = list(nrChains = 2, iterations = 1000)
 out <- runMCMC(bayesianSetup = setup, sampler = "DEzs", settings = settings)
 
-
 # population MCMCs divide the interations by the number of internal chains,
 # so the end of the 3 chains is 1000/3 = 334
 sample <- getSample(out, start = 100, end = 334, thin = 10) 
 
-# 
+# sampling with number of samples instead of thinning and
+# returning a coda object
 sample <- getSample(out, start = 100, numSamples = 60, coda = TRUE)
 plot(sample)
+
+
+# MCMC with a single chain:
+settings_2 <- list(nrChains = 1, iterations = 1000)
+out_2 <- runMCMC(setup, sampler = "Metropolis", settings = settings_2)
+sample_2 <- getSample(out_2, numSamples = 100)
+
 }
 \author{
 Florian Hartig

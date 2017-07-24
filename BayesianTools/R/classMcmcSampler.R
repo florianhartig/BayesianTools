@@ -2,7 +2,7 @@
 
 #' @author Florian Hartig
 #' @export
-getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics= F, ...){
+getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics= F, ...){
   
   if (class(sampler$chain) == "matrix"){
     
@@ -24,22 +24,16 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     if (thin == "auto"){
       thin = max(floor(nrow(out) / 5000),1)
     }
-    if(is.null(thin) || thin == F || thin < 1) thin = 1
+    if(is.null(thin) || thin == F || thin < 1 || is.nan(thin)) thin = 1
     if(thin > nrow(out)) warning("thin is greater than the total number of samples!")
     if (! thin == 1){
       sel = seq(1,dim(out)[1], by = thin )
       out = out[sel,]
     }
+    
     # Sample size
     if(thin == 1 && !is.null(numSamples)){
-      # wrong user input: numSamples > total number of samples
-      if (numSamples > nrow(out)) {
-        numSamples = nrow(out)
-        warning("numSamples is greater than the total number of samples! All samples were selected.")
-      }
-      if (numSamples < 1) numSamples = 1;
-      sel <- seq(1,dim(out)[1], len = numSamples)
-      out <- out[sel,] 
+      out <- sampleEquallySpaced(out, numSamples)
     }
     
     #############
@@ -71,7 +65,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       if (thin == "auto"){
         thin = max(floor(nrow(temp) / 5000),1)
       }
-      if(is.null(thin) || thin == F || thin < 1) thin = 1
+      if(is.null(thin) || thin == F || thin < 1 || is.nan(thin)) thin = 1
 
       if(thin > nrow(temp)) warning("thin is greater than the total number of samples!")
       
@@ -82,14 +76,9 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       
       # Sample size
       if(thin == 1 && !is.null(numSamples)){
-        # wrong user input: numSamples > total number of samples
-        if(ceiling(numSamples/length(sampler$chain)) > nrow(temp)) {
-          numSamples = nrow(temp) * length(sampler$chain)
-          warning("numSamples is greater than the total number of samples! All samples were selected.")
-        }
-        if (numSamples < 1) numSamples = 1;
-        sel <- seq(1,dim(temp)[1], len = (ceiling(numSamples/length(sampler$chain))))
-        temp <- temp[sel,] 
+        nSamplesPerChain <- ceiling(numSamples/length(sampler$chain))
+        
+        temp <- sampleEquallySpaced(temp, nSamplesPerChain)
       }
       
       
@@ -100,7 +89,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     }
     class(out) = "mcmc.list" 
     
-    trueNumSamples <- sum(unlist(lapply(out, FUN = nrow)))
+    #trueNumSamples <- sum(unlist(lapply(out, FUN = nrow)))
     #if (!is.null(numSamples) && trueNumSamples > numSamples) warning(paste(c("Could not draw ", numSamples, " samples due to rounding errors. Instead ", trueNumSamples," were drawn.")))
     
     if(coda == F){

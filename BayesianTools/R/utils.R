@@ -34,7 +34,7 @@ scaleMatrix <- function(mat, min, max){
 }
 
 
-#' Funktion to calculate the metropolis ratio
+#' Function to calculate the metropolis ratio
 #' @author Florian Hartig
 #' @param LP2 log posterior old position
 #' @param LP1 log posterior of proposal
@@ -64,6 +64,79 @@ getPanels <- function(x){
     else return(c(upper, upper))    
   }
 }  
+
+#' Gets n equally spaced samples (rows) from a matrix or vector
+#' @author Tankred Ott
+#' @param x matrix or vector
+#' @param numSamples number of samples (rows) to be drawn
+#' @details Gets n equally spaced samples (rows) from a matrix and returns a new matrix (or vector) containing those samples
+#' @export
+sampleEquallySpaced <- function(x, numSamples) {
+  # wrong input: x is neither vector nor matrix
+  if (!is.matrix(x) && !is.vector(x)) {
+    stop("Expected matrix or vector for x!")
+  }
+  # wrong input: numSamples is not single numeric value
+  if (!is.vector(numSamples) || !is.numeric(numSamples) || length(numSamples) > 1) {
+    stop("Expected a single numeric value for numSamples!")
+  }
   
+  len = 0
+  if (is.matrix(x)) {
+    len = nrow(x)
+  } else {
+    len = length(x)
+  }
+  
+  if (len == 1) {
+    return(x)
+  }
+  
+  # wrong input: numSamples > total number of samples
+  if (numSamples > len) {
+    numSamples = len
+    warning("numSamples is greater than the total number of samples! All samples were selected.")
+  # wrong input: numsaples 0 or negative
+  } else if (numSamples < 1) { 
+    numSamples = 1;
+    warning("numSamples is less than 1! Only the first sample was selected.")
+  }
+  
+  sel <- seq(1, len, len = numSamples)
+  if (is.matrix(x)) {
+    out <- x[sel,]
+    # if x has only a single col, x[sel,] is a vector and needs to be converted
+    if(!is.matrix(out)) {
+      out <- matrix(out, ncol = ncol(x))
+    }
+  } else {
+    out <- x[sel]
+  }
+  
+  return(out)
+}
 
-
+#' Checks if thin is conistent with nTotalSamples samples and if not corrects it.
+#' @author Tankred Ott
+#' @param nTotalSamples total number of rows/samples 
+#' @param thin thinning
+#' @param autoThinFraction fraction of the data that will be sampled when thin is set to "auto". E.g. 0.5 means thin will be nTotalSamples * 0.5. The resulting thin value is rounded down to the next integer.
+#' @details Checks if the thin argument is consistent with the data consisting of nTotalSamples samples/rows and corrects thin if not.
+#' @author Tankred Ott
+#' @export
+correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.1) {
+  if (autoThinFraction > 1 || autoThinFraction <= 0) {
+    stop("autoThinFraction must be greater than 0 and less than 1!")
+  }
+  
+  if (thin == "auto"){
+    thin = max(floor(nTotalSamples * autoThinFraction), 1)
+  } else if (is.null(thin) || thin == F || thin < 1 || is.nan(thin)) {
+    thin = 1
+  } else if (thin > nTotalSamples) {
+    warning("thin is greater than the total number of samples! Only the first sample/row was selected.")
+    thin = nTotalSamples
+  }
+  
+  return(thin)
+}
