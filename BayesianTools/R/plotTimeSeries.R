@@ -120,7 +120,11 @@ plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotRe
     t <- 1:length(dh$fittedPredictedResponse)
     DHARMa::plotResiduals(t, dh$scaledResiduals, xlab = "Time", ylab = "Standardized residual", main = "Residual vs. time\n quantile lines should be\n horizontal lines at 0.25, 0.5, 0.75", cex.main = 1)
     
+    message("DHARMa::plotTimeSeriesResults called with posterior predictive (residual) diagnostics. Type vignette(\"DHARMa\", package=\"DHARMa\") for a guide on how to interpret these plots")
+
   }
+  
+  
   par(oldPar)
 }
 
