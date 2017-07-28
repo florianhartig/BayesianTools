@@ -4,7 +4,7 @@
 \alias{correctThin}
 \title{Checks if thin is conistent with nTotalSamples samples and if not corrects it.}
 \usage{
-correctThin(nTotalSamples, thin, autoThinFraction = 0.1)
+correctThin(nTotalSamples, thin, autoThinFraction = 0.001)
 }
 \arguments{
 \item{nTotalSamples}{total number of rows/samples}
