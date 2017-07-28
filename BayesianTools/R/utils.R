@@ -124,7 +124,7 @@ sampleEquallySpaced <- function(x, numSamples) {
 #' @details Checks if the thin argument is consistent with the data consisting of nTotalSamples samples/rows and corrects thin if not.
 #' @author Tankred Ott
 #' @export
-correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.1) {
+correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.001) {
   if (autoThinFraction > 1 || autoThinFraction <= 0) {
     stop("autoThinFraction must be greater than 0 and less than 1!")
   }
