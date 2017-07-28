@@ -42,6 +42,8 @@ library(BayesianTools)
 citation("BayesianTools")
 ```
 
+Note: BayesianTools calls a number of secondary packages. Particular important is coda, which is used on a number of plots and summary statistics. If you make heavy use of the summary statistics and diagnostics plots, it would be nice to cite coda as well!
+
 Pro-tip: if you are running a stochastic algorithms such as an MCMC, you should always set or record your random seed to make your results reproducible (otherwise, results will change slightly every time you run the code)
 
 ```{r}
