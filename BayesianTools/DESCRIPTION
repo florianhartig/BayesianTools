@@ -22,6 +22,7 @@ Imports:
     vioplot,
     emulator,
     mvtnorm,
+    tmvtnorm,
     IDPmisc,
     Rcpp (>= 0.12.12),
     ellipse,

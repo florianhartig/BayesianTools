@@ -193,16 +193,19 @@ createPriorDensity <- function(sampler, method = "multivariate", eps = 1e-10, lo
 
   if(method == "multivariate"){
     nPars = ncol(x)
-    covariance = cov(x)
-    covar = as.matrix(Matrix::nearPD(covariance + diag(eps, nPars))$mat)
+    covar = cov(x) 
+    mean = apply(x, 2, mean)
+    if(is.null(lower)) lower = rep(-Inf, length = length(mean))
+    if(is.null(upper)) upper = rep(Inf, length = length(mean))
     
     density = function(par){
-      dens = mvtnorm::dmvnorm(x = par, sigma = covar, log = T)
+      dens = tmvtnorm::dtmvnorm(x = par, mean = mean, sigma = covar + eps, log = T, lower = lower, upper = upper)
       return(dens)
     }
     
     sampler = function(n=1){
-      par = as.vector(mvtnorm::rmvnorm(n = n, sigma = covar))
+      par <- tmvtnorm::rtmvnorm(n = n, mean = mean, sigma = covar + eps, lower = lower, upper = upper, algorithm = "rejection")
+      if (n == 1) par = as.vector(par)
       return(par)
     }
 
