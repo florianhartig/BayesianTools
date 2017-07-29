@@ -24,10 +24,10 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, ...){
   
   if(inherits(mat,"bayesianOutput")){
     if(is.logical(scale)){
-      if(scale == TRUE & !is.null(mat$setup$prior$lower) & !is.null(mat$setup$prior$upper)) scale = cbind(mat$setup$prior$lower, mat$setup$prior$upper)
+      if(scale == TRUE & !is.null(mat[[1]]$setup$prior$lower) & !is.null(mat[[1]]$setup$prior$upper)) scale = cbind(mat[[1]]$setup$prior$lower, mat[[1]]$setup$prior$upper)
     }  
     if(is.logical(best)){
-      if(best == TRUE & !is.null(mat$setup$prior$best)) best = mat$setup$prior$best
+      if(best == TRUE & !is.null(mat[[1]]$setup$prior$best)) best = mat[[1]]$setup$prior$best
     } 
     mat = getSample(mat, thin = thin)
   } 
@@ -47,7 +47,7 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, ...){
 
 
   # TODO ... add names
-  
+  xlim = range(mat)
   if(is.logical(scale)){
     if(scale == FALSE){
     main = "Marginal parameter uncertainty, unscaled"
