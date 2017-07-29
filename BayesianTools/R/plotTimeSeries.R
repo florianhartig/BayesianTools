@@ -70,7 +70,11 @@ plotTimeSeriesResiduals <- function(residuals, x = NULL, main = "residuals"){
 plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotResiduals = TRUE, start = 1, prior = FALSE, ...){
   oldPar = par(no.readonly = TRUE)
   
-  if (plotResiduals == TRUE) {
+  if (plotResiduals == TRUE && is.null(error)) {
+    warning("Can not plot residuals without an error function.")
+  }
+  
+  if (plotResiduals == TRUE && !is.null(error)) {
     layout(matrix(c(1, 1, 1, 2, 3, 4), 2, 3, byrow = TRUE))
     par(mar = c(3, 3, 3, 3), oma = c(2, 2, 2, 2))
   }
@@ -103,7 +107,7 @@ plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotRe
                       confidenceBand = pred$posteriorPredictiveSimulations[c(1,3),],
                       ...)
   
-  if (plotResiduals) {
+  if (plotResiduals && !is.null(error)) {
     dh = getDharmaResiduals(model = model,
                             parMatrix = parMatrix,
                             numSamples = numSamples,
