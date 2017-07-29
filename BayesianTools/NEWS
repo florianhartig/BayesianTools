@@ -6,7 +6,13 @@ Changes
 
 - getSample extended to coda objects, so that all plot functions can also be used on coda objects 
 
+- getSample now corrects wrong inputs for thin and numSamples instead of throwing an error
+
 - plotTimeSeriesResults now includes the option to create residual plots from posterior predictive simulations, calling the DHARMa package
+
+- added new utitility functions sampleEquallySpaced and correctThin
+
+- added manual tests for getSample and automated tests for new utitlity functions
 
 Bugfixes
 
