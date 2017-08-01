@@ -57,6 +57,7 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = setti
 
 plot(out)
 summary(out)
+marginalPlot(out, scale = T)
 gelmanDiagnostics(out) # should be below 1.05 for all parameters to demonstrate convergence 
 
 # Posterior predictive simulations
@@ -85,7 +86,11 @@ plotTimeSeriesResults(sampler = out, model = createPredictions, observed = refer
 
 
 ########################################################
-# demonstrating the updating of the prior 
+# Demonstrating the updating of the prior from old posterior
+# Note that it is usually more exact to rerun the MCMC 
+# with all (old and new) data, instead of updating the prior
+# because likely some information is lost when approximating the
+# Posterior by a multivariate normal 
 
 settings <- list(iterations = 5000, nrChains = 2)
 

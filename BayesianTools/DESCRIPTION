@@ -1,7 +1,7 @@
 Package: BayesianTools
 Title: General-Purpose MCMC and SMC Samplers and Tools for Bayesian Statistics
-Version: 0.1.2.1
-Date: 2017-05-28
+Version: 0.1.3
+Date: 2017-08-01
 Authors@R: c(person("Florian", "Hartig", email = "florian.hartig@biologie.uni-regensburg.de", role = c("aut", "cre")), person("Francesco", "Minunno", role = c("aut")), person("Stefan", " Paul", role = c("aut") ),  person("David", "Cameron", role = "ctb"))
 Author: Florian Hartig [aut, cre],
     Francesco Minunno [aut],
