@@ -33,6 +33,16 @@
 #' @seealso \code{\link{WAIC}}, \code{\link{DIC}}, \code{\link{MAP}}
 marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...){
   
+  # TODO: maybe we should add a check for class here to stop people from trying to use
+  #       this on samples that are acquired via getSample
+  setup <- NULL
+  if ((class(sampler)[1] %in% c("mcmcSamplerList", "smcSamplerList"))) {
+    setup <- sampler[[1]]$setup
+  } else {
+    setup <- sampler$setup
+  }
+  
+  
   if (method == "Chib"){
     
     chain <- getSample(sampler = sampler, parametersOnly = F, ...)
@@ -75,49 +85,32 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     if (!is.null(sampler$setup$prior$density)) pi.star <- sampler$setup$prior$density(theta.star)
     ln.m <- lik.star + pi.star - log(pi.hat)
     
-    out = list(marginalLikelihod = ln.m, ln.lik.star = lik.star, ln.pi.star = pi.star, ln.pi.hat = log(pi.hat), method = "Chib")
+    out <- list(marginalLikelihod = ln.m, ln.lik.star = lik.star, ln.pi.star = pi.star, ln.pi.hat = log(pi.hat), method = "Chib")
     
   } else if (method == "HM"){
     
     chain <- getSample(sampler = sampler, parametersOnly = F, ...)
-    lik <- chain[, sampler$setup$numPars + 2]
+    lik <- chain[, setup$numPars + 2]
     ml <- log(1 / mean(1 / exp(lik)))
     # ml = 1 / logSumExp(-lik, mean = T) function needs to be adjusted
     out <- list(marginalLikelihod=ml, method ="HM")
     
   } else if (method == "Prior"){
-    samples <- NULL
-    likelihoods <- NULL
-    if (class(sampler)[1] %in% c("mcmcSamplerList", "smcSamplerList")) {
-      samples <- sampler[[1]]$setup$prior$sampler(numSamples)
-      likelihoods <- sampler[[1]]$setup$likelihood$density(samples)
-    } else {
-      samples <- sampler$setup$prior$sampler(numSamples)
-      likelihoods <- sampler$setup$likelihood$density(samples)
-    }
+    
+    samples <- setup$prior$sampler(numSamples)
+    likelihoods <- setup$likelihood$density(samples)
     
     ml <- logSumExp(likelihoods, mean = T)
     out <- list(marginalLikelihod=ml, method ="Prior")
     
   } else if (method == "Bridge") {
+    
     chain <- getSample(sampler = sampler, parametersOnly = F, numSamples = numSamples, ...)
     
-    nParams <- NULL
-    lower <- NULL
-    upper <- NULL
-    
-    if (class(sampler)[1] %in% c("mcmcSamplerList", "smcSamplerList")) {
-      nParams <- sampler[[1]]$setup$numPars
-      lower <- sampler[[1]]$setup$prior$lower
-      upper <- sampler[[1]]$setup$prior$upper
-    # TODO: maybe we should add a check for class here to stop people from trying to use
-    #       this on samples that are acquired via getSample
-    } else { 
-      nParams <- sampler$setup$numPars
-      lower <- sampler$setup$prior$lower
-      upper <- sampler$setup$prior$upper
-    }
-    
+    nParams <- setup$numPars
+    lower <- setup$prior$lower
+    upper <- setup$prior$upper
+
     out <- bridgesample(chain, nParams)
     
   } else {
@@ -147,7 +140,7 @@ bridgesample <- function (chain, nParams, lower = NULL, upper = NULL, ...) {
   
   names(lower) <- names(upper) <- colnames(chain[, 1:nParams])
   
-  i = 1
+  i <- 1
   out <- bridgesampling::bridge_sampler(
     samples = chain[, 1:nParams],
     log_posterior = function(row, data) {

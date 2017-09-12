@@ -34,7 +34,8 @@ Imports:
     stats,
     utils,
     graphics,
-    DHARMa
+    DHARMa,
+    bridgesampling
 Suggests:
     DEoptim,
     lhs,
