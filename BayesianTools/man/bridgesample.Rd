@@ -24,8 +24,8 @@ Calculates the marginal likelihood of a chain via bridge sampling
 This function uses "bridge_sampler" from the package "bridgesampling".
 }
 \examples{
-means <- c(0, 1)
-sds <- c(1, 0.6)
+means <- c(0, 1, 2)
+sds <- c(1, 0.6, 3)
 
 # log-likelihood
 ll <- function (x) {
@@ -33,8 +33,8 @@ ll <- function (x) {
 }
 
 # lower and upper bounds for prior
-lb <- rep(-10, 2)
-ub <- rep(10, 2)
+lb <- rep(-10, 3)
+ub <- rep(10, 3)
 
 # create setup and run MCMC
 setup <- createBayesianSetup(likelihood = ll,
@@ -53,6 +53,7 @@ bs_result <- bridgesample(chain = sample,
                           nParams = out$setup$numPars,
                           lower = lb,
                           upper = ub)
+bs_result
 }
 \seealso{
 \code{\link{marginalLikelihood}}
