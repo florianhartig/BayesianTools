@@ -111,7 +111,13 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     lower <- setup$prior$lower
     upper <- setup$prior$upper
 
-    out <- bridgesample(chain, nParams)
+    out <- bridgesample(chain, nParams, lower, upper)
+    
+  } else if ("NN") {
+    
+    # TODO: implement nearest neighbour method:
+    # https://arxiv.org/abs/1704.03472
+    stop("Not yet implemented")
     
   } else {
     stop(paste(c("\"", method, "\" is not a valid method parameter!"), sep = " ", collapse = ""))
@@ -135,6 +141,8 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
 #' @example /inst/examples/bridgesampleHelp.R
 #' @seealso \code{\link{marginalLikelihood}}
 bridgesample <- function (chain, nParams, lower = NULL, upper = NULL, ...) {
+  # TODO: implement this without bridgesampling package
+  # https://github.com/quentingronau/bridgesampling
   if (is.null(lower)) lower <- rep(-Inf, nParams)
   if (is.null(upper)) upper <- rep(Inf, nParams)
   
