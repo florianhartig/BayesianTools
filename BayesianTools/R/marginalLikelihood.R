@@ -86,17 +86,42 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     out <- list(marginalLikelihod=ml, method ="HM")
     
   } else if (method == "Prior"){
-    samples <- sampler$setup$prior$sampler(numSamples)
-    likelihoods <- sampler$setup$likelihood$density(samples)
+    samples <- NULL
+    likelihoods <- NULL
+    if (class(sampler)[1] %in% c("mcmcSamplerList", "smcSamplerList")) {
+      samples <- sampler[[1]]$setup$prior$sampler(numSamples)
+      likelihoods <- sampler[[1]]$setup$likelihood$density(samples)
+    } else {
+      samples <- sampler$setup$prior$sampler(numSamples)
+      likelihoods <- sampler$setup$likelihood$density(samples)
+    }
+    
     ml <- logSumExp(likelihoods, mean = T)
     out <- list(marginalLikelihod=ml, method ="Prior")
     
   } else if (method == "Bridge") {
     chain <- getSample(sampler = sampler, parametersOnly = F, numSamples = numSamples, ...)
-    nParams <- sampler$setup$numPar
-    print(paste(c("nParams: ", sampler$setup$numPar), sep = "", collapse = ""))
-    # print(chain)
+    
+    nParams <- NULL
+    lower <- NULL
+    upper <- NULL
+    
+    if (class(sampler)[1] %in% c("mcmcSamplerList", "smcSamplerList")) {
+      nParams <- sampler[[1]]$setup$numPars
+      lower <- sampler[[1]]$setup$prior$lower
+      upper <- sampler[[1]]$setup$prior$upper
+    # TODO: maybe we should add a check for class here to stop people from trying to use
+    #       this on samples that are acquired via getSample
+    } else { 
+      nParams <- sampler$setup$numPars
+      lower <- sampler$setup$prior$lower
+      upper <- sampler$setup$prior$upper
+    }
+    
     out <- bridgesample(chain, nParams)
+    
+  } else {
+    stop(paste(c("\"", method, "\" is not a valid method parameter!"), sep = " ", collapse = ""))
   }
   
   warning("Note to the user: be aware that marginal likelihood calculations are notoriously prone to numerical stability issues. Especially in high-dimensional parameter spaces, there is no guarantee that the algorithms implemented in this function converge in all cases. Proceed at your own risk!")
@@ -120,7 +145,7 @@ bridgesample <- function (chain, nParams, lower = NULL, upper = NULL, ...) {
   if (is.null(lower)) lower <- rep(-Inf, nParams)
   if (is.null(upper)) upper <- rep(Inf, nParams)
   
-  names(lb) <- names(ub) <- colnames(chain[, 1:nParams])
+  names(lower) <- names(upper) <- colnames(chain[, 1:nParams])
   
   i = 1
   out <- bridgesampling::bridge_sampler(
@@ -131,8 +156,8 @@ bridgesample <- function (chain, nParams, lower = NULL, upper = NULL, ...) {
       return(out)
     },
     data = chain,
-    lb = lb,
-    ub = ub,
+    lb = lower,
+    ub = upper,
     ...
   )
   
