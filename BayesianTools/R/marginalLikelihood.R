@@ -25,6 +25,8 @@
 #' The third method is simply sampling from the prior. While in principle unbiased,
 #'  it will only converge for a large number of samples, and is therefore
 #'   numerically inefficient. \cr
+#' 
+#' The Bridge method uses bridge sampling as implemented in package "bridgesampling". 
 #'    
 #' @example /inst/examples/marginalLikelihoodHelp.R
 #' @references Chib, Siddhartha, and Ivan Jeliazkov. "Marginal likelihood from the Metropolis-Hastings output." Journal of the American Statistical Association 96.453 (2001): 270-281.
@@ -33,18 +35,18 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
   
   if (method == "Chib"){
     
-    chain = getSample(sampler = sampler, parametersOnly = F, ...)
+    chain <- getSample(sampler = sampler, parametersOnly = F, ...)
     
-    if(class(sampler)[1] %in% c("mcmcSamplerList", "smcSamplerList")) sampler = sampler[[1]]
+    if(class(sampler)[1] %in% c("mcmcSamplerList", "smcSamplerList")) sampler <- sampler[[1]]
     
-    x = chain[,1:sampler$setup$numPars]
+    x <- chain[,1:sampler$setup$numPars]
     
-    lik = chain[,sampler$setup$numPars + 2]
-    MAPindex = which.max(chain[,sampler$setup$numPars + 1])
+    lik <- chain[,sampler$setup$numPars + 2]
+    MAPindex <- which.max(chain[,sampler$setup$numPars + 1])
     
     #propGen = createProposalGenerator(covariance = cov(x))
     
-    V = cov(x)
+    V <- cov(x)
     
     # calculate reference parameter 
     
@@ -53,41 +55,48 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     
     # get samples from posterior
     
-    g <- sample.int(nrow(x),numSamples,replace=TRUE) # should replace really be true?
-    q.g <- mvtnorm::dmvnorm(x[g,],mean=theta.star,sigma=V,log=FALSE)
+    g <- sample.int(nrow(x), numSamples, replace=TRUE) # should replace really be true?
+    q.g <- mvtnorm::dmvnorm(x[g,], mean = theta.star, sigma = V, log = FALSE)
     lik.g <- lik[g]
-    alpha.g <- sapply(lik.g,function(l) min(1,exp(lik.star-l))) # Metropolis Ratio
+    alpha.g <- sapply(lik.g, function(l) min(1, exp(lik.star - l))) # Metropolis Ratio
     
     #lik.g <- apply(theta.g,1,sampler$setup$likelihood$density,...)
     
     
     # get samples from proposal
-    theta.j <-mvtnorm::rmvnorm(numSamples,mean=theta.star,sigma=V)
-    lik.j <- apply(theta.j,1,sampler$setup$likelihood$density)
-    alpha.j <- sapply(lik.j,function(l) min(1,exp(l-lik.star)))  # Metropolis Ratio
+    theta.j <- mvtnorm::rmvnorm(numSamples, mean = theta.star, sigma = V)
+    lik.j <- apply(theta.j, 1, sampler$setup$likelihood$density)
+    alpha.j <- sapply(lik.j, function(l) min(1, exp(l - lik.star)))  # Metropolis Ratio
     
     # Prior 
-    pi.hat <- mean(alpha.g*q.g)/mean(alpha.j)
+    pi.hat <- mean(alpha.g * q.g) / mean(alpha.j)
     pi.star <- 0
     
     if (!is.null(sampler$setup$prior$density)) pi.star <- sampler$setup$prior$density(theta.star)
     ln.m <- lik.star + pi.star - log(pi.hat)
     
-    out = list(marginalLikelihod=ln.m,ln.lik.star=lik.star,ln.pi.star=pi.star,ln.pi.hat=log(pi.hat), method = "Chib")
+    out = list(marginalLikelihod = ln.m, ln.lik.star = lik.star, ln.pi.star = pi.star, ln.pi.hat = log(pi.hat), method = "Chib")
     
   } else if (method == "HM"){
     
-    chain = getSample(sampler = sampler, parametersOnly = F, ...)
-    lik = chain[,sampler$setup$numPars + 2]
-    ml = log(1/mean(1/exp(lik)))
+    chain <- getSample(sampler = sampler, parametersOnly = F, ...)
+    lik <- chain[, sampler$setup$numPars + 2]
+    ml <- log(1 / mean(1 / exp(lik)))
     # ml = 1 / logSumExp(-lik, mean = T) function needs to be adjusted
     out <- list(marginalLikelihod=ml, method ="HM")
     
   } else if (method == "Prior"){
-    samples = sampler$setup$prior$sampler(numSamples)
-    likelihoods = sampler$setup$likelihood$density(samples)
-    ml = logSumExp(likelihoods, mean = T)
+    samples <- sampler$setup$prior$sampler(numSamples)
+    likelihoods <- sampler$setup$likelihood$density(samples)
+    ml <- logSumExp(likelihoods, mean = T)
     out <- list(marginalLikelihod=ml, method ="Prior")
+    
+  } else if (method == "Bridge") {
+    chain <- getSample(sampler = sampler, parametersOnly = F, numSamples = numSamples, ...)
+    nParams <- sampler$setup$numPar
+    print(paste(c("nParams: ", sampler$setup$numPar), sep = "", collapse = ""))
+    # print(chain)
+    out <- bridgesample(chain, nParams)
   }
   
   warning("Note to the user: be aware that marginal likelihood calculations are notoriously prone to numerical stability issues. Especially in high-dimensional parameter spaces, there is no guarantee that the algorithms implemented in this function converge in all cases. Proceed at your own risk!")
@@ -96,7 +105,39 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
 }  
 
 
-
+#' Calculates the marginal likelihood of a chain via bridge sampling
+#' @export
+#' @author Tankred Ott
+#' @param chain a single mcmc chain with samples as rows and parameters and posterior density as columns.
+#' @param nParams number of parameters
+#' @param lower optional - lower bounds of the prior
+#' @param upper optional - upper bounds of the prior
+#' @param ... arguments passed to bridge_sampler
+#' @details This function uses "bridge_sampler" from the package "bridgesampling".
+#' @example /inst/examples/bridgesampleHelp.R
+#' @seealso \code{\link{marginalLikelihood}}
+bridgesample <- function (chain, nParams, lower = NULL, upper = NULL, ...) {
+  if (is.null(lower)) lower <- rep(-Inf, nParams)
+  if (is.null(upper)) upper <- rep(Inf, nParams)
+  
+  names(lb) <- names(ub) <- colnames(chain[, 1:nParams])
+  
+  i = 1
+  out <- bridgesampling::bridge_sampler(
+    samples = chain[, 1:nParams],
+    log_posterior = function(row, data) {
+      out <- data[i, nParams + 1] # logPosterior is always the next col after the params
+      i <- i + 1
+      return(out)
+    },
+    data = chain,
+    lb = lb,
+    ub = ub,
+    ...
+  )
+  
+  return(out)
+}
 
 
 

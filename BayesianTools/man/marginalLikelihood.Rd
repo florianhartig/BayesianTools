@@ -30,6 +30,8 @@ The function currently implements three ways to calculate the marginal likelihoo
 The third method is simply sampling from the prior. While in principle unbiased,
  it will only converge for a large number of samples, and is therefore
   numerically inefficient. \cr
+
+The Bridge method uses bridge sampling as implemented in package "bridgesampling".
 }
 \examples{
 # Harmonic mean works OK for a low-dim case with 
