@@ -1,12 +1,13 @@
 #' Main wrapper function to start MCMCs, particle MCMCs and SMCs
 #' @author Florian Hartig
 #' @param bayesianSetup either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for further details. 
-#' @param sampler sampling algorithm to be run. Default is DEzs. Options are "Metropolis", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions. 
+#' @param sampler sampling algorithm to be run. Default is DEzs. Options are "Metropolis", "AM", "DR", "DRAM", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions. 
 #' @param settings list with settings for each sampler (see help of sampler for details). If a setting is not provided, defaults (see \code{\link{applySettingsDefault}}) will be used. 
 #' @details The runMCMC function can be started with either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. If a bayesianSetup is provided, check if appropriate parallization options are used - many samplers can make use of parallelization if this option is activated when the class is created.
 #' 
 #' For details about the different MCMC samplers, make sure you have read the Vignette (run vignette("BayesianTools", package="BayesianTools"). Also, see \code{\link{Metropolis}} for Metropolis based samplers, \code{\link{DE}} and \code{\link{DEzs}} for standard differential evolution samplers, \code{\link{DREAM}} and \code{\link{DREAMzs}} for DREAM sampler, \code{\link{Twalk}} for the Twalk sampler, and \code{\link{smcSampler}} for rejection and Sequential Monte Carlo sampling.\cr
 #' 
+#' The samplers "AM", "DR", and "DRAM" are special cases of the "Metropolis" sampler and are shortcuts for predefined settings ("AM": adapt=TRUE; "DR": DRlevels=2; "DRAM": adapt=True, DRlevels=2).
 #' 
 #' The settings list allows to change the settings for the MCMC samplers and some other options. For the MCMC sampler settings, see their help files. Global options that apply for all MCMC samplers are: iterations (number of MCMC iterations), and nrChains (number of chains to run). Note that running several chains is not done in parallel, so if time is an issue it will be better to run the MCMCs individually and then combine them via \code{\link{createMcmcSamplerList}} into one joint object. 
 #' 
@@ -68,7 +69,6 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
   
   ###### END RESTART ##############
   
-
   
   # TODO - the following statement should be removed once all further functions access settings$sampler instead of sampler
   # At the moment only the same sampler can be used to restart sampling.
@@ -107,10 +107,10 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
   # MAIN RUN FUNCTION HERE  
   }else{
     
-    if (sampler == "Metropolis"){
+    if (sampler == "Metropolis" || sampler == "AM" || sampler == "DR" || sampler == "DRAM"){
       if(restart == FALSE){
         mcmcSampler <- Metropolis(bayesianSetup = setup, settings = settings)
-        mcmcSampler<- sampleMetropolis(mcmcSampler = mcmcSampler, iterations = settings$iterations)
+        mcmcSampler <- sampleMetropolis(mcmcSampler = mcmcSampler, iterations = settings$iterations)
       } else {
         mcmcSampler<- sampleMetropolis(mcmcSampler = previousMcmcSampler, iterations = settings$iterations) 
       }
@@ -241,11 +241,36 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   if(is.null(settings)) settings = list()
   
   if(!is.null(sampler)){
-    if(!is.null(settings$sampler)) if(settings$sampler != sampler) warning("sampler argument overwrites an existing settings$sampler in applySettingsDefault. This only makes sense if one wants to take over settings from one sampler to another")
+    if(!is.null(settings$sampler)) {
+      # TODO: this is a bit hacky. The best would prabably be to change the Metropolis function to allow AM, DR and DRAM
+      #       arguments and call applySettingsDefault for those
+      if (settings$sampler %in% c("AM", "DR", "DRAM") && sampler == "Metropolis") {
+        sampler <- settings$sampler
+      }
+      if(settings$sampler != sampler) {
+        warning("sampler argument overwrites an existing settings$sampler in applySettingsDefault. This only makes sense if one wants to take over settings from one sampler to another")
+      }
+    }
     settings$sampler = sampler
   }
   
   if(!settings$sampler %in% getPossibleSamplerTypes()$BTname) stop("trying to set values for a sampler that does not exist")
+  
+  if (settings$sampler == "AM") {
+    defaultSettings <- getMetropolisDefaultSettings()
+    defaultSettings$adapt <- TRUE
+  }
+  
+  if (settings$sampler == "DR") {
+    defaultSettings <- getMetropolisDefaultSettings()
+    defaultSettings$DRlevels <- 2
+  }
+  
+  if (settings$sampler == "DRAM") {
+    defaultSettings <- getMetropolisDefaultSettings()
+    defaultSettings$adapt <- TRUE
+    defaultSettings$DRlevels <- 2
+  }
   
   if (settings$sampler == "Metropolis"){
     defaultSettings = list(startValue = NULL, 
@@ -501,16 +526,42 @@ setupStartProposal <- function(proposalGenerator = NULL, bayesianSetup, settings
 #' @author Florian Hartig
 getPossibleSamplerTypes <- function(){
   
-  out = list(  BTname =   c("Metropolis", "DE", "DEzs", "DREAM", "DREAMzs", "Twalk", "SMC"),
-               possibleSettings = list() ,
-               possibleSettingsName = list() ,
-                
-               univariatePossible = c(T,T,T,T,T,T,F),
-               restartable = c(T,T,T,T,T,T,F)
-               )
+  out = list(
+    BTname = c("AM", "DR", "DRAM", "Metropolis", "DE", "DEzs", "DREAM", "DREAMzs", "Twalk", "SMC"),
+    possibleSettings = list() ,
+    possibleSettingsName = list() ,
+    
+    univariatePossible = c(T, T, T, T, T, T, T, T, T, F),
+    restartable = c(T, T, T, T, T, T, T, T, T, F)
+  )
 
   return(out)
 } 
 
-
+#' Returns Metropolis default settings
+#' @author Tankred Ott
+getMetropolisDefaultSettings <- function () {
+  defaultSettings = list(
+    startValue = NULL,
+    iterations = 10000,
+    optimize = T,
+    proposalGenerator = NULL,
+    consoleUpdates = 100,
+    burnin = 0,
+    thin = 1,
+    parallel = NULL,
+    adapt = T,
+    adaptationInterval = 500,
+    adaptationNotBefore = 3000,
+    DRlevels = 1 ,
+    proposalScaling = NULL,
+    adaptationDepth = NULL,
+    temperingFunction = NULL,
+    proposalGenerator = NULL,
+    gibbsProbabilities = NULL,
+    currentChain = 1,
+    message = TRUE
+  )
+  return(defaultSettings)
+}
 
