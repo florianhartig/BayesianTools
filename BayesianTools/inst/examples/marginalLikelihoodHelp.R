@@ -11,13 +11,15 @@ plot(out)
 marginalLikelihood(out, numSamples = 500)[[1]]
 marginalLikelihood(out, method = "HM", numSamples = 500)[[1]]
 marginalLikelihood(out, method = "Prior", numSamples =  500)[[1]]
+marginalLikelihood(out, method = "Bridge", numSamples =  500)[[1]]
 
 # True marginal likelihood (brute force approximation)
 
 marginalLikelihood(out, method = "Prior", numSamples =  10000)[[1]]
 
 
-# Harmonic mean goes totally wrong for higher dimendsions - wide prior. 
+# Harmonic mean goes totally wrong for higher dimensions - wide prior.
+# Same goes for standard bridge sampling.
 # Could also be a problem of numeric stability of the implementation
 
 likelihood <- function(x) sum(dnorm(x, log = TRUE))
@@ -30,6 +32,7 @@ plot(out)
 marginalLikelihood(out, numSamples = 500)[[1]]
 marginalLikelihood(out, method = "HM", numSamples = 500)[[1]]
 marginalLikelihood(out, method = "Prior", numSamples =  500)[[1]]
+marginalLikelihood(out, method = "Bridge", numSamples =  500)[[1]]
 
 # True marginal likelihood (brute force approximation)
 
