@@ -69,7 +69,7 @@ M2
 Bayes factor (need to reverse the log)
 
 ```{r}
-exp(M1$ln.m - M2$ln.m)
+exp(M1$marginalLikelihod - M2$marginalLikelihod)
 ```
 
 

@@ -628,7 +628,7 @@ M2
 Bayes factor (need to reverse the log)
 
 ```{r}
-exp(M1$ln.m - M2$ln.m)
+exp(M1$marginalLikelihod - M2$marginalLikelihod)
 ```
 
 BF > 1 means the evidence is in favor of M1. See Kass, R. E. & Raftery, A. E. (1995) Bayes Factors. J. Am. Stat. Assoc., Amer Statist Assn, 90, 773-795.
