@@ -2,6 +2,10 @@ NOTE: for more news about the package, see https://github.com/florianhartig/Baye
 
 # BayesianTools 0.1.3
 
+Compatibility
+
+- created compatibility to new Rcpp standard
+
 Changes
 
 - getSample extended to coda objects, so that all plot functions can also be used on coda objects 
