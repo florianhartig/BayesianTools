@@ -51,7 +51,7 @@ metropolisRatio <- function(LP2, LP1, tempering = 1){
 #' Calculates the panel combination for par(mfrow = )
 #' @author Florian Hartig
 #' @param x the desired number of panels 
-#' @export
+# #' @export
 getPanels <- function(x){
   if (x <= 0) stop("number can't be < 1")
   
@@ -70,7 +70,7 @@ getPanels <- function(x){
 #' @param x matrix or vector
 #' @param numSamples number of samples (rows) to be drawn
 #' @details Gets n equally spaced samples (rows) from a matrix and returns a new matrix (or vector) containing those samples
-#' @export
+# #' @export
 sampleEquallySpaced <- function(x, numSamples) {
   # wrong input: x is neither vector nor matrix
   if (!is.matrix(x) && !is.vector(x)) {
@@ -123,7 +123,7 @@ sampleEquallySpaced <- function(x, numSamples) {
 #' @param autoThinFraction fraction of the data that will be sampled when thin is set to "auto". E.g. 0.5 means thin will be nTotalSamples * 0.5. The resulting thin value is rounded down to the next integer.
 #' @details Checks if the thin argument is consistent with the data consisting of nTotalSamples samples/rows and corrects thin if not.
 #' @author Tankred Ott
-#' @export
+# #' @export
 correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.001) {
   if (autoThinFraction > 1 || autoThinFraction <= 0) {
     stop("autoThinFraction must be greater than 0 and less than 1!")

@@ -12,10 +12,6 @@
 #' Also the parameter info is optional for most uses. However for some functions (e.g. \code{\link{MAP}})
 #' the matrix or single coloumns (e.g. log posterior) are necessary for the diagnostics.
 #' @export
-#' 
-#' 
-#' 
-#' 
 
 convertCoda <- function(sampler, names = NULL, info = NULL, likelihood = NULL){
 

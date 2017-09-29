@@ -483,8 +483,5 @@ DREAMzs <- function(bayesianSetup,   settings = list(
   
   
   list(chains = pChain, X = as.matrix(X[,1:Npar]), Z = Z, pCR = pCR)
-  
-  
-  
-  
+
 }

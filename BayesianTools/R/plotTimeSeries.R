@@ -140,7 +140,7 @@ plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotRe
 #' @param observed a vector of observed values
 #' @param error function with signature f(mean, par) that generates error expectations from mean model predictions. Par is a vector from the matrix with the parameter samples (full length). f needs to know which of these parameters are parameters of the error function
 #' @param plot logical, determining whether the simulated residuals should be plotted
-#' @export
+# #' @export
 getDharmaResiduals <- function(model, parMatrix, numSamples, observed, error, plot = TRUE){
 
   predDistr <- getPredictiveDistribution(parMatrix = parMatrix,

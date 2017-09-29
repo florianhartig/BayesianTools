@@ -100,7 +100,7 @@ getSample.double <- function(sampler, parametersOnly = T, coda = F, start = 1, e
 
 #' @author Tankred Ott
 #' @export
-# TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector istead of a matrix, if 
+# TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector instead of a matrix, if 
 #       the mcmc object passed to getSample.mcmc contains a vector.
 getSample.integer <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   if(is.null(end)) end = length(sampler)
@@ -131,8 +131,6 @@ getSample.data.frame <- function(sampler, parametersOnly = T, coda = F, start = 
 #' @author Tankred Ott
 #' @export
 getSample.mcmc <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
-  
-  # TODO: implement handling of wrong inputs?
   
   if(coda == T){
     # mcmc objects can contain matrices or vectors
