@@ -26,14 +26,18 @@ summary.mcmcSamplerList <- function(object, ...){
   sampler <- object
 
   DInf <- DIC(sampler)
-  MAPvals <- format(round(MAP(sampler)$parametersMAP,3), nsmall = 3)
+  MAPvals <- round(MAP(sampler)$parametersMAP,3)
+
+  psf <- round(gelmanDiagnostics(sampler)$psrf[,1], 3)
+  
   mcmcsampler <- sampler[[1]]$settings$sampler
+  
   runtime <- 0
   for(i in 1:length(sampler)) runtime <- runtime+sampler[[i]]$settings$runtime[3]
 
   correlations <- round(cor(getSample(sampler)),3)
 
-
+  
   sampler <- getSample(sampler, parametersOnly = T, coda = T)
   if("mcmc.list" %in% class(sampler)){
     nrChain <- length(sampler)
@@ -46,9 +50,9 @@ summary.mcmcSamplerList <- function(object, ...){
     for(i in 1:npar){
       tmp <- unlist(sampler[,i])
       tmp <- quantile(tmp, probs = c(0.025, 0.5, 0.975))
-      lowerq[i] <- format(round(tmp[1],3), nsmall = 3)
-      medi[i] <- format(round(tmp[2],3), nsmall = 3)
-      upperq[i] <- format(round(tmp[3],3), nsmall = 3)
+      lowerq[i] <- round(tmp[1],3)
+      medi[i] <- round(tmp[2],3)
+      upperq[i] <- round(tmp[3],3)
     }
 
   }else{
@@ -61,13 +65,19 @@ summary.mcmcSamplerList <- function(object, ...){
     parnames <- colnames(sampler)
     for(i in 1:npar){
       tmp <- quantile(sampler[,i], probs = c(0.025, 0.5, 0.975))
-      lowerq[i] <- format(round(tmp[1],3), nsmall = 3)
-      medi[i] <- format(round(tmp[2],3), nsmall = 3)
-      upperq[i] <- format(round(tmp[3],3), nsmall = 3)
+      lowerq[i] <- round(tmp[1],3)
+      medi[i] <- round(tmp[2],3)
+      upperq[i] <- round(tmp[3],3)
     }
 
   }
+  
+  # output for parameter metrics
+  parOutDF <- cbind(MAPvals, lowerq, medi, upperq, psf)
+  colnames(parOutDF) <- c("MAP", "2.5%", "median", "97.5%", "psf")
+  row.names(parOutDF) <- parnames
 
+  
   cat(rep("#", 25), "\n")
   cat("## MCMC chain summary ##","\n")
   cat(rep("#", 25), "\n", "\n")
@@ -77,19 +87,14 @@ summary.mcmcSamplerList <- function(object, ...){
   cat("# Rejection rate: ", round(mean(coda::rejectionRate(sampler)),3), "\n")
   cat("# Effective sample size: ", round(mean(coda::effectiveSize(sampler)),0), "\n")
   cat("# Runtime: ", runtime, " sec.","\n", "\n")
-  cat("# Parameter", rep("", 6), "MAP", "    ", "2.5%", "  ", "median", " ", "97.5%", "\n")
-  for(i in 1:npar){
-    cat("# ", parnames[i],": ",rep("", max(1,10-nchar(parnames[i]))),
-        MAPvals[i],rep("",max(0,8-nchar(lowerq[i]))), lowerq[i],rep("",max(0,8-nchar(medi[i]))), medi[i],
-        rep("",max(0,8-nchar(upperq[i]))), upperq[i], "\n")
-  }
+  cat("# Parameters\n")
+  print(parOutDF)
   cat("\n")
   cat("## DIC: ", round(DInf$DIC,3), "\n")
   cat("## Convergence" ,"\n", "Gelman Rubin multivariate psrf: ", conv, "\n","\n")
   cat("## Correlations", "\n")
   print(correlations)
-
-
+  
 }
 
 #' @author Florian Hartig
