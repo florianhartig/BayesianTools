@@ -176,7 +176,7 @@ summary.mcmcSampler <- function(object, ...){
   colnames(parOutDF) <- c("MAP", "2.5%", "median", "97.5%")
   if (psf == TRUE) {
     psf <- round(gelmanDiagnostics(sampler)$psrf[,1], 3)
-    parOutDF <- cbind(parOutDF, psf)
+    parOutDF <- cbind(psf, parOutDF)
   }
   row.names(parOutDF) <- parnames
   

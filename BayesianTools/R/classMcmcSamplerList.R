@@ -73,8 +73,8 @@ summary.mcmcSamplerList <- function(object, ...){
   }
   
   # output for parameter metrics
-  parOutDF <- cbind(MAPvals, lowerq, medi, upperq, psf)
-  colnames(parOutDF) <- c("MAP", "2.5%", "median", "97.5%", "psf")
+  parOutDF <- cbind(psf, MAPvals, lowerq, medi, upperq)
+  colnames(parOutDF) <- c("psf", "MAP", "2.5%", "median", "97.5%")
   row.names(parOutDF) <- parnames
 
   
