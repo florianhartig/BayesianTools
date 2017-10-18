@@ -4,7 +4,8 @@
 \alias{marginalPlot}
 \title{Plot MCMC marginals}
 \usage{
-marginalPlot(mat, thin = "auto", scale = NULL, best = NULL, ...)
+marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
+  plotPrior = FALSE, nDrawsPrior = 1000, ...)
 }
 \arguments{
 \item{mat}{object of class "bayesianOutput" or a matrix or data frame of variables}
@@ -14,6 +15,10 @@ marginalPlot(mat, thin = "auto", scale = NULL, best = NULL, ...)
 \item{scale}{should the results be scaled. Value can be either NULL (no scaling), T, or a matrix with upper / lower bounds as columns. If set to T, attempts to retrieve the scaling from the input object mat (requires that this is of class BayesianOutput)}
 
 \item{best}{if provided, will draw points at the given values (to display true / default parameter values). Value can be either NULL (no drawing), a vector with values, or T, in which case the function will attempt to retrieve the values from a BayesianOutput}
+
+\item{plotPrior}{Logical, determining whether the prior should be plotted in addition to the posteriors. Only applicable if mat is an object of class "bayesianOutput"}
+
+\item{nDrawsPrior}{Integer, number of draws from the prior, when plotPrior is active}
 
 \item{...}{additional parameters to pass on to the \code{\link{getSample}}}
 }
