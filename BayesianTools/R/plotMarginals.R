@@ -239,11 +239,9 @@ vioplot <- function(x,...,range=1.5,h=NULL,ylim=NULL,names=NULL, horizontal=FALS
         lines( at[c( i, i)], c(lower[i], upper[i]) ,lwd=lwd, lty=lty)
         
         # plot 50% KI box
-        
         rect( at[i]-boxwidth/2, q1[i], at[i]+boxwidth/2, q3[i], col=rectCol)
         
         # plot median point
-        
         points( at[i], med[i], pch=pchMed, col=colMed )
       }
     }
@@ -298,14 +296,14 @@ vioplot <- function(x,...,range=1.5,h=NULL,ylim=NULL,names=NULL, horizontal=FALS
           lineY <- at[c(i,i)] + boxwidth / 2
         }
         
-        lines( c(lower[i], upper[i]), lineY ,lwd=lwd, lty=lty)
+        # lines( c(lower[i], upper[i]), lineY ,lwd=lwd, lty=lty)
         
         # plot 50% KI box
-        
         rect( q1[i], boxBottom, q3[i], boxTop,  col=rectCol)
         
+        
         # plot median point
-        points( med[i], lineY[1], pch=pchMed, col=colMed )
+        points( med[i], lineY[1], pch=pchMed, col=colMed)
       }
     }
     
@@ -315,9 +313,5 @@ vioplot <- function(x,...,range=1.5,h=NULL,ylim=NULL,names=NULL, horizontal=FALS
   
   invisible (list( upper=upper, lower=lower, median=med, q1=q1, q3=q3))
 }
-
-
-
-
 
 

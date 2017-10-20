@@ -140,3 +140,16 @@ correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.001) {
   
   return(thin)
 }
+
+#' @author Tankred Ott
+#' @title Rescale
+#' @param x Vector of values
+#' @param from vector, interval of which x are elements. from[1] must be the lower, from[2] the upper bound.
+#' @param to vector, interval to which the elements should be scaled. to[1] must be the lower, to[2] the upper bound.
+rescale <- function (x, from, to) {
+  # scale x from 0 to 1
+  x <- (x - from[1]) / (from[2] - from[1])
+  # scale to new interval
+  return(x * (to[2] - to[1]) + to[1])
+}
+
