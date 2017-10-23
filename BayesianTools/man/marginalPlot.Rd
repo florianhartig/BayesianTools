@@ -5,7 +5,8 @@
 \title{Plot MCMC marginals}
 \usage{
 marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
-  histogram = FALSE, plotPrior = FALSE, nDrawsPrior = 1000, ...)
+  histogram = FALSE, plotPrior = FALSE, nDrawsPrior = 1000, breaks = 15,
+  smooth = NULL, ...)
 }
 \arguments{
 \item{mat}{object of class "bayesianOutput" or a matrix or data frame of variables}
@@ -21,6 +22,10 @@ marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
 \item{plotPrior}{Logical, determining whether the prior should be plotted in addition to the posteriors. Only applicable if mat is an object of class "bayesianOutput"}
 
 \item{nDrawsPrior}{Integer, number of draws from the prior, when plotPrior is active}
+
+\item{breaks}{Integer, number of histogram breaks if histogram is set to TRUE}
+
+\item{smooth}{smoothing parameter for sm.density if histogram is set to FALSE}
 
 \item{...}{additional parameters to pass on to the \code{\link{getSample}}}
 }

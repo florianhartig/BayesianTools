@@ -10,6 +10,8 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #' @param histogram Logical, determining whether a violin plot or a histogram should be plotted
 #' @param plotPrior Logical, determining whether the prior should be plotted in addition to the posteriors. Only applicable if mat is an object of class "bayesianOutput"
 #' @param nDrawsPrior Integer, number of draws from the prior, when plotPrior is active 
+#' @param breaks Integer, number of histogram breaks if histogram is set to TRUE
+#' @param smooth smoothing parameter for sm.density if histogram is set to FALSE
 #' @param ... additional parameters to pass on to the \code{\link{getSample}}
 #' @export
 #' @references Internally, this function uses an adapted version of the function vioplot from the vioplot R package (Copyright (c) 2004, Daniel Adler)
@@ -17,7 +19,7 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #'          \code{\link{tracePlot}} \cr
 #'          \code{\link{correlationPlot}}
 #' @example /inst/examples/plotMarginals.R
-marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = FALSE, nDrawsPrior = 1000, ...){
+marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = FALSE, nDrawsPrior = 1000, breaks=15, smooth=NULL, ...){
   priorMat <- NULL
   
   if (plotPrior == TRUE) {
@@ -53,7 +55,7 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     } 
     mat = getSample(mat, thin = thin)
   } else if ("matrix" %in% class(mat)) {
-    if(scale==TRUE) scale <- t(apply(x, 2, range))
+    if(scale==TRUE) scale <- t(apply(mat, 2, range))
   }
   
   numPars = ncol(mat)
@@ -65,9 +67,9 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
   if(is.numeric(scale)) {
     min = scale[,1]
     max = scale[,2]
-    mat = BayesianTools:::scaleMatrix(mat, min, max)
-    if (plotPrior) priorMat <- BayesianTools:::scaleMatrix(priorMat, min, max)
-    if(is.numeric(best)) best <- BayesianTools:::scaleMatrix(best, min, max)
+    mat = scaleMatrix(mat, min, max)
+    if (plotPrior) priorMat <- scaleMatrix(priorMat, min, max)
+    if(is.numeric(best)) best <- scaleMatrix(best, min, max)
   }
 
 
@@ -86,16 +88,26 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
   plot(NULL, ylim = c(0,numPars +1), type="n", yaxt="n", xlab="", ylab="", xlim = xlim, main = main)
   for (i in 1:numPars){
     if (plotPrior) {
-      vioplot(priorMat[,i], at = i, add = T, col = "#4682B4A0", horizontal = T, style = "bottom")
-      vioplot(mat[,i], at = i, add = T, col = "orangered", horizontal = T, style = "top")
+      if (histogram == TRUE) {
+        histMarginal(posterior = mat[,i], prior = priorMat[,i], at = i, col = c("firebrick", "#4682B4A0"), breaks = breaks)
+      } else {
+        vioplot(priorMat[,i], at = i, add = T, col = "#4682B4A0", horizontal = T, style = "bottom", h=smooth)
+        vioplot(mat[,i], at = i, add = T, col = "orangered", horizontal = T, style = "top", h=smooth)  
+      }
     } else {
-      vioplot(mat[,i], at = i, add = T, col = "orangered", horizontal = T)
+      if (histogram == TRUE) {
+        histMarginal(posterior = mat[,i], prior = NULL, at = i, col = "orangered")
+      } else {
+        vioplot(mat[,i], at = i, add = T, col = "orangered", horizontal = T, h=smooth)
+      }
     }
   
     axis(side = 2,at=i,labels = names[i],las=1)
   }
   if(is.numeric(best)) points(best,1:length(best), cex = 3, pch = 4, lwd = 2)
-  if(plotPrior) legend("topright", c("posterior", "prior"), col = c("orangered", "#4682B4A0"), pch = 15, cex = 0.8, bty = "n")
+  
+  if(plotPrior && histogram) legend("bottomright", c("posterior", "prior"), col = c("orangered", "#4682B4A0"), pch = 15, cex = 0.8, bty = "n")
+  if(plotPrior && !histogram) legend("topright", c("posterior", "prior"), col = c("orangered", "#4682B4A0"), pch = 15, cex = 0.8, bty = "n")
 
 }
 
@@ -312,6 +324,64 @@ vioplot <- function(x,...,range=1.5,h=NULL,ylim=NULL,names=NULL, horizontal=FALS
   
   
   invisible (list( upper=upper, lower=lower, median=med, q1=q1, q3=q3))
+}
+
+
+#' @title histogram for marginalPlot
+#' @description Internal function to plot histograms for the marginalPlot function
+#' @param posterior vector of posterior values
+#' @param prior vector of prior values or NULL
+#' @param breaks integer, determining the number of breaks
+#' @param at y position of the histograms
+#' @param col vector determining posterior and prior color
+#' @author Tankred Ott
+histMarginal <- function (posterior, prior=NULL, breaks = 15, at=1, col=NULL) {
+  
+  maxHeight <- 0.95
+  minHeight <- 0
+  
+  matPosterior <- createBreakMat(posterior, breaks)
+  matPosterior[,3] <- BayesianTools:::rescale(matPosterior[,3], c(0, sum(matPosterior[,3])), c(minHeight, maxHeight))
+  z <- maxHeight / max(matPosterior[,3])
+  
+  if (!is.null(prior)) {
+    matPrior <- createBreakMat(prior, breaks)
+    matPrior[,3] <- BayesianTools:::rescale(matPrior[,3], c(0, sum(matPrior[,3])), c(minHeight, maxHeight))
+    
+    # l_posterior <- nrow(matPosterior)
+    # l_prior <- nrow(matPrior)
+    
+    z <- maxHeight / max(max(matPrior[,3]), max(matPosterior[,3]))
+    matPrior[,3] <- matPrior[,3] * z
+  }
+  
+  matPosterior[,3] <- matPosterior[,3] * z
+  
+  plotHist(matPosterior, at, col[1])
+  if (!is.null(prior)) plotHist(matPrior, at, col[2])
+}
+
+#' @author Tankred Ott
+plotHist <- function (x, at, col) {
+  for (i in 1:nrow(x)) {
+    xl <- x[i,1]
+    xr <- x[i,2]
+    yb <- 0
+    yt <- x[i,3]
+    rect(xleft = xl, xright = xr,
+         ybottom = yb + at, ytop = yt + at,
+         col = col)
+  }
+}
+
+#' @author Tankred Ott
+createBreakMat <- function (x, breaks=15) {
+  cut_x <- cut(x, breaks = breaks)
+  lvls <- levels(cut_x)
+  ranges <- t(sapply(lvls, FUN = function (x) as.numeric(unlist(strsplit(substr(x, 2, nchar(x)-1), split = ",")))))
+  frequencies <- as.vector(table(cut_x))
+  mat <- cbind(ranges, frequencies)
+  return(mat)
 }
 
 

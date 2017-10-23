@@ -143,6 +143,7 @@ correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.001) {
 
 #' @author Tankred Ott
 #' @title Rescale
+#' @description Rescales values in the interval "from" (lower, upper) to the new interval "to" (lower, upper).
 #' @param x Vector of values
 #' @param from vector, interval of which x are elements. from[1] must be the lower, from[2] the upper bound.
 #' @param to vector, interval to which the elements should be scaled. to[1] must be the lower, to[2] the upper bound.
@@ -152,4 +153,5 @@ rescale <- function (x, from, to) {
   # scale to new interval
   return(x * (to[2] - to[1]) + to[1])
 }
+
 
