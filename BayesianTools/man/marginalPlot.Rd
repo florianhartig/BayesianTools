@@ -6,7 +6,7 @@
 \usage{
 marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
   histogram = FALSE, plotPrior = FALSE, nDrawsPrior = 1000, breaks = 15,
-  smooth = NULL, ...)
+  res = 500, ...)
 }
 \arguments{
 \item{mat}{object of class "bayesianOutput" or a matrix or data frame of variables}
@@ -25,7 +25,7 @@ marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
 
 \item{breaks}{Integer, number of histogram breaks if histogram is set to TRUE}
 
-\item{smooth}{smoothing parameter for sm.density if histogram is set to FALSE}
+\item{res}{resolution parameter for violinPlot, determining how many descrete points should be used for the density kernel.}
 
 \item{...}{additional parameters to pass on to the \code{\link{getSample}}}
 }
@@ -37,11 +37,7 @@ dat = generateTestDensityMultiNormal(n = 100000, sample = TRUE)
 marginalPlot(dat(10000))
 }
 \references{
-Internally, this function uses an adapted version of the function vioplot from the vioplot R package (Copyright (c) 2004, Daniel Adler)
-}
-\seealso{
-\code{\link{plotTimeSeries}} \cr
-         \code{\link{tracePlot}} \cr
+\code{\link{tracePlot}} \cr
          \code{\link{correlationPlot}}
 }
 \author{

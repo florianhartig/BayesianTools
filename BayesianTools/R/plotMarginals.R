@@ -11,15 +11,14 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #' @param plotPrior Logical, determining whether the prior should be plotted in addition to the posteriors. Only applicable if mat is an object of class "bayesianOutput"
 #' @param nDrawsPrior Integer, number of draws from the prior, when plotPrior is active 
 #' @param breaks Integer, number of histogram breaks if histogram is set to TRUE
-#' @param smooth smoothing parameter for sm.density if histogram is set to FALSE
+#' @param res resolution parameter for violinPlot, determining how many descrete points should be used for the density kernel.
 #' @param ... additional parameters to pass on to the \code{\link{getSample}}
 #' @export
-#' @references Internally, this function uses an adapted version of the function vioplot from the vioplot R package (Copyright (c) 2004, Daniel Adler)
-#' @seealso \code{\link{plotTimeSeries}} \cr
+#' @references 
 #'          \code{\link{tracePlot}} \cr
 #'          \code{\link{correlationPlot}}
 #' @example /inst/examples/plotMarginals.R
-marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = FALSE, nDrawsPrior = 1000, breaks=15, smooth=NULL, ...){
+marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = FALSE, nDrawsPrior = 1000, breaks=15, res=500,...){
   priorMat <- NULL
   
   if (plotPrior == TRUE) {
@@ -89,16 +88,16 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
   for (i in 1:numPars){
     if (plotPrior) {
       if (histogram == TRUE) {
-        histMarginal(posterior = mat[,i], prior = priorMat[,i], at = i, col = c("firebrick", "#4682B4A0"), breaks = breaks)
+        histMarginal(posterior = mat[,i], prior = priorMat[,i], at = i, col = c("orangered", "#4682B4A0"), breaks = breaks)
       } else {
-        vioplot(priorMat[,i], at = i, add = T, col = "#4682B4A0", horizontal = T, style = "bottom", h=smooth)
-        vioplot(mat[,i], at = i, add = T, col = "orangered", horizontal = T, style = "top", h=smooth)  
+        violinPlot(mat[,i], at = i, .range = 0.475, add = T, col = "orangered", relToAt = "above", which = "top", res=res)
+        violinPlot(priorMat[,i], at = i, .range = 0.475, add = T, col = "#4682B4A0", relToAt = "below", which = "bottom", res=res)
       }
     } else {
       if (histogram == TRUE) {
-        histMarginal(posterior = mat[,i], prior = NULL, at = i, col = "orangered")
+        histMarginal(posterior = mat[,i], prior = NULL, at = i, col = "orangered", breaks = breaks)
       } else {
-        vioplot(mat[,i], at = i, add = T, col = "orangered", horizontal = T, h=smooth)
+        violinPlot(mat[,i], at = i, .range = 0.95, add = T, col = "orangered", relToAt = "centered", which = "both", res=res)
       }
     }
   
@@ -111,219 +110,133 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
 
 }
 
-
-# Adapted from the R package vioplot
-# Copyright (c) 2004, Daniel Adler
-vioplot <- function(x,...,range=1.5,h=NULL,ylim=NULL,names=NULL, horizontal=FALSE, 
-                    col="magenta", border="black", lty=1, lwd=1, rectCol="black", colMed="white", pchMed=19, at, add=FALSE, wex=1, 
-                    drawRect=TRUE, style="both")
-{
-  # process multiple datas
-  datas <- list(x,...)
-  n <- length(datas)
+#' @author Tankred Ott
+#' @title Violin Plot
+#' @description Function to plot classic violin plots, as well as only "half violin plots" (density plots).
+#' @param x vector of values to plot
+#' @param at position of the plot when add is TRUE
+#' @param .range maximum height if horizontal or width if vertical of the plot when add is set to FALSE
+#' @param add logical, determining whether the plot should be added to an existing plot window
+#' @param horizontal logical, determining whether the plot should be horizontal, if FALSE the plot will be vertical
+#' @param which string, either "both" for a classic violing plot, or "top" or "bottom" to plot only the half violin
+#' @param relToAt string, one of "centered", "above", "below", "left", "right". Determining the relative position to at.
+#' @param plotQBox logical, determining whether the quantile box should be plotted
+#' @param plotMed logical, determining whether the median should be plotted
+#' @param col color of the violin
+#' @param border color of the border of the violin
+#' @param colQBox color of quantile box
+#' @param borderQBox color of the border of the quantile box
+#' @param colMed color of the median point
+#' @param pchMed pch for median point
+#' @param res "resolution" of the violin. Determining how many descrete points should be used to calculate the density kernel.
+violinPlot <- function (x, at, .range = 1, add = FALSE, horizontal = TRUE, which = "both", relToAt = "above", plotQBox = TRUE, plotMed = TRUE,
+                        col = "orangered", border = "black", colQBox = "black", borderQBox = "black", colMed = "white", pchMed = 19, res = 500) {
   
-  if(missing(at)) at <- 1:n
+  q1 <- quantile(x, probs = 0.25)
+  q3 <- quantile(x, probs = 0.75)
+  med <- median(x)
+  medX <- NULL
+  medY <- NULL
   
-  # pass 1
-  #
-  # - calculate base range
-  # - estimate density
-  #
+  minX <- min(x)
+  maxX <- max(x)
+  dens <- density(x, from = minX, to = maxX, n = res)
   
-  # setup parameters for density estimation
-  upper  <- vector(mode="numeric",length=n)
-  lower  <- vector(mode="numeric",length=n) 
-  q1     <- vector(mode="numeric",length=n)
-  q3     <- vector(mode="numeric",length=n)
-  med    <- vector(mode="numeric",length=n)
-  base   <- vector(mode="list",length=n)
-  height <- vector(mode="list",length=n)
-  baserange <- c(Inf,-Inf)
+  xVals <- NULL
+  yVals <- NULL
+  qBoxHeight <- NULL
+  qBoxPoints <- vector(mode = "numeric", length = 4)
+  qBoxMod <- 1 / 50
   
-  # global args for sm.density function-call   
-  args <- list(display="none")
-  
-  if (!(is.null(h)))
-    args <- c(args, h=h)
-  
-  
-  for(i in 1:n) {
+  # if add is FALSE create empty plot
+  if (add == FALSE) {
+    if (horizontal == TRUE) plot(NULL, xlim = c(minX, maxX), ylim = c(0,1), xlab = "", ylab = "")
+    else plot(NULL, xlim = c(0,1), ylim = c(minX, maxX), xlab = "", ylab = "")
     
-    data<-datas[[i]]
-    
-    # calculate plot parameters
-    #   1- and 3-quantile, median, IQR, upper- and lower-adjacent
-    
-    data.min <- min(data)
-    data.max <- max(data)
-    q1[i]<-quantile(data,0.25)
-    q3[i]<-quantile(data,0.75)
-    med[i]<-median(data)
-    iqd <- q3[i]-q1[i]
-    upper[i] <- min( q3[i] + range*iqd, data.max )
-    lower[i] <- max( q1[i] - range*iqd, data.min )
-    
-    
-    #   strategy:
-    #       xmin = min(lower, data.min))
-    #       ymax = max(upper, data.max))
-    #
-    
-    est.xlim <- c( min(lower[i], data.min), max(upper[i], data.max) ) 
-    
-    # estimate density curve
-    
-    smout <- do.call(sm::sm.density, c( list(data, xlim=est.xlim), args ) )
-    
-    
-    # calculate stretch factor
-    #
-    #  the plots density heights is defined in range 0.0 ... 0.5 
-    #  we scale maximum estimated point to 0.4 per data
-    #
-    
-    hscale <- 0.4/max(smout$estimate) * wex
-    
-    
-    # add density curve x,y pair to lists
-    
-    base[[i]]   <- smout$eval.points
-    height[[i]] <- smout$estimate * hscale
-    
-    
-    # calculate min,max base ranges
-    
-    t <- range(base[[i]])
-    baserange[1] <- min(baserange[1],t[1])
-    baserange[2] <- max(baserange[2],t[2])
-    
-  }
-  
-  # pass 2
-  #
-  # - plot graphics
-  
-  # setup parameters for plot
-  
-  if(!add){
-    xlim <- if(n==1) 
-      at + c(-.5, .5)
-    else 
-      range(at) + min(diff(at))/2 * c(-1,1)
-    
-    if (is.null(ylim)) {
-      ylim <- baserange
-    }
-  }
-  if (is.null(names)) {
-    label <- 1:n
-  } else {
-    label <- names
-  }
-  
-  boxwidth <- 0.05 * wex
-  
-  
-  # setup plot
-  
-  if(!add)
-    plot.new()
-  if(!horizontal) {
-    if(!add){
-      plot.window(xlim = xlim, ylim = ylim)
-      axis(2)
-      axis(1,at = at, label=label )
-    }  
-    
-    box()
-    
-    for(i in 1:n) {
-      
-      # plot left/right density curve
-      
-      polygon( c(at[i]-height[[i]], rev(at[i]+height[[i]])), 
-               c(base[[i]], rev(base[[i]])),
-               col = col, border=border, lty=lty, lwd=lwd)
-      
-      
-      if(drawRect){
-        # plot IQR
-        lines( at[c( i, i)], c(lower[i], upper[i]) ,lwd=lwd, lty=lty)
-        
-        # plot 50% KI box
-        rect( at[i]-boxwidth/2, q1[i], at[i]+boxwidth/2, q3[i], col=rectCol)
-        
-        # plot median point
-        points( at[i], med[i], pch=pchMed, col=colMed )
-      }
+    if (which == "both") {
+      at <- 0.5
+      .range <- 1
+    } else if (which == "top") {
+      at <- 0
+      .range <- 1
+    } else if (which == "bottom") {
+      at <- 1
+      .range <- 1
     }
     
   }
-  else {
-    if(!add){
-      plot.window(xlim = ylim, ylim = xlim)
-      axis(1)
-      axis(2,at = at, label=label )
-    }
+  
+  # assign points to be plotted
+  if (which == "both") {
+    .at <- NULL
+    if (relToAt == "above" || relToAt == "left") .at <- at + .range / 2
+    else if (relToAt == "centered") .at <- at
+    else if (relToAt == "below" || relToAt == "right") .at <- at - .range / 2
+    qBoxHeight <- .range * qBoxMod
     
-    box()
-    for(i in 1:n) {
-      
-      # plot left/right density curve
-      yUp <- yDown <- NA
-      if (style=="top") {
-        yUp <- rev(at[i]+height[[i]])
-        yDown <- rep(at[i], length(height[[i]]))
-      } else if (style=="bottom") {
-        yUp <- rep(at[i], length(height[[i]]))
-        yDown <- at[i]-height[[i]]
-      } else {
-        if (style != "both") {
-          warning("style not recognized. Set style to 'both'.")
-          style <- "both"  
-        }
-        yUp <- rev(at[i]+height[[i]])
-        yDown <- at[i]-height[[i]]
-      }
-      polygon( c(base[[i]], rev(base[[i]])),
-               # c(at[i]-height[[i]], rev(at[i]+height[[i]])),
-               c(yDown, yUp),
-               col = col, border=border, lty=lty, lwd=lwd)
-      
-      
-      if(drawRect){
-        # plot IQR
-        
-        if(style == "both"){
-          boxTop <- at[i] + boxwidth/2
-          boxBottom <- at[i] - boxwidth/2
-          lineY <- at[c(i,i)]
-        } else if (style == "bottom") {
-          boxTop <- at[i]
-          boxBottom <- at[i] - boxwidth
-          lineY <- at[c(i,i)] - boxwidth / 2
-        } else if (style == "top") {
-          boxTop <- at[i] + boxwidth
-          boxBottom <- at[i]
-          lineY <- at[c(i,i)] + boxwidth / 2
-        }
-        
-        # lines( c(lower[i], upper[i]), lineY ,lwd=lwd, lty=lty)
-        
-        # plot 50% KI box
-        rect( q1[i], boxBottom, q3[i], boxTop,  col=rectCol)
-        
-        
-        # plot median point
-        points( med[i], lineY[1], pch=pchMed, col=colMed)
-      }
-    }
+    yVals <- rescale(dens$y, c(0, max(dens$y)), c(0, .range / 2))
+    yVals <- c(.at + yVals, .at - rev(yVals))
+    xVals <- c(dens$x, rev(dens$x))
     
+    qBoxPoints <- c(q1, .at - qBoxHeight, q3, .at + qBoxHeight)
     
+    medX <- med
+    medY <- .at
+    
+  } else if (which == "top") {
+    .at <- NULL
+    if (relToAt == "above" || relToAt == "left") .at <- at
+    else if (relToAt == "centered") .at <- at - .range / 2
+    else if (relToAt == "below" || relToAt == "right") .at <- at - .range
+    
+    qBoxHeight <- .range * 2 * qBoxMod
+    
+    yVals <- c(.at, .at + rescale(dens$y, c(0, max(dens$y)), c(0, .range)), .at)
+    xVals <- c(minX, dens$x, maxX)
+    
+    qBoxPoints <- c(q1, .at, q3, .at + qBoxHeight)
+    
+    medX <- med
+    medY <- .at + qBoxHeight / 2
+    
+  } else if (which == "bottom") {
+    .at <- NULL
+    if (relToAt == "above" || relToAt == "left") .at <- at + .range
+    else if (relToAt == "centered") .at <- at + .range / 2
+    else if (relToAt == "below" || relToAt == "right") .at <- at
+    
+    qBoxHeight <- .range * 2 * qBoxMod
+    
+    yVals <- c(.at, .at - rescale(dens$y, c(0, max(dens$y)), c(0, .range)), .at)
+    xVals <- c(minX, dens$x, maxX)
+    
+    qBoxPoints <- c(q1, .at  - qBoxHeight, q3, .at)
+    
+    medX <- med
+    medY <- .at - qBoxHeight / 2
+    
+  } else stop(paste("Did not recognize argument", paste("'", which, "'", sep = ""), "for parameter 'which'"))
+  
+  # if horizontal not true, turn the plot vertically
+  if (!horizontal==TRUE) {
+    tmp <- xVals
+    xVals <- at + at - yVals
+    yVals <- tmp
+    
+    qBoxPoints <- qBoxPoints[c(2,1,4,3)]
+    qBoxPoints[1] <- at + at - qBoxPoints[1]
+    qBoxPoints[3] <- at + at - qBoxPoints[3]
+    
+    tmp <- medX
+    medX <- at + at - medY
+    medY <- tmp
   }
   
+  polygon(xVals, yVals, col = col, border = border)
   
-  invisible (list( upper=upper, lower=lower, median=med, q1=q1, q3=q3))
+  if (plotQBox == TRUE) rect(xleft = qBoxPoints[1], ybottom = qBoxPoints[2], xright = qBoxPoints[3], ytop = qBoxPoints[4],
+                             col = colQBox, border = borderQBox)
+  if (plotMed == TRUE) points(medX, medY, col=colMed, pch=pchMed)
 }
 
 
@@ -337,7 +250,7 @@ vioplot <- function(x,...,range=1.5,h=NULL,ylim=NULL,names=NULL, horizontal=FALS
 #' @author Tankred Ott
 histMarginal <- function (posterior, prior=NULL, breaks = 15, at=1, col=NULL) {
   
-  maxHeight <- 0.95
+  maxHeight <- 0.90
   minHeight <- 0
   
   matPosterior <- createBreakMat(posterior, breaks)
