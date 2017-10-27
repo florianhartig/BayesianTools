@@ -9,6 +9,7 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #' @param best if provided, will draw points at the given values (to display true / default parameter values). Value can be either NULL (no drawing), a vector with values, or T, in which case the function will attempt to retrieve the values from a BayesianOutput
 #' @param histogram Logical, determining whether a violin plot or a histogram should be plotted
 #' @param plotPrior Logical, determining whether the prior should be plotted in addition to the posteriors. Only applicable if mat is an object of class "bayesianOutput"
+#' @param priorTop Logical, determining whether the prior should be plotted top (TRUE) or bottom (FALSE)
 #' @param nDrawsPrior Integer, number of draws from the prior, when plotPrior is active 
 #' @param breaks Integer, number of histogram breaks if histogram is set to TRUE
 #' @param res resolution parameter for violinPlot, determining how many descrete points should be used for the density kernel.
@@ -18,7 +19,7 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #'          \code{\link{tracePlot}} \cr
 #'          \code{\link{correlationPlot}}
 #' @example /inst/examples/plotMarginals.R
-marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = FALSE, nDrawsPrior = 1000, breaks=15, res=500,...){
+marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = FALSE, priorTop = FALSE, nDrawsPrior = 1000, breaks=15, res=500,...){
   priorMat <- NULL
   
   if (plotPrior == TRUE) {
@@ -90,8 +91,17 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
       if (histogram == TRUE) {
         histMarginal(posterior = mat[,i], prior = priorMat[,i], at = i, col = c("orangered", "#4682B4A0"), breaks = breaks)
       } else {
-        violinPlot(mat[,i], at = i, .range = 0.475, add = T, col = "orangered", relToAt = "above", which = "top", res=res)
-        violinPlot(priorMat[,i], at = i, .range = 0.475, add = T, col = "#4682B4A0", relToAt = "below", which = "bottom", res=res)
+        priorPos <- posteriorPos <- NULL
+        if (priorTop == TRUE) {
+          priorPos <- c("above", "top")
+          posteriorPos <- c("below", "bottom")
+        } else {
+          priorPos <- c("below", "bottom")
+          posteriorPos <- c("above", "top")
+        }
+        
+        violinPlot(mat[,i], at = i, .range = 0.475, add = T, col = "orangered", relToAt = posteriorPos[1], which = posteriorPos[2], res=res)
+        violinPlot(priorMat[,i], at = i, .range = 0.475, add = T, col = "#4682B4A0", relToAt = priorPos[1], which = priorPos[2], res=res)
       }
     } else {
       if (histogram == TRUE) {
@@ -112,7 +122,7 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
 
 #' @author Tankred Ott
 #' @title Violin Plot
-#' @description Function to plot classic violin plots, as well as only "half violin plots" (density plots).
+#' @description Function to plot classic violin plots, as well as "half violin plots" (density plots).
 #' @param x vector of values to plot
 #' @param at position of the plot when add is TRUE
 #' @param .range maximum height if horizontal or width if vertical of the plot when add is set to FALSE
@@ -146,7 +156,7 @@ violinPlot <- function (x, at, .range = 1, add = FALSE, horizontal = TRUE, which
   yVals <- NULL
   qBoxHeight <- NULL
   qBoxPoints <- vector(mode = "numeric", length = 4)
-  qBoxMod <- 1 / 50
+  qBoxMod <- 1 / 50 # maybe let the user decide how large the qBox should be?
   
   # if add is FALSE create empty plot
   if (add == FALSE) {
@@ -163,7 +173,6 @@ violinPlot <- function (x, at, .range = 1, add = FALSE, horizontal = TRUE, which
       at <- 1
       .range <- 1
     }
-    
   }
   
   # assign points to be plotted
@@ -260,9 +269,6 @@ histMarginal <- function (posterior, prior=NULL, breaks = 15, at=1, col=NULL) {
   if (!is.null(prior)) {
     matPrior <- createBreakMat(prior, breaks)
     matPrior[,3] <- BayesianTools:::rescale(matPrior[,3], c(0, sum(matPrior[,3])), c(minHeight, maxHeight))
-    
-    # l_posterior <- nrow(matPosterior)
-    # l_prior <- nrow(matPrior)
     
     z <- maxHeight / max(max(matPrior[,3]), max(matPosterior[,3]))
     matPrior[,3] <- matPrior[,3] * z

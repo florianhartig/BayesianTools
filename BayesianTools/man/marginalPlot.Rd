@@ -5,8 +5,8 @@
 \title{Plot MCMC marginals}
 \usage{
 marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
-  histogram = FALSE, plotPrior = FALSE, nDrawsPrior = 1000, breaks = 15,
-  res = 500, ...)
+  histogram = FALSE, plotPrior = FALSE, priorTop = FALSE,
+  nDrawsPrior = 1000, breaks = 15, res = 500, ...)
 }
 \arguments{
 \item{mat}{object of class "bayesianOutput" or a matrix or data frame of variables}
@@ -20,6 +20,8 @@ marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
 \item{histogram}{Logical, determining whether a violin plot or a histogram should be plotted}
 
 \item{plotPrior}{Logical, determining whether the prior should be plotted in addition to the posteriors. Only applicable if mat is an object of class "bayesianOutput"}
+
+\item{priorTop}{Logical, determining whether the prior should be plotted top (TRUE) or bottom (FALSE)}
 
 \item{nDrawsPrior}{Integer, number of draws from the prior, when plotPrior is active}
 
