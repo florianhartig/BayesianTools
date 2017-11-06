@@ -7,7 +7,8 @@
 violinPlot(x, at, .range = 1, add = FALSE, horizontal = TRUE,
   which = "both", relToAt = "above", plotQBox = TRUE, plotMed = TRUE,
   col = "orangered", border = "black", colQBox = "black",
-  borderQBox = "black", colMed = "white", pchMed = 19, res = 500)
+  borderQBox = "black", colMed = "white", pchMed = 19, res = 500,
+  main = "")
 }
 \arguments{
 \item{x}{vector of values to plot}
@@ -41,6 +42,8 @@ violinPlot(x, at, .range = 1, add = FALSE, horizontal = TRUE,
 \item{pchMed}{pch for median point}
 
 \item{res}{"resolution" of the violin. Determining how many descrete points should be used to calculate the density kernel.}
+
+\item{main}{header text, only applicable, if 'add' is FALSE}
 }
 \description{
 Function to plot classic violin plots, as well as "half violin plots" (density plots).

@@ -5,7 +5,7 @@
 \title{histogram for marginalPlot}
 \usage{
 histMarginal(posterior, prior = NULL, at = 1, .range = 1, breaks = 15,
-  col = NULL)
+  col = NULL, add = TRUE, main = "")
 }
 \arguments{
 \item{posterior}{vector of posterior values}
@@ -19,6 +19,10 @@ histMarginal(posterior, prior = NULL, at = 1, .range = 1, breaks = 15,
 \item{breaks}{integer, determining the number of breaks}
 
 \item{col}{vector determining posterior and prior color}
+
+\item{add}{Logical, determining whether the histogram should be added to and existing plot window.}
+
+\item{main}{Character, determining the title of the plot}
 }
 \description{
 Internal function to plot histograms for the marginalPlot function

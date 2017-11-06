@@ -7,7 +7,7 @@
 plotHist(x, at = NULL, col = "orangered", border = "black")
 }
 \arguments{
-\item{x}{matrix (constructed by createBreakmat) or dataframe containing the lower bounds, the upper bounds, and the frequencies of the breaks in the columns and the individual breaks in the rows.}
+\item{x}{matrix (e.g. constructed with \code{\link{createBreakMat}}) or dataframe containing the lower bounds, the upper bounds, and the frequencies of the breaks in the columns and the individual breaks in the rows.}
 
 \item{at}{y position of the histogram. If NULL a new plot will be generated.}
 

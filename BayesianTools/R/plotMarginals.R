@@ -13,13 +13,14 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #' @param nDrawsPrior Integer, number of draws from the prior, when plotPrior is active 
 #' @param breaks Integer, number of histogram breaks if histogram is set to TRUE
 #' @param res resolution parameter for violinPlot, determining how many descrete points should be used for the density kernel.
+#' @param singlePanel Logical, determining whether all histograms/violins should be plotted in a single plot panel or in separate panels.
 #' @param ... additional parameters to pass on to the \code{\link{getSample}}
 #' @export
 #' @references 
 #'          \code{\link{tracePlot}} \cr
 #'          \code{\link{correlationPlot}}
 #' @example /inst/examples/plotMarginals.R
-marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = FALSE, priorTop = FALSE, nDrawsPrior = 1000, breaks=15, res=500,...){
+marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = FALSE, priorTop = FALSE, nDrawsPrior = 1000, breaks=15, res=500, singlePanel=FALSE, ...){
   priorMat <- NULL
   
   if (plotPrior == TRUE) {
@@ -85,11 +86,28 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     xlim = c(0,1)
   }
   
-  plot(NULL, ylim = c(0,numPars +1), type="n", yaxt="n", xlab="", ylab="", xlim = xlim, main = main)
+  
+  if (singlePanel == TRUE) {
+    plot(NULL, ylim = c(0,numPars +1), type="n", yaxt="n", xlab="", ylab="", xlim = xlim, main = main)
+  } else {
+    .main <- gsub("/n", "", main)
+    panels <- getPanels(numPars)
+    oldPar <- par(mfrow=panels, oma=c(4.1,0,2.7,0))
+  }
+  
   for (i in 1:numPars){
+    if (singlePanel == TRUE) {
+      main <- ""
+      add <- TRUE
+      .at <- i
+    } else {
+      main <- names[i]
+      add <- FALSE
+    }
+    
     if (plotPrior) {
       if (histogram == TRUE) {
-        histMarginal(posterior = mat[,i], prior = priorMat[,i], at = i, col = c("orangered", "#4682B4A0"), breaks = breaks)
+        histMarginal(posterior = mat[,i], prior = priorMat[,i], at = i, .range = 0.95,col = c("orangered", "#4682B4A0"), breaks = breaks, add = add, main = main)
       } else {
         priorPos <- posteriorPos <- NULL
         if (priorTop == TRUE) {
@@ -99,25 +117,42 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
           priorPos <- c("below", "bottom")
           posteriorPos <- c("above", "top")
         }
-        
-        violinPlot(mat[,i], at = i, .range = 0.475, add = T, col = "orangered", relToAt = posteriorPos[1], which = posteriorPos[2], res=res)
-        violinPlot(priorMat[,i], at = i, .range = 0.475, add = T, col = "#4682B4A0", relToAt = priorPos[1], which = priorPos[2], res=res)
+        if (singlePanel == FALSE) {
+          plot(NULL, xlim = range(mat[,i], priorMat[,i]), ylim = c(0,1), main=main, ylab = "frequencies", xlab = "values")
+          .at <- 0.5
+        }
+        violinPlot(mat[,i], at = .at, .range = 0.475, add = T, col = "orangered", relToAt = posteriorPos[1], which = posteriorPos[2], res=res)
+        violinPlot(priorMat[,i], at = .at, .range = 0.475, add = T, col = "#4682B4A0", relToAt = priorPos[1], which = priorPos[2], res=res)
       }
     } else {
       if (histogram == TRUE) {
-        histMarginal(posterior = mat[,i], prior = NULL, at = i, col = "orangered", breaks = breaks)
+        histMarginal(posterior = mat[,i], prior = NULL, at = i, .range = 0.95, col = "orangered", breaks = breaks, add = add, main = main)
       } else {
-        violinPlot(mat[,i], at = i, .range = 0.95, add = T, col = "orangered", relToAt = "centered", which = "both", res=res)
+        violinPlot(mat[,i], at = i, .range = 0.95, add = add, col = "orangered", relToAt = "centered", which = "both", res=res, main = main)
       }
     }
   
-    axis(side = 2,at=i,labels = names[i],las=1)
+    if (singlePanel) axis(side = 2,at=i,labels = names[i],las=1)
   }
   if(is.numeric(best)) points(best,1:length(best), cex = 3, pch = 4, lwd = 2)
   
-  if(plotPrior && histogram) legend("bottomright", c("posterior", "prior"), col = c("orangered", "#4682B4A0"), pch = 15, cex = 0.8, bty = "n")
-  if(plotPrior && !histogram) legend("topright", c("posterior", "prior"), col = c("orangered", "#4682B4A0"), pch = 15, cex = 0.8, bty = "n")
-
+  if(singlePanel == TRUE) {
+    if(plotPrior && histogram) legend("bottomright", c("posterior", "prior"), col = c("orangered", "#4682B4A0"), pch = 15, cex = 0.8, bty = "n")
+    if(plotPrior && !histogram) legend("topright", c("posterior", "prior"), col = c("orangered", "#4682B4A0"), pch = 15, cex = 0.8, bty = "n")
+  } else {
+    mtext(text = .main, side = 3, line = -1.25, outer = T, font = 2)
+    
+    # overlay plot with empty plot to be able to place the legends freely
+    oldPar2 <- par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+    plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
+    
+    if(plotPrior && histogram) legend("bottom", c("posterior", "prior"), xpd = TRUE, horiz = TRUE, inset = c(0, 0),
+                                      bty = "n", pch = 15, col = c("orangered", "#4682B4A0"), cex = 2)
+    if(plotPrior && !histogram) legend("bottom", c("posterior", "prior"), xpd = TRUE, horiz = TRUE, inset = c(0, 0),
+                                       bty = "n", pch = 15, col = c("orangered", "#4682B4A0"), cex = 2)
+    par(oldPar2)
+    par(oldPar)
+  }
 }
 
 #' @author Tankred Ott
@@ -139,8 +174,10 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
 #' @param colMed color of the median point
 #' @param pchMed pch for median point
 #' @param res "resolution" of the violin. Determining how many descrete points should be used to calculate the density kernel.
+#' @param main header text, only applicable, if 'add' is FALSE
 violinPlot <- function (x, at, .range = 1, add = FALSE, horizontal = TRUE, which = "both", relToAt = "above", plotQBox = TRUE, plotMed = TRUE,
-                        col = "orangered", border = "black", colQBox = "black", borderQBox = "black", colMed = "white", pchMed = 19, res = 500) {
+                        col = "orangered", border = "black", colQBox = "black", borderQBox = "black", colMed = "white", pchMed = 19, res = 500,
+                        main = "") {
   
   q1 <- quantile(x, probs = 0.25)
   q3 <- quantile(x, probs = 0.75)
@@ -160,8 +197,8 @@ violinPlot <- function (x, at, .range = 1, add = FALSE, horizontal = TRUE, which
   
   # if add is FALSE create empty plot
   if (add == FALSE) {
-    if (horizontal == TRUE) plot(NULL, xlim = c(minX, maxX), ylim = c(0,1), xlab = "", ylab = "")
-    else plot(NULL, xlim = c(0,1), ylim = c(minX, maxX), xlab = "", ylab = "")
+    if (horizontal == TRUE) plot(NULL, xlim = c(minX, maxX), ylim = c(0,1), xlab = "", ylab = "", main = main)
+    else plot(NULL, xlim = c(0,1), ylim = c(minX, maxX), xlab = "", ylab = "", main = main)
     
     if (which == "both") {
       at <- 0.5
@@ -258,8 +295,10 @@ violinPlot <- function (x, at, .range = 1, add = FALSE, horizontal = TRUE, which
 #' @param .range maximum height of the histogram
 #' @param breaks integer, determining the number of breaks
 #' @param col vector determining posterior and prior color
+#' @param add Logical, determining whether the histogram should be added to and existing plot window.
+#' @param main Character, determining the title of the plot
 #' @author Tankred Ott
-histMarginal <- function (posterior, prior=NULL, at=1, .range=1, breaks=15, col=NULL) {
+histMarginal <- function (posterior, prior=NULL, at=1, .range=1, breaks=15, col=NULL, add=TRUE, main="") {
   
   maxHeight <- .range
   minHeight <- 0
@@ -279,6 +318,18 @@ histMarginal <- function (posterior, prior=NULL, at=1, .range=1, breaks=15, col=
   
   matPosterior[,3] <- matPosterior[,3] * z
   
+  if (add == FALSE) {
+    if (!is.null(prior)) {
+      xlim <- c(min(min(matPrior[,1:2]), min(matPosterior[,1:2])), max(max(matPrior[,1:2]), max(matPosterior[,1:2])))
+      ylim <- c(0, max(max(matPrior[,3]), max(matPosterior[,3])))
+    } else {
+      xlim <- c(min(matPosterior[,1:2]), max(matPosterior[,1:2]))
+      ylim <- c(0, max(matPosterior[,3]))
+    }
+    plot(NULL, xlim = xlim, ylim = ylim, xlab = "values", ylab = "frequencies", main = main)
+    at <- ylim[1]
+  }
+  
   plotHist(matPosterior, at, col[1])
   if (!is.null(prior)) plotHist(matPrior, at, col[2])
 }
@@ -286,7 +337,7 @@ histMarginal <- function (posterior, prior=NULL, at=1, .range=1, breaks=15, col=
 #' @author Tankred Ott
 #' @title plot histogram
 #' @description A simple custom histogram plotting function 
-#' @param x matrix (constructed by createBreakmat) or dataframe containing the lower bounds, the upper bounds, and the frequencies of the breaks in the columns and the individual breaks in the rows. 
+#' @param x matrix (e.g. constructed with \code{\link{createBreakMat}}) or dataframe containing the lower bounds, the upper bounds, and the frequencies of the breaks in the columns and the individual breaks in the rows. 
 #' @param at y position of the histogram. If NULL a new plot will be generated.
 #' @param col color of the histogram
 #' @param border border color
@@ -313,12 +364,14 @@ plotHist <- function (x, at=NULL, col="orangered", border="black") {
 #' @description A function for use with plotHist. Creates a matrix representing breaks of a histogram. The matrix will contain the upper bounds, the lower bounds and the frequencies of the breaks in the columns, and the individual breaks in the rows.
 #' @param x vector of values
 #' @param breaks number of breaks
-createBreakMat <- function (x, breaks=15) {
+#' @param scale logical, determining whether the frequency should be scaled
+createBreakMat <- function (x, breaks=15, scale=FALSE) {
   cut_x <- cut(x, breaks = breaks)
   lvls <- levels(cut_x)
   ranges <- t(sapply(lvls, FUN = function (x) as.numeric(unlist(strsplit(substr(x, 2, nchar(x)-1), split = ",")))))
   frequencies <- as.vector(table(cut_x))
   mat <- cbind(ranges, frequencies)
+  if (scale == TRUE) mat[,3] <- mat[,3] / max(mat[,3])
   colnames(mat) <- c("lower", "upper", "frequencies")
   return(mat)
 }

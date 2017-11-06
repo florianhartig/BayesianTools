@@ -6,7 +6,7 @@
 \usage{
 marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
   histogram = FALSE, plotPrior = FALSE, priorTop = FALSE,
-  nDrawsPrior = 1000, breaks = 15, res = 500, ...)
+  nDrawsPrior = 1000, breaks = 15, res = 500, singlePanel = FALSE, ...)
 }
 \arguments{
 \item{mat}{object of class "bayesianOutput" or a matrix or data frame of variables}
@@ -28,6 +28,8 @@ marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
 \item{breaks}{Integer, number of histogram breaks if histogram is set to TRUE}
 
 \item{res}{resolution parameter for violinPlot, determining how many descrete points should be used for the density kernel.}
+
+\item{singlePanel}{Logical, determining whether all histograms/violins should be plotted in a single plot panel or in separate panels.}
 
 \item{...}{additional parameters to pass on to the \code{\link{getSample}}}
 }
