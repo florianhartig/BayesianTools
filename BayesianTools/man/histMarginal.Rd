@@ -4,16 +4,19 @@
 \alias{histMarginal}
 \title{histogram for marginalPlot}
 \usage{
-histMarginal(posterior, prior = NULL, breaks = 15, at = 1, col = NULL)
+histMarginal(posterior, prior = NULL, at = 1, .range = 1, breaks = 15,
+  col = NULL)
 }
 \arguments{
 \item{posterior}{vector of posterior values}
 
 \item{prior}{vector of prior values or NULL}
 
-\item{breaks}{integer, determining the number of breaks}
-
 \item{at}{y position of the histograms}
+
+\item{.range}{maximum height of the histogram}
+
+\item{breaks}{integer, determining the number of breaks}
 
 \item{col}{vector determining posterior and prior color}
 }

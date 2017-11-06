@@ -43,7 +43,7 @@ violinPlot(x, at, .range = 1, add = FALSE, horizontal = TRUE,
 \item{res}{"resolution" of the violin. Determining how many descrete points should be used to calculate the density kernel.}
 }
 \description{
-Function to plot classic violin plots, as well as only "half violin plots" (density plots).
+Function to plot classic violin plots, as well as "half violin plots" (density plots).
 }
 \author{
 Tankred Ott

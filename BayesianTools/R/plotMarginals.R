@@ -241,11 +241,12 @@ violinPlot <- function (x, at, .range = 1, add = FALSE, horizontal = TRUE, which
     medY <- tmp
   }
   
+  # draw the plot
   polygon(xVals, yVals, col = col, border = border)
   
   if (plotQBox == TRUE) rect(xleft = qBoxPoints[1], ybottom = qBoxPoints[2], xright = qBoxPoints[3], ytop = qBoxPoints[4],
                              col = colQBox, border = borderQBox)
-  if (plotMed == TRUE) points(medX, medY, col=colMed, pch=pchMed)
+  if (plotMed == TRUE) points(medX, medY, col = colMed, pch = pchMed)
 }
 
 
@@ -253,16 +254,18 @@ violinPlot <- function (x, at, .range = 1, add = FALSE, horizontal = TRUE, which
 #' @description Internal function to plot histograms for the marginalPlot function
 #' @param posterior vector of posterior values
 #' @param prior vector of prior values or NULL
-#' @param breaks integer, determining the number of breaks
 #' @param at y position of the histograms
+#' @param .range maximum height of the histogram
+#' @param breaks integer, determining the number of breaks
 #' @param col vector determining posterior and prior color
 #' @author Tankred Ott
-histMarginal <- function (posterior, prior=NULL, breaks = 15, at=1, col=NULL) {
+histMarginal <- function (posterior, prior=NULL, at=1, .range=1, breaks=15, col=NULL) {
   
-  maxHeight <- 0.90
+  maxHeight <- .range
   minHeight <- 0
   
   matPosterior <- createBreakMat(posterior, breaks)
+  
   matPosterior[,3] <- BayesianTools:::rescale(matPosterior[,3], c(0, sum(matPosterior[,3])), c(minHeight, maxHeight))
   z <- maxHeight / max(matPosterior[,3])
   
@@ -281,25 +284,42 @@ histMarginal <- function (posterior, prior=NULL, breaks = 15, at=1, col=NULL) {
 }
 
 #' @author Tankred Ott
-plotHist <- function (x, at, col) {
+#' @title plot histogram
+#' @description A simple custom histogram plotting function 
+#' @param x matrix (constructed by createBreakmat) or dataframe containing the lower bounds, the upper bounds, and the frequencies of the breaks in the columns and the individual breaks in the rows. 
+#' @param at y position of the histogram. If NULL a new plot will be generated.
+#' @param col color of the histogram
+#' @param border border color
+plotHist <- function (x, at=NULL, col="orangered", border="black") {
+  if (is.null(at)) {
+    at <- 0
+    xlim <- c(min(x[,1:2]), max(x[,1:2]))
+    ylim <- c(0, max(x[,3]))
+    plot(x = NULL, xlim = xlim, ylim = ylim, xlab = "values", ylab = "frequencies")
+  }
+  
   for (i in 1:nrow(x)) {
     xl <- x[i,1]
     xr <- x[i,2]
     yb <- 0
     yt <- x[i,3]
-    rect(xleft = xl, xright = xr,
-         ybottom = yb + at, ytop = yt + at,
-         col = col)
+    rect(xleft = xl, xright = xr, ybottom = yb + at, ytop = yt + at,
+         col = col, border = border)
   }
 }
 
 #' @author Tankred Ott
+#' @title create break matrix
+#' @description A function for use with plotHist. Creates a matrix representing breaks of a histogram. The matrix will contain the upper bounds, the lower bounds and the frequencies of the breaks in the columns, and the individual breaks in the rows.
+#' @param x vector of values
+#' @param breaks number of breaks
 createBreakMat <- function (x, breaks=15) {
   cut_x <- cut(x, breaks = breaks)
   lvls <- levels(cut_x)
   ranges <- t(sapply(lvls, FUN = function (x) as.numeric(unlist(strsplit(substr(x, 2, nchar(x)-1), split = ",")))))
   frequencies <- as.vector(table(cut_x))
   mat <- cbind(ranges, frequencies)
+  colnames(mat) <- c("lower", "upper", "frequencies")
   return(mat)
 }
 
