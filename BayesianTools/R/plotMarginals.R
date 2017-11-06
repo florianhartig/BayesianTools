@@ -14,13 +14,17 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #' @param breaks Integer, number of histogram breaks if histogram is set to TRUE
 #' @param res resolution parameter for violinPlot, determining how many descrete points should be used for the density kernel.
 #' @param singlePanel Logical, determining whether all histograms/violins should be plotted in a single plot panel or in separate panels.
+#' @param densityOverlay Logical, determining wheter an density overlay should be plotted when 'histogram' is TRUE
+#' @param col vector of colors for posterior and prior
 #' @param ... additional parameters to pass on to the \code{\link{getSample}}
 #' @export
 #' @references 
 #'          \code{\link{tracePlot}} \cr
 #'          \code{\link{correlationPlot}}
 #' @example /inst/examples/plotMarginals.R
-marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = FALSE, priorTop = FALSE, nDrawsPrior = 1000, breaks=15, res=500, singlePanel=FALSE, ...){
+marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = FALSE, priorTop = FALSE,
+                         nDrawsPrior = 1000, breaks=15, res=500, singlePanel=FALSE, densityOverlay=TRUE, col=c("#FF5000D0","#4682B4A0"),
+                         overlayCol = "#FF5000C0", ...){
   priorMat <- NULL
   
   if (plotPrior == TRUE) {
@@ -107,7 +111,7 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     
     if (plotPrior) {
       if (histogram == TRUE) {
-        histMarginal(posterior = mat[,i], prior = priorMat[,i], at = i, .range = 0.95,col = c("orangered", "#4682B4A0"), breaks = breaks, add = add, main = main)
+        histMarginal(posterior = mat[,i], prior = priorMat[,i], at = i, .range = 0.95, col = col, breaks = breaks, add = add, main = main)
       } else {
         priorPos <- posteriorPos <- NULL
         if (priorTop == TRUE) {
@@ -121,14 +125,17 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
           plot(NULL, xlim = range(mat[,i], priorMat[,i]), ylim = c(0,1), main=main, ylab = "frequencies", xlab = "values")
           .at <- 0.5
         }
-        violinPlot(mat[,i], at = .at, .range = 0.475, add = T, col = "orangered", relToAt = posteriorPos[1], which = posteriorPos[2], res=res)
-        violinPlot(priorMat[,i], at = .at, .range = 0.475, add = T, col = "#4682B4A0", relToAt = priorPos[1], which = priorPos[2], res=res)
+        
+        violinPlot(mat[,i], at = .at, .range = 0.475, add = T, col = col[1], relToAt = posteriorPos[1], which = posteriorPos[2], res=res)
+        violinPlot(priorMat[,i], at = .at, .range = 0.475, add = T, col = col[2], relToAt = priorPos[1], which = priorPos[2], res=res)
       }
     } else {
       if (histogram == TRUE) {
-        histMarginal(posterior = mat[,i], prior = NULL, at = i, .range = 0.95, col = "orangered", breaks = breaks, add = add, main = main)
+        histMarginal(posterior = mat[,i], prior = NULL, at = i, .range = 0.95, col = col[1], breaks = breaks, add = add, main = main)
+        if (densityOverlay == TRUE) violinPlot(mat[,i], which = "top", .range = 0.95, relToAt = "above", at = 0, add=TRUE,
+                                               plotQBox = F, plotMed = F, res=res, col=overlayCol[1])
       } else {
-        violinPlot(mat[,i], at = i, .range = 0.95, add = add, col = "orangered", relToAt = "centered", which = "both", res=res, main = main)
+        violinPlot(mat[,i], at = i, .range = 0.95, add = add, col = col[1], relToAt = "centered", which = "both", res=res, main = main)
       }
     }
   
@@ -137,8 +144,8 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
   if(is.numeric(best)) points(best,1:length(best), cex = 3, pch = 4, lwd = 2)
   
   if(singlePanel == TRUE) {
-    if(plotPrior && histogram) legend("bottomright", c("posterior", "prior"), col = c("orangered", "#4682B4A0"), pch = 15, cex = 0.8, bty = "n")
-    if(plotPrior && !histogram) legend("topright", c("posterior", "prior"), col = c("orangered", "#4682B4A0"), pch = 15, cex = 0.8, bty = "n")
+    if(plotPrior && histogram) legend("bottomright", c("posterior", "prior"), col = col, pch = 15, cex = 0.8, bty = "n")
+    if(plotPrior && !histogram) legend("topright", c("posterior", "prior"), col = col, pch = 15, cex = 0.8, bty = "n")
   } else {
     mtext(text = .main, side = 3, line = -1.25, outer = T, font = 2)
     
@@ -147,9 +154,9 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
     
     if(plotPrior && histogram) legend("bottom", c("posterior", "prior"), xpd = TRUE, horiz = TRUE, inset = c(0, 0),
-                                      bty = "n", pch = 15, col = c("orangered", "#4682B4A0"), cex = 2)
+                                      bty = "n", pch = 15, col = col, cex = 2)
     if(plotPrior && !histogram) legend("bottom", c("posterior", "prior"), xpd = TRUE, horiz = TRUE, inset = c(0, 0),
-                                       bty = "n", pch = 15, col = c("orangered", "#4682B4A0"), cex = 2)
+                                       bty = "n", pch = 15, col = col, cex = 2)
     par(oldPar2)
     par(oldPar)
   }
@@ -330,8 +337,8 @@ histMarginal <- function (posterior, prior=NULL, at=1, .range=1, breaks=15, col=
     at <- ylim[1]
   }
   
-  plotHist(matPosterior, at, col[1])
   if (!is.null(prior)) plotHist(matPrior, at, col[2])
+  plotHist(matPosterior, at, col[1])
 }
 
 #' @author Tankred Ott

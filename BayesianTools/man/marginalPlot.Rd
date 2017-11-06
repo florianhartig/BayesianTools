@@ -6,7 +6,9 @@
 \usage{
 marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
   histogram = FALSE, plotPrior = FALSE, priorTop = FALSE,
-  nDrawsPrior = 1000, breaks = 15, res = 500, singlePanel = FALSE, ...)
+  nDrawsPrior = 1000, breaks = 15, res = 500, singlePanel = FALSE,
+  densityOverlay = TRUE, col = c("#FF5000D0", "#4682B4A0"),
+  overlayCol = "#FF5000C0", ...)
 }
 \arguments{
 \item{mat}{object of class "bayesianOutput" or a matrix or data frame of variables}
@@ -30,6 +32,10 @@ marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
 \item{res}{resolution parameter for violinPlot, determining how many descrete points should be used for the density kernel.}
 
 \item{singlePanel}{Logical, determining whether all histograms/violins should be plotted in a single plot panel or in separate panels.}
+
+\item{densityOverlay}{Logical, determining wheter an density overlay should be plotted when 'histogram' is TRUE}
+
+\item{col}{vector of colors for posterior and prior}
 
 \item{...}{additional parameters to pass on to the \code{\link{getSample}}}
 }
