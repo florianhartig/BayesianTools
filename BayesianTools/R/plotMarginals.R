@@ -305,12 +305,12 @@ histMarginal <- function (posterior, prior=NULL, at=1, .range=1, breaks=15, col=
   
   matPosterior <- createBreakMat(posterior, breaks)
   
-  matPosterior[,3] <- BayesianTools:::rescale(matPosterior[,3], c(0, sum(matPosterior[,3])), c(minHeight, maxHeight))
+  matPosterior[,3] <- rescale(matPosterior[,3], c(0, sum(matPosterior[,3])), c(minHeight, maxHeight))
   z <- maxHeight / max(matPosterior[,3])
   
   if (!is.null(prior)) {
     matPrior <- createBreakMat(prior, breaks)
-    matPrior[,3] <- BayesianTools:::rescale(matPrior[,3], c(0, sum(matPrior[,3])), c(minHeight, maxHeight))
+    matPrior[,3] <- rescale(matPrior[,3], c(0, sum(matPrior[,3])), c(minHeight, maxHeight))
     
     z <- maxHeight / max(max(matPrior[,3]), max(matPosterior[,3]))
     matPrior[,3] <- matPrior[,3] * z
