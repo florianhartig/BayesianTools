@@ -6,9 +6,9 @@
 \usage{
 violinPlot(x, at, .range = 1, add = FALSE, horizontal = TRUE,
   which = "both", relToAt = "above", plotQBox = TRUE, plotMed = TRUE,
-  col = "orangered", border = "black", colQBox = "black",
-  borderQBox = "black", colMed = "white", pchMed = 19, res = 500,
-  main = "")
+  col = "orangered", border = "black", lwd = par("lwd"),
+  colQBox = "black", borderQBox = "black", colMed = "white",
+  pchMed = 19, res = 500, main = "")
 }
 \arguments{
 \item{x}{vector of values to plot}
@@ -32,6 +32,8 @@ violinPlot(x, at, .range = 1, add = FALSE, horizontal = TRUE,
 \item{col}{color of the violin}
 
 \item{border}{color of the border of the violin}
+
+\item{lwd}{line width if the border of the violin}
 
 \item{colQBox}{color of quantile box}
 

@@ -2,7 +2,7 @@
 marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 
 #' Plot MCMC marginals
-#' @author Florian Hartig
+#' @author Florian Hartig, Tankred Ott
 #' @param mat object of class "bayesianOutput" or a matrix or data frame of variables 
 #' @param thin thinning of the matrix to make things faster. Default is to thin to 5000 
 #' @param scale should the results be scaled. Value can be either NULL (no scaling), T, or a matrix with upper / lower bounds as columns. If set to T, attempts to retrieve the scaling from the input object mat (requires that this is of class BayesianOutput)
@@ -14,17 +14,18 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #' @param breaks Integer, number of histogram breaks if histogram is set to TRUE
 #' @param res resolution parameter for violinPlot, determining how many descrete points should be used for the density kernel.
 #' @param singlePanel Logical, determining whether all histograms/violins should be plotted in a single plot panel or in separate panels.
-#' @param densityOverlay Logical, determining wheter an density overlay should be plotted when 'histogram' is TRUE
+#' @param dens Logical, determining wheter an density overlay should be plotted when 'histogram' is TRUE
 #' @param col vector of colors for posterior and prior
+#' @param lwd line width of the violin plots
 #' @param ... additional parameters to pass on to the \code{\link{getSample}}
 #' @export
 #' @references 
 #'          \code{\link{tracePlot}} \cr
 #'          \code{\link{correlationPlot}}
 #' @example /inst/examples/plotMarginals.R
-marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = FALSE, priorTop = FALSE,
-                         nDrawsPrior = 1000, breaks=15, res=500, singlePanel=FALSE, densityOverlay=TRUE, col=c("#FF5000D0","#4682B4A0"),
-                         overlayCol = "#FF5000C0", ...){
+marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = TRUE, plotPrior = TRUE, priorTop = FALSE,
+                         nDrawsPrior = 1000, breaks=15, res=500, singlePanel=FALSE, dens=TRUE, col=c("#FF5000D0","#4682B4A0"),
+                         lwd = par("lwd"), ...){
   priorMat <- NULL
   
   if (plotPrior == TRUE) {
@@ -111,7 +112,9 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     
     if (plotPrior) {
       if (histogram == TRUE) {
-        histMarginal(posterior = mat[,i], prior = priorMat[,i], at = i, .range = 0.95, col = col, breaks = breaks, add = add, main = main)
+        # TODO: add overlay here
+        histMarginal(x = list(mat[,i], priorMat[,i]), at = i, .range = 0.95, col = col, breaks = breaks, add = add,
+                     main = main, dens = dens, res = res)
       } else {
         priorPos <- posteriorPos <- NULL
         if (priorTop == TRUE) {
@@ -126,16 +129,15 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
           .at <- 0.5
         }
         
-        violinPlot(mat[,i], at = .at, .range = 0.475, add = T, col = col[1], relToAt = posteriorPos[1], which = posteriorPos[2], res=res)
-        violinPlot(priorMat[,i], at = .at, .range = 0.475, add = T, col = col[2], relToAt = priorPos[1], which = priorPos[2], res=res)
+        violinPlot(mat[,i], at = .at, .range = 0.475, add = T, col = col[1], relToAt = posteriorPos[1], which = posteriorPos[2], res=res, lwd = lwd)
+        violinPlot(priorMat[,i], at = .at, .range = 0.475, add = T, col = col[2], relToAt = priorPos[1], which = priorPos[2], res=res, lwd = lwd)
       }
     } else {
       if (histogram == TRUE) {
-        histMarginal(posterior = mat[,i], prior = NULL, at = i, .range = 0.95, col = col[1], breaks = breaks, add = add, main = main)
-        if (densityOverlay == TRUE) violinPlot(mat[,i], which = "top", .range = 0.95, relToAt = "above", at = 0, add=TRUE,
-                                               plotQBox = F, plotMed = F, res=res, col=overlayCol[1])
+        histMarginal(x = list(mat[,i]), at = i, .range = 0.95, col = col[1], breaks = breaks, add = add,
+                     main = main, dens = dens, res = res)
       } else {
-        violinPlot(mat[,i], at = i, .range = 0.95, add = add, col = col[1], relToAt = "centered", which = "both", res=res, main = main)
+        violinPlot(mat[,i], at = i, .range = 0.95, add = add, col = col[1], relToAt = "centered", which = "both", res=res, main = main, lwd)
       }
     }
   
@@ -176,6 +178,7 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
 #' @param plotMed logical, determining whether the median should be plotted
 #' @param col color of the violin
 #' @param border color of the border of the violin
+#' @param lwd line width if the border of the violin
 #' @param colQBox color of quantile box
 #' @param borderQBox color of the border of the quantile box
 #' @param colMed color of the median point
@@ -183,8 +186,8 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
 #' @param res "resolution" of the violin. Determining how many descrete points should be used to calculate the density kernel.
 #' @param main header text, only applicable, if 'add' is FALSE
 violinPlot <- function (x, at, .range = 1, add = FALSE, horizontal = TRUE, which = "both", relToAt = "above", plotQBox = TRUE, plotMed = TRUE,
-                        col = "orangered", border = "black", colQBox = "black", borderQBox = "black", colMed = "white", pchMed = 19, res = 500,
-                        main = "") {
+                        col = "orangered", border = "black", lwd = par("lwd"), colQBox = "black", borderQBox = "black", colMed = "white",
+                        pchMed = 19, res = 500, main = "") {
   
   q1 <- quantile(x, probs = 0.25)
   q3 <- quantile(x, probs = 0.75)
@@ -286,7 +289,7 @@ violinPlot <- function (x, at, .range = 1, add = FALSE, horizontal = TRUE, which
   }
   
   # draw the plot
-  polygon(xVals, yVals, col = col, border = border)
+  polygon(xVals, yVals, col = col, border = border, lwd = lwd)
   
   if (plotQBox == TRUE) rect(xleft = qBoxPoints[1], ybottom = qBoxPoints[2], xright = qBoxPoints[3], ytop = qBoxPoints[4],
                              col = colQBox, border = borderQBox)
@@ -296,49 +299,72 @@ violinPlot <- function (x, at, .range = 1, add = FALSE, horizontal = TRUE, which
 
 #' @title histogram for marginalPlot
 #' @description Internal function to plot histograms for the marginalPlot function
-#' @param posterior vector of posterior values
-#' @param prior vector of prior values or NULL
+#' @param x list of vectors. Each vector will be plotted as a separate histogram.
 #' @param at y position of the histograms
-#' @param .range maximum height of the histogram
+#' @param .range maximum height of the histogram. If NULL, will be determined automatically
 #' @param breaks integer, determining the number of breaks
-#' @param col vector determining posterior and prior color
+#' @param col vector of colors determining histogram colors
+#' @param border vector of colors determining histogram border colors
 #' @param add Logical, determining whether the histogram should be added to and existing plot window.
 #' @param main Character, determining the title of the plot
+#' @param dens Logical, determining whether a density plot should be plotted additionally to the histogram
+#' @param densCol vector of colors for the density plots
+#' @param densLwd line width of the density plot
+#' @param densLty line type of the density plot
+#' @param res resolution of the density overlay
 #' @author Tankred Ott
-histMarginal <- function (posterior, prior=NULL, at=1, .range=1, breaks=15, col=NULL, add=TRUE, main="") {
+# TODO: let the function automatically chose colors
+histMarginal <- function (x, at = 0, .range = NULL, breaks = 15, col=c("#FF5000C0", "#4682B4A0"),
+                          border = c("black", "black"),  main="", dens=FALSE, densCol = c("black", "black"),
+                          densLwd = c(2, 2), densLty = c(2, 2), add=TRUE, res=500) {
   
-  maxHeight <- .range
-  minHeight <- 0
+  mnX <- Inf
+  mxX <- -Inf
   
-  matPosterior <- createBreakMat(posterior, breaks)
+  mnY <- 0
+  mxY <- -Inf
   
-  matPosterior[,3] <- rescale(matPosterior[,3], c(0, sum(matPosterior[,3])), c(minHeight, maxHeight))
-  z <- maxHeight / max(matPosterior[,3])
+  densities <- NULL
   
-  if (!is.null(prior)) {
-    matPrior <- createBreakMat(prior, breaks)
-    matPrior[,3] <- rescale(matPrior[,3], c(0, sum(matPrior[,3])), c(minHeight, maxHeight))
+  breakMats <- rep(list(NA), length(x))
+  if (dens) densities <- rep(list(NA), length(x))
+  
+  for (i in 1:length(x)) {
+    mnX <- min(mnX, min(x[[i]]))
+    mxX <- max(mxX, max(x[[i]]))
     
-    z <- maxHeight / max(max(matPrior[,3]), max(matPosterior[,3]))
-    matPrior[,3] <- matPrior[,3] * z
+    if (dens == TRUE) {
+      densities[[i]] <- density(x[[i]], n = res, from = mnX, to = mxX)
+      mxY <- max(mxY, max(densities[[i]]$y))
+    }
   }
   
-  matPosterior[,3] <- matPosterior[,3] * z
+  brkRange <- round((mxX - mnX) / breaks, digits = 5)
+  brks <- mnX + cumsum(c(0, rep(brkRange, breaks)))
+  
+  for (i in 1:length(x)) {
+    breakMats[[i]] <- BayesianTools:::createBreakMat(x[[i]], brks, TRUE)
+    mxY <- max(mxY, max(breakMats[[i]][,3]))
+  }
+  
+  if (!is.null(.range)) {
+    for (i in 1:length(breakMats)) {
+      breakMats[[i]][,3] <- rescale(breakMats[[i]][,3], from = c(0, mxY), to = c(0, .range))
+      if (dens == TRUE) densities[[i]]$y <- rescale(densities[[i]]$y, from = c(0, mxY), to = c(0, .range))
+    }
+    mxY <- .range
+  }
   
   if (add == FALSE) {
-    if (!is.null(prior)) {
-      xlim <- c(min(min(matPrior[,1:2]), min(matPosterior[,1:2])), max(max(matPrior[,1:2]), max(matPosterior[,1:2])))
-      ylim <- c(0, max(max(matPrior[,3]), max(matPosterior[,3])))
-    } else {
-      xlim <- c(min(matPosterior[,1:2]), max(matPosterior[,1:2]))
-      ylim <- c(0, max(matPosterior[,3]))
-    }
-    plot(NULL, xlim = xlim, ylim = ylim, xlab = "values", ylab = "frequencies", main = main)
-    at <- ylim[1]
+    at <- 0
+    plot(NULL, xlim = c(mnX, mxX), ylim = c(mnY, mxY), main = main, xlab = "value", ylab = "frequency")
   }
   
-  if (!is.null(prior)) plotHist(matPrior, at, col[2])
-  plotHist(matPosterior, at, col[1])
+  for (i in 1:length(breakMats)) {
+    plotHist(breakMats[[i]], at = at, col = col[i], border = border[i])
+    if (dens == TRUE) lines(densities[[i]]$x, densities[[i]]$y + at, col = densCol[i], lty = densLty[i], lwd = densLwd[i])
+  }
+  
 }
 
 #' @author Tankred Ott
@@ -371,14 +397,17 @@ plotHist <- function (x, at=NULL, col="orangered", border="black") {
 #' @description A function for use with plotHist. Creates a matrix representing breaks of a histogram. The matrix will contain the upper bounds, the lower bounds and the frequencies of the breaks in the columns, and the individual breaks in the rows.
 #' @param x vector of values
 #' @param breaks number of breaks
-#' @param scale logical, determining whether the frequency should be scaled
+#' @param scale logical, if TRUE, the area within the rectangle will be scaled to one (density)
 createBreakMat <- function (x, breaks=15, scale=FALSE) {
   cut_x <- cut(x, breaks = breaks)
   lvls <- levels(cut_x)
   ranges <- t(sapply(lvls, FUN = function (x) as.numeric(unlist(strsplit(substr(x, 2, nchar(x)-1), split = ",")))))
   frequencies <- as.vector(table(cut_x))
   mat <- cbind(ranges, frequencies)
-  if (scale == TRUE) mat[,3] <- mat[,3] / max(mat[,3])
+  if (scale == TRUE) {
+    areas <- apply(mat, 1, function(x) return ((x[2] - x[1]) * x[3]))
+    mat[,3] <- rescale(mat[,3], from=c(0, sum(areas)), to=c(0,1))
+  }
   colnames(mat) <- c("lower", "upper", "frequencies")
   return(mat)
 }

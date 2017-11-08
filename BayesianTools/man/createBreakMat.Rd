@@ -11,7 +11,7 @@ createBreakMat(x, breaks = 15, scale = FALSE)
 
 \item{breaks}{number of breaks}
 
-\item{scale}{logical, determining whether the frequency should be scaled}
+\item{scale}{logical, if TRUE, the area within the rectangle will be scaled to one (density)}
 }
 \description{
 A function for use with plotHist. Creates a matrix representing breaks of a histogram. The matrix will contain the upper bounds, the lower bounds and the frequencies of the breaks in the columns, and the individual breaks in the rows.

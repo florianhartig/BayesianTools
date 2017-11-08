@@ -4,25 +4,37 @@
 \alias{histMarginal}
 \title{histogram for marginalPlot}
 \usage{
-histMarginal(posterior, prior = NULL, at = 1, .range = 1, breaks = 15,
-  col = NULL, add = TRUE, main = "")
+histMarginal(x, at = 0, .range = NULL, breaks = 15, col = c("#FF5000C0",
+  "#4682B4A0"), border = c("black", "black"), main = "", dens = FALSE,
+  densCol = c("black", "black"), densLwd = c(2, 2), densLty = c(2, 2),
+  add = TRUE, res = 500)
 }
 \arguments{
-\item{posterior}{vector of posterior values}
-
-\item{prior}{vector of prior values or NULL}
+\item{x}{list of vectors. Each vector will be plotted as a separate histogram.}
 
 \item{at}{y position of the histograms}
 
-\item{.range}{maximum height of the histogram}
+\item{.range}{maximum height of the histogram. If NULL, will be determined automatically}
 
 \item{breaks}{integer, determining the number of breaks}
 
-\item{col}{vector determining posterior and prior color}
+\item{col}{vector of colors determining histogram colors}
+
+\item{border}{vector of colors determining histogram border colors}
+
+\item{main}{Character, determining the title of the plot}
+
+\item{dens}{Logical, determining whether a density plot should be plotted additionally to the histogram}
+
+\item{densCol}{vector of colors for the density plots}
+
+\item{densLwd}{line width of the density plot}
+
+\item{densLty}{line type of the density plot}
 
 \item{add}{Logical, determining whether the histogram should be added to and existing plot window.}
 
-\item{main}{Character, determining the title of the plot}
+\item{res}{resolution of the density overlay}
 }
 \description{
 Internal function to plot histograms for the marginalPlot function
