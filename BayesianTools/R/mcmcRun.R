@@ -415,18 +415,17 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   ## CHECK DEFAULTS
 
   if(check){
-  nam = c(names(defaultSettings), "sampler", "nrChains",
-          "runtime", "sessionInfo", "parallel")
-  
-  ind <- which((names(settings) %in% nam == FALSE))
-  
-  nam_n <- names(settings)[ind]
-  for(i in 1:length(nam_n)) nam_n[i] <- paste(nam_n[i], " ")
-  
-  if(length(ind) > 0){
-    message("Parameter(s) ", nam_n , " not used in ", settings$sampler, "\n")
-  }
-  
+    nam = c(names(defaultSettings), "sampler", "nrChains",
+            "runtime", "sessionInfo", "parallel")
+    
+    ind <- which((names(settings) %in% nam == FALSE))
+    
+    nam_n <- names(settings)[ind]
+    for(i in 1:length(nam_n)) nam_n[i] <- paste(nam_n[i], " ")
+    
+    if(length(ind) > 0){
+      message("Parameter(s) ", nam_n , " not used in ", settings$sampler, "\n")
+    }
   }
   
   defaultSettings$nrChains = 1
@@ -449,7 +448,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
     if (! is.null(settings$adaptationNotBefore)){
       if (settings$burnin >= settings$adaptationNotBefore) stop("BayesianToools::applySettingsDefault - setting burnin cannnot be larger than setting adaptationNotBefore") 
     }    
-  } 
+  }
 
   return(settings)  
 }

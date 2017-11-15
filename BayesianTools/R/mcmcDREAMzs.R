@@ -46,30 +46,29 @@
 ##' @seealso \code{\link{DREAM}}
 ##' @export
 
-DREAMzs <- function(bayesianSetup,   settings = list(
-  iterations = 10000,
-  nCR = 3,
-  gamma = NULL, 
-  eps = 0,
-  e = 5e-2,
-  pCRupdate = FALSE, 
-  updateInterval = 10,
-  burnin = 0,
-  thin = 1,
-  adaptation = 0.2,
-  parallel = NULL,
-  
-  Z = NULL,
-  ZupdateFrequency = 10,
-  pSnooker = 0.1,
-  
-  
-  DEpairs = 2, 
-  consoleUpdates = 10, 
-  startValue = NULL,
-  currentChain = 1,
-  message = FALSE))
-{
+DREAMzs <- function(bayesianSetup,
+                    settings = list(iterations = 10000,
+                                    nCR = 3,
+                                    gamma = NULL, 
+                                    eps = 0,
+                                    e = 5e-2,
+                                    pCRupdate = FALSE, 
+                                    updateInterval = 10,
+                                    burnin = 0,
+                                    thin = 1,
+                                    adaptation = 0.2,
+                                    parallel = NULL,
+                                    
+                                    Z = NULL,
+                                    ZupdateFrequency = 10,
+                                    pSnooker = 0.1,
+                                    
+                                    
+                                    DEpairs = 2, 
+                                    consoleUpdates = 10, 
+                                    startValue = NULL,
+                                    currentChain = 1,
+                                    message = FALSE)) {
   
   
   
@@ -159,6 +158,7 @@ DREAMzs <- function(bayesianSetup,   settings = list(
   
   # Determine number of iterations and initialize chain
   n.iter <- ceiling(settings$iterations/Npop)
+  if (n.iter < 2) stop ("The total number of iterations must be greater than 3")
   settings$burnin <- settings$burnin/Npop
   lChain <- ceiling((n.iter - settings$burnin)/settings$thin)+1
   pChain <- array(NA, dim=c(lChain, Npar+3, Npop))

@@ -189,6 +189,7 @@ DEzs <- function(bayesianSetup,
   
   burnin <- settings$burnin/Npop
   n.iter <- ceiling(settings$iterations/Npop)
+  if (n.iter < 2) stop ("The total number of iterations must be greater than 3")
   
   lChain <- ceiling((n.iter - burnin)/settings$thin)+1
 

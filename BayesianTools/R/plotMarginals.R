@@ -343,7 +343,7 @@ histMarginal <- function (x, at = 0, .range = NULL, breaks = 15, col=c("#FF5000C
   brks <- mnX + cumsum(c(0, rep(brkRange, breaks)))
   
   for (i in 1:length(x)) {
-    breakMats[[i]] <- BayesianTools:::createBreakMat(x[[i]], brks, TRUE)
+    breakMats[[i]] <- createBreakMat(x[[i]], brks, TRUE)
     mxY <- max(mxY, max(breakMats[[i]][,3]))
   }
   

@@ -127,6 +127,8 @@ DREAM <- function(bayesianSetup,   settings = list(
   
   # Set number of iterations and initialize chain
   n.iter <- ceiling(settings$iterations/Npop)
+  if (n.iter < 2) stop ("The total number of iterations must be greater than the number of parameters to fit times 2.")  
+  
   settings$burnin <- settings$burnin/Npop
   lChain <- ceiling((n.iter - settings$burnin)/settings$thin)+1
   pChain <- array(NA, dim=c(lChain, Npar+3, Npop))
