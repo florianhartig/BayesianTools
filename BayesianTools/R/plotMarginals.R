@@ -113,7 +113,7 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     if (plotPrior) {
       if (histogram == TRUE) {
         # TODO: add overlay here
-        histMarginal(x = list(mat[,i], priorMat[,i]), at = i, .range = 0.95, col = col, breaks = breaks, add = add,
+        histMarginal(x = list(priorMat[,i], mat[,i]), at = i, .range = 0.95, col = c(col[2], col[1]), breaks = breaks, add = add,
                      main = main, dens = dens, res = res)
       } else {
         priorPos <- posteriorPos <- NULL

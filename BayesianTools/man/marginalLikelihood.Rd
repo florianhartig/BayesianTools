@@ -11,7 +11,7 @@ marginalLikelihood(sampler, numSamples = 1000, method = "Chib", ...)
 
 \item{numSamples}{number of samples to use. How this works, and if it requires recalculating the likelihood, depends on the method}
 
-\item{method}{method to choose. Currently available are "Chib" (default), the harmonic mean "HM", and sampling from the prior "prior". See details}
+\item{method}{method to choose. Currently available are "Chib" (default), the harmonic mean "HM", sampling from the prior "prior", and bridge sampling "Bridge". See details}
 
 \item{...}{further arguments passed to \code{\link{getSample}}}
 }
@@ -31,7 +31,7 @@ The third method is simply sampling from the prior. While in principle unbiased,
  it will only converge for a large number of samples, and is therefore
   numerically inefficient. \cr
 
-The Bridge method uses bridge sampling as implemented in package "bridgesampling".
+The Bridge method uses bridge sampling as implemented in the R package "bridgesampling".
 }
 \examples{
 # Harmonic mean works OK for a low-dim case with 

@@ -12,7 +12,7 @@
 #' @author Florian Hartig
 #' @param sampler an object that implements the getSample function, i.e. a mcmc / smc Sampler (list)
 #' @param numSamples number of samples to use. How this works, and if it requires recalculating the likelihood, depends on the method
-#' @param method method to choose. Currently available are "Chib" (default), the harmonic mean "HM", and sampling from the prior "prior". See details
+#' @param method method to choose. Currently available are "Chib" (default), the harmonic mean "HM", sampling from the prior "prior", and bridge sampling "Bridge". See details
 #' @param ... further arguments passed to \code{\link{getSample}}
 #' @details The function currently implements three ways to calculate the marginal likelihood.\cr
 #'  The recommended way is the method "Chib" (Chib and Jeliazkov, 2001). which is based on MCMC samples, but performs additional calculations. 
@@ -26,7 +26,7 @@
 #'  it will only converge for a large number of samples, and is therefore
 #'   numerically inefficient. \cr
 #' 
-#' The Bridge method uses bridge sampling as implemented in package "bridgesampling". 
+#' The Bridge method uses bridge sampling as implemented in the R package "bridgesampling". 
 #'    
 #' @example /inst/examples/marginalLikelihoodHelp.R
 #' @references Chib, Siddhartha, and Ivan Jeliazkov. "Marginal likelihood from the Metropolis-Hastings output." Journal of the American Statistical Association 96.453 (2001): 270-281.

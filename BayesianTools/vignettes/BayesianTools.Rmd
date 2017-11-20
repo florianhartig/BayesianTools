@@ -102,7 +102,7 @@ print(out)
 summary(out)
 ```
 
-and plottted with several plot functions
+and plottted with several plot functions. The marginalPlot can either be plotted as histograms with density overlay, which is also the default, or as a violin plot (see "?marginalPlot"). 
 
 ```{r}
 plot(out) # plot internally calls tracePlot(out)
@@ -110,7 +110,7 @@ correlationPlot(out)
 marginalPlot(out)
 ```
 
-Other Functions that can be applied to all samplers include model selection scores such as the DIC and the marginal Likelihood (for the calculation of the Bayes factor, see later section for more details), and the Maximum Aposteriori Value (MAP).
+Other Functions that can be applied to all samplers include model selection scores such as the DIC and the marginal Likelihood (for the calculation of the Bayes factor, see later section for more details), and the Maximum Aposteriori Value (MAP). For the marginal likelihood calculation it is possible to chose from a set of methods (see "?marginalLikelihood").
 
 ```{r}
 marginalLikelihood(out)
