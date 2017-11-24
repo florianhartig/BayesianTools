@@ -192,6 +192,7 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
     }
     
     if(sampler == "Twalk"){
+      warning("At the moment using T-walk is discouraged: numeric instability")
       if(!restart){
         if(is.null(settings$startValue)){
           settings$startValue = bayesianSetup$prior$sampler(2)
