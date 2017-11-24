@@ -42,7 +42,6 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
   if(is.null(scale)) scale <- FALSE
   if(is.null(best)) best <- FALSE
   
-  
   if(inherits(mat,"bayesianOutput")){
     if(("mcmcSamplerList" %in% class(mat)) || ("smcSamplerList" %in% class(mat))) {
       lower <- mat[[1]]$setup$prior$lower
@@ -62,6 +61,15 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     mat = getSample(mat, thin = thin)
   } else if ("matrix" %in% class(mat)) {
     if(scale==TRUE) scale <- t(apply(mat, 2, range))
+  } else if ("mcmc.list" %in% class(mat)) {
+    mat = getSample(mat, thin = thin, ...)
+    if(is.logical(scale)){
+      if(scale == TRUE) {
+        lower <- apply(mat, 2, min)
+        upper <- apply(mat, 2, max)
+        scale = cbind(lower, upper)
+      }
+    }
   }
   
   numPars = ncol(mat)
