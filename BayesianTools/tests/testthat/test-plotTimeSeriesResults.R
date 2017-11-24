@@ -61,6 +61,6 @@ testthat::test_that("plotTimeSeriesResults works for bayesianOutput, matrix and 
   testthat::expect_error(plotTimeSeriesResults(sampler = out_coda, model = createPredictions, observed = referenceData[,1],
                                                error = createError, prior = TRUE, main = "Prior predictive"))
   testthat::expect_error(plotTimeSeriesResults(sampler = out_coda, model = createPredictions, observed = referenceData[,1],
-                                               error = createError, prior = TRUE, main = "Prior predictive"),
+                                               error = createError, prior = FALSE, main = "Prior predictive"),
                          NA)
 })
