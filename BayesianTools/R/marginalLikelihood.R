@@ -85,7 +85,7 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     if (!is.null(sampler$setup$prior$density)) pi.star <- sampler$setup$prior$density(theta.star)
     ln.m <- lik.star + pi.star - log(pi.hat)
     
-    out <- list(marginalLikelihod = ln.m, ln.lik.star = lik.star, ln.pi.star = pi.star, ln.pi.hat = log(pi.hat), method = "Chib")
+    out <- list(ln.ML = ln.m, ln.lik.star = lik.star, ln.pi.star = pi.star, ln.pi.hat = log(pi.hat), method = "Chib")
     
   } else if (method == "HM"){
     
@@ -93,7 +93,7 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     lik <- chain[, setup$numPars + 2]
     ml <- log(1 / mean(1 / exp(lik)))
     # ml = 1 / logSumExp(-lik, mean = T) function needs to be adjusted
-    out <- list(marginalLikelihod=ml, method ="HM")
+    out <- list(ln.ML=ml, method ="HM")
     
   } else if (method == "Prior"){
     
@@ -101,7 +101,7 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     likelihoods <- setup$likelihood$density(samples)
     
     ml <- logSumExp(likelihoods, mean = T)
-    out <- list(marginalLikelihod=ml, method ="Prior")
+    out <- list(ln.ML=ml, method ="Prior")
     
   } else if (method == "Bridge") {
     
@@ -111,7 +111,7 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     lower <- setup$prior$lower
     upper <- setup$prior$upper
 
-    out <- bridgesample(chain, nParams, lower, upper)
+    out <- list(ln.ML = bridgesample(chain, nParams, lower, upper)$logml, method ="Bridge")
     
   } else if ("NN") {
     
