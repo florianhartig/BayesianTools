@@ -84,10 +84,15 @@ plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotRe
   if(prior == FALSE){
     if(inherits(sampler,"bayesianOutput")) parMatrix = getSample(sampler, start = start)
     else if (class(sampler) == "matrix") parMatrix = sampler
-    else stop("wrong type give to variable sampler")    
+    else if ("mcmc.list" %in% class(sampler) || "mcmc" %in% class(sampler)) parMatrix = getSample(sampler, start = start)
+    else stop("wrong type given to variable sampler")    
   }else if (prior == TRUE){
-    if(class(sampler)[1] == "mcmcSamplerList") parMatrix = sampler[[1]]$setup$prior$sampler(1000)
-    else parMatrix = sampler$setup$prior$sampler(1000)
+    if(inherits(sampler,"bayesianOutput")) {
+      if(class(sampler)[1] == "mcmcSamplerList") parMatrix = sampler[[1]]$setup$prior$sampler(1000)
+      else parMatrix <- sampler$setup$prior$sampler(1000)
+    } else {
+      stop("prior==TRUE is only available for sampler of type bayesianOutput") 
+    }
   }else stop("BayesianTools::plotTimeSeriesResults - wrong argument to prior")
 
   numSamples = min(1000, nrow(parMatrix))

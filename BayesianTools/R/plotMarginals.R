@@ -61,7 +61,7 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     mat = getSample(mat, thin = thin)
   } else if ("matrix" %in% class(mat)) {
     if(scale==TRUE) scale <- t(apply(mat, 2, range))
-  } else if ("mcmc.list" %in% class(mat)) {
+  } else if ("mcmc.list" %in% class(mat) || "mcmc" %in% class(mat)) {
     mat = getSample(mat, thin = thin, ...)
     if(is.logical(scale)){
       if(scale == TRUE) {
