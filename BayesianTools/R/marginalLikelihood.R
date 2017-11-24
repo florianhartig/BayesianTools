@@ -14,7 +14,7 @@
 #' @param numSamples number of samples to use. How this works, and if it requires recalculating the likelihood, depends on the method
 #' @param method method to choose. Currently available are "Chib" (default), the harmonic mean "HM", sampling from the prior "prior", and bridge sampling "Bridge". See details
 #' @param ... further arguments passed to \code{\link{getSample}}
-#' @details The function currently implements three ways to calculate the marginal likelihood.\cr
+#' @details The function currently implements four ways to calculate the marginal likelihood.\cr
 #'  The recommended way is the method "Chib" (Chib and Jeliazkov, 2001). which is based on MCMC samples, but performs additional calculations. 
 #'  Despite being the current recommendation, note there are some numeric issues with this algorithm that may limit reliability for larger dimensions.
 #'   

@@ -42,7 +42,7 @@ out_coda <- getSample(out, numSamples = 10000, coda = T)
 
 testthat::test_that("marginalPlot runs without throwing an error (bayesianOutput)", testMarginalPlot(out))
 testthat::test_that("marginalPlot runs without throwing an error (matrix)", testMarginalPlot(out_mat))
-testthat::test_that("marginalPlot runs without throwing an error (matrix)", testMarginalPlot(out_coda))
+testthat::test_that("marginalPlot runs without throwing an error (coda)", testMarginalPlot(out_coda))
 
 
 

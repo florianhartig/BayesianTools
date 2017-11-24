@@ -44,23 +44,27 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = setti
 out_mat <- getSample(out, numSamples = 2000)
 out_coda <- getSample(out, numSamples = 2000)
 
-testthat::test_that("plotTimeSeriesResults works for bayesianOutput, matrix and coda", {
+testthat::test_that("plotTimeSeriesResults works for bayesianOutput", {
   testthat::expect_error(plotTimeSeriesResults(sampler = out, model = createPredictions, observed = referenceData[,1],
                                                error = createError, prior = TRUE, main = "Prior predictive"),
                          NA)
   testthat::expect_error(plotTimeSeriesResults(sampler = out, model = createPredictions, observed = referenceData[,1],
                                                error = createError, prior = FALSE, main = "Prior predictive"),
                          NA)
-  
+})
+
+testthat::test_that("plotTimeSeriesResults works for matrix", {
   testthat::expect_error(plotTimeSeriesResults(sampler = out_mat, model = createPredictions, observed = referenceData[,1],
                                                error = createError, prior = TRUE, main = "Prior predictive"))
   testthat::expect_error(plotTimeSeriesResults(sampler = out, model = createPredictions, observed = referenceData[,1],
                                                error = createError, prior = FALSE, main = "Prior predictive"),
                          NA)
-  
+})
+
+testthat::test_that("plotTimeSeriesResults works for coda", {
   testthat::expect_error(plotTimeSeriesResults(sampler = out_coda, model = createPredictions, observed = referenceData[,1],
                                                error = createError, prior = TRUE, main = "Prior predictive"))
   testthat::expect_error(plotTimeSeriesResults(sampler = out_coda, model = createPredictions, observed = referenceData[,1],
-                                               error = createError, prior = TRUE, main = "Prior predictive"),
+                                               error = createError, prior = FALSE, main = "Prior predictive"),
                          NA)
 })
