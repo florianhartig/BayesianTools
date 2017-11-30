@@ -19,7 +19,7 @@ marginalLikelihood(sampler, numSamples = 1000, method = "Chib", ...)
 Calcluated the marginal likelihood from a set of MCMC samples
 }
 \details{
-The function currently implements three ways to calculate the marginal likelihood.\cr
+The function currently implements four ways to calculate the marginal likelihood.\cr
  The recommended way is the method "Chib" (Chib and Jeliazkov, 2001). which is based on MCMC samples, but performs additional calculations. 
  Despite being the current recommendation, note there are some numeric issues with this algorithm that may limit reliability for larger dimensions.
   

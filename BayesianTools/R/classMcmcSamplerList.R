@@ -121,11 +121,13 @@ getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, sta
   if(!is.null(numSamples)) numSamples = ceiling(numSamples/length(sampler))
   
   if(coda == F){
-    out = NULL
+    # out = NULL
+    out <- rep(list(NA), length(sampler))
     for (i in 1:length(sampler)){
-      out = rbind(out, getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F))
+      # out = rbind(out, getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F))
+      out[[i]] <- getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F)
     }
-    #out = BayesianTools:::combineChains(out)
+    out = BayesianTools:::combineChains(out)
   }
 
   if(coda == T){
