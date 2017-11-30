@@ -42,7 +42,7 @@ bayesianSetup <- createBayesianSetup(likelihood, prior, names = rownames(refPars
 settings <- list(iterations = 1000, nrChains = 2)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
 out_mat <- getSample(out, numSamples = 2000)
-out_coda <- getSample(out, numSamples = 2000)
+out_coda <- getSample(out, numSamples = 2000, coda=TRUE)
 
 testthat::test_that("plotTimeSeriesResults works for bayesianOutput", {
   testthat::expect_error(plotTimeSeriesResults(sampler = out, model = createPredictions, observed = referenceData[,1],
