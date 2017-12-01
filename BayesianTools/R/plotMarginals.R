@@ -28,6 +28,10 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
                          lwd = par("lwd"), ...){
   priorMat <- NULL
   
+  if ("MCMC" %in% class(mat) || "MCMC_refClass" %in% class(mat)) {
+    mat <- as.matrix(mat$mvSamples)
+  }
+  
   if (plotPrior == TRUE) {
     if(("mcmcSamplerList" %in% class(mat)) || ("smcSamplerList" %in% class(mat))) {
       priorMat <- mat[[1]]$setup$prior$sampler(nDrawsPrior)
