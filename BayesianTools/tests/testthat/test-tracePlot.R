@@ -15,8 +15,8 @@ coda_2 <- getSample(out_2, coda = T)
 coda_3 <- getSample(out_3, coda = T)
 
 mat_1 <- getSample(out_1, coda = F)
-mat_1 <- getSample(out_2, coda = F)
-mat_1 <- getSample(out_3, coda = F)
+mat_2 <- getSample(out_2, coda = F)
+mat_3 <- getSample(out_3, coda = F)
 
 
 testthat::test_that("tracePlot works for bayesianOutput", {
