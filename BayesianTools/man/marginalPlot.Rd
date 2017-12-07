@@ -4,7 +4,10 @@
 \alias{marginalPlot}
 \title{Plot MCMC marginals}
 \usage{
-marginalPlot(mat, thin = "auto", scale = NULL, best = NULL, ...)
+marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
+  histogram = TRUE, plotPrior = TRUE, priorTop = FALSE,
+  nDrawsPrior = 1000, breaks = 15, res = 500, singlePanel = FALSE,
+  dens = TRUE, col = c("#FF5000D0", "#4682B4A0"), lwd = par("lwd"), ...)
 }
 \arguments{
 \item{mat}{object of class "bayesianOutput" or a matrix or data frame of variables}
@@ -15,6 +18,26 @@ marginalPlot(mat, thin = "auto", scale = NULL, best = NULL, ...)
 
 \item{best}{if provided, will draw points at the given values (to display true / default parameter values). Value can be either NULL (no drawing), a vector with values, or T, in which case the function will attempt to retrieve the values from a BayesianOutput}
 
+\item{histogram}{Logical, determining whether a violin plot or a histogram should be plotted}
+
+\item{plotPrior}{Logical, determining whether the prior should be plotted in addition to the posteriors. Only applicable if mat is an object of class "bayesianOutput"}
+
+\item{priorTop}{Logical, determining whether the prior should be plotted top (TRUE) or bottom (FALSE)}
+
+\item{nDrawsPrior}{Integer, number of draws from the prior, when plotPrior is active}
+
+\item{breaks}{Integer, number of histogram breaks if histogram is set to TRUE}
+
+\item{res}{resolution parameter for violinPlot, determining how many descrete points should be used for the density kernel.}
+
+\item{singlePanel}{Logical, determining whether all histograms/violins should be plotted in a single plot panel or in separate panels.}
+
+\item{dens}{Logical, determining wheter an density overlay should be plotted when 'histogram' is TRUE}
+
+\item{col}{vector of colors for posterior and prior}
+
+\item{lwd}{line width of the violin plots}
+
 \item{...}{additional parameters to pass on to the \code{\link{getSample}}}
 }
 \description{
@@ -24,11 +47,10 @@ Plot MCMC marginals
 dat = generateTestDensityMultiNormal(n = 100000, sample = TRUE)
 marginalPlot(dat(10000))
 }
-\seealso{
-\code{\link{plotTimeSeries}} \cr
-         \code{\link{tracePlot}} \cr
+\references{
+\code{\link{tracePlot}} \cr
          \code{\link{correlationPlot}}
 }
 \author{
-Florian Hartig
+Florian Hartig, Tankred Ott
 }

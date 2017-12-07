@@ -45,7 +45,7 @@ runEverything <- function(bayesianOutput){
 
     if(nPars > 1){
       suppressWarnings(tmp <- marginalLikelihood(out))
-      expect_equal(names(tmp), c("marginalLikelihod", "ln.lik.star", "ln.pi.star", "ln.pi.hat", "method"))
+      expect_equal(names(tmp), c("ln.ML", "ln.lik.star", "ln.pi.star", "ln.pi.hat", "method"))
       
     }
   })

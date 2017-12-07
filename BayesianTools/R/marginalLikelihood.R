@@ -12,9 +12,9 @@
 #' @author Florian Hartig
 #' @param sampler an object that implements the getSample function, i.e. a mcmc / smc Sampler (list)
 #' @param numSamples number of samples to use. How this works, and if it requires recalculating the likelihood, depends on the method
-#' @param method method to choose. Currently available are "Chib" (default), the harmonic mean "HM", and sampling from the prior "prior". See details
+#' @param method method to choose. Currently available are "Chib" (default), the harmonic mean "HM", sampling from the prior "prior", and bridge sampling "Bridge". See details
 #' @param ... further arguments passed to \code{\link{getSample}}
-#' @details The function currently implements three ways to calculate the marginal likelihood.\cr
+#' @details The function currently implements four ways to calculate the marginal likelihood.\cr
 #'  The recommended way is the method "Chib" (Chib and Jeliazkov, 2001). which is based on MCMC samples, but performs additional calculations. 
 #'  Despite being the current recommendation, note there are some numeric issues with this algorithm that may limit reliability for larger dimensions.
 #'   
@@ -26,7 +26,7 @@
 #'  it will only converge for a large number of samples, and is therefore
 #'   numerically inefficient. \cr
 #' 
-#' The Bridge method uses bridge sampling as implemented in package "bridgesampling". 
+#' The Bridge method uses bridge sampling as implemented in the R package "bridgesampling". 
 #'    
 #' @example /inst/examples/marginalLikelihoodHelp.R
 #' @references Chib, Siddhartha, and Ivan Jeliazkov. "Marginal likelihood from the Metropolis-Hastings output." Journal of the American Statistical Association 96.453 (2001): 270-281.
@@ -85,7 +85,7 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     if (!is.null(sampler$setup$prior$density)) pi.star <- sampler$setup$prior$density(theta.star)
     ln.m <- lik.star + pi.star - log(pi.hat)
     
-    out <- list(marginalLikelihod = ln.m, ln.lik.star = lik.star, ln.pi.star = pi.star, ln.pi.hat = log(pi.hat), method = "Chib")
+    out <- list(ln.ML = ln.m, ln.lik.star = lik.star, ln.pi.star = pi.star, ln.pi.hat = log(pi.hat), method = "Chib")
     
   } else if (method == "HM"){
     
@@ -93,7 +93,7 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     lik <- chain[, setup$numPars + 2]
     ml <- log(1 / mean(1 / exp(lik)))
     # ml = 1 / logSumExp(-lik, mean = T) function needs to be adjusted
-    out <- list(marginalLikelihod=ml, method ="HM")
+    out <- list(ln.ML=ml, method ="HM")
     
   } else if (method == "Prior"){
     
@@ -101,7 +101,7 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     likelihoods <- setup$likelihood$density(samples)
     
     ml <- logSumExp(likelihoods, mean = T)
-    out <- list(marginalLikelihod=ml, method ="Prior")
+    out <- list(ln.ML=ml, method ="Prior")
     
   } else if (method == "Bridge") {
     
@@ -111,7 +111,7 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     lower <- setup$prior$lower
     upper <- setup$prior$upper
 
-    out <- bridgesample(chain, nParams, lower, upper)
+    out <- list(ln.ML = bridgesample(chain, nParams, lower, upper)$logml, method ="Bridge")
     
   } else if ("NN") {
     

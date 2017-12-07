@@ -100,7 +100,7 @@ getSample.double <- function(sampler, parametersOnly = T, coda = F, start = 1, e
 
 #' @author Tankred Ott
 #' @export
-# TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector istead of a matrix, if 
+# TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector instead of a matrix, if 
 #       the mcmc object passed to getSample.mcmc contains a vector.
 getSample.integer <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   if(is.null(end)) end = length(sampler)
@@ -126,13 +126,44 @@ getSample.data.frame <- function(sampler, parametersOnly = T, coda = F, start = 
 }
 
 
+#' @author Tankred Ott
+#' @export
+getSample.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
+  
+  if(!is.null(numSamples)) numSamples = ceiling(numSamples/length(sampler))
+  
+  if(coda == F){
+    # out = NULL
+    out <- rep(list(NA), length(sampler))
+    for (i in 1:length(sampler)){
+      # out = rbind(out, getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F))
+      out[[i]] <- getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F)
+    }
+    out <- combineChains(out)
+  }
+  
+  if(coda == T){
+    
+    out = list()
+    
+    for (i in 1:length(sampler)){
+      
+      out[[i]] = getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F)
+    }
+    
+    if(class(out[[1]]) == "mcmc.list") out = unlist(out, recursive = F)
+    class(out) = "mcmc.list"
+    out = out
+  }
+  
+  return(out)
+}
+
 # The following two S3 implementations make getSample compatible with coda::mcmc and coda::mcmc.list
 
 #' @author Tankred Ott
 #' @export
 getSample.mcmc <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
-  
-  # TODO: implement handling of wrong inputs?
   
   if(coda == T){
     # mcmc objects can contain matrices or vectors
@@ -194,5 +225,20 @@ getSample.mcmc.list <- function(sampler, parametersOnly = T, coda = F, start = 1
     }
   }
 }
-  
+
+
+# getSample implementation for nimble objects
+
+#' @author Tankred Ott
+#' @export
+getSample.MCMC <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
+  return(getSample(as.matrix(sampler$mvSamples), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics))
+}
+
+#' @author Tankred Ott
+#' @export
+getSample.MCMC_refClass <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
+  return(getSample(as.matrix(sampler$mvSamples), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics))
+}
+
 
