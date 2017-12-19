@@ -56,12 +56,15 @@ MCMC and marginal likelihood calculation
 settings = list(iterations = 15000)
 out <- runMCMC(bayesianSetup = setUp1, sampler = "Metropolis", settings = settings)
 tracePlot(out, start = 5000)
+
+nbpar=2
 M1 = marginalLikelihood(out)
 M1
 
 settings = list(iterations = 15000)
 out <- runMCMC(bayesianSetup = setUp2, sampler = "Metropolis", settings = settings)
 tracePlot(out, start = 5000)
+nbpar=3
 M2 = marginalLikelihood(out)
 M2
 ```

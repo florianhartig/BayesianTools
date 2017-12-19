@@ -5,7 +5,7 @@
 #' @param sigma either a correlation matrix, or "strongcorrelation", or "no correlation"
 #' @param sample should the function create samples
 #' @param n number of samples to create
-#' @param throwErrors parameter for test purpose
+#' @param throwErrors parameter for test purpose. Between 0 and 1 for proportion of errors
 #' @details 3-d multivariate normal density function with mean 2,4,0 and either strong correlation (default), or no correlation.  
 #' @export
 #' @seealso \code{\link{testDensityBanana}} \cr

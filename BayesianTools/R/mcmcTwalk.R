@@ -106,21 +106,23 @@ Twalk <- function (bayesianSetup, settings = list(iterations = 10000, at = 6, aw
   for (i in 1:iterations) {
     
     move <- TwalkMove(Npar = Npar, FUN = FUN, x = x, 
-                 Eval = Eval, x2 = x2, Eval2 = Eval2, at = at, aw = aw, pn1 = pn1, Ptrav = Ptrav, 
+                 Eval = Eval, x2 = x2, Eval2 = Eval2, 
+                 at = at, aw = aw, pn1 = pn1, Ptrav = Ptrav, 
                  Pwalk = Pwalk, Pblow = Pblow, Phop = Phop)
+    
     if(!is.na(move$alpha)){
-    if (runif(1) < move$alpha) {
-      x <- move$y
-      Eval<- move$val
-      x2 <- move$y2
-      Eval2 <- move$val2
-    }
+      if (runif(1) < move$alpha) {
+        x <- move$y
+        Eval<- move$val
+        x2 <- move$y2
+        Eval2 <- move$val2
+      }
     }
     
     if((i > burnin) && (i %% thin == 0) ){ # retain sample
-    counter <- counter + 1
-    chain[counter,] <- c(x, Eval)
-    chain2[counter,] <- c(x2, Eval2)
+      counter <- counter + 1
+      chain[counter,] <- c(x, Eval)
+      chain2[counter,] <- c(x2, Eval2)
     }
     
     if(settings$message){
