@@ -1,5 +1,33 @@
 NOTE: for more news about the package, see https://github.com/florianhartig/BayesianTools/releases
 
+# BayesianTools 0.1.4
+
+Compatibility
+
+- added NIMBLE support to getSample and plotting functions
+- added coda support to plotTimeSeriesResults and plotMarginals
+
+Changes
+
+- IMPORTANT: added a warning when calling runMCMC with the "twalk" sampler. At the moment, using this sampler is discouraged
+- marginalPlot can now plot prior and/or posterior, either as histogram or as violin plots
+- added bridge sampling to marginalLikelihood
+- added shortcuts for AM, DR and DRAM samplers
+
+Bugfixes:
+
+- when calling getSample on mcmcSamplerList, the chains are now merged instead of concatenated 
+- formulas in the vignette are now rendered correctly
+- fixed a bug in VSEM help
+
+Minor Changes:
+
+- changed the ordering of the summary metrics of summary.mcmcSampler, and summary.mcmcSamplerList
+- renamed marginalLikelihood output to "ln.ML"
+- added tests for plotTimeSeriesResults, marginalPlot and marginalLikelihood
+- added an example with restart to DEzs
+
+
 # BayesianTools 0.1.3
 
 Compatibility
