@@ -35,14 +35,17 @@ citation("BayesianTools")
 
 ### Development release 
 
+All new features and fixes for smaller bugs are committed to the development branch. Only fixes for severe bugs, and new releases are merged to the master branch. If you want to use the newest features before release you need to get the development branch version.
+
 If you want to install the current (development) version from this repository, run
 
 ```{r}
-devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", dependencies = T, build_vignettes = T)
+devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", dependencies = T, build_vignettes = T, ref="development")
 ```
-Below the status of the automatic Travis CI tests on the development version in the master branch (if this doesn load see [here](https://travis-ci.org/florianhartig/BayesianTools))
 
-[![Build Status](https://travis-ci.org/florianhartig/BayesianTools.svg?branch=master)](https://travis-ci.org/florianhartig/BayesianTools)
+Below the status of the automatic Travis CI tests on the development version (if this doesn't load see [here](https://travis-ci.org/florianhartig/BayesianTools))
+
+[![Build Status](https://travis-ci.org/florianhartig/BayesianTools.svg?branch=development)](https://travis-ci.org/florianhartig/BayesianTools)
 
 Windows users: the package contains c++ code, so if you compile yourself, you need [RTools](https://cran.r-project.org/bin/windows/Rtools/) installed. 
 
