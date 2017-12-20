@@ -90,7 +90,7 @@ library(BayesianTools)
 
 # Create input data for the model
 PAR <- VSEMcreatePAR(1:1000)
-plotTimeSeries(observed = PAR)
+plot(PAR, main = "PAR (driving the model)", xlab = "Day")
 
 # load reference parameter definition (upper, lower prior)
 refPars <- VSEMgetDefaults()
@@ -161,11 +161,11 @@ createError <- function(mean, par){
 }
 
 # plot prior predictive distribution and prior predictive simulations
-plotTimeSeriesResults(sampler = out, model = createPredictions, observed = referenceData[,1],
+plotTimeSeriesResults(sampler = out, model = createPredictions, observed = obs[,1],
                       error = createError, prior = TRUE, main = "Prior predictive")
 
 # plot posterior predictive distribution and posterior predictive simulations
-plotTimeSeriesResults(sampler = out, model = createPredictions, observed = referenceData[,1],
+plotTimeSeriesResults(sampler = out, model = createPredictions, observed = obs[,1],
                       error = createError, main = "Posterior predictive")
 
 
@@ -207,13 +207,13 @@ correlationPlot(out)
 
 plotTimeSeriesResults(sampler = out,
                       model = createPredictions,
-                      observed = referenceData[,1],
+                      observed = obs[,1],
                       error = createError,
                       prior = F, main = "Posterior predictive")
 
 plotTimeSeriesResults(sampler = out,
                       model = createPredictions,
-                      observed = referenceData[,1],
+                      observed = obs[,1],
                       error = createError,
                       prior = T, main = "Prior predictive")
 

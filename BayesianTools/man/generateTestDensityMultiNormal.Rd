@@ -16,7 +16,7 @@ generateTestDensityMultiNormal(mean = c(0, 0, 0),
 
 \item{n}{number of samples to create}
 
-\item{throwErrors}{parameter for test purpose}
+\item{throwErrors}{parameter for test purpose. Between 0 and 1 for proportion of errors}
 }
 \description{
 Generates a 3 dimensional multivariate normal likelihood function.
