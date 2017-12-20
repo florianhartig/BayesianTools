@@ -33,7 +33,7 @@ citation("BayesianTools")
 
 If you want to test / install a newer package version from GitHub, note that there are two versions you may consider
 
-*The master branch* contains the latest, stable version of the package. It will typically be very close to the CRAN version, and it should be save to install it. It is possible that the main branch contains subreleases that are not pushed to CRAN (see https://github.com/florianhartig/BayesianTools/releases) 
+**The master branch** contains the latest, stable version of the package. It will typically be very close to the CRAN version, and it should be save to install it. It is possible that the main branch contains subreleases that are not pushed to CRAN (see https://github.com/florianhartig/BayesianTools/releases) 
 
 Status master [![Build Status](https://travis-ci.org/florianhartig/BayesianTools.svg?branch=master)](https://travis-ci.org/florianhartig/BayesianTools)
 
@@ -43,7 +43,7 @@ Install via
 devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", dependencies = T, build_vignettes = T)
 ```
 
-All new features and fixes for smaller bugs are committed to the development branch. If you want to use the newest features before release you need to get the development branch version.
+**The development branch** contains new features and improvements, but may not be fully tested. 
 
 Status development [![Build Status](https://travis-ci.org/florianhartig/BayesianTools.svg?branch=development)](https://travis-ci.org/florianhartig/BayesianTools)
 
