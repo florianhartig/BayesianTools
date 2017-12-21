@@ -33,3 +33,4 @@ Tierney, Luke, and Antonietta Mira. "Some adaptive Monte Carlo methods for Bayes
 \author{
 Francesco Minunno
 }
+\keyword{internal}

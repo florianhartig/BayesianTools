@@ -10,6 +10,7 @@
 #' @param FUN function to be sampled from or object of class bayesianSetup
 #' @param consoleUpdates interger, determines the frequency with which sampler progress is printed to the console
 #' @references Metropolis, Nicholas, et al. "Equation of state calculations by fast computing machines." The journal of chemical physics 21.6 (1953): 1087-1092.
+#' @keywords internal
 # #' @export
 M <- function(startValue = NULL, iterations  = 10000, nBI = 0 , parmin = NULL, parmax= NULL, f = 1, FUN, consoleUpdates=1000) {
   
@@ -95,6 +96,7 @@ M <- function(startValue = NULL, iterations  = 10000, nBI = 0 , parmin = NULL, p
 #' @param FUN function to be sampled from or object of class bayesianSetup
 #' @param eps small number to avoid singularity
 #' @references  Haario, Heikki, Eero Saksman, and Johanna Tamminen. "An adaptive Metropolis algorithm." Bernoulli (2001): 223-242.
+#' @keywords internal
 # #' @export
 AM <- function(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL, parmax = NULL, FUN, f = 1, eps = 0) {
   
@@ -175,6 +177,7 @@ AM <- function(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL, pa
 #' @param f2 scaling factor for second proposal
 #' @param FUN function to be sampled from or object of class bayesianSetup
 #' @references Tierney, Luke, and Antonietta Mira. "Some adaptive Monte Carlo methods for Bayesian inference." Statistics in medicine 18.1718 (1999): 2507-2515.
+#' @keywords internal
 # #' @export
 DR <- function(startValue = NULL, iterations = 10000, nBI=0, parmin = NULL, parmax =NULL, f1 = 1, f2= 0.5, FUN) {
   
@@ -260,6 +263,7 @@ DR <- function(startValue = NULL, iterations = 10000, nBI=0, parmin = NULL, parm
 #' @param FUN function to be sampled from
 #' @param eps small number to avoid singularity or object of class bayesianSetup
 #' @references  Haario, Heikki, Eero Saksman, and Johanna Tamminen. "An adaptive Metropolis algorithm." Bernoulli (2001): 223-242.
+#' @keywords internal
 # #' @export
 DRAM <- function(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL, parmax = NULL, FUN, f = 1, eps = 0) {
   
