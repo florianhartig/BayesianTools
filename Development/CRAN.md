@@ -1,5 +1,16 @@
 This file contains CRAN submission info / communication
 
+
+## Version 0.1.4
+
+A bunch of smaller updates to the package. 
+
+Tested under Mac (3.3.2), http://win-builder.r-project.org/ (oldrel / release / devel) and Travis CI  (oldrel / release / devel) without apparent problems.
+
+## Version 0.1.3
+
+
+
 ## Version 0.1.2
 
 ### Submission 1

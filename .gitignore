@@ -18,13 +18,11 @@ soobench/
 
 BayesianTools/examples/ForestModel/ForestModel_cache/
 
-
 BayesianTools/inst/doc/QuickStart.R
 
 BayesianTools/vignettes/QuickStart_files/
 
 BayesianTools/examples/BT-VSEM_cache/
-
 
 BayesianTools/vignettes/VSEM-Calibration_files/
 
@@ -35,9 +33,6 @@ BayesianTools/inst/doc/
 
 BayesianTools/vignettes/ReferenceManual.R
 
-
-
-
 BayesianTools/vignettes/ReferenceManual_files/
 
 BayesianTools/examples/16-TG14/TG14-v2.2_cache/
@@ -45,13 +40,9 @@ BayesianTools/examples/16-TG14/TG14-v2.2_cache/
 BayesianTools/examples/16-TG14/TG14-v2.2_files/
 examples/16-TG14/TG14-v2.2_cache/
 
-
 BayesianTools/examples/Effect_catchDuplicates-Dateien/MathJax.js
 
 examples/16-TG14/TG14-v2.2_files/figure-html
-
-BayesianTools.Rproj
-
 
 BayesianTools/vignettes/BayesianTools_cache
 BayesianTools/src/vsem.o-6bf934a9

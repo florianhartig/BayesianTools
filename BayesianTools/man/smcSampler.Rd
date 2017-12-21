@@ -6,7 +6,7 @@
 \usage{
 smcSampler(bayesianSetup, initialParticles = 1000, iterations = 10,
   resampling = T, resamplingSteps = 2, proposal = NULL, adaptive = T,
-  proposalScale = 0.5, likelihoodWeights = NULL)
+  proposalScale = 0.5)
 }
 \arguments{
 \item{bayesianSetup}{either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function}
@@ -24,8 +24,6 @@ smcSampler(bayesianSetup, initialParticles = 1000, iterations = 10,
 \item{adaptive}{should the covariance of the proposal be adapted during sampling}
 
 \item{proposalScale}{scaling factor for the proposal generation. Can be adapted if there is too much / too little rejection}
-
-\item{likelihoodWeights}{NULL, numeric vector, or function. The sum of all weights must be one, and the length of the vector must be equal to iterations. The value of the nth element determines the weight for the likelihood in the nth iteration.}
 }
 \description{
 Sequential Monte Carlo Sampler

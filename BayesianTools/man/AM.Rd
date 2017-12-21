@@ -33,3 +33,4 @@ Haario, Heikki, Eero Saksman, and Johanna Tamminen. "An adaptive Metropolis algo
 \author{
 Francesco Minunno
 }
+\keyword{internal}
