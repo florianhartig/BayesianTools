@@ -12,6 +12,9 @@
 createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplicates=T, 
                              sampler = NULL, parallelOptions = NULL){
   
+  # check if point-wise likelihood available
+  pwLikelihood = if ("sum" %in% names(as.list(args(likelihood)))) TRUE else FALSE
+  
   catchingLikelihood <- function(x, ...){
     out <- tryCatch(
     {
@@ -24,7 +27,7 @@ createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplic
     },
     error=function(cond){
       cat(c("Parameter values ", x, "\n"))
-      warning("Problem encountered in the calculation of the likelihood with parameter ", x, "\n Error message was", cond, "\n set result of the parameter evaluation to -Inf ", "ParaeterValues ")
+      warning("Problem encountered in the calculation of the likelihood with parameter ", x, "\n Error message was", cond, "\n set result of the parameter evaluation to -Inf ", "ParameterValues ")
       return(-Inf)
     }
         )
@@ -93,7 +96,7 @@ createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplic
     }
     else stop("parameter must be vector or matrix")
   }
-  out<- list(density = parallelDensity, sampler = sampler, cl = cl)
+  out<- list(density = parallelDensity, sampler = sampler, cl = cl, pwLikelihood = pwLikelihood)
   class(out) <- "likelihood"
   return(out)
 }

@@ -4,7 +4,7 @@
 
 #' calculates the WAIC 
 #' @author Florian Hartig
-#' @param bayesianOutput an object of class BayesianOutput
+#' @param bayesianOutput an object of class BayesianOutput. Must implement a log-likelihood density function that can return point-wise log-likelihood values ("sum" argument).
 #' @param numSamples the number of samples to calculate the WAIC
 #' @param ... optional values to be passed on the the getSample function 
 #' @note The function requires that the likelihood passed on to BayesianSetup contains the option sum = T/F, with defaul F. If set to true, the likelihood for each data point must be returned. 
@@ -37,13 +37,19 @@
 #' @export
 WAIC <- function(bayesianOutput, numSamples = 1000, ...){
   
+ 
+  
   x = getSample(bayesianOutput, parametersOnly = F,  ...)
   
   # Catch nPars and ll density for mcmcList
   if("mcmcSamplerList" %in% class(bayesianOutput)){
+    if (bayesianOutput[[1]]$setup$pwLikelihood == FALSE)
+      stop("WAIC can only be applied if the likelihood density can be returned point-wise ('sum' argument, see examples).")
     nPars = bayesianOutput[[1]]$setup$numPars
     llDensity <- bayesianOutput[[1]]$setup$likelihood$density
   }else{
+    if (bayesianOutput$setup$pwLikelihood == FALSE)
+      stop("WAIC can only be applied if the likelihood density can be returned point-wise ('sum' argument, see examples).")
     nPars = bayesianOutput$setup$numPars
     llDensity <- bayesianOutput$setup$likelihood$density
   } 

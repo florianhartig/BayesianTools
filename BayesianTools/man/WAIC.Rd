@@ -7,7 +7,7 @@
 WAIC(bayesianOutput, numSamples = 1000, ...)
 }
 \arguments{
-\item{bayesianOutput}{an object of class BayesianOutput}
+\item{bayesianOutput}{an object of class BayesianOutput. Must implement a log-likelihood density function that can return point-wise log-likelihood values ("sum" argument).}
 
 \item{numSamples}{the number of samples to calculate the WAIC}
 
