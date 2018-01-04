@@ -460,7 +460,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
 #' @param proposalGenerator proposal generator
 #' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function 
 #' @param settings list with settings
-
+#' @keywords internal
 setupStartProposal <- function(proposalGenerator = NULL, bayesianSetup, settings){
   
   # Proposal
@@ -540,6 +540,7 @@ getPossibleSamplerTypes <- function(){
 
 #' Returns Metropolis default settings
 #' @author Tankred Ott
+#' @keywords internal
 getMetropolisDefaultSettings <- function () {
   defaultSettings = list(
     startValue = NULL,

@@ -19,3 +19,4 @@ Help function to find starvalues and proposalGenerator settings
 \author{
 Florian Hartig
 }
+\keyword{internal}

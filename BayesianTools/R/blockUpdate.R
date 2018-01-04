@@ -1,9 +1,10 @@
 
-# #' Determine the groups of correlated parameters
-# #' @author Stefan Paul
-# #' @param chain MCMC chain including only the parameters (not logP,ll, logP)
-# #' @param blockSettings list with settings 
-# #' @return groups
+#' Determine the groups of correlated parameters
+#' @author Stefan Paul
+#' @param chain MCMC chain including only the parameters (not logP,ll, logP)
+#' @param blockSettings list with settings
+#' @return groups
+#' @keywords internal
 updateGroups <- function(chain,blockSettings){
   
   settings <- getBlockSettings(blockSettings)
@@ -34,10 +35,10 @@ updateGroups <- function(chain,blockSettings){
 }
 
 
-# #' Determine the parameters in the block update
-# #' @param blockSettings settings for block update
-# #' @return vector containing the parameter to be updated
-
+#' Determine the parameters in the block update
+#' @param blockSettings settings for block update
+#' @return vector containing the parameter to be updated
+#' @keywords internal
 getBlock <- function(blockSettings){
   groups <- blockSettings$cT
   pGroup <- blockSettings$pGroup
@@ -58,11 +59,11 @@ getBlock <- function(blockSettings){
 }
 
 
-# #' getblockSettings
-# #' @description Transforms the original settings in settings used in the 
-# #' model runs
-# #' @param blockUpdate input settings
-# #' @return list with block settings
+#' getblockSettings
+#' @description Transforms the original settings in settings used in the model runs
+#' @param blockUpdate input settings
+#' @return list with block settings
+#' @keywords internal
 getBlockSettings <- function(blockUpdate){
   
     h <- k <- pSel <- pGroup <- groups <- NULL  

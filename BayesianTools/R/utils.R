@@ -1,7 +1,8 @@
-# #' Function to thin matrices
-# #' @param mat matrix to thin
-# #' @param thin thinning parameter
-# #' @return thinned matrix
+#' Function to thin matrices
+#' @param mat matrix to thin
+#' @param thin thinning parameter
+#' @return thinned matrix
+#' @keywords internal
 
 thinMatrix <- function(mat, thin = "auto"){
   if (thin == "auto"){
@@ -16,11 +17,12 @@ thinMatrix <- function(mat, thin = "auto"){
 }
 
 
-# #' Function to scale matrices
-# #' @param mat matrix to scale
-# #' @param min minimum value
-# #' @param max maximum value
-# #' @return sclaed matrix
+#' Function to scale matrices
+#' @param mat matrix to scale
+#' @param min minimum value
+#' @param max maximum value
+#' @return sclaed matrix
+#' @keywords internal
 
 scaleMatrix <- function(mat, min, max){
   if(class(mat) %in% c("matrix", "data.frame")){
@@ -71,6 +73,7 @@ getPanels <- function(x){
 #' @param numSamples number of samples (rows) to be drawn
 #' @details Gets n equally spaced samples (rows) from a matrix and returns a new matrix (or vector) containing those samples
 # #' @export
+#' @keywords internal
 sampleEquallySpaced <- function(x, numSamples) {
   # wrong input: x is neither vector nor matrix
   if (!is.matrix(x) && !is.vector(x)) {
@@ -124,6 +127,7 @@ sampleEquallySpaced <- function(x, numSamples) {
 #' @details Checks if the thin argument is consistent with the data consisting of nTotalSamples samples/rows and corrects thin if not.
 #' @author Tankred Ott
 # #' @export
+#' @keywords internal
 correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.001) {
   if (autoThinFraction > 1 || autoThinFraction <= 0) {
     stop("autoThinFraction must be greater than 0 and less than 1!")
@@ -147,6 +151,7 @@ correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.001) {
 #' @param x Vector of values
 #' @param from vector, interval of which x are elements. from[1] must be the lower, from[2] the upper bound.
 #' @param to vector, interval to which the elements should be scaled. to[1] must be the lower, to[2] the upper bound.
+#' @keywords internal
 rescale <- function (x, from, to) {
   # scale x from 0 to 1
   x <- (x - from[1]) / (from[2] - from[1])
