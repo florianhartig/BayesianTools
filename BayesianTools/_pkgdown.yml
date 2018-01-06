@@ -1,0 +1,89 @@
+navbar:
+  title: BayesianTools
+  type: default
+  left:
+  - icon: fa-home fa-lg
+    href: index.html
+  - text: Get Started
+    href: articles/BayesianTools.html
+  - text: Reference
+    href: reference/index.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/florianhartig/BayesianTools
+
+reference:
+- title: All functions
+  desc: ~
+  contents:
+  - '`applySettingsDefault`'
+  - '`BayesianTools`'
+  - '`bridgesample`'
+  - '`checkBayesianSetup`'
+  - '`convertCoda`'
+  - '`correlationPlot`'
+  - '`createBayesianSetup`'
+  - '`createBetaPrior`'
+  - '`createLikelihood`'
+  - '`createMcmcSamplerList`'
+  - '`createPosterior`'
+  - '`createPrior`'
+  - '`createPriorDensity`'
+  - '`createProposalGenerator`'
+  - '`createSmcSamplerList`'
+  - '`createTruncatedNormalPrior`'
+  - '`createUniformPrior`'
+  - '`DE`'
+  - '`DEzs`'
+  - '`DIC`'
+  - '`DREAM`'
+  - '`DREAMzs`'
+  - '`gelmanDiagnostics`'
+  - '`generateParallelExecuter`'
+  - '`generateTestDensityMultiNormal`'
+  - '`getCredibleIntervals`'
+  - '`getDharmaResiduals`'
+  - '`getPanels`'
+  - '`getPossibleSamplerTypes`'
+  - '`getPredictiveDistribution`'
+  - '`getPredictiveIntervals`'
+  - '`getSample`'
+  - '`getVolume`'
+  - '`GOF`'
+  - '`likelihoodAR1`'
+  - '`likelihoodIidNormal`'
+  - '`logSumExp`'
+  - '`MAP`'
+  - '`marginalLikelihood`'
+  - '`marginalPlot`'
+  - '`Metropolis`'
+  - '`metropolisRatio`'
+  - '`createMixWithDefaults`'
+  - '`plotSensitivity`'
+  - '`plotTimeSeries`'
+  - '`plotTimeSeriesResiduals`'
+  - '`plotTimeSeriesResults`'
+  - '`runMCMC`'
+  - '`sampleMetropolis`'
+  - '`smcSampler`'
+  - '`stopParallel`'
+  - '`testDensityBanana`'
+  - '`testDensityInfinity`'
+  - '`testDensityMultiNormal`'
+  - '`testDensityNormal`'
+  - '`testLinearModel`'
+  - '`tracePlot`'
+  - '`Twalk`'
+  - '`updateProposalGenerator`'
+  - '`VSEM`'
+  - '`vsemC`'
+  - '`VSEMcreateLikelihood`'
+  - '`VSEMcreatePAR`'
+  - '`VSEMgetDefaults`'
+  - '`WAIC`'
+
+articles:
+- title: All vignettes
+  desc: ~
+  contents: '`BayesianTools`'
+
