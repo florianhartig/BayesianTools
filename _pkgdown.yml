@@ -1,0 +1,99 @@
+navbar:
+  title: BayesianTools
+  type: default
+  left:
+  - icon: fa-home fa-lg
+    href: index.html
+  - text: Get Started
+    href: articles/BayesianTools.html
+  - text: Reference
+    href: reference/index.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/florianhartig/BayesianTools
+
+reference:
+- title: All functions
+  desc: ~
+  contents:
+  - '`applySettingsDefault`'
+  - '`BayesianTools`'
+  - '`bridgesample`'
+  - '`checkBayesianSetup`'
+  - '`convertCoda`'
+  - '`correctThin`'
+  - '`correlationPlot`'
+  - '`createBayesianSetup`'
+  - '`createBetaPrior`'
+  - '`createBreakMat`'
+  - '`createLikelihood`'
+  - '`createMcmcSamplerList`'
+  - '`createPosterior`'
+  - '`createPrior`'
+  - '`createPriorDensity`'
+  - '`createProposalGenerator`'
+  - '`createSmcSamplerList`'
+  - '`createTruncatedNormalPrior`'
+  - '`createUniformPrior`'
+  - '`DE`'
+  - '`DEzs`'
+  - '`DIC`'
+  - '`DREAM`'
+  - '`DREAMzs`'
+  - '`gelmanDiagnostics`'
+  - '`generateParallelExecuter`'
+  - '`generateTestDensityMultiNormal`'
+  - '`getCredibleIntervals`'
+  - '`getDharmaResiduals`'
+  - '`getMetropolisDefaultSettings`'
+  - '`getPanels`'
+  - '`getPossibleSamplerTypes`'
+  - '`getPredictiveDistribution`'
+  - '`getPredictiveIntervals`'
+  - '`getSample`'
+  - '`getVolume`'
+  - '`GOF`'
+  - '`histMarginal`'
+  - '`likelihoodAR1`'
+  - '`likelihoodIidNormal`'
+  - '`logSumExp`'
+  - '`MAP`'
+  - '`marginalLikelihood`'
+  - '`marginalPlot`'
+  - '`mcmcMultipleChains`'
+  - '`Metropolis`'
+  - '`metropolisRatio`'
+  - '`createMixWithDefaults`'
+  - '`plotHist`'
+  - '`plotSensitivity`'
+  - '`plotTimeSeries`'
+  - '`plotTimeSeriesResiduals`'
+  - '`plotTimeSeriesResults`'
+  - '`rescale`'
+  - '`runMCMC`'
+  - '`sampleEquallySpaced`'
+  - '`sampleMetropolis`'
+  - '`setupStartProposal`'
+  - '`smcSampler`'
+  - '`stopParallel`'
+  - '`testDensityBanana`'
+  - '`testDensityInfinity`'
+  - '`testDensityMultiNormal`'
+  - '`testDensityNormal`'
+  - '`testLinearModel`'
+  - '`tracePlot`'
+  - '`Twalk`'
+  - '`updateProposalGenerator`'
+  - '`violinPlot`'
+  - '`VSEM`'
+  - '`vsemC`'
+  - '`VSEMcreateLikelihood`'
+  - '`VSEMcreatePAR`'
+  - '`VSEMgetDefaults`'
+  - '`WAIC`'
+
+articles:
+- title: All vignettes
+  desc: ~
+  contents: '`BayesianTools`'
+
