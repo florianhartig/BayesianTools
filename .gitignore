@@ -7,6 +7,7 @@ soobench/
 
 *.html
 !docs/*.html
+!docs/*/*.html
 *.gz
 *.dll
 *.DS_Store
