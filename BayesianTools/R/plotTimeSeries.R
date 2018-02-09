@@ -61,7 +61,7 @@ plotTimeSeriesResiduals <- function(residuals, x = NULL, main = "residuals"){
 #' @param sampler Either a) a matrix b) an MCMC object (list or not), or c) an SMC object
 #' @param model function that calculates model predictions for a given parameter vector
 #' @param observed observed values
-#' @param error function with signature f(mean, par) that generates error expectations from mean model predictions. Par is a vector from the matrix with the parameter samples (full length). f needs to know which of these parameters are parameters of the error function
+#' @param error function with signature f(mean, par) that generates observations with error (error = stochasticity according to what is assumed in the likelihood) from mean model predictions. Par is a vector from the matrix with the parameter samples (full length). f needs to know which of these parameters are parameters of the error function. See example in \code{\link{VSEM}}
 #' @param start numeric start value for the plot (see \code{\link{getSample}})
 #' @param plotResiduals logical determining whether residuals should be plotted
 #' @param prior if a prior sampler is implemented, setting this parameter to TRUE will draw model parameters from the prior instead of the posterior distribution
