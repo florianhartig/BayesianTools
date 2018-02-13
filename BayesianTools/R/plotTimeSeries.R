@@ -60,7 +60,7 @@ plotTimeSeriesResiduals <- function(residuals, x = NULL, main = "residuals"){
 #' @author Florian Hartig
 #' @param sampler Either a) a matrix b) an MCMC object (list or not), or c) an SMC object
 #' @param model function that calculates model predictions for a given parameter vector
-#' @param observed observed values in a vector
+#' @param observed observed values as vector
 #' @param error function with signature f(mean, par) that generates observations with error (error = stochasticity according to what is assumed in the likelihood) from mean model predictions. Par is a vector from the matrix with the parameter samples (full length). f needs to know which of these parameters are parameters of the error function. See example in \code{\link{VSEM}}
 #' @param start numeric start value for the plot (see \code{\link{getSample}})
 #' @param plotResiduals logical determining whether residuals should be plotted
@@ -74,7 +74,7 @@ plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotRe
     warning("Can not plot residuals without an error function.")
   }
   
-  if(!is.vector(observed)) stop("wrong type given to observed")
+  if(!is.vector(observed)) stop("wrong type given to observed. Must be a vector")
   
   if (plotResiduals == TRUE && !is.null(error)) {
     layout(matrix(c(1, 1, 1, 2, 3, 4), 2, 3, byrow = TRUE))
