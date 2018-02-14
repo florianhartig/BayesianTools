@@ -287,10 +287,12 @@ DEzs <- function(bayesianSetup,
       
       # evaluate acceptance
       for(i in 1:Npop){
-        if ((logfitness_x_prop[i,1] - logfitness_X[i,1] + r_extra[i]) > log(runif(1))){
-         # accept <- accept + 1 
-          X[i,] <- x_prop[i,]
-          logfitness_X[i,] <- logfitness_x_prop[i,]
+          if(!is.na(logfitness_x_prop[i,1] - logfitness_X[i,1])){
+          if ((logfitness_x_prop[i,1] - logfitness_X[i,1] + r_extra[i]) > log(runif(1))){
+           # accept <- accept + 1 
+            X[i,] <- x_prop[i,]
+            logfitness_X[i,] <- logfitness_x_prop[i,]
+          }
         }
       }
       
