@@ -88,5 +88,4 @@ plotDiagnostic <- function(out, lty = 1, lwd = 1, numSamples = 10){
   
   
 }
-plotDiagnostic(outOneChain)
 
