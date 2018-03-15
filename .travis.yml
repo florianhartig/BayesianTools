@@ -9,3 +9,8 @@ r:
   - devel
   
 cache: packages
+
+addons:
+  apt:
+    packages:
+      - libnlopt-dev
