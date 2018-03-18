@@ -53,3 +53,4 @@ Function to plot classic violin plots, as well as "half violin plots" (density p
 \author{
 Tankred Ott
 }
+\keyword{internal}

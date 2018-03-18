@@ -12,3 +12,4 @@ Returns Metropolis default settings
 \author{
 Tankred Ott
 }
+\keyword{internal}

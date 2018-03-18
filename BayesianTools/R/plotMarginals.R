@@ -197,6 +197,7 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
 #' @param pchMed pch for median point
 #' @param res "resolution" of the violin. Determining how many descrete points should be used to calculate the density kernel.
 #' @param main header text, only applicable, if 'add' is FALSE
+#' @keywords internal
 violinPlot <- function (x, at, .range = 1, add = FALSE, horizontal = TRUE, which = "both", relToAt = "above", plotQBox = TRUE, plotMed = TRUE,
                         col = "orangered", border = "black", lwd = par("lwd"), colQBox = "black", borderQBox = "black", colMed = "white",
                         pchMed = 19, res = 500, main = "") {
@@ -325,6 +326,7 @@ violinPlot <- function (x, at, .range = 1, add = FALSE, horizontal = TRUE, which
 #' @param densLty line type of the density plot
 #' @param res resolution of the density overlay
 #' @author Tankred Ott
+#' @keywords internal
 # TODO: let the function automatically chose colors
 histMarginal <- function (x, at = 0, .range = NULL, breaks = 15, col=c("#FF5000C0", "#4682B4A0"),
                           border = c("black", "black"),  main="", dens=FALSE, densCol = c("black", "black"),
@@ -386,6 +388,7 @@ histMarginal <- function (x, at = 0, .range = NULL, breaks = 15, col=c("#FF5000C
 #' @param at y position of the histogram. If NULL a new plot will be generated.
 #' @param col color of the histogram
 #' @param border border color
+#' @keywords internal
 plotHist <- function (x, at=NULL, col="orangered", border="black") {
   if (is.null(at)) {
     at <- 0
@@ -410,6 +413,7 @@ plotHist <- function (x, at=NULL, col="orangered", border="black") {
 #' @param x vector of values
 #' @param breaks number of breaks
 #' @param scale logical, if TRUE, the area within the rectangle will be scaled to one (density)
+#' @keywords internal
 createBreakMat <- function (x, breaks=15, scale=FALSE) {
   cut_x <- cut(x, breaks = breaks)
   lvls <- levels(cut_x)

@@ -120,7 +120,7 @@ getSample.integer <- function(sampler, parametersOnly = T, coda = F, start = 1, 
   return(out)
 }
 
-
+# Why is this not exported?
 getSample.data.frame <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   getSample(matrix(sampler), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
 }

@@ -20,3 +20,4 @@ Gets n equally spaced samples (rows) from a matrix and returns a new matrix (or 
 \author{
 Tankred Ott
 }
+\keyword{internal}

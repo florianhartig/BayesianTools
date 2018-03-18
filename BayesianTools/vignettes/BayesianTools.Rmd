@@ -609,6 +609,8 @@ setUp2 <- createBayesianSetup(likelihood2, lower = c(-5,-5,0.01), upper = c(5,5,
 
 MCMC and marginal likelihood calculation
 
+
+
 ```{r, results = 'hide'}
 settings = list(iterations = 15000,  message = FALSE)
 out1 <- runMCMC(bayesianSetup = setUp1, sampler = "Metropolis", settings = settings)
@@ -645,5 +647,23 @@ DIC(out1)$DIC
 DIC(out2)$DIC
 ```
  
+### Model comparison via WAIC
 
+The Watanabe–Akaike information criterion is another criterion for model comparison. To be able to calculate the WAIC, the model must implement a log-likelihood that density that allows to calculate the log-likelihood point-wise (the likelihood functions requires a "sum" argument that determines whether the summed log-likelihood should be returned). It can be obtained via
+
+```{r}
+# This will not work, since likelihood1 has no sum argument
+# WAIC(out1)
+
+# likelihood with sum argument
+likelihood3 <- function(param, sum = TRUE){
+    pred <- param[1] + param[2]*x + param[3] * x^2
+    singlelikelihoods <- dnorm(y, mean = pred, sd = 1/(param[4]^2), log = T)
+    return(if (sum == TRUE) sum(singlelikelihoods) else singlelikelihoods)  
+}
+setUp3 <- createBayesianSetup(likelihood3, lower = c(-5,-5,-5,0.01), upper = c(5,5,5,30))
+out3 <- runMCMC(bayesianSetup = setUp3, sampler = "Metropolis", settings = settings)
+
+WAIC(out3)
+```
 

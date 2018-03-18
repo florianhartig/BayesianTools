@@ -42,3 +42,4 @@ Internal function to plot histograms for the marginalPlot function
 \author{
 Tankred Ott
 }
+\keyword{internal}

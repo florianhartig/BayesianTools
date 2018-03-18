@@ -18,11 +18,12 @@
 #' @param eps.add random term
 #' @param blockUpdate list determining whether parameters should be updated in blocks. For possible settings see Details.
 #' @param message logical determines whether the sampler's progress should be printed
-#' @details For parallel computing FUN needs to take a matrix of proposals
 #' @references ter  Braak C. J. F., and Vrugt J. A. (2008). Differential Evolution Markov Chain with snooker updater and fewer chains. Statistics and Computing http://dx.doi.org/10.1007/s11222-008-9104-9 
 #' @export
 #' @seealso \code{\link{DE}}
-#' @details For blockUpdate the first element in the list determines the type of blocking.
+#' @details For parallel computing, the likelihood density in the bayesianSetup needs to be parallelized, i.e. needs to be able to operate on a matrix of proposals
+#' 
+#' For blockUpdate the first element in the list determines the type of blocking.
 #' Possible choices are
 #' \itemize{
 #'  \item{"none"}{ (default), no blocking of parameters}
@@ -286,10 +287,12 @@ DEzs <- function(bayesianSetup,
       
       # evaluate acceptance
       for(i in 1:Npop){
-        if ((logfitness_x_prop[i,1] - logfitness_X[i,1] + r_extra[i]) > log(runif(1))){
-         # accept <- accept + 1 
-          X[i,] <- x_prop[i,]
-          logfitness_X[i,] <- logfitness_x_prop[i,]
+          if(!is.na(logfitness_x_prop[i,1] - logfitness_X[i,1])){
+          if ((logfitness_x_prop[i,1] - logfitness_X[i,1] + r_extra[i]) > log(runif(1))){
+           # accept <- accept + 1 
+            X[i,] <- x_prop[i,]
+            logfitness_X[i,] <- logfitness_x_prop[i,]
+          }
         }
       }
       

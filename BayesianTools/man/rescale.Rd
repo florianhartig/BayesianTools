@@ -19,3 +19,4 @@ Rescales values in the interval "from" (lower, upper) to the new interval "to" (
 \author{
 Tankred Ott
 }
+\keyword{internal}

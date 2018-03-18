@@ -74,6 +74,7 @@ createBayesianSetup <- function(likelihood,
   }else{
     likelihoodClass = likelihood
   }
+  pwLikelihood = likelihoodClass$pwLikelihood
   
   # TODO - macht das Sinn numPars hier zu definieren?
   if(is.null(priorSampler)){
@@ -101,7 +102,7 @@ createBayesianSetup <- function(likelihood,
   
   posteriorClass = createPosterior(priorClass,likelihoodClass)
 
-  out <- list(prior = priorClass, likelihood = likelihoodClass, posterior = posteriorClass, names = names, numPars = numPars, model = model, parallel = parallel)
+  out <- list(prior = priorClass, likelihood = likelihoodClass, posterior = posteriorClass, names = names, numPars = numPars, model = model, parallel = parallel, pwLikelihood = pwLikelihood)
   class(out) <- "BayesianSetup"
   
   return(out)

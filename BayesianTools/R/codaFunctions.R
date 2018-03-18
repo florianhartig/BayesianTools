@@ -1,8 +1,8 @@
-# #' Function to combine chains
-# #' @param x chains
-# #' @param merge logical determines whether chains should be merged
-# #' @return combined chains
-
+#' Function to combine chains
+#' @param x chains
+#' @param merge logical determines whether chains should be merged
+#' @return combined chains
+#' @keywords internal
 combineChains <- function(x, merge = T){
   
   if(merge == T){
@@ -37,14 +37,15 @@ combineChains <- function(x, merge = T){
 
 
 
-# #' Helper function to change an object to a coda mcmc class, 
-# #' 
-# #' @param chain mcmc Chain
-# #' @param start for mcmc samplers start value in the chain. For SMC samplers, start particle
-# #' @param end for mcmc samplers end value in the chain. For SMC samplers, end particle
-# #' @param thin thinning parameter
-# #' @return object of class coda::mcmc
-# #' @details   Very similar to coda::mcmc but with less overhead
+#' Helper function to change an object to a coda mcmc class,
+#'
+#' @param chain mcmc Chain
+#' @param start for mcmc samplers start value in the chain. For SMC samplers, start particle
+#' @param end for mcmc samplers end value in the chain. For SMC samplers, end particle
+#' @param thin thinning parameter
+#' @return object of class coda::mcmc
+#' @details   Very similar to coda::mcmc but with less overhead
+#' @keywords internal
 makeObjectClassCodaMCMC <- function (chain, start = 1, end = numeric(0), thin = 1){
   attr(chain, "mcpar") <- c(start, end, thin)
   attr(chain, "class") <- "mcmc"

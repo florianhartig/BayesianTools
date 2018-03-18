@@ -21,3 +21,4 @@ A simple custom histogram plotting function
 \author{
 Tankred Ott
 }
+\keyword{internal}

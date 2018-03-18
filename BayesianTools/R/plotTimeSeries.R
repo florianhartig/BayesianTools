@@ -26,15 +26,13 @@ plotTimeSeries <- function(observed = NULL, predicted = NULL, x = NULL, confiden
   
   len = length(x)
   
-  plot(x, ylim = ylim, type = "n", xlab = xlab, ylab = ylab, ...)
+  plot(x, y = rep(0, len), ylim = ylim, type = "n", xlab = xlab, ylab = ylab, ...)
   
-  if(!is.null(predictionBand)) polygon(c(1:len,len:1),c(predictionBand[1,],predictionBand[2,len:1]),col="moccasin",border=NA)
-  
-  if(!is.null(confidenceBand)) polygon(c(1:len,len:1),c(confidenceBand[1,],confidenceBand[2,len:1]),col="#99333380",border=NA)    
+  if(!is.null(predictionBand)) polygon(c(x,rev(x)),c(predictionBand[1,],predictionBand[2,len:1]),col="moccasin",border=NA)
+  if(!is.null(confidenceBand)) polygon(c(x,rev(x)),c(confidenceBand[1,],confidenceBand[2,len:1]),col="#99333380",border=NA)    
     
-  if(!is.null(predicted)) lines(predicted, col = "red")
-  if(!is.null(observed)) points(observed, col = "black", pch = 3, cex = 0.6)
-  
+  if(!is.null(predicted)) lines(x, predicted, col = "red")
+  if(!is.null(observed)) points(x, observed, col = "black", pch = 3, cex = 0.6)
 }
 
 
@@ -60,8 +58,8 @@ plotTimeSeriesResiduals <- function(residuals, x = NULL, main = "residuals"){
 #' @author Florian Hartig
 #' @param sampler Either a) a matrix b) an MCMC object (list or not), or c) an SMC object
 #' @param model function that calculates model predictions for a given parameter vector
-#' @param observed observed values
-#' @param error function with signature f(mean, par) that generates error expectations from mean model predictions. Par is a vector from the matrix with the parameter samples (full length). f needs to know which of these parameters are parameters of the error function
+#' @param observed observed values as vector
+#' @param error function with signature f(mean, par) that generates observations with error (error = stochasticity according to what is assumed in the likelihood) from mean model predictions. Par is a vector from the matrix with the parameter samples (full length). f needs to know which of these parameters are parameters of the error function. See example in \code{\link{VSEM}}
 #' @param start numeric start value for the plot (see \code{\link{getSample}})
 #' @param plotResiduals logical determining whether residuals should be plotted
 #' @param prior if a prior sampler is implemented, setting this parameter to TRUE will draw model parameters from the prior instead of the posterior distribution
@@ -73,6 +71,8 @@ plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotRe
   if (plotResiduals == TRUE && is.null(error)) {
     warning("Can not plot residuals without an error function.")
   }
+  
+  if(!is.vector(observed)) stop("wrong type given to observed. Must be a vector")
   
   if (plotResiduals == TRUE && !is.null(error)) {
     layout(matrix(c(1, 1, 1, 2, 3, 4), 2, 3, byrow = TRUE))
@@ -119,15 +119,19 @@ plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotRe
                             observed = observed,
                             error = error,
                             plot = FALSE)
+    
+    
     # qq-plot
     gap::qqunif(dh$scaledResiduals, pch=2, bty="n", logscale = F, col = "black", cex = 0.6, main = "QQ plot residuals", cex.main = 1)
     
     # residuals vs fitted
-    DHARMa::plotResiduals(dh$fittedPredictedResponse, dh$scaledResiduals, main = "Residual vs. predicted\n quantile lines should be\n horizontal lines at 0.25, 0.5, 0.75", cex.main = 1, xlab = "Predicted value", ylab = "Standardized residual")
+    noNa <- which(!is.na(dh$scaledResiduals))
+    
+    DHARMa::plotResiduals(dh$fittedPredictedResponse[noNa], dh$scaledResiduals[noNa], main = "Residual vs. predicted\n quantile lines should be\n horizontal lines at 0.25, 0.5, 0.75", cex.main = 1, xlab = "Predicted value", ylab = "Standardized residual")
     
     # residuals vs time
-    t <- 1:length(dh$fittedPredictedResponse)
-    DHARMa::plotResiduals(t, dh$scaledResiduals, xlab = "Time", ylab = "Standardized residual", main = "Residual vs. time\n quantile lines should be\n horizontal lines at 0.25, 0.5, 0.75", cex.main = 1)
+    t <- 1:length(dh$fittedPredictedResponse[noNa])
+    DHARMa::plotResiduals(t, dh$scaledResiduals[noNa], xlab = "Time", ylab = "Standardized residual", main = "Residual vs. time\n quantile lines should be\n horizontal lines at 0.25, 0.5, 0.75", cex.main = 1)
     
     message("DHARMa::plotTimeSeriesResults called with posterior predictive (residual) diagnostics. Type vignette(\"DHARMa\", package=\"DHARMa\") for a guide on how to interpret these plots")
 

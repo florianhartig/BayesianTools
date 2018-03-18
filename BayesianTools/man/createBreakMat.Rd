@@ -19,3 +19,4 @@ A function for use with plotHist. Creates a matrix representing breaks of a hist
 \author{
 Tankred Ott
 }
+\keyword{internal}
