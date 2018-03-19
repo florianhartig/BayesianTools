@@ -22,11 +22,11 @@ Convenience function to create a beta prior
 This creates a beta prior, assuming that lower / upper values for parameters are are fixed. The beta is the calculated relative to this lower / upper space.
 }
 \note{
-for details see \code{\link{createPrior}}
+for details see \code{\link{createPriorGeneric}}
 }
 \seealso{
 \code{\link{createPriorDensity}} \cr
-         \code{\link{createPrior}} \cr
+         \code{\link{createPriorGeneric}} \cr
          \code{\link{createTruncatedNormalPrior}} \cr
          \code{\link{createUniformPrior}} \cr
          \code{\link{createBayesianSetup}} \cr

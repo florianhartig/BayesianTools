@@ -19,7 +19,7 @@ createTruncatedNormalPrior(mean, sd, lower, upper)
 Convenience function to create a truncated normal prior
 }
 \note{
-for details see \code{\link{createPrior}}
+for details see \code{\link{createPriorGeneric}}
 }
 \examples{
 prior <- createTruncatedNormalPrior(c(0,0),c(0.4,5), lower = c(-2,-2), upper = c(1,1))
@@ -29,7 +29,7 @@ prior$sampler()
 }
 \seealso{
 \code{\link{createPriorDensity}} \cr
-         \code{\link{createPrior}} \cr
+         \code{\link{createPriorGeneric}} \cr
          \code{\link{createBetaPrior}} \cr
          \code{\link{createUniformPrior}} \cr
          \code{\link{createBayesianSetup}} \cr

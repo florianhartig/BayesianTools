@@ -12,7 +12,7 @@ createBayesianSetup(likelihood, prior = NULL, priorSampler = NULL,
 \arguments{
 \item{likelihood}{log likelihood density function}
 
-\item{prior}{either a prior class (see \code{\link{createPrior}}) or a log prior density}
+\item{prior}{either a prior class (see \code{\link{createPrior}}) or a log prior density. If instance of prior, lower and upper will be ignored.}
 
 \item{priorSampler}{if a prior density (and not a prior class) is provided to prior, the optional prior sampling function can be provided here}
 

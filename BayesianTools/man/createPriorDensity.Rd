@@ -47,7 +47,7 @@ out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 
 }
 \seealso{
-\code{\link{createPrior}} \cr
+\code{\link{createPriorGeneric}} \cr
          \code{\link{createBetaPrior}} \cr
          \code{\link{createTruncatedNormalPrior}} \cr
          \code{\link{createUniformPrior}} \cr

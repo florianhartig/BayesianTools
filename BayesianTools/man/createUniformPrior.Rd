@@ -17,7 +17,7 @@ createUniformPrior(lower, upper, best = NULL)
 Convenience function to create a simple uniform prior distribution
 }
 \note{
-for details see \code{\link{createPrior}}
+for details see \code{\link{createPriorGeneric}}
 }
 \examples{
 set.seed(1)
@@ -46,7 +46,12 @@ ll <- function(x) sum(dnorm(x, log = TRUE))
 setup <- createBayesianSetup(prior = prior, likelihood = ll)
 }
 \seealso{
-\code{\link{createPriorDensity}}, \code{\link{createPrior}}, \code{\link{createBetaPrior}}, \code{\link{createTruncatedNormalPrior}}, \code{\link{createBayesianSetup}}
+\code{\link{createPriorGeneric}}\cr
+         \code{\link{createPriorDensity}}\cr
+         \code{\link{createPrior}}\cr
+         \code{\link{createBetaPrior}}\cr
+         \code{\link{createTruncatedNormalPrior}}\cr
+         \code{\link{createBayesianSetup}}
 }
 \author{
 Florian Hartig
