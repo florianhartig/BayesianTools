@@ -1,7 +1,7 @@
 #' Creates a standardized collection of prior, likelihood and posterior functions, including error checks etc.
 #' @author Florian Hartig
 #' @param likelihood log likelihood density function
-#' @param prior either a prior class (see \code{\link{createPrior}}) or a log prior density
+#' @param prior either a prior class (see \code{\link{createPrior}}) or a log prior density. If instance of prior, lower and upper will be ignored.
 #' @param priorSampler if a prior density (and not a prior class) is provided to prior, the optional prior sampling function can be provided here
 #' @param lower vector with lower prior limits
 #' @param upper vector with upper prior limits
@@ -41,29 +41,47 @@ createBayesianSetup <- function(likelihood,
   model <- NULL
   
   
-   if(is.null(upper) && is.null(lower) && is.null(prior)) stop("Either boundaries or prior density and prior sampler must be provided.")
+  if(is.null(upper) && is.null(lower) && is.null(prior)) stop("Either boundaries or prior density and prior sampler must be provided.")
   
   
   if(is.null(parallelOptions)) parallelOptions <- list(variables = "all", packages = "all", dlls = "all")
   
   # PRIOR CHECKS
+  # if(inherits(prior,"bayesianOutput")){
+  #   priorClass = createPriorDensity(prior, lower = lower, upper = upper, best = best)
+  # } else if(! "prior" %in% class(prior)){
+  #   if(is.null(prior) & !is.null(lower) & !is.null(upper)){
+  #     priorClass = createUniformPrior(lower = lower,upper = upper, best = best)
+  #   }else if(is.null(prior) || class(prior) == "function"){
+  #     priorClass = createPrior(density = prior, sampler = priorSampler, lower = lower, upper = upper, best)
+  #   }else{
+  #     stop("wrong input in prior")
+  #   }
+  # } else{
+  #   priorClass = prior 
+  #   if("function" != class(prior)){
+  #   if( !is.null(lower) & !is.null(prior$lower)) warning("Boundary values provided in prior and Bayesiansetup, the latter will be ignored")
+  #   if( !is.null(upper) & !is.null(prior$upper)) warning("Boundary values provided in prior and Bayesiansetup, the latter will be ignored")
+  # }
+  # }
   if(inherits(prior,"bayesianOutput")){
     priorClass = createPriorDensity(prior, lower = lower, upper = upper, best = best)
+  # prior is not of class prior
   } else if(! "prior" %in% class(prior)){
     if(is.null(prior) & !is.null(lower) & !is.null(upper)){
-      priorClass = createUniformPrior(lower = lower,upper = upper, best = best)
+      priorClass = createUniformPrior(lower = lower, upper = upper, best = best)
     }else if(is.null(prior) || class(prior) == "function"){
-      priorClass = createPrior(density = prior, sampler = priorSampler, lower = lower, upper = upper, best)
+      priorClass = createPrior(density = prior, sampler = priorSampler, best = best)
     }else{
       stop("wrong input in prior")
     }
-  } else{
-    priorClass = prior 
-    if("function" != class(prior)){
-    if( !is.null(lower) & !is.null(prior$lower)) warning("Boundary values provided in prior and Bayesiansetup, the latter will be ignored")
-    if( !is.null(upper) & !is.null(prior$upper)) warning("Boundary values provided in prior and Bayesiansetup, the latter will be ignored")
+  # prior is of class prior
+  } else {
+    priorClass = prior
+    if (!is.null(upper) || !is.null(lower)) warning("'prior' is object of class prior. lower and upper will be ignored. If you want to specify upper and lower bounds for a prior object you need to implement them in the sampler function.")
   }
-  }
+
+
   
   if(! "likelihood" %in% class(likelihood)){
     if(class(likelihood) == "function"){

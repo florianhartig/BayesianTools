@@ -95,7 +95,7 @@ createPriorGeneric <- function(density = NULL, sampler = NULL, lower = NULL, upp
     }
   }
   else parallelSampler = function(n = NULL){
-   stop("Attept to call the sampling function of the prior, although this function has not been provided in the Bayesian setup. A likely cause of this error is that you use a function or sampling algorithm that tries to sample from the prior. Either change the settings of your function, or provide a sampling function in your BayesianSetup (see ?createBayesianSetup, and ?createPriorGeneric)") 
+   stop("Attept to call the sampling function of the prior, although this function has not been provided in the Bayesian setup. A likely cause of this error is that you use a function or sampling algorithm that tries to sample from the prior. Either change the settings of your function, or provide a sampling function in your BayesianSetup (see ?createBayesianSetup, ?createPrior, and ?createPriorGeneric)") 
   }
   
 
