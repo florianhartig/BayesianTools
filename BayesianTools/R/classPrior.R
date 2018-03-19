@@ -1,3 +1,22 @@
+#' Creates an object of class prior
+#' @author Tankred Ott
+#' @param density Prior density
+#' @param sampler Sampling function for density (optional)
+#' @param best vector with "best" parameter values
+#' @details This is the general prior generator. It is highly recommended to not only implement the density, but also the sampler function. If this is not done, the user will have to provide explicit starting values for many of the MCMC samplers. Note the existing, more specialized prior function. If your prior can be created by those, they are preferred. Note also that priors can be created from an existing MCMC output from BT, or another MCMC sample, via \code{\link{createPriorDensity}}. 
+#' @export
+#' @seealso \code{\link{createPriorGeneric}} \cr
+#'          \code{\link{createPriorDensity}} \cr
+#'          \code{\link{createBetaPrior}} \cr
+#'          \code{\link{createUniformPrior}} \cr
+#'          \code{\link{createTruncatedNormalPrior}}\cr
+#'          \code{\link{createBayesianSetup}}\cr
+#' @example /inst/examples/createPriorHelp.R
+createPrior <- function(density = NULL, sampler = NULL, best = NULL) {
+  createPriorGeneric(density = density, sampler = sampler, best = best)
+}
+
+
 #' Creates a standardized prior class
 #' @author Florian Hartig
 #' @param density Prior density
@@ -13,8 +32,8 @@
 #'          \code{\link{createUniformPrior}} \cr
 #'          \code{\link{createTruncatedNormalPrior}}\cr
 #'          \code{\link{createBayesianSetup}}\cr
-#' @example /inst/examples/createPrior.R
-createPrior <- function(density = NULL, sampler = NULL, lower = NULL, upper = NULL, best = NULL){
+#' @example /inst/examples/createPriorGenericHelp.R
+createPriorGeneric <- function(density = NULL, sampler = NULL, lower = NULL, upper = NULL, best = NULL){
   
   # case density is a Bayesian Posterior
   if(inherits(density,"bayesianOutput")) return(createPriorDensity(density, lower = lower, upper = upper, best = best))
@@ -76,7 +95,7 @@ createPrior <- function(density = NULL, sampler = NULL, lower = NULL, upper = NU
     }
   }
   else parallelSampler = function(n = NULL){
-   stop("Attept to call the sampling function of the prior, although this function has not been provided in the Bayesian setup. A likely cause of this error is that you use a function or sampling algorithm that tries to sample from the prior. Either change the settings of your function, or provide a sampling function in your BayesianSetup (see ?createBayesianSetup, and ?createPrior)") 
+   stop("Attept to call the sampling function of the prior, although this function has not been provided in the Bayesian setup. A likely cause of this error is that you use a function or sampling algorithm that tries to sample from the prior. Either change the settings of your function, or provide a sampling function in your BayesianSetup (see ?createBayesianSetup, and ?createPriorGeneric)") 
   }
   
 
@@ -92,8 +111,13 @@ createPrior <- function(density = NULL, sampler = NULL, lower = NULL, upper = NU
 #' @param lower vector of lower prior range for all parameters
 #' @param upper vector of upper prior range for all parameters
 #' @param best vector with "best" values for all parameters
-#' @note for details see \code{\link{createPrior}}
-#' @seealso \code{\link{createPriorDensity}}, \code{\link{createPrior}}, \code{\link{createBetaPrior}}, \code{\link{createTruncatedNormalPrior}}, \code{\link{createBayesianSetup}} 
+#' @note for details see \code{\link{createPriorGeneric}}
+#' @seealso \code{\link{createPriorGeneric}}\cr
+#'          \code{\link{createPriorDensity}}\cr
+#'          \code{\link{createPrior}}\cr
+#'          \code{\link{createBetaPrior}}\cr
+#'          \code{\link{createTruncatedNormalPrior}}\cr
+#'          \code{\link{createBayesianSetup}} 
 #' @example /inst/examples/createUniformPriorHelp.R
 #' @export
 createUniformPrior<- function(lower, upper, best = NULL){
@@ -104,7 +128,7 @@ createUniformPrior<- function(lower, upper, best = NULL){
   }
   sampler <- function() runif(len, lower, upper)
   
-  out <- createPrior(density = density, sampler = sampler, lower = lower, upper = upper, best = best)
+  out <- createPriorGeneric(density = density, sampler = sampler, lower = lower, upper = upper, best = best)
   return(out)
 }
 
@@ -115,9 +139,9 @@ createUniformPrior<- function(lower, upper, best = NULL){
 #' @param sd sdandard deviation
 #' @param lower vector of lower prior range for all parameters
 #' @param upper vector of upper prior range for all parameters
-#' @note for details see \code{\link{createPrior}}
+#' @note for details see \code{\link{createPriorGeneric}}
 #' @seealso \code{\link{createPriorDensity}} \cr
-#'          \code{\link{createPrior}} \cr
+#'          \code{\link{createPriorGeneric}} \cr
 #'          \code{\link{createBetaPrior}} \cr
 #'          \code{\link{createUniformPrior}} \cr
 #'          \code{\link{createBayesianSetup}} \cr
@@ -133,7 +157,7 @@ createTruncatedNormalPrior<- function(mean, sd, lower, upper){
   sampler <- function(){
     msm::rtnorm(n = length(mean), mean = mean, sd = sd, lower = lower, upper = upper)
   }
-  out <- createPrior(density = density, sampler = sampler, lower = lower, upper = upper)
+  out <- createPriorGeneric(density = density, sampler = sampler, lower = lower, upper = upper)
   return(out)
 }
 
@@ -144,10 +168,10 @@ createTruncatedNormalPrior<- function(mean, sd, lower, upper){
 #' @param b shape2 of the beta distribution 
 #' @param upper upper values for the parameters
 #' @param lower lower values for the parameters
-#' @note for details see \code{\link{createPrior}}
+#' @note for details see \code{\link{createPriorGeneric}}
 #' @details This creates a beta prior, assuming that lower / upper values for parameters are are fixed. The beta is the calculated relative to this lower / upper space. 
 #' @seealso \code{\link{createPriorDensity}} \cr
-#'          \code{\link{createPrior}} \cr
+#'          \code{\link{createPriorGeneric}} \cr
 #'          \code{\link{createTruncatedNormalPrior}} \cr
 #'          \code{\link{createUniformPrior}} \cr
 #'          \code{\link{createBayesianSetup}} \cr
@@ -166,7 +190,7 @@ createBetaPrior<- function(a, b, lower=0, upper=1){
     out = (out * range) + lower
     return(out)
   }
-  out <- createPrior(density = density, sampler = sampler, lower = lower, upper = upper)
+  out <- createPriorGeneric(density = density, sampler = sampler, lower = lower, upper = upper)
   return(out)
 }
 
@@ -181,7 +205,7 @@ createBetaPrior<- function(a, b, lower=0, upper=1){
 #' @param upper vector with upper bounds of parameter for the new prior, independent of the input sample
 #' @param best vector with "best" values of parameter for the new prior, independent of the input sample
 #' @param ... parameters to pass on to the getSample function
-#' @seealso \code{\link{createPrior}} \cr
+#' @seealso \code{\link{createPriorGeneric}} \cr
 #'          \code{\link{createBetaPrior}} \cr
 #'          \code{\link{createTruncatedNormalPrior}} \cr
 #'          \code{\link{createUniformPrior}} \cr
@@ -209,7 +233,7 @@ createPriorDensity <- function(sampler, method = "multivariate", eps = 1e-10, lo
       return(par)
     }
 
-    out <- createPrior(density = density, sampler = sampler, lower = lower, upper = upper, best = best)
+    out <- createPriorGeneric(density = density, sampler = sampler, lower = lower, upper = upper, best = best)
     return(out)
   }
 }

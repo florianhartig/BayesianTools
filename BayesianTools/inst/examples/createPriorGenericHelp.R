@@ -14,8 +14,8 @@ sampler = function(n=1){
   return(cbind(d1,d2))
 }
 
-prior <- createPrior(density = density, sampler = sampler, 
-                     lower = c(-3,-3), upper = c(3,3), best = NULL)
+prior <- createPriorGeneric(density = density, sampler = sampler, 
+                            lower = c(-3,-3), upper = c(3,3), best = NULL)
 
 
 # Use this prior in an MCMC 
