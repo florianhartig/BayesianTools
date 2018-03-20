@@ -48,7 +48,7 @@ DEzs(bayesianSetup, settings = list(iterations = 10000, Z = NULL, startValue =
 Differential-Evolution MCMC zs
 }
 \details{
-For parallel computing FUN needs to take a matrix of proposals
+For parallel computing, the likelihood density in the bayesianSetup needs to be parallelized, i.e. needs to be able to operate on a matrix of proposals
 
 For blockUpdate the first element in the list determines the type of blocking.
 Possible choices are
