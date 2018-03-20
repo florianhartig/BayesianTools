@@ -26,15 +26,13 @@ plotTimeSeries <- function(observed = NULL, predicted = NULL, x = NULL, confiden
   
   len = length(x)
   
-  plot(x, ylim = ylim, type = "n", xlab = xlab, ylab = ylab, ...)
+  plot(x, y = rep(0, len), ylim = ylim, type = "n", xlab = xlab, ylab = ylab, ...)
   
-  if(!is.null(predictionBand)) polygon(c(1:len,len:1),c(predictionBand[1,],predictionBand[2,len:1]),col="moccasin",border=NA)
-  
-  if(!is.null(confidenceBand)) polygon(c(1:len,len:1),c(confidenceBand[1,],confidenceBand[2,len:1]),col="#99333380",border=NA)    
+  if(!is.null(predictionBand)) polygon(c(x,rev(x)),c(predictionBand[1,],predictionBand[2,len:1]),col="moccasin",border=NA)
+  if(!is.null(confidenceBand)) polygon(c(x,rev(x)),c(confidenceBand[1,],confidenceBand[2,len:1]),col="#99333380",border=NA)    
     
-  if(!is.null(predicted)) lines(predicted, col = "red")
-  if(!is.null(observed)) points(observed, col = "black", pch = 3, cex = 0.6)
-  
+  if(!is.null(predicted)) lines(x, predicted, col = "red")
+  if(!is.null(observed)) points(x, observed, col = "black", pch = 3, cex = 0.6)
 }
 
 

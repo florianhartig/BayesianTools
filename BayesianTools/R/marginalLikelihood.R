@@ -14,19 +14,15 @@
 #' @param numSamples number of samples to use. How this works, and if it requires recalculating the likelihood, depends on the method
 #' @param method method to choose. Currently available are "Chib" (default), the harmonic mean "HM", sampling from the prior "prior", and bridge sampling "Bridge". See details
 #' @param ... further arguments passed to \code{\link{getSample}}
-#' @details The function currently implements four ways to calculate the marginal likelihood.\cr
-#'  The recommended way is the method "Chib" (Chib and Jeliazkov, 2001). which is based on MCMC samples, but performs additional calculations. 
-#'  Despite being the current recommendation, note there are some numeric issues with this algorithm that may limit reliability for larger dimensions.
+#' @details The function currently implements four ways to calculate the marginal likelihood. The recommended (and default) method is the method "Chib" (Chib and Jeliazkov, 2001), which is based on MCMC samples, but performs additional calculations. Despite being the current recommendation, note there are some numeric issues with this algorithm that may limit reliability for larger dimensions.
 #'   
-#'  The harmonic mean approximation,
-#'   is implemented only for comparison. Note that the method is numerically 
-#'   unrealiable and usually should not be used. \cr
+#'  The harmonic mean approximation, is implemented only for comparison. Note that the method is numerically unrealiable and usually should not be used. \cr
 #' 
-#' The third method is simply sampling from the prior. While in principle unbiased,
-#'  it will only converge for a large number of samples, and is therefore
-#'   numerically inefficient. \cr
+#' The third method is simply sampling from the prior. While in principle unbiased, it will only converge for a large number of samples, and is therefore numerically inefficient. \cr
 #' 
 #' The Bridge method uses bridge sampling as implemented in the R package "bridgesampling". 
+#' 
+#' @note Be aware that marginal likelihood calculations are notoriously prone to numerical stability issues. Especially in high-dimensional parameter spaces, there is no guarantee that any of the implemented algorithms will converge reasonably fast.
 #'    
 #' @example /inst/examples/marginalLikelihoodHelp.R
 #' @references Chib, Siddhartha, and Ivan Jeliazkov. "Marginal likelihood from the Metropolis-Hastings output." Journal of the American Statistical Association 96.453 (2001): 270-281.
@@ -89,6 +85,8 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     
   } else if (method == "HM"){
     
+    warning("The Harmonic Mean estimator is notoriously unstable. It's only implemented for comparison. We strongly advice against using it for research!")
+    
     chain <- getSample(sampler = sampler, parametersOnly = F, ...)
     lik <- chain[, setup$numPars + 2]
     ml <- log(1 / mean(1 / exp(lik)))
@@ -110,7 +108,7 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     nParams <- setup$numPars
     lower <- setup$prior$lower
     upper <- setup$prior$upper
-
+    
     out <- list(ln.ML = bridgesample(chain, nParams, lower, upper)$logml, method ="Bridge")
     
   } else if ("NN") {
@@ -122,8 +120,6 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
   } else {
     stop(paste(c("\"", method, "\" is not a valid method parameter!"), sep = " ", collapse = ""))
   }
-  
-  warning("Note to the user: be aware that marginal likelihood calculations are notoriously prone to numerical stability issues. Especially in high-dimensional parameter spaces, there is no guarantee that the algorithms implemented in this function converge in all cases. Proceed at your own risk!")
   
   return(out)
 }  

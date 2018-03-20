@@ -1,41 +1,39 @@
-# Harmonic mean works OK for a low-dim case with 
+# Low dimensional case with narrow priors - all methods have low error
 
-likelihood <- function(x) sum(dnorm(x, log = TRUE))
+# we use a truncated normal for the likelihood to make sure that the density 
+# integrates to 1 - makes it easier to calcuate the theoretical ML
+likelihood <- function(x) sum(msm::dtnorm(x, log = TRUE, lower = -1, upper = 1))
 prior = createUniformPrior(lower = rep(-1,2), upper = rep(1,2))
 bayesianSetup <- createBayesianSetup(likelihood = likelihood, prior = prior)
 out = runMCMC(bayesianSetup = bayesianSetup, settings = list(iterations = 5000))
 
-plot(out)
+# plot(out)
+
+# theoretical value
+theory = log(1/(2^2))
+
+marginalLikelihood(out)$ln.ML - theory
+marginalLikelihood(out, method = "Prior", numSamples =  500)$ln.ML - theory
+marginalLikelihood(out, method = "HM", numSamples =  500)$ln.ML - theory
+marginalLikelihood(out, method = "Bridge", numSamples =  500)$ln.ML - theory
 
 
-marginalLikelihood(out, numSamples = 500)[[1]]
-marginalLikelihood(out, method = "HM", numSamples = 500)[[1]]
-marginalLikelihood(out, method = "Prior", numSamples =  500)[[1]]
-marginalLikelihood(out, method = "Bridge", numSamples =  500)[[1]]
+# higher dimensions - wide prior - HM and bridge don't work.
 
-# True marginal likelihood (brute force approximation)
-
-marginalLikelihood(out, method = "Prior", numSamples =  10000)[[1]]
-
-
-# Harmonic mean goes totally wrong for higher dimensions - wide prior.
-# Same goes for standard bridge sampling.
-# Could also be a problem of numeric stability of the implementation
-
-likelihood <- function(x) sum(dnorm(x, log = TRUE))
+likelihood <- function(x) sum(msm::dtnorm(x, log = TRUE, lower = -10, upper = 10))
 prior = createUniformPrior(lower = rep(-10,3), upper = rep(10,3))
 bayesianSetup <- createBayesianSetup(likelihood = likelihood, prior = prior)
 out = runMCMC(bayesianSetup = bayesianSetup, settings = list(iterations = 5000))
 
-plot(out)
+# plot(out)
 
-marginalLikelihood(out, numSamples = 500)[[1]]
-marginalLikelihood(out, method = "HM", numSamples = 500)[[1]]
-marginalLikelihood(out, method = "Prior", numSamples =  500)[[1]]
-marginalLikelihood(out, method = "Bridge", numSamples =  500)[[1]]
+# theoretical value
+theory = log(1/(20^3))
 
-# True marginal likelihood (brute force approximation)
+marginalLikelihood(out)$ln.ML - theory
+marginalLikelihood(out, method = "Prior", numSamples =  500)$ln.ML - theory
+marginalLikelihood(out, method = "HM", numSamples =  500)$ln.ML - theory
+marginalLikelihood(out, method = "Bridge", numSamples =  500)$ln.ML - theory
 
-marginalLikelihood(out, method = "Prior", numSamples =  10000)[[1]]
 
 
