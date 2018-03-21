@@ -9,9 +9,7 @@
 #' @param plotPSRF calculate and plot mPSRF/PSRF or not, default = T 
 #' @param plotDIC calculate and plot DICor not, default = T 
 #' @param plotTrace show trace plots or not, default = T
-#' @param lty line typ
-#' @param lwd line width
-#' @param graphicParameters graphic parameters as list for plot functions
+#' @param graphicParameters graphic parameters as list for plot function
 #' @param ... parameters to give to getSample
 #' @example /inst/examples/plotDiagnosticHelp.R
 #' @export
