@@ -8,6 +8,6 @@ bayesianSetup <- createBayesianSetup(likelihood = testDensityNormal,
 out = runMCMC(bayesianSetup = bayesianSetup)
 
 # diagnostic plots
-
+\dontrun{
 plotDiagnostic(out)
-
+}
