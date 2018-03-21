@@ -1,6 +1,6 @@
 #' @author Maximilian Pichler
 #' @title Diagnostic Plot
-#' @describeIn This function plots the DIC, WAIC, mPSRF, PSRF(with upper C.I.) and traces of the parameters in dependence of iterations. DIC, WAIC are plotted separately for the chains and the trace plots also for the internal chains.
+#' @description  This function plots the DIC, WAIC, mPSRF, PSRF(with upper C.I.) and traces of the parameters in dependence of iterations. DIC, WAIC are plotted separately for the chains and the trace plots also for the internal chains.
 #' @param out object of class "bayesianOutput"
 #' @param start start value for showing DIC, WAIC, mPSRF and PSRF, default = 50
 #' @param plotWAIC whether to calculate WAIC or not, default = T
