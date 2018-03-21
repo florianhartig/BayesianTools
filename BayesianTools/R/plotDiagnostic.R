@@ -103,7 +103,7 @@ plotDiagnostic <- function(out, lty = 1, lwd = 1, start = 50, numSamples = 10, p
   if(plotDIC)  nrPlots <- nrPlots + 1
   if(plotPSRF) nrPlots <- nrPlots + 2
   if(plotTrace) nrPlots<- numPars*2 + nrPlots
-  par(mfrow = n2mfrow(nrPlots))
+  par(mfrow = getPanels(nrPlots))
   
   
   
@@ -149,8 +149,8 @@ plotDiagnostic <- function(out, lty = 1, lwd = 1, start = 50, numSamples = 10, p
     plotSeqP <- which(seq > start, arr.ind = T)
     plot(ylim = c(min(PSRF[plotSeqP, 1:(ncol(PSRF) - 1)]), max(PSRF[plotSeqP, c(seq(1, numPars*2,2))])*1.1), x = 0, xlim = c(min(plotSeqP), max(plotSeqP)),  lty = lty, lwd = lwd, type = "l", main = "PSRF", xlab = "Iterations", ylab = "")
     for(i in 1:numPars){
-      lines(y = PSRF[plotSeqP, i*2 - 1], x = plotSeqP, lty = lty, lwd = lwd, col = rainbow(numPars)[i]) # PSRF
-      lines(y = PSRF[plotSeqP, i*2],  x = plotSeqP, lty = 3, lwd = 0.7, col = rainbow(numPars)[i]) # C.I.
+      lines(y = PSRF[plotSeqP, i*2 - 1], x = plotSeqP, lty = lty, lwd = lwd, col = i) # PSRF
+      lines(y = PSRF[plotSeqP, i*2],  x = plotSeqP, lty = 3, lwd = 0.7, col = i) # C.I.
     }
   }
     # plot parameter traces
