@@ -2,19 +2,23 @@
 #' @title Diagnostic Plot
 #' @description  This function plots the DIC, WAIC, mPSRF, PSRF(with upper C.I.) and traces of the parameters in dependence of iterations. DIC, WAIC are plotted separately for the chains and the trace plots also for the internal chains.
 #' @param out object of class "bayesianOutput"
-#' @param start start value for showing DIC, WAIC, mPSRF and PSRF, default = 50
+#' @param start start value for calculating DIC, WAIC, mPSRF and PSRF, default = 50
+#' @param numSamples for calculating WAIC, default = 10 because of high computational costs
+#' @param window plot range to show, vector of percents or only one value as start value for the window
 #' @param plotWAIC whether to calculate WAIC or not, default = T
 #' @param plotPSRF calculate and plot mPSRF/PSRF or not, default = T 
 #' @param plotDIC calculate and plot DICor not, default = T 
 #' @param plotTrace show trace plots or not, default = T
 #' @param lty line typ
 #' @param lwd line width
-#' @param numSamples for calculating WAIC, default = 10 because of high computational cost
+#' @param graphicParameters graphic parameters as list for plot functions
+#' @param ... parameters to give to getSample
 #' @example /inst/examples/plotDiagnosticHelp.R
 #' @export
 
 
-plotDiagnostic <- function(out, lty = 1, lwd = 1, start = 50, numSamples = 10, plotWAIC = T, plotPSRF = T, plotDIC = T, plotTrace = T){
+
+plotDiagnostic <- function(out, start = 50, numSamples = 100, window = 0.2, plotWAIC = F, plotPSRF = T, plotDIC = T, plotTrace = T, graphicParameters = NULL, ...){
   
   oldpar = NULL
   on.exit(par(oldpar))
@@ -32,7 +36,7 @@ plotDiagnostic <- function(out, lty = 1, lwd = 1, start = 50, numSamples = 10, p
   if(!plotWAIC) calcWaic <- FALSE
   
   
-  
+  defaultGraphicParameters <- graphicParameters
   
   
   # calculate DIC and WAIC, minimum range: start - start+1
@@ -40,34 +44,38 @@ plotDiagnostic <- function(out, lty = 1, lwd = 1, start = 50, numSamples = 10, p
 
     if(is.matrix(out[[1]]$chain)) len <- out[[1]]$settings$iterations
     else len <- round(out[[1]]$settings$iterations / length(out[[1]]$chain))
+    
+    start = start + 1
+    
+    lenW <- length(seq(start , by = 10, to = len))
 
-    lenW <- length(seq(2 , by = 10, to = len))
+    DICResult <- matrix(NA, nrow = length(out), ncol = len - start)
 
-    DICResult <- matrix(NA, nrow = length(out), ncol = len - 2)
-
-    WAICResult<- matrix(NA, nrow = length(out), ncol = length(seq(2 , by = 10, to = len)))
+    WAICResult<- matrix(NA, nrow = length(out), ncol = length(seq(start , by = 10, to = len)))
 
     numPars   <- out[[1]]$setup$numPars
     
-    Wseq <- seq(2 , by = 10, to = len)
+    Wseq <- seq(start , by = 10, to = len)
 
     for(i in 1:length(out)) {
-      if(plotDIC) DICResult[i,] <- sapply(2:len, FUN = function(x){return(DIC(out[[i]], end = x)$DIC)})
-      if(calcWAIC) WAICResult[i,] <- sapply(seq(2 , by = 10, to = len), FUN = function(x){return(WAIC(out[[i]], end = x, numSamples = numSamples )$WAIC1)})
+      if(plotDIC) DICResult[i,] <- sapply(start:len, FUN = function(x){return(DIC(out[[i]], start = start - 1 , end = x, ...)$DIC)})
+      if(calcWAIC) WAICResult[i,] <- sapply(seq(start , by = 10, to = len), FUN = function(x){return(WAIC(out[[i]], start = start - 1 ,end = x, numSamples = numSamples, ...)$WAIC1)})
     }
     
   } else {
     if(is.matrix(out$chain)) len <- out$settings$iterations
     
     else len <- round(out$settings$iterations / length(out$chain))
-
-    lenW<- length(seq(2, by = 10, to = len))
     
-    Wseq <- seq(2 , by = 10, to = len)
+    start = start + 1
+    
+    lenW<- length(seq(start, by = 10, to = len))
+    
+    Wseq <- seq(start , by = 10, to = len)
 
-    if(plotDIC) DICResult <- sapply(2:len, FUN = function(x){return(DIC(out,  end = x)$DIC)})
+    if(plotDIC) DICResult <- sapply(start:len, FUN = function(x){return(DIC(out, start = start - 1, end = x, ...)$DIC)})
 
-    if(calcWAIC) WAICResult<- sapply(seq(2, by = 10, to = len), FUN = function(x){return(WAIC(out, end = x, numSamples = numSamples )$WAIC1)})
+    if(calcWAIC) WAICResult<- sapply(seq(start, by = 10, to = len), FUN = function(x){return(WAIC(out, end = x, start = start - 1, numSamples = numSamples, ...)$WAIC1)})
 
     numPars   <- out$setup$numPars
   }
@@ -77,9 +85,10 @@ plotDiagnostic <- function(out, lty = 1, lwd = 1, start = 50, numSamples = 10, p
   
   # calc mPSRF, first checking which low values we could calculate
   if(plotPSRF){
+    
     seq <- vector()
-    for(i in 2:len){
-      success <- try(coda::gelman.diag(getSample(out, parametersOnly = T, coda = T,  end = i))$mpsrf, silent = T)
+    for(i in start:len){
+      success <- try(coda::gelman.diag(getSample(out, start = start - 1, parametersOnly = T, coda = T,  end = i, ...))$mpsrf, silent = T)
       if(!"try-error" %in% class(success)){
         # break
         seq[i] <- i
@@ -91,14 +100,14 @@ plotDiagnostic <- function(out, lty = 1, lwd = 1, start = 50, numSamples = 10, p
     PSRF <- matrix(0, nrow = length(seq), ncol = numPars*2 + 1)
   
     for(i in 1:length(seq)){ 
-      res <- coda::gelman.diag(getSample(out, parametersOnly = T, coda = T,  end = seq[i]))
+      res <- coda::gelman.diag(getSample(out, start = start - 1, parametersOnly = T, coda = T, end = seq[i], ...))
       PSRF[i,] <- c(res$psrf[1,], res$psrf[2,], res$mpsrf)
     }
   }
   
   
   # Get number of plots
-  nrPlots <- 1
+  nrPlots <- 2
   if(calcWAIC) nrPlots <- nrPlots + 1
   if(plotDIC)  nrPlots <- nrPlots + 1
   if(plotPSRF) nrPlots <- nrPlots + 2
@@ -108,52 +117,120 @@ plotDiagnostic <- function(out, lty = 1, lwd = 1, start = 50, numSamples = 10, p
   
   
   
+  # set graphicParameters
+  if(is.null(graphicParameters)){
+    graphicParameters = list(lty = 1, lwd = 1, type = "l", xlab = "Iterations", ylab = "", col = 1:6)
+  } else {
+    if(is.null(graphicParameters$lty)) graphicParameters$lty = 1
+    if(is.null(graphicParameters$lwd)) graphicParameters$lwd = 1
+    if(is.null(graphicParameters$type)) graphicParameters$type = "l"
+    if(is.null(graphicParameters$xlab)) graphicParameters$xlab = "Iterations"
+    if(is.null(graphicParameters$ylab)) graphicParameters$ylab = ""
+    if(is.null(graphicParameters$col)) graphicParameters$col = 1:6
+  }
+  
+
+  
   # plot DIC
   if(plotDIC){
     
+    
     if(is.matrix(DICResult)){
-      col <- 1:ncol(DICResult)
-      matplot(y = DICResult[start:nrow(DICResult),], x = start:nrow(?plot?ploDICResult),   lty =  lty, lwd = lwd, type = "l", main = "DIC", xlab = "Iterations", ylab = "", col = col)
-      
-    }else{
-      col <- "red"
-      
-      plot(y = DICResult[start:length(DICResult)], x = start:length(DICResult),  lty =  lty, lwd = lwd, type = "l", main = "DIC", xlab = "Iterations", ylab = "", col = "red")
+      # col <- 1:ncol(DICResult)
+      if(is.na(window[2])) endV <- nrow(DICResult)
+      else endV <- window[2]*nrow(DICResult)
+      startV <- window[1]*nrow(DICResult)
+      x = nrow(DICResult)
+      ylim = c(min(DICResult[startV:endV,])*0.99, max(DICResult[startV:endV,])*1.01)
+    } else {
+      if(is.na(window[2])) endV <- length(DICResult)
+      else endV <- window[2]*length(DICResult)
+      startV <- window[1]*length(DICResult)
+      x = length(DICResult)
+      ylim = c(min(DICResult[startV:endV])*0.99, max(DICResult[startV:endV])*1.01)
     }
+      graphicParameters$y = DICResult
+      graphicParameters$x = 1:x
+      graphicParameters$main = "DIC"
+      graphicParameters$xlim = c(startV, endV)
+      graphicParameters$ylim = ylim
+      do.call(matplot, graphicParameters)
   }
   
   
   # plot WAIC
   if(calcWAIC){
-    
-    plotSeq <- which(Wseq > start, arr.ind = T)
-    
     if(is.matrix(WAICResult)){
-      col <- 1:ncol(WAICResult)
-      matplot(y = WAICResult[plotSeq,],x = plotSeq,lty =  lty, lwd = lwd, type = "l", main = "WAIC", xlab = "Iterations", ylab = "", col = col, xaxt = "n")
-      axis(1, at = plotSeq[seq(1, by = 10, to = length(plotSeq))], labels = plotSeq[seq(1, by = 10, to = length(plotSeq))]*10)
+      # col <- 1:ncol(DICResult)
+      if(is.na(window[2])) endV <- nrow(WAICResult)
+      else endV <- window[2]*nrow(WAICResult)
+      startV <- window[1]*nrow(WAICResult)
+      x = nrow(WAICResult)
+      ylim = c(min(WAICResult[startV:endV,])*0.99, max(WAICResult[startV:endV,])*1.01)
     } else {
-      plot(y = WAICResult[plotSeq],x = plotSeq,lty =  lty, lwd = lwd, type = "l", main = "WAIC", xlab = "Iterations", ylab = "", col = "red", xaxt = "n")
-      axis(1, at = plotSeq[seq(1, by = 10, to = length(plotSeq))], labels = plotSeq[seq(1, by = 10, to = length(plotSeq))]*10)
+      if(is.na(window[2])) endV <- length(WAICResult)
+      else endV <- window[2]*length(WAICResult)
+      startV <- window[1]*length(WAICResult)
+      x = length(WAICResult)
+      ylim = c(min(WAICResult[startV:endV])*0.99, max(WAICResult[startV:endV])*1.01)
     }
-    
-    
+    graphicParameters$y = WAICResult
+    graphicParameters$x = 1:x
+    graphicParameters$main = "WAIC"
+    graphicParameters$xlim = c(startV, endV)
+    graphicParameters$ylim = ylim
+    if(is.null(graphicParameters$xaxt)) graphicParameters$xaxt = "n" 
+    do.call(matplot, graphicParameters)
+    if(graphicParameters$xaxt == "n" ){
+      axis(1, at = seq(startV, by = 10, to = endV), labels = seq(startV, by = 10, to = endV)*10)
+      graphicParameters$xaxt <- NULL
+    }
     
   }
   
-  # plot mPSRF
+
   if(plotPSRF){
-    if(!typeof(seq) == "logical" ) plot(y = PSRF[start:nrow(PSRF),ncol(PSRF)], x = start:nrow(PSRF),lty =  lty, lwd = lwd, type = "l", main = "mPSRF", xlab = "Iterations", ylab = "" )
-    
-    # plot PSRF
-    plotSeqP <- which(seq > start, arr.ind = T)
-    plot(ylim = c(min(PSRF[plotSeqP, 1:(ncol(PSRF) - 1)]), max(PSRF[plotSeqP, c(seq(1, numPars*2,2))])*1.1), x = 0, xlim = c(min(plotSeqP), max(plotSeqP)),  lty = lty, lwd = lwd, type = "l", main = "PSRF", xlab = "Iterations", ylab = "")
-    for(i in 1:numPars){
-      lines(y = PSRF[plotSeqP, i*2 - 1], x = plotSeqP, lty = lty, lwd = lwd, col = i) # PSRF
-      lines(y = PSRF[plotSeqP, i*2],  x = plotSeqP, lty = 3, lwd = 0.7, col = i) # C.I.
+    if(is.na(window[2])) endV <- nrow(PSRF)
+    else endV <- window[2]*nrow(PSRF)
+    startV <- window[1]*nrow(PSRF)
+    graphicParameters$xlim = c(startV, endV)
+    graphicParameters$x = 1:nrow(PSRF)
+    # plot mPSRF
+    if(!typeof(seq) == "logical" ) {
+      
+      graphicParameters$ylim = c(min(PSRF[startV:endV,ncol(PSRF)])*0.99, max(PSRF[startV:endV,ncol(PSRF)])*1.01)
+      graphicParameters$y = PSRF[,ncol(PSRF)]
+      graphicParameters$main = "mPSRF"
+      do.call(plot, graphicParameters)
     }
+    
+    graphicParameters$ylim = c(min(PSRF[startV:endV,-ncol(PSRF)])*0.99, max(PSRF[startV:endV,-ncol(PSRF)])*1.01)
+    graphicParameters$y = PSRF[,-ncol(PSRF)]
+    graphicParameters$main = "PSRF"
+    
+    lty = NULL
+    for(i in 1:numPars)lty <- c(lty, c(i,i))
+    graphicParameters$lty <- lty
+    
+    col = NULL
+    for(i in 1:6)col <- c(col, c(i,i))
+    graphicParameters$col <- col
+    
+    do.call(matplot, graphicParameters)
+   
   }
     # plot parameter traces
-  if(plotTrace) coda::cumuplot(getSample(out, coda = T, parametersOnly = T), ask = F, auto.layout = F)
+  if(plotTrace){
+    # if(is.null(defaultGraphicParameters)) defaultGraphicParameters <- list()
+    # if(is.na(window[2])) endV <- len
+    # else endV <- window[2]*len
+    # defaultGraphicParameters$xlim <- c(len*window[1], endV)
+    # defaultGraphicParameters$ask = F
+    # defaultGraphicParameters$auto.layout = F
+    # defaultGraphicParameters$x = getSample(out, start = start, coda = T, parametersOnly = T,...)
+    # do.call(coda::cumuplot, defaultGraphicParameters)
+    
+    coda::cumuplot(getSample(out, start = start, coda = T, parametersOnly = T, ...), ask = F, auto.layout = F)
+  }
 }
 
