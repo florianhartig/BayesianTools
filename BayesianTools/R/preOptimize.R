@@ -2,9 +2,9 @@ p = createPrior(function(x) sum(dnorm(x, 0, 50, TRUE)), function(n=1) rnorm(n, 0
 ll = function(x) sum(dnorm(x, 3, 2, TRUE))
 bs = createBayesianSetup(ll, p)
 
-p = createPrior(function(x) sum(mvtnorm::dmvnorm(x, c(0,0,0), diag(3) * c(100, 100, 100)), TRUE),
+p = createPrior(function(x) sum(mvtnorm::dmvnorm(x, c(0,0,0), diag(3) * c(100, 100, 100), TRUE)),
                 function(n=1) mvtnorm::rmvnorm(n, c(0,0,0), diag(3) * c(100, 100, 100)))
-ll = function(x) sum(mvtnorm::dmvnorm(x, c(4, 2, 7), diag(3) * c(4, 2, 15)))
+ll = function(x) sum(mvtnorm::dmvnorm(x, c(4, 2, 7), diag(3) * c(5, 2, 15), TRUE))
 bs = createBayesianSetup(ll, p)
 
 preOptimize = function(bayesianSetup) {
@@ -27,8 +27,26 @@ preOptimize = function(bayesianSetup) {
 }
 
 preOpt = preOptimize(bs)
+
+# Metropolis needs one startValue
+# and a covariance matrix
 # negative inverse of the hessian is (asymptotic) covariance matrix
 Matrix::nearPD(-MASS::ginv(numDeriv::hessian(target, preOpt$par)))$mat
+
+
+# DE needs npar * 3 start values
+npar = bs$numPars
+x = bs$prior$sampler(npar * 3)
+
+startVals = apply(x, 1, optim, fn = target, hessian = F, control=list("fnscale" = -1, alpha = 2, beta = 0.7, gamma = 3.0), method="Nelder-Mead")
+t(sapply(startVals, function(optResult) optResult$par, simplify = "matrix"))
+
+# DEzs needs npar * 3 start values
+# and a npar * 10 z matrix
+
+
+
+
 
 
 
