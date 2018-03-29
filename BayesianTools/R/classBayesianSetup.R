@@ -11,6 +11,7 @@
 #' @param parallelOptions list containing three lists. First "packages" determines the R packages necessary to run the likelihood function. Second "variables" the objects in the global envirnment needed to run the likelihood function and third "dlls" the DLLs needed to run the likelihood function (see Details and Examples). 
 #' @param catchDuplicates Logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns. 
 #' @details If lower and upper (and optionally best) but not a prior object are passed, the function will create an uniform prior with the limits lower and upper. If a prior object and lower and upper are passed, the function will ignore lower and upper, and will only use the prior object.
+#' @param preAdapt Should a pre-adaptation for the MCMCs be performed. Options are FALSE (no pre-adaptation), TRUE (default pre-adapation), or a list with options. Details see
 #' @details For parallelization, option T means that an automatic parallelization via R is attempted, or "external", in which case it is assumed that the likelihood is already parallelized. In this case it needs to accept a matrix with parameters as columns.
 #' Further you can specify the packages, objects and DLLs that are exported to the cluster. 
 #' By default a copy of your workspace is exported. However, depending on your workspace this can be very inefficient.
@@ -35,7 +36,9 @@ createBayesianSetup <- function(likelihood,
                                 best = NULL, 
                                 names = NULL, 
                                 parallelOptions = list(variables = "all", packages = "all", dlls = NULL), 
-                                catchDuplicates = FALSE){
+                                catchDuplicates = FALSE,
+                                preAdapt = FALSE
+                                ){
   
   # TODO implement parameter "model" (function that makes predictions from the model)
   model <- NULL
