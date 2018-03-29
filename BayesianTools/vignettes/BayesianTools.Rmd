@@ -207,7 +207,7 @@ likelihood <- function(matrix){
 }
 
 ## Create Bayesian Setup
-BS <- createBayesianSetup(likelihood, parallel = "external" ...)
+BS <- createBayesianSetup(likelihood, parallel = "external", ...)
 
 ## Run MCMC
 runMCMC(BS, sampler = "SMC", ...)

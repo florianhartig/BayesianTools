@@ -17,13 +17,13 @@ library(pkgdown)
 
 setwd("BayesianTools")
 
-sink("_pkgdown.yml")
+sink("../_pkgdown.yml")
 template_navbar(".")
 template_reference(".")
 template_articles(".")
 sink()
 
-if (!dir.exists("./docs")) dir.create("docs")
-build_site()
+if (!dir.exists("../docs")) dir.create("docs")
+build_site(path = "../docs")
 
 setwd("..")
