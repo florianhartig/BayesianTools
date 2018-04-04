@@ -9,7 +9,7 @@
 #' 
 #' The samplers "AM", "DR", and "DRAM" are special cases of the "Metropolis" sampler and are shortcuts for predefined settings ("AM": adapt=TRUE; "DR": DRlevels=2; "DRAM": adapt=True, DRlevels=2).
 #' 
-#' The settings list allows to change the settings for the MCMC samplers and some other options. For the MCMC sampler settings, see their help files. Global options that apply for all MCMC samplers are: iterations (number of MCMC iterations), previousAsDefault (only possible in case of restart if old settings should be new defaults, can be set to TRUE) and nrChains (number of chains to run). Note that running several chains is not done in parallel, so if time is an issue it will be better to run the MCMCs individually and then combine them via \code{\link{createMcmcSamplerList}} into one joint object. 
+#' The settings list allows to change the settings for the MCMC samplers and some other options. For the MCMC sampler settings, see their help files. Global options that apply for all MCMC samplers are: iterations (number of MCMC iterations), and nrChains (number of chains to run). Note that running several chains is not done in parallel, so if time is an issue it will be better to run the MCMCs individually and then combine them via \code{\link{createMcmcSamplerList}} into one joint object. 
 #' 
 #' 
 #' Startvalues: all samplers allow to provide explicit startvalues. If startvalues are not provided, they are sampled from the prior. Usually, this is a good choice, so don't feel compelled to provide startvalues. 
@@ -55,21 +55,14 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
     # Set settings$sampler (only needed if new settings are supplied)
     settings$sampler <- sampler
     
+    # overwrite new settings
+    for(name in names(settings)) previousSettings[[name]] <- settings[[name]]
+    
+    settings <- previousSettings
+    
     # Check if previous settings will be new default
     
-    if(!is.null(settings[["previousAsDefault"]])){
-      if(settings[["previousAsDefault"]]){
-        settings[["previousAsDefault"]] <- NULL
-        settings <- applySettingsDefault(settings = settings, sampler = settings$sampler, customDefaults = previousSettings, check = TRUE)
-      }
-      else {
-        settings[["previousAsDefault"]] <- NULL
-        settings <- applySettingsDefault(settings = settings, sampler = settings$sampler, check = TRUE)
-      }
-    } else settings <- applySettingsDefault(settings = settings, sampler = settings$sampler, check = TRUE)
-    
-    
-    # previousMcmcSampler$settings <- settings doesnt work we need the Metroplis Function
+    previousMcmcSampler$settings <- applySettingsDefault(settings = settings, sampler = settings$sampler, check = TRUE)
     
     restart <- TRUE
 
@@ -129,8 +122,7 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
         mcmcSampler <- Metropolis(bayesianSetup = setup, settings = settings)
         mcmcSampler <- sampleMetropolis(mcmcSampler = mcmcSampler, iterations = settings$iterations)
       } else {
-        updatedMcmcSampler <- Metropolis(bayesianSetup = previousMcmcSampler$setup, settings = settings)
-        mcmcSampler        <- sampleMetropolis(mcmcSampler = updatedMcmcSampler, iterations = settings$iterations) 
+        mcmcSampler <- sampleMetropolis(mcmcSampler = previousMcmcSampler, iterations = settings$iterations) 
       }
     }
     
@@ -253,20 +245,11 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
 #' @param settings optional list with parameters that will be used instead of the defaults
 #' @param sampler one of the samplers in \code{\link{runMCMC}} 
 #' @param check logical determines whether parameters should be checked for consistency
-#' @param customDefaults in case of restart, settings of previous sampler can be set as default for new run
 #' @details see \code{\link{runMCMC}} 
 #' @export
-applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE, customDefaults = NULL){
+applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   
   if(is.null(settings)) settings = list()
-  
-  if(!is.null(customDefaults)){
-    # check first if customDefaults are complete
-    customDefaults <- applySettingsDefault(settings = customDefaults, sampler = customDefaults$sampler)
-    # overwrite new settings
-    for(name in names(settings)) customDefaults[[name]] <- settings[[name]]
-    settings <- customDefaults
-  }
   
   if(!is.null(sampler)){
     if(!is.null(settings$sampler)) {
