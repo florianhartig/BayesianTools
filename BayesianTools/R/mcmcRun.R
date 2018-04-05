@@ -43,20 +43,30 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
       if(is.null(settings)) settings <- previousMcmcSampler$settings
       setup <- previousMcmcSampler$setup
       sampler <- previousMcmcSampler$settings$sampler
+      previousSettings <- previousMcmcSampler$settings
     } else{ 
       if(is.null(settings)) settings <- previousMcmcSampler[[1]]$settings
       settings$nrChains <- length(previousMcmcSampler)
       setup <- previousMcmcSampler[[1]]$setup
       sampler <- previousMcmcSampler[[1]]$settings$sampler
+      previousSettings <- previousMcmcSampler[[1]]$settings
     }
     
     # Set settings$sampler (only needed if new settings are supplied)
     settings$sampler <- sampler
     
-    settings <- applySettingsDefault(settings = settings, sampler = settings$sampler, check = TRUE)
+    # overwrite new settings
+    for(name in names(settings)) previousSettings[[name]] <- settings[[name]]
+    
+    settings <- previousSettings
+    
+    # Check if previous settings will be new default
+    
+    previousMcmcSampler$settings <- applySettingsDefault(settings = settings, sampler = settings$sampler, check = TRUE)
     
     restart <- TRUE
 
+    
   ## NOT RESTART STARTS HERE ###################
     
   }else{
@@ -112,7 +122,7 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
         mcmcSampler <- Metropolis(bayesianSetup = setup, settings = settings)
         mcmcSampler <- sampleMetropolis(mcmcSampler = mcmcSampler, iterations = settings$iterations)
       } else {
-        mcmcSampler<- sampleMetropolis(mcmcSampler = previousMcmcSampler, iterations = settings$iterations) 
+        mcmcSampler <- sampleMetropolis(mcmcSampler = previousMcmcSampler, iterations = settings$iterations) 
       }
     }
     
