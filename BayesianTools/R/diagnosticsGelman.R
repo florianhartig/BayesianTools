@@ -17,7 +17,8 @@ gelmanDiagnostics <- function(sampler, thin = "auto", plot = F, ...){
   sample = getSample(sampler, coda = T, ...)
   if(! ("mcmc.list" == class(sample))) stop("Trying to apply gelmanDiagnostics to an object that doesn't return an mcmc.list. Make sure you have a sampler that runs several chains, or an mcmcSamlerList")
   diag = coda::gelman.diag(sample)
-  if(plot == T) coda::gelman.plot(sample)
+  gP <- function(...,start, end, parametersOnly, coda, numSamples, whichParameters, includesProbabilities, reportDiagnostics, thin, plot, sampler) coda::gelman.plot(sample, ...)
+  if(plot == T) do.call(gP, as.list(match.call()))
   return(diag)
 }
 
