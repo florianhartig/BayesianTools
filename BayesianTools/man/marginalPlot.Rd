@@ -5,9 +5,10 @@
 \title{Plot MCMC marginals}
 \usage{
 marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
-  histogram = TRUE, plotPrior = TRUE, priorTop = FALSE,
+  histogram = FALSE, plotPrior = TRUE, priorTop = FALSE,
   nDrawsPrior = 1000, breaks = 15, res = 500, singlePanel = FALSE,
-  dens = TRUE, col = c("#FF5000D0", "#4682B4A0"), lwd = par("lwd"), ...)
+  dens = TRUE, col = c("#FF5000C0", "#4682B4A0"), lwd = par("lwd"),
+  densityOnly = TRUE, ...)
 }
 \arguments{
 \item{mat}{object of class "bayesianOutput" or a matrix or data frame of variables}
@@ -37,6 +38,8 @@ marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
 \item{col}{vector of colors for posterior and prior}
 
 \item{lwd}{line width of the violin plots}
+
+\item{densityOnly}{Logical, determining whether only density should be plotted (default)}
 
 \item{...}{additional parameters to pass on to the \code{\link{getSample}}}
 }
