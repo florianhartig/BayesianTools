@@ -1,6 +1,9 @@
 testthat::context("Test marginalPlot")
 
 testMarginalPlot <- function (x) {
+  testthat::expect_error(marginalPlot(x, singlePanel = T), NA)
+  testthat::expect_error(marginalPlot(x, singlePanel = F), NA)
+  
   testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = T, singlePanel = F), NA)
   testthat::expect_error(marginalPlot(x, scale = T, histogram = T, plotPrior = T, singlePanel = F), NA)
   
