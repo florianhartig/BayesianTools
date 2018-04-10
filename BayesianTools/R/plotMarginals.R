@@ -48,13 +48,17 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
   
   if(inherits(mat,"bayesianOutput")){
     if(("mcmcSamplerList" %in% class(mat)) || ("smcSamplerList" %in% class(mat))) {
-      lower <- mat[[1]]$setup$prior$lower
-      upper <- mat[[1]]$setup$prior$upper
-      if (best) best <- mat[[1]]$setup$prior$best
+      # lower <- mat[[1]]$setup$prior$lower
+      # upper <- mat[[1]]$setup$prior$upper
+      lower <- mat[[1]]$setup$info$plotLower
+      upper <- mat[[1]]$setup$info$plotUpper
+      if (best) best <- mat[[1]]$setup$info$plotBest
     } else if (("mcmcSampler" %in% class(mat)) || ("smcSampler" %in% class(mat))) {
-      lower <- mat$setup$prior$lower
-      upper <- mat$setup$prior$upper
-      if (best) best <- mat$setup$prior$best
+      # lower <- mat$setup$prior$lower
+      # upper <- mat$setup$prior$upper
+      lower <- mat$setup$info$plotLower
+      upper <- mat$setup$info$plotUpper
+      if (best) best <- mat$setup$info$plotBest
     }
     if(is.logical(scale)){
       if(scale == TRUE & !is.null(lower) & !is.null(upper)) scale = cbind(lower, upper)

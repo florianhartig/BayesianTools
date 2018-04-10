@@ -45,7 +45,7 @@ mod <- function(par, t1 = 1, tn = 365) {
 # the true parameters
 par1 <- 1.65
 par2 <- 0.75
-yObs <- mod(c(par1, par2)) + rnorm(length(y), 0, 2)
+yObs <- mod(c(par1, par2)) + rnorm(length(x1), 0, 2)
 
 # split the time series in half
 plot(yObs ~ t)

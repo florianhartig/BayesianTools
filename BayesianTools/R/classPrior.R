@@ -63,6 +63,13 @@ createPrior <- function(density = NULL, sampler = NULL, lower = NULL, upper = NU
   }
   
   # Check and parallelize the sampler
+  # if no sampler is passed, but lower and upper, generate uniform sampler
+  if (is.null(sampler) && !is.null(lower) && !is.null(upper)) {
+    sampler <- function(n = 1) {
+      runif(n, lower, upper)
+    }
+  } 
+  
   if(!is.null(sampler)){
     npar <- length(sampler())
     parallelSampler <- function(n=NULL){
@@ -74,8 +81,7 @@ createPrior <- function(density = NULL, sampler = NULL, lower = NULL, upper = NU
       } 
       return(out)
     }
-  }
-  else parallelSampler = function(n = NULL){
+  } else parallelSampler = function(n = NULL){
    stop("Attept to call the sampling function of the prior, although this function has not been provided in the Bayesian setup. A likely cause of this error is that you use a function or sampling algorithm that tries to sample from the prior. Either change the settings of your function, or provide a sampling function in your BayesianSetup (see ?createBayesianSetup, and ?createPrior)") 
   }
   
