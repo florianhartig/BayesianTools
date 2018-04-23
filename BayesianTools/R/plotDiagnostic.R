@@ -27,11 +27,11 @@ plotDiagnostic <- function(out, start = 50, numSamples = 100, window = 0.2, plot
   
   calcWAIC <- TRUE
   
-  if("mcmcSamplerList" %in% class(out) && out[[1]]$setup$pwLikelihood) calcWaic <- FALSE
+  if("mcmcSamplerList" %in% class(out) && out[[1]]$setup$pwLikelihood) calcWAIC <- FALSE
   
-  if("mcmcSampler" %in% class(out) && out$setup$pwLikelihood)     calcWaic <- FALSE
+  if("mcmcSampler" %in% class(out) && out$setup$pwLikelihood)     calcWAIC <- FALSE
   
-  if(!plotWAIC) calcWaic <- FALSE
+  if(!plotWAIC) calcWAIC <- FALSE
   
   
   defaultGraphicParameters <- graphicParameters
@@ -42,6 +42,10 @@ plotDiagnostic <- function(out, start = 50, numSamples = 100, window = 0.2, plot
 
     if(is.matrix(out[[1]]$chain)) len <- out[[1]]$settings$iterations
     else len <- round(out[[1]]$settings$iterations / length(out[[1]]$chain))
+    
+    iter = out[[1]]$settings$iterations
+    
+    internal = length(out[[1]]$chain)
     
     start = start + 1
     
@@ -64,6 +68,10 @@ plotDiagnostic <- function(out, start = 50, numSamples = 100, window = 0.2, plot
     if(is.matrix(out$chain)) len <- out$settings$iterations
     
     else len <- round(out$settings$iterations / length(out$chain))
+    
+    internal = length(out$chain)
+    
+    iter = out$settings$iterations
     
     start = start + 1
     
@@ -95,11 +103,13 @@ plotDiagnostic <- function(out, start = 50, numSamples = 100, window = 0.2, plot
     seq <- seq[complete.cases(seq)]
     
     # calculate the actual PSRF values
-    PSRF <- matrix(0, nrow = length(seq), ncol = numPars*2 + 1)
+    if(numPars > 1) PSRF <- matrix(0, nrow = length(seq), ncol = numPars*2 + 1)
+    else PSRF <- matrix(0, nrow = length(seq), ncol = numPars*2 )
   
     for(i in 1:length(seq)){ 
       res <- coda::gelman.diag(getSample(out, start = start - 1, parametersOnly = T, coda = T, end = seq[i], ...))
-      PSRF[i,] <- c(res$psrf[1,], res$psrf[2,], res$mpsrf)
+      if(numPars > 1)PSRF[i,] <- c(as.vector(res$psrf), res$mpsrf)
+      else PSRF[i,] <- c(as.vector(res$psrf))
     }
   }
   
@@ -152,7 +162,12 @@ plotDiagnostic <- function(out, start = 50, numSamples = 100, window = 0.2, plot
       graphicParameters$main = "DIC"
       graphicParameters$xlim = c(startV, endV)
       graphicParameters$ylim = ylim
+      if(is.null(graphicParameters$xaxt)) graphicParameters$xaxt = "n" 
       do.call(matplot, graphicParameters)
+      if(graphicParameters$xaxt == "n" ){
+        axis(1, at = seq(startV, by = 100, to = endV), labels = seq(startV, by = 100, to = endV)*internal)
+        graphicParameters$xaxt <- NULL
+      }
   }
   
   
@@ -180,7 +195,7 @@ plotDiagnostic <- function(out, start = 50, numSamples = 100, window = 0.2, plot
     if(is.null(graphicParameters$xaxt)) graphicParameters$xaxt = "n" 
     do.call(matplot, graphicParameters)
     if(graphicParameters$xaxt == "n" ){
-      axis(1, at = seq(startV, by = 10, to = endV), labels = seq(startV, by = 10, to = endV)*10)
+      axis(1, at = seq(startV, by = 10, to = endV), labels = seq(startV, by = 10, to = endV)*10*internal)
       graphicParameters$xaxt <- NULL
     }
     
@@ -194,12 +209,14 @@ plotDiagnostic <- function(out, start = 50, numSamples = 100, window = 0.2, plot
     graphicParameters$xlim = c(startV, endV)
     graphicParameters$x = 1:nrow(PSRF)
     # plot mPSRF
-    if(!typeof(seq) == "logical" ) {
-      
-      graphicParameters$ylim = c(min(PSRF[startV:endV,ncol(PSRF)])*0.99, max(PSRF[startV:endV,ncol(PSRF)])*1.01)
-      graphicParameters$y = PSRF[,ncol(PSRF)]
-      graphicParameters$main = "mPSRF"
-      do.call(plot, graphicParameters)
+    if(numPars > 1){
+      if(!typeof(seq) == "logical" ) {
+        
+        graphicParameters$ylim = c(min(PSRF[startV:endV,ncol(PSRF)])*0.99, max(PSRF[startV:endV,ncol(PSRF)])*1.01)
+        graphicParameters$y = PSRF[,ncol(PSRF)]
+        graphicParameters$main = "mPSRF"
+        do.call(plot, graphicParameters)
+      }
     }
     
     graphicParameters$ylim = c(min(PSRF[startV:endV,-ncol(PSRF)])*0.99, max(PSRF[startV:endV,-ncol(PSRF)])*1.01)
@@ -207,7 +224,7 @@ plotDiagnostic <- function(out, start = 50, numSamples = 100, window = 0.2, plot
     graphicParameters$main = "PSRF"
     
     lty = NULL
-    for(i in 1:numPars)lty <- c(lty, c(i,i))
+    for(i in 1:numPars)lty <- c(lty, c(1,2))
     graphicParameters$lty <- lty
     
     col = NULL

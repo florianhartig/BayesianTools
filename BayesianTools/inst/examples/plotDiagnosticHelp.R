@@ -1,7 +1,7 @@
 # Create bayesian setup with  
 bayesianSetup <- createBayesianSetup(likelihood = testDensityNormal, 
-                                     prior = createUniformPrior(lower = rep(-10,2),
-                                                                upper = rep(10,2)))
+                                     prior = createUniformPrior(lower = -10,
+                                                                upper = 10))
 
 # running MCMC
 
