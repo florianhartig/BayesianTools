@@ -1,0 +1,127 @@
+---
+title: "Test and Comparisons of marginal likelihoods"
+author: "Max Pichler"
+date: "24 April 2018"
+output: html_document
+---
+
+```{r}
+library(BayesianTools)
+set.seed(1)
+```
+
+
+# 2-D with narrow priors
+```{r, results='hide'}
+
+likelihood <- function(x) sum(msm::dtnorm(x, log = TRUE, lower = -1, upper = 1))
+prior = createUniformPrior(lower = rep(-1,2), upper = rep(1,2))
+bayesianSetup <- createBayesianSetup(likelihood = likelihood, prior = prior)
+out = runMCMC(bayesianSetup = bayesianSetup, settings = list(iterations = 5000))
+
+theory = log(1/(2^2))
+
+Chib2D = marginalLikelihood(out, method = "Chib")$ln.ML - theory
+Prior2D = marginalLikelihood(out, method = "Prior", numSamples =  500)$ln.ML - theory
+HM2D = marginalLikelihood(out, method = "HM", numSamples =  500)$ln.ML - theory
+Bridge2D = marginalLikelihood(out, method = "Bridge", numSamples =  500)$ln.ML - theory
+
+twoD = data.frame(Chib2D, Prior2D, HM2D, Bridge2D)
+
+```
+
+# 3-D with wide priors
+```{r, results='hide'}
+likelihood <- function(x) sum(msm::dtnorm(x, log = TRUE, lower = -10, upper = 10))
+prior = createUniformPrior(lower = rep(-10,3), upper = rep(10,3))
+bayesianSetup <- createBayesianSetup(likelihood = likelihood, prior = prior)
+out = runMCMC(bayesianSetup = bayesianSetup, settings = list(iterations = 5000))
+
+
+theory = log(1/(20^3))
+
+Chib3D = marginalLikelihood(out, method = "Chib")$ln.ML - theory
+Prior3D = marginalLikelihood(out, method = "Prior", numSamples =  500)$ln.ML - theory
+HM3D = marginalLikelihood(out, method = "HM", numSamples =  500)$ln.ML - theory
+Bridge3D = marginalLikelihood(out, method = "Bridge", numSamples =  500)$ln.ML - theory
+
+threeD = data.frame(Chib3D, Prior3D, HM3D, Bridge3D)
+
+```
+
+# 10-D with wide priors
+```{r, results='hide'}
+likelihood <- function(x) sum(msm::dtnorm(x, log = TRUE, lower = -10, upper = 10))
+prior = createUniformPrior(lower = rep(-10,10), upper = rep(10,10))
+bayesianSetup <- createBayesianSetup(likelihood = likelihood, prior = prior)
+out = runMCMC(bayesianSetup = bayesianSetup, settings = list(iterations = 5000))
+
+
+theory = log(1/(20^10))
+
+Chib10D = marginalLikelihood(out, method = "Chib")$ln.ML - theory
+Prior10D = marginalLikelihood(out, method = "Prior", numSamples =  500)$ln.ML - theory
+HM10D = marginalLikelihood(out, method = "HM", numSamples =  500)$ln.ML - theory
+Bridge10D = marginalLikelihood(out, method = "Bridge", numSamples =  500)$ln.ML - theory
+
+tenD = data.frame(Chib10D, Prior10D, HM10D, Bridge10D)
+```
+
+## Results:
+```{r, echo = FALSE}
+results = cbind(t(twoD), t(threeD), t(tenD))
+colnames(results) = c("2-D narrow", "3-D wide", "10-D wide")
+knitr::kable(results, caption = "Deviation to theoretical calculated marginal likelihood ")
+
+```
+
+
+
+
+# VSEM 
+```{r, results='hide'}
+PAR <- VSEMcreatePAR(1:1000)
+
+refPars <- VSEMgetDefaults()
+refPars[12,] <- c(2, 0.1, 4) 
+rownames(refPars)[12] <- "error-sd"
+referenceData <- VSEM(refPars$best[1:11], PAR) 
+referenceData[,1] = 1000 * referenceData[,1] 
+obs <- referenceData + rnorm(length(referenceData), sd = refPars$best[12])
+parSel = c(1:6, 12)
+
+likelihood <- function(par, sum = TRUE){
+  x = refPars$best
+  x[parSel] = par
+  predicted <- VSEM(x[1:11], PAR) 
+  predicted[,1] = 1000 * predicted[,1] 
+  diff <- c(predicted[,1:4] - obs[,1:4]) 
+  llValues <- dnorm(diff, sd = x[12], log = TRUE)  
+  if (sum == FALSE) return(llValues)
+  else return(sum(llValues))
+}
+
+prior <- createUniformPrior(lower = refPars$lower[parSel], 
+                            upper = refPars$upper[parSel], best = refPars$best[parSel])
+
+bayesianSetup <- createBayesianSetup(likelihood, prior, names = rownames(refPars)[parSel])
+
+settings <- list(iterations = 10000, nrChains = 2)
+
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+
+C = marginalLikelihood(out)$ln.ML 
+P = marginalLikelihood(out, method = "Prior", numSamples =  1000)$ln.ML 
+H = marginalLikelihood(out, method = "HM", numSamples =  1000)$ln.ML
+B = marginalLikelihood(out, method = "Bridge", numSamples =  1000)$ln.ML 
+
+
+```
+```{r, echo = FALSE}
+result = rbind(C,P,H,B)
+rownames(result) = c("Chib", "Prior", "HM", "Bridge")
+colnames(result) = c("Marginal Likelihood")
+knitr::kable(result, caption = "Marginal Likelihood of VSEM")
+
+```
+
