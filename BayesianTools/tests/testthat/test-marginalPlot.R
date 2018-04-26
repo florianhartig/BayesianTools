@@ -4,30 +4,30 @@ testMarginalPlot <- function (x) {
   testthat::expect_error(marginalPlot(x, singlePanel = T), NA)
   testthat::expect_error(marginalPlot(x, singlePanel = F), NA)
   
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = T, singlePanel = F), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = T, plotPrior = T, singlePanel = F), NA)
+  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = T, singlePanel = F, densityOnly = F), NA)
+  testthat::expect_error(marginalPlot(x, scale = T, histogram = T, plotPrior = T, singlePanel = F, densityOnly = F), NA)
   
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = T, singlePanel = T), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = T, plotPrior = T, singlePanel = T), NA)
+  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = T, singlePanel = T, densityOnly = F), NA)
+  testthat::expect_error(marginalPlot(x, scale = T, histogram = T, plotPrior = T, singlePanel = T, densityOnly = F), NA)
   
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = F, singlePanel = F), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = T, plotPrior = F, singlePanel = F), NA)
+  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = F, singlePanel = F, densityOnly = F), NA)
+  testthat::expect_error(marginalPlot(x, scale = T, histogram = T, plotPrior = F, singlePanel = F, densityOnly = F), NA)
   
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = F, singlePanel = T), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = T, plotPrior = F, singlePanel = T), NA)
+  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = F, singlePanel = T, densityOnly = F), NA)
+  testthat::expect_error(marginalPlot(x, scale = T, histogram = T, plotPrior = F, singlePanel = T, densityOnly = F), NA)
   
   
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = T, singlePanel = F), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = F, plotPrior = T, singlePanel = F), NA)
+  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = T, singlePanel = F, densityOnly = F), NA)
+  testthat::expect_error(marginalPlot(x, scale = T, histogram = F, plotPrior = T, singlePanel = F, densityOnly = F), NA)
   
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = T, singlePanel = T), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = F, plotPrior = T, singlePanel = T), NA)
+  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = T, singlePanel = T, densityOnly = F), NA)
+  testthat::expect_error(marginalPlot(x, scale = T, histogram = F, plotPrior = T, singlePanel = T, densityOnly = F), NA)
   
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = F, singlePanel = F), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = F, plotPrior = F, singlePanel = F), NA)
+  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = F, singlePanel = F, densityOnly = F), NA)
+  testthat::expect_error(marginalPlot(x, scale = T, histogram = F, plotPrior = F, singlePanel = F, densityOnly = F), NA)
   
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = F, singlePanel = T), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = F, plotPrior = F, singlePanel = T), NA)
+  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = F, singlePanel = T, densityOnly = F), NA)
+  testthat::expect_error(marginalPlot(x, scale = T, histogram = F, plotPrior = F, singlePanel = T, densityOnly = F), NA)
 }
 
 

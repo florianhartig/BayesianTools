@@ -7,7 +7,7 @@
 marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
   histogram = FALSE, plotPrior = TRUE, priorTop = FALSE,
   nDrawsPrior = 1000, breaks = 15, res = 500, singlePanel = FALSE,
-  dens = TRUE, col = c("#FF5000C0", "#4682B4A0"), lwd = par("lwd"),
+  dens = TRUE, col = c("#FF5000A0", "#4682B4A0"), lwd = par("lwd"),
   densityOnly = TRUE, ...)
 }
 \arguments{

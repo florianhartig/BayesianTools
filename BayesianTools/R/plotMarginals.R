@@ -25,7 +25,7 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #'          \code{\link{correlationPlot}}
 #' @example /inst/examples/plotMarginals.R
 marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = TRUE, priorTop = FALSE,
-                         nDrawsPrior = 1000, breaks=15, res=500, singlePanel=FALSE, dens=TRUE, col=c("#FF5000C0","#4682B4A0"),
+                         nDrawsPrior = 1000, breaks=15, res=500, singlePanel=FALSE, dens=TRUE, col=c("#FF5000A0","#4682B4A0"),
                          lwd = par("lwd"), densityOnly = TRUE, ...){
   priorMat <- NULL
   
@@ -63,7 +63,7 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     if(is.logical(best)){
       if(best == TRUE & !is.null(best)) best = best
     } 
-    mat = getSample(mat, thin = thin)
+    mat = getSample(mat, thin = thin, ...)
   } else if ("matrix" %in% class(mat)) {
     if(scale==TRUE) scale <- t(apply(mat, 2, range))
   } else if ("mcmc.list" %in% class(mat) || "mcmc" %in% class(mat)) {
@@ -119,7 +119,7 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     if (singlePanel == TRUE) {
       main <- ""
       add <- TRUE
-      .at <- i
+      .at <- i -0.5
     } else {
       main <- names[i]
       add <- FALSE
@@ -127,7 +127,6 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     
     if (plotPrior) {
       if (densityOnly == TRUE) {
-        # TODO: implement
         dPrior <- density(priorMat[,i], n = res)
         xPrior <- dPrior$x
         yPrior <- dPrior$y
@@ -174,7 +173,24 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
         violinPlot(priorMat[,i], at = .at, .range = 0.475, add = T, col = col[2], relToAt = priorPos[1], which = priorPos[2], res=res, lwd = lwd)
       }
     } else {
-      if (histogram == TRUE) {
+      if (densityOnly == TRUE) {
+        dPosterior <- density(mat[,i], n = res)
+        xPosterior <- dPosterior$x
+        yPosterior <- dPosterior$y
+        
+        xlim <- range(xPosterior)
+        ylim <- range(yPosterior)
+        
+        if (singlePanel == TRUE) {
+          yPosterior <- rescale(yPosterior, ylim, c(0, 0.90)) + .at
+          
+        } else {
+          plot(NULL, xlim = xlim, ylim = ylim, main=main, ylab = "density", xlab = "values")
+        }
+        
+        polygon(c(xPosterior, xPosterior[1]), c(yPosterior, yPosterior[1]), col = col[1], lty = 0)
+        
+      } else if (histogram == TRUE) {
         histMarginal(x = list(mat[,i]), at = i, .range = 0.95, col = col[1], breaks = breaks, add = add,
                      main = main, dens = dens, res = res)
       } else {
