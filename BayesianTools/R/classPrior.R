@@ -223,6 +223,7 @@ createPriorDensity <- function(sampler, method = "multivariate", eps = 1e-10, lo
 
 
 #' @author Maximilian Pichler
+#' @method print prior
 #' @export
 
 print.prior <- function(prior,...){

@@ -183,6 +183,7 @@ stopParallel <- function(bayesianSetup){
 
 
 #' @author Maximilian Pichler
+#' @method print BayesianSetup
 #' @export
 
 print.BayesianSetup <- function(bayesianSetup,...){
