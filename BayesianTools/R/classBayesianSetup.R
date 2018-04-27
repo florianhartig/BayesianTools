@@ -185,7 +185,7 @@ stopParallel <- function(bayesianSetup){
 #' @author Maximilian Pichler
 #' @export
 
-print.BayesianSetup <- function(bayesianSetup){
+print.BayesianSetup <- function(bayesianSetup,...){
   cat('BayesianSetup: \n\n')
   
   info = c( "priorLower", "priorUpper", "plotLower", "plotUpper")
