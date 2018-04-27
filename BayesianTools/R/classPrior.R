@@ -221,3 +221,19 @@ createPriorDensity <- function(sampler, method = "multivariate", eps = 1e-10, lo
 }
 
 
+
+#' @author Maximilian Pichler
+#' @export
+
+print.prior <- function(prior){
+  cat('Prior: \n\n')
+  
+  info = c( "lower", "upper","best")
+  maxPar = nrow = max(length(prior$lower),length(prior$lupper))
+  priorInfo = data.frame(matrix(NA, ncol = 3, nrow = maxPar))
+  colnames(priorInfo) = info
+  for(i in 1:3) if(!is.null(prior[[info[i]]])) priorInfo[,i] <- prior[[info[i]]]
+  rownames(priorInfo) <- sapply(1:maxPar, FUN = function(x) return(paste("par",x)))
+  print(priorInfo)
+  
+}
