@@ -186,9 +186,10 @@ stopParallel <- function(bayesianSetup){
 #' @method print BayesianSetup
 #' @export
 
-print.BayesianSetup <- function(bayesianSetup,...){
+print.BayesianSetup <- function(x, ...){
   cat('BayesianSetup: \n\n')
   
+  bayesianSetup = x
   info = c( "priorLower", "priorUpper", "plotLower", "plotUpper")
   parInfo = data.frame(matrix(NA, ncol = 4, nrow = bayesianSetup$info$numPars))
   colnames(parInfo) = info
