@@ -180,3 +180,20 @@ stopParallel <- function(bayesianSetup){
   # .Internal(remove(deparse(substitute(bayesianSetup)), envir = envir, inherits = FALSE))
   
 }
+
+
+#' @author Maximilian Pichler
+#' @export
+
+print.BayesianSetup <- function(x, ...){
+  cat('BayesianSetup: \n\n')
+  
+  bayesianSetup = x
+  info = c( "priorLower", "priorUpper", "plotLower", "plotUpper")
+  parInfo = data.frame(matrix(NA, ncol = 4, nrow = bayesianSetup$info$numPars))
+  colnames(parInfo) = info
+  rownames(parInfo) = bayesianSetup$info$parNames
+  for(i in 1:4) if(!is.null(bayesianSetup$info[[info[i]]])) parInfo[,i] <- bayesianSetup$info[[info[i]]]
+  print(parInfo)
+  
+}
