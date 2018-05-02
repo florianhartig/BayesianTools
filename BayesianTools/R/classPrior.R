@@ -85,9 +85,20 @@ createPrior <- function(density = NULL, sampler = NULL, lower = NULL, upper = NU
    stop("Attept to call the sampling function of the prior, although this function has not been provided in the Bayesian setup. A likely cause of this error is that you use a function or sampling algorithm that tries to sample from the prior. Either change the settings of your function, or provide a sampling function in your BayesianSetup (see ?createBayesianSetup, and ?createPrior)") 
   }
   
+  checkPrior <- function(x = NULL, z = FALSE){
+    if(is.null(x)) x <- parallelSampler(1000)
+    if(is.function(x)) x <- x()
+    if(!is.matrix(x)) x <- parallelSampler(1000)
+    check <- parallelDensity(x)
+      if(any(is.infinite(check))) {
+        if(z) warning("Z matrix values outside prior range", call. = FALSE)
+        else warning("Start values outside prior range", call. = FALSE)
+      }
+  }
+  
 
   
-  out<- list(density = parallelDensity, sampler = parallelSampler, lower = lower, upper = upper, best = best, originalDensity = density)
+  out<- list(density = parallelDensity, sampler = parallelSampler, lower = lower, upper = upper, best = best, originalDensity = density, checkStart = checkPrior)
   class(out) <- "prior"
   return(out)
 }
