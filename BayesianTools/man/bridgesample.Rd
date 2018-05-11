@@ -54,7 +54,8 @@ sample <- getSample(out$chain, start = 250, numSamples = 500)
 bs_result <- bridgesample(chain = sample,
                           nParams = out$setup$numPars,
                           lower = lb,
-                          upper = ub)
+                          upper = ub,
+                          posterior = out$setup$posterior$density)
 bs_result
 }
 \seealso{
