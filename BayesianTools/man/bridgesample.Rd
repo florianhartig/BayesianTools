@@ -4,7 +4,7 @@
 \alias{bridgesample}
 \title{Calculates the marginal likelihood of a chain via bridge sampling}
 \usage{
-bridgesample(chain, nParams, lower = NULL, upper = NULL, ...)
+bridgesample(chain, nParams, lower = NULL, upper = NULL, posterior, ...)
 }
 \arguments{
 \item{chain}{a single mcmc chain with samples as rows and parameters and posterior density as columns.}
@@ -14,6 +14,8 @@ bridgesample(chain, nParams, lower = NULL, upper = NULL, ...)
 \item{lower}{optional - lower bounds of the prior}
 
 \item{upper}{optional - upper bounds of the prior}
+
+\item{posterior}{posterior density function}
 
 \item{...}{arguments passed to bridge_sampler}
 }
