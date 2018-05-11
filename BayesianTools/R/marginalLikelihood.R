@@ -34,8 +34,10 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
   setup <- NULL
   if ((class(sampler)[1] %in% c("mcmcSamplerList", "smcSamplerList"))) {
     setup <- sampler[[1]]$setup
+    posterior = sampler[[1]]$setup$posterior$density 
   } else {
     setup <- sampler$setup
+    posterior = sampler$setup$posterior$density 
   }
   
   
@@ -109,7 +111,6 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     lower <- setup$prior$lower
     upper <- setup$prior$upper
     
-    posterior = sampler$setup$posterior$density 
     
     out <- list(ln.ML = bridgesample(chain ,nParams, lower, upper, posterior)$logml, method ="Bridge")
     
