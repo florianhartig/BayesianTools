@@ -45,6 +45,9 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     
     out = list()
     
+    if(ceiling(numSamples/length(sampler$chain))*length(sampler$chain) > numSamples) warning("Due to internal chains, numSamples was rounded to the next number divisble by the number of chains.", call. = FALSE)
+    
+    
     for (i in 1:length(sampler$chain)){
       
       if(is.null(end)) end = nrow(sampler$chain[[1]])
