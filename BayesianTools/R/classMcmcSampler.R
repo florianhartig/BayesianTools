@@ -45,8 +45,6 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     
     out = list()
     
-    if(ceiling(numSamples/length(sampler$chain))*length(sampler$chain) > numSamples) warning("Due to internal chains, numSamples was rounded to the next number divisble by the number of chains.", call. = FALSE)
-    
     
     for (i in 1:length(sampler$chain)){
       
@@ -80,6 +78,10 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       # Sample size
       if(thin == 1 && !is.null(numSamples)){
         nSamplesPerChain <- ceiling(numSamples/length(sampler$chain))
+        
+        if(i == 1){
+         if(nSamplesPerChain*length(sampler$chain) > numSamples) warning("Due to internal chains, numSamples was rounded to the next number divisble by the number of chains.", call. = FALSE)
+        }
         
         temp <- sampleEquallySpaced(temp, nSamplesPerChain)
       }
