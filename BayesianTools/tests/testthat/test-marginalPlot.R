@@ -40,8 +40,8 @@ setup <- createBayesianSetup(ll, lower = c(-10,-10,-10), upper = c(10,10,10))
 settings <- list(iterations=10000)
 
 out <- runMCMC(setup)
-out_mat <- getSample(out, numSamples = 10000)
-out_coda <- getSample(out, numSamples = 10000, coda = T)
+out_mat <- suppressWarnings(getSample(out, numSamples = 10000))
+out_coda <- suppressWarnings(getSample(out, numSamples = 10000, coda = T))
 
 testthat::test_that("marginalPlot runs without throwing an error (bayesianOutput)", testMarginalPlot(out))
 testthat::test_that("marginalPlot runs without throwing an error (matrix)", testMarginalPlot(out_mat))
