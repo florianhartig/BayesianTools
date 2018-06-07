@@ -1,2 +1,3 @@
-dat = generateTestDensityMultiNormal(n = 100000, sample = TRUE)
+dat = generateTestDensityMultiNormal(sigma = "no correlation", sample = TRUE)
 correlationPlot(dat(100000))
+correlationPlot(dat(100000), scaleCorText = F)
