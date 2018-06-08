@@ -11,9 +11,9 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings =
 
 
 marginalPlot(out)
-marginalPlot(out, plotPrior = F)
-marginalPlot(out, histogram = T)
-marginalPlot(out, singlePanel = T, scale=T, col = c("red", "blue"))
+marginalPlot(out, plotPrior = FALSE)
+marginalPlot(out, histogram = TRUE)
+marginalPlot(out, singlePanel = TRUE, scale=TRUE, col = c("red", "blue"))
 
 
 
