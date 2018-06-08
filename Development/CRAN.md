@@ -1,5 +1,15 @@
 This file contains CRAN submission info / communication
 
+## Version 0.1.5
+
+This XXX. See NEWS for changes. 
+
+This release was tested without apparent problems under
+
+* local MAC OS 10.13.3, R 3.3.2
+* http://win-builder.r-project.org/ - oldrelease / devel / realease
+* Linux (Travis CI) - oldrel / release / devel
+
 
 ## Version 0.1.4
 
