@@ -17,15 +17,16 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #' @param dens Logical, determining wheter an density overlay should be plotted when 'histogram' is TRUE
 #' @param col vector of colors for posterior and prior
 #' @param lwd line width of the violin plots
+#' @param densityOnly Logical, determining whether only density should be plotted (default)
 #' @param ... additional parameters to pass on to the \code{\link{getSample}}
 #' @export
 #' @references 
 #'          \code{\link{tracePlot}} \cr
 #'          \code{\link{correlationPlot}}
 #' @example /inst/examples/plotMarginals.R
-marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = TRUE, plotPrior = TRUE, priorTop = FALSE,
-                         nDrawsPrior = 1000, breaks=15, res=500, singlePanel=FALSE, dens=TRUE, col=c("#FF5000D0","#4682B4A0"),
-                         lwd = par("lwd"), ...){
+marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = TRUE, priorTop = FALSE,
+                         nDrawsPrior = 1000, breaks=15, res=500, singlePanel=FALSE, dens=TRUE, col=c("#FF5000A0","#4682B4A0"),
+                         lwd = par("lwd"), densityOnly = TRUE, ...){
   priorMat <- NULL
   
   if ("MCMC" %in% class(mat) || "MCMC_refClass" %in% class(mat)) {
@@ -48,13 +49,13 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
   
   if(inherits(mat,"bayesianOutput")){
     if(("mcmcSamplerList" %in% class(mat)) || ("smcSamplerList" %in% class(mat))) {
-      lower <- mat[[1]]$setup$prior$lower
-      upper <- mat[[1]]$setup$prior$upper
-      if (best) best <- mat[[1]]$setup$prior$best
+      lower <- mat[[1]]$setup$info$plotLower
+      upper <- mat[[1]]$setup$info$plotUpper
+      if (best) best <- mat[[1]]$setup$info$plotBest
     } else if (("mcmcSampler" %in% class(mat)) || ("smcSampler" %in% class(mat))) {
-      lower <- mat$setup$prior$lower
-      upper <- mat$setup$prior$upper
-      if (best) best <- mat$setup$prior$best
+      lower <- mat$setup$info$plotLower
+      upper <- mat$setup$info$plotUpper
+      if (best) best <- mat$setup$info$plotBest
     }
     if(is.logical(scale)){
       if(scale == TRUE & !is.null(lower) & !is.null(upper)) scale = cbind(lower, upper)
@@ -62,7 +63,7 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     if(is.logical(best)){
       if(best == TRUE & !is.null(best)) best = best
     } 
-    mat = getSample(mat, thin = thin)
+    mat = getSample(mat, thin = thin, ...)
   } else if ("matrix" %in% class(mat)) {
     if(scale==TRUE) scale <- t(apply(mat, 2, range))
   } else if ("mcmc.list" %in% class(mat) || "mcmc" %in% class(mat)) {
@@ -78,7 +79,7 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
   
   numPars = ncol(mat)
   names = colnames(mat)
-
+  
   # TODO this is a hack to make the is.numeric(scale) below work for data.frame inputs, e.g. marginalPlot(out, scale = refPars[parSel, 2:3], best = refPars[parSel,1], start = 5000) . In general, the type conversion in this function should be cleaned up.
   if(is.data.frame(scale)) scale = as.matrix(scale)  
   
@@ -89,8 +90,9 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     if (plotPrior) priorMat <- scaleMatrix(priorMat, min, max)
     if(is.numeric(best)) best <- scaleMatrix(best, min, max)
   }
-
-
+  
+  
+  
   # TODO ... add names
   xlim = if (plotPrior) range(mat, priorMat) else range(mat)
   if(is.logical(scale)){
@@ -110,20 +112,46 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     .main <- gsub("/n", "", main)
     panels <- getPanels(numPars)
     oldPar <- par(mfrow=panels, oma=c(4.1,0,2.7,0))
+    on.exit(par(oldPar))
   }
   
   for (i in 1:numPars){
     if (singlePanel == TRUE) {
       main <- ""
       add <- TRUE
-      .at <- i
+      .at <- i -0.5
     } else {
       main <- names[i]
       add <- FALSE
     }
     
     if (plotPrior) {
-      if (histogram == TRUE) {
+      if (densityOnly == TRUE) {
+        dPrior <- density(priorMat[,i], n = res)
+        xPrior <- dPrior$x
+        yPrior <- dPrior$y
+        
+        dPosterior <- density(mat[,i], n = res)
+        xPosterior <- dPosterior$x
+        yPosterior <- dPosterior$y
+        
+        xlim <- range(xPrior, xPosterior)
+        ylim <- range(yPrior, yPosterior)
+        
+        if (singlePanel == TRUE) {
+          # TODO: implement
+          yPrior <- rescale(yPrior, ylim, c(0, 0.90)) + .at
+          yPosterior <- rescale(yPosterior, ylim, c(0, 0.90)) + .at
+          
+        } else {
+          plot(NULL, xlim = xlim, ylim = ylim, main=main, ylab = "density", xlab = "values")
+          
+        }
+        
+        polygon(c(xPosterior, xPosterior[1]), c(yPosterior, yPosterior[1]), col = col[1], lty = 0)
+        polygon(c(xPrior, xPrior[1]), c(yPrior, yPrior[1]), col = col[2], lty = 0)
+        
+      } else if (histogram == TRUE) {
         # TODO: add overlay here
         histMarginal(x = list(priorMat[,i], mat[,i]), at = i, .range = 0.95, col = c(col[2], col[1]), breaks = breaks, add = add,
                      main = main, dens = dens, res = res)
@@ -145,14 +173,31 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
         violinPlot(priorMat[,i], at = .at, .range = 0.475, add = T, col = col[2], relToAt = priorPos[1], which = priorPos[2], res=res, lwd = lwd)
       }
     } else {
-      if (histogram == TRUE) {
+      if (densityOnly == TRUE) {
+        dPosterior <- density(mat[,i], n = res)
+        xPosterior <- dPosterior$x
+        yPosterior <- dPosterior$y
+        
+        xlim <- range(xPosterior)
+        ylim <- range(yPosterior)
+        
+        if (singlePanel == TRUE) {
+          yPosterior <- rescale(yPosterior, ylim, c(0, 0.90)) + .at
+          
+        } else {
+          plot(NULL, xlim = xlim, ylim = ylim, main=main, ylab = "density", xlab = "values")
+        }
+        
+        polygon(c(xPosterior, xPosterior[1]), c(yPosterior, yPosterior[1]), col = col[1], lty = 0)
+        
+      } else if (histogram == TRUE) {
         histMarginal(x = list(mat[,i]), at = i, .range = 0.95, col = col[1], breaks = breaks, add = add,
                      main = main, dens = dens, res = res)
       } else {
         violinPlot(mat[,i], at = i, .range = 0.95, add = add, col = col[1], relToAt = "centered", which = "both", res=res, main = main, lwd)
       }
     }
-  
+    
     if (singlePanel) axis(side = 2,at=i,labels = names[i],las=1)
   }
   if(is.numeric(best)) points(best,1:length(best), cex = 3, pch = 4, lwd = 2)
@@ -172,7 +217,6 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     if(plotPrior && !histogram) legend("bottom", c("posterior", "prior"), xpd = TRUE, horiz = TRUE, inset = c(0, 0),
                                        bty = "n", pch = 15, col = col, cex = 2)
     par(oldPar2)
-    par(oldPar)
   }
 }
 

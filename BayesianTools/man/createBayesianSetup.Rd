@@ -7,12 +7,13 @@
 createBayesianSetup(likelihood, prior = NULL, priorSampler = NULL,
   parallel = FALSE, lower = NULL, upper = NULL, best = NULL,
   names = NULL, parallelOptions = list(variables = "all", packages = "all",
-  dlls = NULL), catchDuplicates = FALSE)
+  dlls = NULL), catchDuplicates = FALSE, plotLower = NULL,
+  plotUpper = NULL, plotBest = NULL)
 }
 \arguments{
 \item{likelihood}{log likelihood density function}
 
-\item{prior}{either a prior class (see \code{\link{createPrior}}) or a log prior density}
+\item{prior}{either a prior class (see \code{\link{createPrior}}) or a log prior density function}
 
 \item{priorSampler}{if a prior density (and not a prior class) is provided to prior, the optional prior sampling function can be provided here}
 
@@ -22,19 +23,25 @@ createBayesianSetup(likelihood, prior = NULL, priorSampler = NULL,
 
 \item{upper}{vector with upper prior limits}
 
-\item{best}{vector with best values}
+\item{best}{vector with best prior values}
 
 \item{names}{optional vector with parameter names}
 
 \item{parallelOptions}{list containing three lists. First "packages" determines the R packages necessary to run the likelihood function. Second "variables" the objects in the global envirnment needed to run the likelihood function and third "dlls" the DLLs needed to run the likelihood function (see Details and Examples).}
 
 \item{catchDuplicates}{Logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns.}
+
+\item{plotLower}{vector with lower limits for plotting}
+
+\item{plotUpper}{vector with upper limits for plotting}
+
+\item{plotBest}{vector with best values for plotting}
 }
 \description{
 Creates a standardized collection of prior, likelihood and posterior functions, including error checks etc.
 }
 \details{
-If lower and upper (and optionally best) but not a prior object are passed, the function will create an uniform prior with the limits lower and upper. If a prior object and lower and upper are passed, the function will ignore lower and upper, and will only use the prior object.
+If prior is of class prior (e.g. create with \code{\link{createPrior}}), priorSampler, lower, upper and best will be ignored.\cr If prior is a function (log prior density), priorSampler (custom sampler), or lower/upper (uniform sampler) is required.\cr If prior is NULL, and lower and upper are passed, a uniform prior (see \code{\link{createUniformPrior}}) will be created with boundaries lower and upper.
 
 For parallelization, option T means that an automatic parallelization via R is attempted, or "external", in which case it is assumed that the likelihood is already parallelized. In this case it needs to accept a matrix with parameters as columns.
 Further you can specify the packages, objects and DLLs that are exported to the cluster. 
@@ -121,5 +128,5 @@ rm(BSVSEM)
          \code{\link{createPrior}} \cr
 }
 \author{
-Florian Hartig
+Florian Hartig, Tankred Ott
 }

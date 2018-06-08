@@ -5,7 +5,7 @@
 \title{Flexible function to create correlation density plots}
 \usage{
 correlationPlot(mat, density = "smooth", thin = "auto",
-  method = "pearson", whichParameters = NULL, ...)
+  method = "pearson", whichParameters = NULL, scaleCorText = T, ...)
 }
 \arguments{
 \item{mat}{object of class "bayesianOutput" or a matrix or data frame of variables}
@@ -18,14 +18,17 @@ correlationPlot(mat, density = "smooth", thin = "auto",
 
 \item{whichParameters}{indices of parameters that should be plotted}
 
+\item{scaleCorText}{should the text to display correlation be scaled to the strength of the correlation}
+
 \item{...}{additional parameters to pass on to the \code{\link{getSample}}, for example parametersOnly =F, or start = 1000}
 }
 \description{
 Flexible function to create correlation density plots
 }
 \examples{
-dat = generateTestDensityMultiNormal(n = 100000, sample = TRUE)
+dat = generateTestDensityMultiNormal(sigma = "no correlation", sample = TRUE)
 correlationPlot(dat(100000))
+correlationPlot(dat(100000), scaleCorText = FALSE)
 }
 \references{
 The code for the correlation density plot originates from Hartig, F.; Dislich, C.; Wiegand, T. & Huth, A. (2014) Technical Note: Approximate Bayesian parameterization of a process-based tropical forest model. Biogeosciences, 11, 1261-1272.

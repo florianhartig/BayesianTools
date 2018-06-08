@@ -8,13 +8,14 @@ library(BayesianTools)
 
 test <- "CRAN" # avoids exact tests
 # test <- "exact"
+# library(Matching)
 
 if(test == "exact"){
   iter = 500000
   start = 500
   iterSMC = 400
   library(msm) 
-  library(Matching) # Because this is only needed for manual testing I removed it from
+  # library(Matching) # Because this is only needed for manual testing I removed it from
   # the package dependencies. If you are running the manual tests please install
   # the package yourself.
 
