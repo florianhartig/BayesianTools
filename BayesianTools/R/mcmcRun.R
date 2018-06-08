@@ -43,20 +43,30 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
       if(is.null(settings)) settings <- previousMcmcSampler$settings
       setup <- previousMcmcSampler$setup
       sampler <- previousMcmcSampler$settings$sampler
+      previousSettings <- previousMcmcSampler$settings
     } else{ 
       if(is.null(settings)) settings <- previousMcmcSampler[[1]]$settings
       settings$nrChains <- length(previousMcmcSampler)
       setup <- previousMcmcSampler[[1]]$setup
       sampler <- previousMcmcSampler[[1]]$settings$sampler
+      previousSettings <- previousMcmcSampler[[1]]$settings
     }
     
     # Set settings$sampler (only needed if new settings are supplied)
     settings$sampler <- sampler
     
-    settings <- applySettingsDefault(settings = settings, sampler = settings$sampler, check = TRUE)
+    # overwrite new settings
+    for(name in names(settings)) previousSettings[[name]] <- settings[[name]]
+    
+    settings <- previousSettings
+    
+    # Check if previous settings will be new default
+    
+    previousMcmcSampler$settings <- applySettingsDefault(settings = settings, sampler = settings$sampler, check = TRUE)
     
     restart <- TRUE
 
+    
   ## NOT RESTART STARTS HERE ###################
     
   }else{
@@ -107,12 +117,16 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
   # MAIN RUN FUNCTION HERE  
   }else{
     
+    # check start values 
+    setup$prior$checkStart(settings$startValue)
+    
+    
     if (sampler == "Metropolis" || sampler == "AM" || sampler == "DR" || sampler == "DRAM"){
       if(restart == FALSE){
         mcmcSampler <- Metropolis(bayesianSetup = setup, settings = settings)
         mcmcSampler <- sampleMetropolis(mcmcSampler = mcmcSampler, iterations = settings$iterations)
       } else {
-        mcmcSampler<- sampleMetropolis(mcmcSampler = previousMcmcSampler, iterations = settings$iterations) 
+        mcmcSampler <- sampleMetropolis(mcmcSampler = previousMcmcSampler, iterations = settings$iterations) 
       }
     }
     
@@ -139,6 +153,8 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
     
     ############## Differential Evolution with snooker update
     if (sampler == "DEzs"){
+      # check z matrix
+      if(!is.null(settings$Z)) setup$prior$checkStart(settings$Z,z = TRUE)
       
       if(restart == F) out <- DEzs(bayesianSetup = setup, settings = settings)
       else out <- DEzs(bayesianSetup = previousMcmcSampler, settings = settings)
@@ -174,6 +190,8 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
     
     ############## DREAMzs   
     if (sampler == "DREAMzs"){
+        # check z matrix
+        if(!is.null(settings$Z)) setup$prior$checkStart(settings$Z,z = TRUE)
       
         if(restart == F) out <- DREAMzs(bayesianSetup = setup, settings = settings)
         else out <- DREAMzs(bayesianSetup = previousMcmcSampler, settings = settings)

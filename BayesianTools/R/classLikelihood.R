@@ -96,7 +96,7 @@ createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplic
     }
     else stop("parameter must be vector or matrix")
   }
-  out<- list(density = parallelDensity, sampler = sampler, cl = cl, pwLikelihood = pwLikelihood)
+  out<- list(density = parallelDensity, sampler = sampler, cl = cl, pwLikelihood = pwLikelihood, parNames = names)
   class(out) <- "likelihood"
   return(out)
 }

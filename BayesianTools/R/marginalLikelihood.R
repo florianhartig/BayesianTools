@@ -34,8 +34,10 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
   setup <- NULL
   if ((class(sampler)[1] %in% c("mcmcSamplerList", "smcSamplerList"))) {
     setup <- sampler[[1]]$setup
+    posterior = sampler[[1]]$setup$posterior$density 
   } else {
     setup <- sampler$setup
+    posterior = sampler$setup$posterior$density 
   }
   
   
@@ -109,7 +111,8 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     lower <- setup$prior$lower
     upper <- setup$prior$upper
     
-    out <- list(ln.ML = bridgesample(chain, nParams, lower, upper)$logml, method ="Bridge")
+    
+    out <- list(ln.ML = bridgesample(chain ,nParams, lower, upper, posterior)$logml, method ="Bridge")
     
   } else if ("NN") {
     
@@ -132,11 +135,12 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
 #' @param nParams number of parameters
 #' @param lower optional - lower bounds of the prior
 #' @param upper optional - upper bounds of the prior
+#' @param posterior posterior density function
 #' @param ... arguments passed to bridge_sampler
 #' @details This function uses "bridge_sampler" from the package "bridgesampling".
 #' @example /inst/examples/bridgesampleHelp.R
 #' @seealso \code{\link{marginalLikelihood}}
-bridgesample <- function (chain, nParams, lower = NULL, upper = NULL, ...) {
+bridgesample <- function (chain, nParams, lower = NULL, upper = NULL, posterior, ...) {
   # TODO: implement this without bridgesampling package
   # https://github.com/quentingronau/bridgesampling
   if (is.null(lower)) lower <- rep(-Inf, nParams)
@@ -144,14 +148,13 @@ bridgesample <- function (chain, nParams, lower = NULL, upper = NULL, ...) {
   
   names(lower) <- names(upper) <- colnames(chain[, 1:nParams])
   
-  i <- 1
+  log_posterior = function(x, data){
+    return(posterior(x))
+  }
+  
   out <- bridgesampling::bridge_sampler(
     samples = chain[, 1:nParams],
-    log_posterior = function(row, data) {
-      out <- data[i, nParams + 1] # logPosterior is always the next col after the params
-      i <- i + 1
-      return(out)
-    },
+    log_posterior = log_posterior,
     data = chain,
     lb = lower,
     ub = upper,
@@ -160,6 +163,7 @@ bridgesample <- function (chain, nParams, lower = NULL, upper = NULL, ...) {
   
   return(out)
 }
+
 
 
 

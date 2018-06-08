@@ -5,6 +5,7 @@
 #' @param thin thinning of the matrix to make things faster. Default is to thin to 5000 
 #' @param method method for calculating correlations. Possible choices are "pearson" (default), "kendall" and "spearman"
 #' @param whichParameters indices of parameters that should be plotted
+#' @param scaleCorText should the text to display correlation be scaled to the strength of the correlation
 #' @param ... additional parameters to pass on to the \code{\link{getSample}}, for example parametersOnly =F, or start = 1000
 #' @references The code for the correlation density plot originates from Hartig, F.; Dislich, C.; Wiegand, T. & Huth, A. (2014) Technical Note: Approximate Bayesian parameterization of a process-based tropical forest model. Biogeosciences, 11, 1261-1272.
 #' @export
@@ -13,7 +14,7 @@
 #'          \code{\link{tracePlot}} \cr
 #' @example /inst/examples/plotCorrelationDensity.R
 
-correlationPlot<- function(mat, density = "smooth", thin = "auto", method = "pearson", whichParameters = NULL, ...){
+correlationPlot<- function(mat, density = "smooth", thin = "auto", method = "pearson", whichParameters = NULL, scaleCorText = T, ...){
   
   mat = getSample(mat, thin = thin, whichParameters = whichParameters, ...)
   
@@ -39,7 +40,8 @@ correlationPlot<- function(mat, density = "smooth", thin = "auto", method = "pea
     txt <- format(c(r, 0.123456789), digits = digits)[1]
     txt <- paste0(prefix, txt)
     if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
-    text(0.5, 0.5, txt, cex = cex.cor * abs(r))
+    if(scaleCorText == T) text(0.5, 0.5, txt, cex = cex.cor * abs(r))
+    else text(0.5, 0.5, txt, cex = cex.cor)
   }
   
   plotEllipse <- function(x,y){ 
@@ -73,7 +75,7 @@ correlationPlot<- function(mat, density = "smooth", thin = "auto", method = "pea
   if (density == "smooth"){ 
     return(pairs(mat, lower.panel=function(...) {par(new=TRUE);IDPmisc::ipanel.smooth(...)}, diag.panel=panel.hist.dens, upper.panel=panel.cor))
   }else if (density == "corellipseCor"){
-      return(pairs(mat, lower.panel=plotEllipse, diag.panel=panel.hist.dens, upper.panel=panel.cor))  
+    return(pairs(mat, lower.panel=plotEllipse, diag.panel=panel.hist.dens, upper.panel=panel.cor))  
   }else if (density == "ellipse"){
     correlationEllipse(mat)   
   }else if (density == F){

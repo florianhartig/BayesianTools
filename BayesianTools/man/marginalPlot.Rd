@@ -5,9 +5,10 @@
 \title{Plot MCMC marginals}
 \usage{
 marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
-  histogram = TRUE, plotPrior = TRUE, priorTop = FALSE,
+  histogram = FALSE, plotPrior = TRUE, priorTop = FALSE,
   nDrawsPrior = 1000, breaks = 15, res = 500, singlePanel = FALSE,
-  dens = TRUE, col = c("#FF5000D0", "#4682B4A0"), lwd = par("lwd"), ...)
+  dens = TRUE, col = c("#FF5000A0", "#4682B4A0"), lwd = par("lwd"),
+  densityOnly = TRUE, ...)
 }
 \arguments{
 \item{mat}{object of class "bayesianOutput" or a matrix or data frame of variables}
@@ -38,14 +39,36 @@ marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
 
 \item{lwd}{line width of the violin plots}
 
+\item{densityOnly}{Logical, determining whether only density should be plotted (default)}
+
 \item{...}{additional parameters to pass on to the \code{\link{getSample}}}
 }
 \description{
 Plot MCMC marginals
 }
 \examples{
-dat = generateTestDensityMultiNormal(n = 100000, sample = TRUE)
-marginalPlot(dat(10000))
+## Generate a test likelihood function. 
+ll <- generateTestDensityMultiNormal(sigma = "no correlation")
+
+## Create a BayesianSetup object from the likelihood 
+## is the recommended way of using the runMCMC() function.
+bayesianSetup <- createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
+
+## Finally we can run the sampler and have a look
+settings = list(iterations = 1000, adapt = FALSE)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
+
+
+marginalPlot(out)
+marginalPlot(out, plotPrior = FALSE)
+marginalPlot(out, histogram = TRUE)
+marginalPlot(out, singlePanel = TRUE, scale=TRUE, col = c("red", "blue"))
+
+
+
+
+
+
 }
 \references{
 \code{\link{tracePlot}} \cr
