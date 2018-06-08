@@ -29,29 +29,17 @@ As for every R package, you can get the suggested citation via
 citation("BayesianTools")
 ```
 
-### Installing from GitHub
+### Installing the development version from GitHub
 
-If you want to test / install a newer package version from GitHub, note that there are two versions you may consider
-
-**The master branch** contains the latest, stable version of the package. It will typically be very close to the CRAN version, and it should be save to install it. It is possible that the main branch contains subreleases that are not pushed to CRAN (see https://github.com/florianhartig/BayesianTools/releases) 
-
-Status master [![Build Status](https://travis-ci.org/florianhartig/BayesianTools.svg?branch=master)](https://travis-ci.org/florianhartig/BayesianTools)
-
-Install via
+If you want to install our development version from GitHub, use 
 
 ```{r}
 devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", dependencies = T, build_vignettes = T)
 ```
 
-**The development branch** contains new features and improvements, but may not be fully tested. 
+New developments will be done in extra branches and will be tested before merging in the developtment branch, so the developmet version should usually be usable (consider it in a beta stage), while feature branches should be considered alpha. 
 
-Status development [![Build Status](https://travis-ci.org/florianhartig/BayesianTools.svg?branch=development)](https://travis-ci.org/florianhartig/BayesianTools)
-
-If you want to install the current (development) version from this repository, run
-
-```{r}
-devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", dependencies = T, build_vignettes = T, ref="development")
-```
+Status master development branch [![Build Status](https://travis-ci.org/florianhartig/BayesianTools.svg?branch=master)](https://travis-ci.org/florianhartig/BayesianTools)
 
 Windows users: the package contains c++ code, so if you compile yourself, you need [RTools](https://cran.r-project.org/bin/windows/Rtools/) installed. 
 
@@ -63,7 +51,6 @@ To install a specific (older) release, decide for the version number that you wa
 devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", ref = "v0.0.10", dependencies = T, build_vignettes = T)
 ```
 with v0.0.10 replaced by the appropriate version number. 
-
 
 ## Getting help
 
