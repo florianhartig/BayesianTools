@@ -28,7 +28,7 @@ Flexible function to create correlation density plots
 \examples{
 dat = generateTestDensityMultiNormal(sigma = "no correlation", sample = TRUE)
 correlationPlot(dat(100000))
-correlationPlot(dat(100000), scaleCorText = F)
+correlationPlot(dat(100000), scaleCorText = FALSE)
 }
 \references{
 The code for the correlation density plot originates from Hartig, F.; Dislich, C.; Wiegand, T. & Huth, A. (2014) Technical Note: Approximate Bayesian parameterization of a process-based tropical forest model. Biogeosciences, 11, 1261-1272.
