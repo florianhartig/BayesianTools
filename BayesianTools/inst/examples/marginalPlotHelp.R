@@ -17,10 +17,10 @@ marginalPlot(out, densityOnly = FALSE, plotPrior = FALSE) #plot only posterior
 
 ## histogram
 marginalPlot(out, histogram = TRUE)
-marginalPlot(out, histogram = TRUE, dens = F, priorTop = T)
+marginalPlot(out, histogram = TRUE, dens = FALSE, priorTop = TRUE)
 
 ## distributions
-marginalPlot(out, priorTop = FALSe) 
+marginalPlot(out, priorTop = FALSE) 
 marginalPlot(out, plotPrior = FALSE)
 
 ##Further options
