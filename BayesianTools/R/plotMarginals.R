@@ -23,7 +23,7 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #' @references 
 #'          \code{\link{tracePlot}} \cr
 #'          \code{\link{correlationPlot}}
-#' @example /inst/examples/plotMarginals.R
+#' @example /inst/examples/marginalPlotHelp.R
 marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogram = FALSE, plotPrior = TRUE, priorTop = FALSE,
                          nDrawsPrior = 1000, breaks=15, res=500, singlePanel=FALSE, dens=TRUE, col=c("#FF5000A0","#4682B4A0"),
                          lwd = par("lwd"), densityOnly = TRUE, ...){
@@ -44,6 +44,7 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     }
   }
   
+  if(densityOnly && histogram) densityOnly = FALSE
   if(is.null(scale)) scale <- FALSE
   if(is.null(best)) best <- FALSE
   
@@ -199,9 +200,11 @@ marginalPlot <- function(mat, thin = "auto", scale = NULL, best = NULL, histogra
     }
     
     if (singlePanel) axis(side = 2,at=i,labels = names[i],las=1)
+    #if(is.numeric(best)) points(best[1],0.5, cex = 3, pch = 4, lwd = 2)
+    if(is.numeric(best)) abline(v = best[1], lty = 2, lwd = 1.5)
+    
   }
-  if(is.numeric(best)) points(best,1:length(best), cex = 3, pch = 4, lwd = 2)
-  
+
   if(singlePanel == TRUE) {
     if(plotPrior && histogram) legend("bottomright", c("posterior", "prior"), col = col, pch = 15, cex = 0.8, bty = "n")
     if(plotPrior && !histogram) legend("topright", c("posterior", "prior"), col = col, pch = 15, cex = 0.8, bty = "n")

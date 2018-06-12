@@ -28,6 +28,12 @@ testMarginalPlot <- function (x) {
   
   testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = F, singlePanel = T, densityOnly = F), NA)
   testthat::expect_error(marginalPlot(x, scale = T, histogram = F, plotPrior = F, singlePanel = T, densityOnly = F), NA)
+  
+  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = F, singlePanel = T, densityOnly = F, best = T, dens = F), NA)
+  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = F, singlePanel = T, densityOnly = F, best = F, dens = F), NA)
+  
+  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = T, singlePanel = F, densityOnly = F, thin = 10), NA)
+  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = T, singlePanel = F, densityOnly = F, start = 100), NA)
 }
 
 

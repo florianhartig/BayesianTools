@@ -12,7 +12,7 @@
 #' @seealso \code{\link{marginalPlot}} \cr
 #'          \code{\link{plotTimeSeries}} \cr
 #'          \code{\link{tracePlot}} \cr
-#' @example /inst/examples/plotCorrelationDensity.R
+#' @example /inst/examples/correlationPlotHelp.R
 
 correlationPlot<- function(mat, density = "smooth", thin = "auto", method = "pearson", whichParameters = NULL, scaleCorText = T, ...){
   
