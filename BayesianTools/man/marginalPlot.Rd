@@ -60,16 +60,16 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings =
 
 ## We can plot the marginals in several ways:
 ## violin plots
-marginalPlot(out, densityOnly = F) 
-marginalPlot(out, densityOnly = F, priorTop = T, best = T) #flip plot
-marginalPlot(out, densityOnly = F, plotPrior = FALSE) #plot only posterior
+marginalPlot(out, densityOnly = FALSE) 
+marginalPlot(out, densityOnly = FALSE, priorTop = TRUE, best = TRUE) #flip plot
+marginalPlot(out, densityOnly = FALSE, plotPrior = FALSE) #plot only posterior
 
 ## histogram
 marginalPlot(out, histogram = TRUE)
 marginalPlot(out, histogram = TRUE, dens = F, priorTop = T)
 
 ## distributions
-marginalPlot(out, priorTop = F) 
+marginalPlot(out, priorTop = FALSe) 
 marginalPlot(out, plotPrior = FALSE)
 
 ##Further options
