@@ -25,5 +25,7 @@ marginalPlot(out, plotPrior = FALSE)
 
 ##Further options
 # We can pass arguments to getSample (check ?getSample)
-marginalPlot(out, singlePanel = TRUE, scale=TRUE, col = c("red", "blue"), thin = 100)
-marginalPlot(out, singlePanel = TRUE, scale=TRUE, col = c("red", "blue"), thin = 100, start = 500)
+marginalPlot(out, singlePanel = TRUE, scale=TRUE, 
+             col = c("red", "blue"), thin = 100)
+marginalPlot(out, singlePanel = TRUE, scale=TRUE, 
+             col = c("red", "blue"), thin = 100, start = 500)
