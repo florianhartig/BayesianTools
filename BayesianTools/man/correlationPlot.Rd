@@ -39,7 +39,9 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = setti
 
 ## Correlation density plots:
 correlationPlot(out)
-correlationPlot(out, scaleCorText = FALSE) # text to display correlation will be not scaled to the strength of the correlation
+## text to display correlation will be not scaled to the strength of the correlation
+correlationPlot(out, scaleCorText = FALSE) 
+
 ## We can also switch the method for calculating correllations
 correlationPlot(out, scaleCorText = FALSE, method = "spearman")
 correlationPlot(out, scaleCorText = FALSE, method = "kendall")
