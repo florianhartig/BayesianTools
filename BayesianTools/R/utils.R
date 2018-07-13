@@ -1,9 +1,20 @@
+#' Function to get the setup from a bayesianOutput
+#' @param x bayesianOutput
+#' @return bayesianSetup
+#' @author Tankred Ott
+#' @keywords internal
+getSetup <- function(x) {
+  classes <- class(x)
+  if (any(c('mcmcSampler', 'smcSampler') %in% classes)) x$setup
+  else if (any(c('mcmcSamplerList', 'smcSamplerList') %in% classes)) x[[1]]$setup
+  else stop('Can not get setup from x')
+}
+
 #' Function to thin matrices
 #' @param mat matrix to thin
 #' @param thin thinning parameter
 #' @return thinned matrix
 #' @keywords internal
-
 thinMatrix <- function(mat, thin = "auto"){
   if (thin == "auto"){
     thin = max(floor(nrow(mat) / 5000),1)
