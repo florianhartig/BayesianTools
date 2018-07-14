@@ -24,7 +24,7 @@ marginalPlot <- function(x, prior = TRUE, xrange = NULL, type = 'd', singlePanel
   
   posteriorMat <- getSample(x, parametersOnly = TRUE, ...)
   
-  priorMat <- if (!is.null(prior) & prior != FALSE) {
+  priorMat <- if (!is.null(prior) && prior != FALSE) {
     if ('bayesianOutput' %in% class(x)) bs <- getSetup(x)$prior$sampler(nPriorDraws) # draw prior from bayesianSetup
     else if (any(c('data.frame', 'matrix') %in% class(prior))) {
       if (ncol(posteriorMat) == ncol(prior)) prior
@@ -56,6 +56,8 @@ marginalPlot <- function(x, prior = TRUE, xrange = NULL, type = 'd', singlePanel
   else if (any(c('v', 'violin') == type)) type <- 'v'
   else stop('type must be one of "d", "h", "v"')
   
+  if (is.null(colnames(posteriorMat))) colnames(posteriorMat) <- paste('par', 1:nPar, sep = '')
+  if (!is.null(priorMat)) colnames(priorMat) <- colnames(posteriorMat)
   
   .args <- c(list(posteriorMat = posteriorMat, priorMat = priorMat, xrange = xrange, singlePanel = singlePanel),
              settings)
@@ -71,12 +73,12 @@ marginalPlot <- function(x, prior = TRUE, xrange = NULL, type = 'd', singlePanel
 #' @param xrange vector or matrix (optional), determining the plotting range, with parameters as columns and min, max as rows
 #' @param col vector of colors for posterior and
 #' @param singlePanel logical, determining whether the parameter should be plotted in a single panel or each in its own panel
-#' @param ... further options
+# #' @param ... further options
 #' @author Tankred Ott
 #' @keywords internal
+# TODO? some parts could be simplified but I kept the function quite verbose for now, to be able to change parts easily
 marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FF5000A0','#4682B4A0'),
                                 singlePanel = TRUE, ...) {
-  print('d')
   
   nPar <- ncol(posteriorMat)
   parNames <- colnames(posteriorMat)
@@ -87,8 +89,6 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
 
     xrange <- if (is.null(priorRanges)) posteriorRanges else apply(rbind(priorRanges, posteriorRanges), 2, range)
   }
-
-  # print(xrange)
   
   posteriorDensities <- lapply(1:ncol(posteriorMat),
                                function(i) density(posteriorMat[,i], from = xrange[1,i], to = xrange[2,i], ...))
@@ -111,11 +111,10 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
   }) else NULL
   
   
-  # TODO: put singlePanel FALSE and TRUE in same loop, only change plot() parameters (do.call() ?) 
-  
   if (singlePanel) {
-    op <- par(mfrow = c(nPar,1), mar = c(2, 5, 2, 2), oma = c(4, 4, 4, 0))
+    op <- par(mfrow = c(nPar,1), mar = c(2, 5, 2, 2), oma = c(5, 4, 4, 0))
     on.exit(par(op))
+    
     
     for (i in 1:length(posteriorDensities)) {
       postX <- postXY[[i]][,1]
@@ -127,7 +126,13 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
       yrange <- if (is.null(priorX)) range(postY) else range(c(postY, priorY))
       
       plot(NULL, NULL, xlim = xrange[,i], ylim = yrange, main = NA,
-           xlab = NA, ylab = NA, bty = 'n', yaxt = 'n')
+           xlab = NA, ylab = NA, bty = 'n', yaxt = 'n', xaxt = 'n')
+      axis(1, at = xrange[,i], labels = NA, lwd.tick=0)
+      xticks <- axTicks(1)
+      xticks <- xticks[xticks >= xrange[1,i] & xticks <= xrange[2,i]]
+      
+      axis(1, at = xticks)
+      
       mtext(sprintf('%20s', parNames[i]), 2, las = 1, adj = 1.25)
       
       
@@ -145,14 +150,12 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
     legend('bottom', if (!is.null(priorX)) c('posterior', 'prior') else 'posterior', xpd = TRUE, horiz = TRUE,
            inset = c(0, 0), bty = 'n', pch = 15, col = col, cex = 1.5)
     
-    
   } else {
-    mfrow <- if (nPar <= 16) BayesianTools:::getPanels(nPar) else c(4,4)
-    print(mfrow)
+    mfrow <- if (nPar < 16) BayesianTools:::getPanels(nPar) else c(4,4)
     
-    op <- par(mfrow = mfrow, mar = c(4.5, 4.5, 5, 3), oma=c(3, 0, 2, 0), xpd=TRUE)
-    
+    op <- par(mfrow = mfrow, mar = c(4.5, 4, 5, 3), oma=c(3, 1.5, 2, 0), xpd=TRUE)
     on.exit(par(op))
+    
     for (i in 1:length(posteriorDensities)) {
       postX <- postXY[[i]][,1]
       postY <- postXY[[i]][,2]
@@ -163,13 +166,14 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
       yrange <- if (is.null(priorX)) range(postY) else range(c(postY, priorY))
       
       plot(NULL, NULL, xlim = xrange[,i], ylim = yrange, main = parNames[i],
-           xlab = parNames[i], ylab = 'density')
+           xlab = NA, ylab = 'density')
       
       polygon(postX, postY, col = col[1], border = NA)
       if (!is.null(priorX)) polygon(priorX, priorY, col = col[2], border = NA)
       
+      if (i %% 16 == 1) mtext('Marginal parameter uncertainity', outer = TRUE, cex = 1.5)
     }
-    mtext('Marginal parameter uncertainity', outer = TRUE, cex = 1.5)
+    
     
     # overlay plot with empty plot to be able to place the legends freely
     par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
@@ -186,19 +190,137 @@ marginalPlotHistogram <- function(posteriorMat, priorMat, xrange, ...) {
   stop('Histogram not implemented')
 }
 
+
+
+#' Plot marginals as violin plot
+#' @param posteriorMat matrix with samples as rows and parameters as columns
+#' @param priorMat matrix (optional) with samples as rows and parameters as columns
+#' @param xrange vector or matrix (optional), determining the plotting range, with parameters as columns and min, max as rows
+#' @param col vector of colors for posterior and
+#' @param singlePanel logical, determining whether the parameter should be plotted in a single panel or each in its own panel
+# #' @param ... further options
+#' @author Tankred Ott
 #' @keywords internal
-marginalPlotViolin <- function(posteriorMat, priorMat, xrange, ...) {
-  stop('Violin plot not implemented')
+marginalPlotViolin <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FF5000A0','#4682B4A0'),
+                               singlePanel = TRUE, ...) {
+  
+  nPar <- ncol(posteriorMat)
+  parNames <- colnames(posteriorMat)
+  
+  if (is.null(xrange)) {
+    posteriorRanges <- apply(posteriorMat, 2, range)
+    priorRanges <- if(!is.null(priorMat)) apply(priorMat, 2, range) else NULL
+    
+    xrange <- if (is.null(priorRanges)) posteriorRanges else apply(rbind(priorRanges, posteriorRanges), 2, range)
+  }
+  
+  posteriorDensities <- lapply(1:ncol(posteriorMat),
+                               function(i) density(posteriorMat[,i], from = xrange[1,i], to = xrange[2,i], ...))
+  priorDensities <- if (!is.null(priorMat)) lapply(1:ncol(priorMat),
+                                                   function(i) density(priorMat[,i], from = xrange[1,i], to = xrange[2,i], ...))
+  else NULL
+  
+  
+  postXY <- lapply(posteriorDensities, function(d) {
+    xy <- cbind(c(d$x[1], d$x, d$x[length(d$x)]),
+                c(0, d$y, 0))
+    colnames(xy) <- c('x', 'y')
+    if (is.null(priorDensities)) xy <- rbind(xy,
+                                             cbind(rev(xy[,1]), rev(-xy[,2])))
+    xy
+  })
+  
+  priorXY <- if (!is.null(priorDensities)) lapply(priorDensities, function(d) {
+    xy <- cbind(c(d$x[1], d$x, d$x[length(d$x)]),
+                -c(0, d$y, 0))
+    colnames(xy) <- c('x', 'y')
+    xy
+  }) else NULL
+  
+  
+  if (singlePanel) {
+    nChar <- max(nchar(parNames))
+    op <- par(mfrow = c(nPar,1), mar = c(2, min(nChar, 20), 2, 2), oma = c(5, 0, 4, 0))
+    on.exit(par(op))
+    
+    for (i in 1:length(posteriorDensities)) {
+      postX <- postXY[[i]][,1]
+      postY <- postXY[[i]][,2]
+      
+      priorX <- if (!is.null(priorXY[[i]])) priorXY[[i]][,1] else NULL
+      priorY <- if (!is.null(priorXY[[i]])) priorXY[[i]][,2] else NULL
+      
+      yrange <- if (is.null(priorX)) range(postY) else range(c(postY, priorY))
+      
+      plot(NULL, NULL, xlim = xrange[,i], ylim = yrange, main = NA,
+           xlab = NA, ylab = NA, bty = 'n', yaxt = 'n', xaxt = 'n')
+
+      axis(1, at = xrange[,i], labels = NA, lwd.tick=0)
+      xticks <- axTicks(1)
+      xticks <- xticks[xticks >= xrange[1,i] & xticks <= xrange[2,i]]
+
+      axis(1, at = xticks)
+      mtext(sprintf('%20s', parNames[i]), 2, las = 1, adj = 1)
+      
+      polygon(postX, postY, col = col[1], border = NA)
+      if (!is.null(priorX)) polygon(priorX, priorY, col = col[2], border = NA)
+      
+    }
+    
+    mtext('Marginal parameter uncertainity', outer = TRUE, cex = 1.5)
+    
+    # overlay plot with empty plot to be able to place the legends freely
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+    plot(0, 0, type = 'n', bty = 'n', xaxt = 'n', yaxt = 'n')
+    
+    legend('bottom', if (!is.null(priorX)) c('posterior', 'prior') else 'posterior', xpd = TRUE, horiz = TRUE,
+           inset = c(0, 0), bty = 'n', pch = 15, col = col, cex = 1.5)
+    
+  } else {
+    mfrow <- if (nPar < 16) BayesianTools:::getPanels(nPar) else c(4,4)
+    
+    op <- par(mfrow = mfrow, mar = c(4.5, 4.5, 5, 3), oma=c(3, 0, 2, 0), xpd=TRUE)
+    
+    on.exit(par(op))
+    for (i in 1:length(posteriorDensities)) {
+      postX <- postXY[[i]][,1]
+      postY <- postXY[[i]][,2]
+      
+      priorX <- if (!is.null(priorXY[[i]])) priorXY[[i]][,1] else NULL
+      priorY <- if (!is.null(priorXY[[i]])) priorXY[[i]][,2] else NULL
+      
+      yrange <- if (is.null(priorX)) range(postY) else range(c(postY, priorY))
+      
+      plot(NULL, NULL, xlim = xrange[,i], ylim = yrange, main = parNames[i],
+           xlab = NA, ylab = 'density', yaxt = 'n')
+      yticks <- sort(c(0, axTicks(2)))
+      axis(2, at = yticks, labels = abs(yticks))
+      
+      
+      polygon(postX, postY, col = col[1], border = NA)
+      if (!is.null(priorX)) polygon(priorX, priorY, col = col[2], border = NA)
+      
+      if (i %% 16 == 1) mtext('Marginal parameter uncertainity', outer = TRUE, cex = 1.5)
+    }
+    
+    
+    # overlay plot with empty plot to be able to place the legends freely
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+    plot(0, 0, type = 'n', bty = 'n', xaxt = 'n', yaxt = 'n')
+    
+    legend('bottom', if (!is.null(priorX)) c('posterior', 'prior') else 'posterior', xpd = TRUE, horiz = TRUE, inset = c(0, 0),
+           bty = 'n', pch = 15, col = col, cex = 1.5)
+  }
 }
 
 
 
-singlePanel <- T
+singlePanel <- F
 type <- 'd'
 marginalPlot(out, xrange = matrix(c(-1, 10, -8, 5), nrow = 2), type=type, settings = list(n = 512, cut = T), singlePanel = singlePanel)
-marginalPlot(out, prior = F, type=type, settings = list(n = 256, cut = F), singlePanel = singlePanel)
+marginalPlot(out, prior = T, type=type, settings = list(n = 256, cut = F), singlePanel = singlePanel)
 marginalPlot(matrix(c(1,2,3,4,5, 2,3,4,5,6), ncol = 2),
-             prior = NULL,
+             prior = F,
              type=type, singlePanel = singlePanel)
 marginalPlot(matrix(c(1,2,3,4,5, 2,3,4,5,6), ncol = 2),
              prior = matrix(c(-5,2,3,4,15,6,7,8, -3,3,4,5,9,0,1,7), ncol = 2),
