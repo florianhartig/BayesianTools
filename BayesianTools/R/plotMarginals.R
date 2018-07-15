@@ -12,13 +12,13 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #' @param ... additional arguments passed to \code{\link{getSample}}. If you have a high number of draws from the posterior it is advised to set numSamples (to e.g. 5000) for performance reasons.
 #' @example /inst/examples/marginalPlotHelp.R
 #' @author Tankred Ott
-marginalPlot <- function(x, prior = TRUE, xrange = NULL, type = 'd', singlePanel = TRUE, settings = NULL,
+marginalPlot <- function(x, prior = FALSE, xrange = NULL, type = 'd', singlePanel = TRUE, settings = NULL,
                          nPriorDraws = 10000, ...) {
   
   posteriorMat <- getSample(x, parametersOnly = TRUE, ...)
   
   # check prior
-  priorMat <- if (!is.null(prior) && prior != FALSE) {
+  priorMat <- if (!is.null(prior) & prior != FALSE) {
     if ('bayesianOutput' %in% class(x)) bs <- getSetup(x)$prior$sampler(nPriorDraws) # draw prior from bayesianSetup
     else if (any(c('data.frame', 'matrix') %in% class(prior))) {
       if (ncol(posteriorMat) == ncol(prior)) prior
@@ -142,7 +142,7 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
     mtext('Marginal parameter uncertainity', outer = TRUE, cex = 1.5)
 
   } else {
-    mfrow <- if (nPar < 16) BayesianTools:::getPanels(nPar) else c(4,4)
+    mfrow <- if (nPar < 16) getPanels(nPar) else c(4,4)
     
     op <- par(mfrow = mfrow, mar = c(4.5, 4, 5, 3), oma=c(3, 1.5, 2, 0), xpd=TRUE)
     on.exit(par(op))
@@ -254,7 +254,7 @@ marginalPlotViolin <- function(posteriorMat, priorMat = NULL, xrange = NULL, col
     mtext('Marginal parameter uncertainity', outer = TRUE, cex = 1.5)
     
   } else {
-    mfrow <- if (nPar < 16) BayesianTools:::getPanels(nPar) else c(4,4)
+    mfrow <- if (nPar < 16) getPanels(nPar) else c(4,4)
     
     op <- par(mfrow = mfrow, mar = c(4.5, 4.5, 5, 3), oma=c(3, 0, 2, 0), xpd=TRUE)
     
