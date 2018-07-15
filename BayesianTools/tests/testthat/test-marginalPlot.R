@@ -1,39 +1,22 @@
 testthat::context("Test marginalPlot")
 
 testMarginalPlot <- function (x) {
-  testthat::expect_error(marginalPlot(x, singlePanel = T), NA)
-  testthat::expect_error(marginalPlot(x, singlePanel = F), NA)
+  if(!'bayesianOutput' %in% class(x)) prior <- FALSE else prior <- TRUE
   
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = T, singlePanel = F, densityOnly = F), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = T, plotPrior = T, singlePanel = F, densityOnly = F), NA)
+  testthat::expect_error(marginalPlot(x, type = 'd', singlePanel = T, prior = prior), NA)
+  testthat::expect_error(marginalPlot(x, type = 'd', singlePanel = F, prior = prior), NA)
   
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = T, singlePanel = T, densityOnly = F), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = T, plotPrior = T, singlePanel = T, densityOnly = F), NA)
+  testthat::expect_error(marginalPlot(x, type = 'v', singlePanel = T, prior = prior), NA)
+  testthat::expect_error(marginalPlot(x, type = 'v', singlePanel = F, prior = prior), NA)
   
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = F, singlePanel = F, densityOnly = F), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = T, plotPrior = F, singlePanel = F, densityOnly = F), NA)
+  if ('bayesianOutput' %in% class(x)) {
+    testthat::expect_error(marginalPlot(x, type = 'v', singlePanel = T, prior = T), NA)
+    testthat::expect_error(marginalPlot(x, type = 'v', singlePanel = T, prior = F), NA)
+    testthat::expect_error(marginalPlot(x, type = 'd', singlePanel = T, prior = T), NA)
+    testthat::expect_error(marginalPlot(x, type = 'd', singlePanel = T, prior = F), NA)
+  }
   
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = F, singlePanel = T, densityOnly = F), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = T, plotPrior = F, singlePanel = T, densityOnly = F), NA)
-  
-  
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = T, singlePanel = F, densityOnly = F), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = F, plotPrior = T, singlePanel = F, densityOnly = F), NA)
-  
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = T, singlePanel = T, densityOnly = F), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = F, plotPrior = T, singlePanel = T, densityOnly = F), NA)
-  
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = F, singlePanel = F, densityOnly = F), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = F, plotPrior = F, singlePanel = F, densityOnly = F), NA)
-  
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = F, singlePanel = T, densityOnly = F), NA)
-  testthat::expect_error(marginalPlot(x, scale = T, histogram = F, plotPrior = F, singlePanel = T, densityOnly = F), NA)
-  
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = F, singlePanel = T, densityOnly = F, best = T, dens = F), NA)
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = F, plotPrior = F, singlePanel = T, densityOnly = F, best = F, dens = F), NA)
-  
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = T, singlePanel = F, densityOnly = F, thin = 10), NA)
-  testthat::expect_error(marginalPlot(x, scale = F, histogram = T, plotPrior = T, singlePanel = F, densityOnly = F, start = 100), NA)
+  testthat::expect_error(marginalPlot(x, type = 'v', xrange = c(-5, 5), prior = prior), NA)
 }
 
 
