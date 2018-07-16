@@ -1,5 +1,7 @@
 context("Test start values/Z matrix inside prior range")
 
+skip_on_cran()
+
 test_that("test z matrix check", {
   ll = testDensityNormal
   bayesianSetup = createBayesianSetup(likelihood = ll, lower = 2, upper = 5)

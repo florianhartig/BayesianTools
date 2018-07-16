@@ -1,5 +1,7 @@
 context("Test marginalLikelihood")
 
+skip_on_cran()
+
 ll <- function(x, sum = TRUE){
   if(sum) sum(dnorm(x, log = T))
   else dnorm(x, log = T)

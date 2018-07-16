@@ -1,5 +1,7 @@
 testthat::context("Test correlationPlot")
 
+skip_on_cran()
+
 ll <- generateTestDensityMultiNormal(sigma = "no correlation")
 
 bayesianSetup <- createBayesianSetup(likelihood = ll, lower = c(-10, -5, -7.5), upper = c(10, 7.5, 3))

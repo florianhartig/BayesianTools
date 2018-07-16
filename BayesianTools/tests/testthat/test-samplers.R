@@ -10,6 +10,8 @@ test <- "CRAN" # avoids exact tests
 # test <- "exact"
 # library(Matching)
 
+skip_on_cran()
+
 if(test == "exact"){
   iter = 500000
   start = 500

@@ -1,5 +1,6 @@
-
 context("Test Settings Default")
+
+skip_on_cran()
 
 set.seed(1)
 library(BayesianTools)

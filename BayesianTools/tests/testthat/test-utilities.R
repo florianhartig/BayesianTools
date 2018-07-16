@@ -1,5 +1,7 @@
 context("Test utility functions")
 
+skip_on_cran()
+
 # sampleEquallySpaced
 test_that("sampleEquallySpaced returns right number of samples", {
   # number of tests

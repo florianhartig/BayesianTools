@@ -1,6 +1,6 @@
 context("Test convergence of all samplers")
 
-
+skip_on_cran()
 
 set.seed(1)
 library(BayesianTools)
