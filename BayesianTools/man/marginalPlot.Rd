@@ -4,44 +4,25 @@
 \alias{marginalPlot}
 \title{Plot MCMC marginals}
 \usage{
-marginalPlot(mat, thin = "auto", scale = NULL, best = NULL,
-  histogram = FALSE, plotPrior = TRUE, priorTop = FALSE,
-  nDrawsPrior = 1000, breaks = 15, res = 500, singlePanel = FALSE,
-  dens = TRUE, col = c("#FF5000A0", "#4682B4A0"), lwd = par("lwd"),
-  densityOnly = TRUE, ...)
+marginalPlot(x, prior = FALSE, xrange = NULL, type = "d",
+  singlePanel = TRUE, settings = NULL, nPriorDraws = 10000, ...)
 }
 \arguments{
-\item{mat}{object of class "bayesianOutput" or a matrix or data frame of variables}
+\item{x}{bayesianOutput, or matrix or data.frame containing with samples as rows and parameters as columns}
 
-\item{thin}{thinning of the matrix to make things faster. Default is to thin to 5000}
+\item{prior}{logical determining whether the prior should be plotted, or if x is matrix oder data.frame, a matrix of prior draws with draws as rows and parameters as columns}
 
-\item{scale}{should the results be scaled. Value can be either NULL (no scaling), T, or a matrix with upper / lower bounds as columns. If set to T, attempts to retrieve the scaling from the input object mat (requires that this is of class BayesianOutput)}
+\item{xrange}{vector or matrix of plotting ranges for the x axis. If matrix, the rows must be parameters and the columns min and max values.}
 
-\item{best}{if provided, will draw points at the given values (to display true / default parameter values). Value can be either NULL (no drawing), a vector with values, or T, in which case the function will attempt to retrieve the values from a BayesianOutput}
+\item{type}{character determining the plot type. Either 'd' for density plot, or 'v' for violin plot}
 
-\item{histogram}{Logical, determining whether a violin plot or a histogram should be plotted}
+\item{singlePanel}{logical, determining whether the parameter should be plotted in a single panel or each in its own panel}
 
-\item{plotPrior}{Logical, determining whether the prior should be plotted in addition to the posteriors. Only applicable if mat is an object of class "bayesianOutput"}
+\item{settings}{optional list of additional settings for \code{\link{marginalPlotDensity}}, and \code{\link{marginalPlotViolin}}, respectively}
 
-\item{priorTop}{Logical, determining whether the prior should be plotted top (TRUE) or bottom (FALSE)}
+\item{nPriorDraws}{number of draws from the prior, if x is bayesianOutput}
 
-\item{nDrawsPrior}{Integer, number of draws from the prior, when plotPrior is active}
-
-\item{breaks}{Integer, number of histogram breaks if histogram is set to TRUE}
-
-\item{res}{resolution parameter for violinPlot, determining how many descrete points should be used for the density kernel.}
-
-\item{singlePanel}{Logical, determining whether all histograms/violins should be plotted in a single plot panel or in separate panels.}
-
-\item{dens}{Logical, determining wheter an density overlay should be plotted when 'histogram' is TRUE}
-
-\item{col}{vector of colors for posterior and prior}
-
-\item{lwd}{line width of the violin plots}
-
-\item{densityOnly}{Logical, determining whether only density should be plotted (default)}
-
-\item{...}{additional parameters to pass on to the \code{\link{getSample}}}
+\item{...}{additional arguments passed to \code{\link{getSample}}. If you have a high number of draws from the posterior it is advised to set numSamples (to e.g. 5000) for performance reasons.}
 }
 \description{
 Plot MCMC marginals
@@ -50,39 +31,36 @@ Plot MCMC marginals
 ## Generate a test likelihood function. 
 ll <- generateTestDensityMultiNormal(sigma = "no correlation")
 
-## Create a BayesianSetup object from the likelihood 
-## is the recommended way of using the runMCMC() function.
+## Create a BayesianSetup
 bayesianSetup <- createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
 
 ## Finally we can run the sampler and have a look
 settings = list(iterations = 1000, adapt = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 
+marginalPlot(out, prior = TRUE)
+
 ## We can plot the marginals in several ways:
 ## violin plots
-marginalPlot(out, densityOnly = FALSE) 
-marginalPlot(out, densityOnly = FALSE, priorTop = TRUE, best = TRUE) #flip plot
-marginalPlot(out, densityOnly = FALSE, plotPrior = FALSE) #plot only posterior
+marginalPlot(out, type = 'v', singlePanel = TRUE) 
+marginalPlot(out, type = 'v', singlePanel = FALSE)
+marginalPlot(out, type = 'v', singlePanel = TRUE, prior = TRUE)
 
-## histogram
-marginalPlot(out, histogram = TRUE)
-marginalPlot(out, histogram = TRUE, dens = FALSE, priorTop = TRUE)
+## density plot
+marginalPlot(out, type = 'd', singlePanel = TRUE) 
+marginalPlot(out, type = 'd', singlePanel = FALSE)
+marginalPlot(out, type = 'd', singlePanel = TRUE, prior = TRUE)
 
-## distributions
-marginalPlot(out, priorTop = FALSE) 
-marginalPlot(out, plotPrior = FALSE)
+## if you have a very wide prior you can use the xrange option to plot only
+## a certain parameter range
+marginalPlot(out, type = 'v', singlePanel = TRUE, xrange = matrix(rep(c(-5, 5), 3), ncol = 3))
 
 ##Further options
-# We can pass arguments to getSample (check ?getSample)
-marginalPlot(out, singlePanel = TRUE, scale=TRUE, 
-             col = c("red", "blue"), thin = 100)
-marginalPlot(out, singlePanel = TRUE, scale=TRUE, 
-             col = c("red", "blue"), thin = 100, start = 500)
-}
-\references{
-\code{\link{tracePlot}} \cr
-         \code{\link{correlationPlot}}
+# We can pass arguments to getSample (check ?getSample) and to the density and violin plots
+marginalPlot(out, type = 'v', singlePanel = TRUE, 
+             settings = list(col = c('#FC006299','#00BBAA88')), prior = TRUE)
+marginalPlot(out, type = 'v', singlePanel = TRUE, numSamples = 500)
 }
 \author{
-Florian Hartig, Tankred Ott
+Tankred Ott
 }

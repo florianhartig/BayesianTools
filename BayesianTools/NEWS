@@ -1,5 +1,23 @@
 NOTE: for more news about the package, see https://github.com/florianhartig/BayesianTools/releases
 
+# BayesianTools 0.1.5
+
+Changes / improvements
+
+- marginalPlot changed / updated
+
+Minor changes 
+
+- getSample behavior https://github.com/florianhartig/BayesianTools/issues/133
+- Create a check of start values / check matrix at the runMCMC level https://github.com/florianhartig/BayesianTools/issues/114
+
+Bugfixes:
+
+- Removed package dependency in unit tests https://github.com/florianhartig/BayesianTools/issues/136
+- Bugfix in bridge sampling https://github.com/florianhartig/BayesianTools/issues/121
+- Missing -Inf -> - Inf check in DEzs and DREAMzs with parallel = T https://github.com/florianhartig/BayesianTools/issues/113
+
+
 # BayesianTools 0.1.4
 
 Compatibility

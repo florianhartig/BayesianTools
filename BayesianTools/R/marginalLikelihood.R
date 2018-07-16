@@ -140,6 +140,7 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
 #' @details This function uses "bridge_sampler" from the package "bridgesampling".
 #' @example /inst/examples/bridgesampleHelp.R
 #' @seealso \code{\link{marginalLikelihood}}
+#' @keywords internal
 bridgesample <- function (chain, nParams, lower = NULL, upper = NULL, posterior, ...) {
   # TODO: implement this without bridgesampling package
   # https://github.com/quentingronau/bridgesampling

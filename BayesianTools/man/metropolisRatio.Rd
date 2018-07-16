@@ -19,3 +19,4 @@ Function to calculate the metropolis ratio
 \author{
 Florian Hartig
 }
+\keyword{internal}

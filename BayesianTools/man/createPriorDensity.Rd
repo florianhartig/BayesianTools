@@ -32,7 +32,7 @@ bayesianSetup = createBayesianSetup(likelihood = ll,
                                     lower = rep(-10, 3), 
                                     upper = rep(10, 3))
 
-settings = list(iterations = 2500)
+settings = list(iterations = 1000)
 out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 
 
@@ -42,8 +42,12 @@ newPrior = createPriorDensity(out, method = "multivariate",
 
 bayesianSetup <- createBayesianSetup(likelihood = ll, prior = newPrior)
 
-settings = list(iterations = 1000)
-out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+\dontrun{
+  settings = list(iterations = 1000)
+  out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+}
+
+
 
 }
 \seealso{

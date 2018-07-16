@@ -15,3 +15,4 @@ Calculates the panel combination for par(mfrow = )
 \author{
 Florian Hartig
 }
+\keyword{internal}

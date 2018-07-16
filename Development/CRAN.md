@@ -2,11 +2,11 @@ This file contains CRAN submission info / communication
 
 ## Version 0.1.5
 
-This XXX. See NEWS for changes. 
+This update of the BayesianTools packagecontains a number of improvements and bugfixes. See NEWS for changes. 
 
 This release was tested without apparent problems under
 
-* local MAC OS 10.13.3, R 3.3.2
+* local MAC OS 10.13.4 (17E199), R 3.5.0
 * http://win-builder.r-project.org/ - oldrelease / devel / realease
 * Linux (Travis CI) - oldrel / release / devel
 
