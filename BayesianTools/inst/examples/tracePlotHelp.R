@@ -11,4 +11,4 @@ tracePlot(sampler = out, thin = 50)
 # additional parameters can be passed on to getSample (see help)
 tracePlot(sampler = out, thin = 10, start = 500)
 # select parameter by index
-tracePlot(sampler = out, thin = 10, start = 500, whichParameters = 2) 
+tracePlot(sampler = out, thin = 10, start = 500, whichParameters = 2)
