@@ -107,7 +107,7 @@ and plottted with several plot functions. The marginalPlot can either be plotted
 ```{r}
 plot(out) # plot internally calls tracePlot(out)
 correlationPlot(out)
-marginalPlot(out)
+marginalPlot(out, prior = TRUE)
 ```
 
 Other Functions that can be applied to all samplers include model selection scores such as the DIC and the marginal Likelihood (for the calculation of the Bayes factor, see later section for more details), and the Maximum Aposteriori Value (MAP). For the marginal likelihood calculation it is possible to chose from a set of methods (see "?marginalLikelihood").
@@ -382,7 +382,7 @@ settings = list(iterations = 10000, nrChains= 3, message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 
 plot(out)
-marginalPlot(out)
+marginalPlot(out, prior = T)
 correlationPlot(out)
 gelmanDiagnostics(out, plot=T)
 
