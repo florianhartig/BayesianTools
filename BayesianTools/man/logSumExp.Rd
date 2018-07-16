@@ -17,3 +17,4 @@ Funktion to compute log(sum(exp(x))
 \author{
 Florian Hartig
 }
+\keyword{internal}

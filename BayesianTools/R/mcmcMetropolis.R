@@ -105,6 +105,7 @@ Metropolis <- function(bayesianSetup,
 #' @param iterations iterations
 #' @description Function to sample with cobinations of the basic Metropolis-Hastings MCMC algorithm (Metropolis et al., 1953), a variation of the adaptive Metropolis MCMC (Haario et al., 2001), the delayed rejection algorithm (Tierney & Mira, 1999), and the delayed rejection adaptive Metropolis algorithm (DRAM, Haario et al), and the Metropolis within Gibbs 
 #' @export
+#' @keywords internal
 sampleMetropolis <- function(mcmcSampler, iterations){
   
   burnin <- mcmcSampler$settings$burnin

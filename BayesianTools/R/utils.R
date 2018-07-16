@@ -34,7 +34,6 @@ thinMatrix <- function(mat, thin = "auto"){
 #' @param max maximum value
 #' @return sclaed matrix
 #' @keywords internal
-
 scaleMatrix <- function(mat, min, max){
   if(class(mat) %in% c("matrix", "data.frame")){
     for(i in 1:ncol(mat)){
@@ -52,7 +51,7 @@ scaleMatrix <- function(mat, min, max){
 #' @param LP2 log posterior old position
 #' @param LP1 log posterior of proposal
 #' @param tempering value for tempering
-#' @export
+#' @keywords internal
 metropolisRatio <- function(LP2, LP1, tempering = 1){
   # this catches two -Inf cases / I wonder if we should throw a warning in this case
   if( is.na(LP2 - LP1)) out = -Inf
@@ -64,7 +63,7 @@ metropolisRatio <- function(LP2, LP1, tempering = 1){
 #' Calculates the panel combination for par(mfrow = )
 #' @author Florian Hartig
 #' @param x the desired number of panels 
-# #' @export
+#' @keywords internal
 getPanels <- function(x){
   if (x <= 0) stop("number can't be < 1")
   
@@ -83,7 +82,6 @@ getPanels <- function(x){
 #' @param x matrix or vector
 #' @param numSamples number of samples (rows) to be drawn
 #' @details Gets n equally spaced samples (rows) from a matrix and returns a new matrix (or vector) containing those samples
-# #' @export
 #' @keywords internal
 sampleEquallySpaced <- function(x, numSamples) {
   # wrong input: x is neither vector nor matrix
