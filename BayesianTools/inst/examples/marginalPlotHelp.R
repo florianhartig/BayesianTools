@@ -27,5 +27,6 @@ marginalPlot(out, type = 'v', singlePanel = TRUE, xrange = matrix(rep(c(-5, 5), 
 
 ##Further options
 # We can pass arguments to getSample (check ?getSample) and to the density and violin plots
-marginalPlot(out, type = 'v', singlePanel = TRUE, settings = list(col = c('#FC006299','#00BBAA88')), prior = TRUE)
+marginalPlot(out, type = 'v', singlePanel = TRUE, 
+             settings = list(col = c('#FC006299','#00BBAA88')), prior = TRUE)
 marginalPlot(out, type = 'v', singlePanel = TRUE, numSamples = 500)
