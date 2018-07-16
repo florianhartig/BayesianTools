@@ -5,9 +5,9 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #' @param x bayesianOutput, or matrix or data.frame containing with samples as rows and parameters as columns
 #' @param prior logical determining whether the prior should be plotted, or if x is matrix oder data.frame, a matrix of prior draws with draws as rows and parameters as columns
 #' @param xrange vector or matrix of plotting ranges for the x axis. If matrix, the rows must be parameters and the columns min and max values.
-#' @param type character determining the plot type. Either 'd' for density plot, 'h' for histogram, or 'v' for violin plot
+#' @param type character determining the plot type. Either 'd' for density plot, or 'v' for violin plot
 #' @param singlePanel logical, determining whether the parameter should be plotted in a single panel or each in its own panel
-#' @param settings optional list of additional settings for density plot, histogram, and violin plot, respectively
+#' @param settings optional list of additional settings for density plot, and violin plot, respectively
 #' @param nPriorDraws number of draws from the prior, if x is bayesianOutput
 #' @param ... additional arguments passed to \code{\link{getSample}}. If you have a high number of draws from the posterior it is advised to set numSamples (to e.g. 5000) for performance reasons.
 #' @example /inst/examples/marginalPlotHelp.R
@@ -60,7 +60,7 @@ marginalPlot <- function(x, prior = FALSE, xrange = NULL, type = 'd', singlePane
              settings)
   
   if (type == 'd') do.call(marginalPlotDensity, .args)
-  else if (type == 'h') do.call(marginalPlotHistogram, .args)
+  # else if (type == 'h') do.call(marginalPlotHistogram, .args)
   else if (type == 'v') do.call(marginalPlotViolin, .args)
 }
 
@@ -75,7 +75,7 @@ marginalPlot <- function(x, prior = FALSE, xrange = NULL, type = 'd', singlePane
 #' @author Tankred Ott
 #' @keywords internal
 # TODO: this could be simplified. It is verbose for now to be able to change stuff easily
-marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FF5000A0','#4682B4A0'),
+marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FC8D62FF','#A6D85499'), 
                                 singlePanel = TRUE, ...) {
   
   nPar <- ncol(posteriorMat)
@@ -134,8 +134,8 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
       mtext(sprintf('%20s', parNames[i]), 2, las = 1, adj = 1.25)
       
       
-      polygon(postX, postY, col = col[1], border = NA)
-      if (!is.null(priorX)) polygon(priorX, priorY, col = col[2], border = NA)
+      polygon(postX, postY, col = col[1], border = 1)
+      if (!is.null(priorX)) polygon(priorX, priorY, col = col[2], border = 1)
       
     }
     
@@ -159,8 +159,8 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
       plot(NULL, NULL, xlim = xrange[,i], ylim = yrange, main = parNames[i],
            xlab = NA, ylab = 'density')
       
-      polygon(postX, postY, col = col[1], border = NA)
-      if (!is.null(priorX)) polygon(priorX, priorY, col = col[2], border = NA)
+      polygon(postX, postY, col = col[1], border = 1)
+      if (!is.null(priorX)) polygon(priorX, priorY, col = col[2], border = 1)
       
       if (i %% 16 == 1) mtext('Marginal parameter uncertainity', outer = TRUE, cex = 1.5)
     }
@@ -185,7 +185,7 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
 #' @author Tankred Ott
 #' @keywords internal
 # TODO: this could be simplified. It is verbose for now to be able to change stuff easily
-marginalPlotViolin <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FF5000A0','#4682B4A0'),
+marginalPlotViolin <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FC8D62FF','#A6D85499'),
                                singlePanel = TRUE, ...) {
   
   nPar <- ncol(posteriorMat)
@@ -246,8 +246,8 @@ marginalPlotViolin <- function(posteriorMat, priorMat = NULL, xrange = NULL, col
       axis(1, at = xticks)
       mtext(sprintf('%20s', parNames[i]), 2, las = 1, adj = 1)
       
-      polygon(postX, postY, col = col[1], border = NA)
-      if (!is.null(priorX)) polygon(priorX, priorY, col = col[2], border = NA)
+      polygon(postX, postY, col = col[1], border = 1)
+      if (!is.null(priorX)) polygon(priorX, priorY, col = col[2], border = 1)
       
     }
     
@@ -274,8 +274,8 @@ marginalPlotViolin <- function(posteriorMat, priorMat = NULL, xrange = NULL, col
       axis(2, at = yticks, labels = abs(yticks))
       
       
-      polygon(postX, postY, col = col[1], border = NA)
-      if (!is.null(priorX)) polygon(priorX, priorY, col = col[2], border = NA)
+      polygon(postX, postY, col = col[1], border = 1)
+      if (!is.null(priorX)) polygon(priorX, priorY, col = col[2], border = 1)
       
       if (i %% 16 == 1) mtext('Marginal parameter uncertainity', outer = TRUE, cex = 1.5)
     }
