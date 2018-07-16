@@ -14,11 +14,11 @@ marginalPlot(x, prior = FALSE, xrange = NULL, type = "d",
 
 \item{xrange}{vector or matrix of plotting ranges for the x axis. If matrix, the rows must be parameters and the columns min and max values.}
 
-\item{type}{character determining the plot type. Either 'd' for density plot, 'h' for histogram, or 'v' for violin plot}
+\item{type}{character determining the plot type. Either 'd' for density plot, or 'v' for violin plot}
 
 \item{singlePanel}{logical, determining whether the parameter should be plotted in a single panel or each in its own panel}
 
-\item{settings}{optional list of additional settings for density plot, histogram, and violin plot, respectively}
+\item{settings}{optional list of additional settings for density plot, and violin plot, respectively}
 
 \item{nPriorDraws}{number of draws from the prior, if x is bayesianOutput}
 
@@ -55,7 +55,7 @@ marginalPlot(out, type = 'v', singlePanel = TRUE, xrange = matrix(rep(c(-5, 5), 
 
 ##Further options
 # We can pass arguments to getSample (check ?getSample) and to the density and violin plots
-marginalPlot(out, type = 'v', singlePanel = TRUE, col = c('red', 'blue'))
+marginalPlot(out, type = 'v', singlePanel = TRUE, settings = list(col = c('red', 'blue')))
 marginalPlot(out, type = 'v', singlePanel = TRUE, numSamples = 500)
 }
 \author{

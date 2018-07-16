@@ -5,7 +5,7 @@
 \title{Plot marginals as violin plot}
 \usage{
 marginalPlotViolin(posteriorMat, priorMat = NULL, xrange = NULL,
-  col = c("#FF5000A0", "#4682B4A0"), singlePanel = TRUE, ...)
+  col = c("#FC8D62FF", "#A6D85499"), singlePanel = TRUE, ...)
 }
 \arguments{
 \item{posteriorMat}{matrix with samples as rows and parameters as columns}
