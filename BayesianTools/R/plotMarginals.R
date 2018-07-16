@@ -7,7 +7,7 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #' @param xrange vector or matrix of plotting ranges for the x axis. If matrix, the rows must be parameters and the columns min and max values.
 #' @param type character determining the plot type. Either 'd' for density plot, or 'v' for violin plot
 #' @param singlePanel logical, determining whether the parameter should be plotted in a single panel or each in its own panel
-#' @param settings optional list of additional settings for density plot, and violin plot, respectively
+#' @param settings optional list of additional settings for \code{\link{marginalPlotDensity}}, and \code{\link{marginalPlotViolin}}, respectively
 #' @param nPriorDraws number of draws from the prior, if x is bayesianOutput
 #' @param ... additional arguments passed to \code{\link{getSample}}. If you have a high number of draws from the posterior it is advised to set numSamples (to e.g. 5000) for performance reasons.
 #' @example /inst/examples/marginalPlotHelp.R
@@ -75,7 +75,7 @@ marginalPlot <- function(x, prior = FALSE, xrange = NULL, type = 'd', singlePane
 #' @author Tankred Ott
 #' @keywords internal
 # TODO: this could be simplified. It is verbose for now to be able to change stuff easily
-marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FC8D62FF','#A6D85499'), 
+marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FC006299','#00BBAA88'), 
                                 singlePanel = TRUE, ...) {
   
   nPar <- ncol(posteriorMat)
@@ -185,7 +185,7 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
 #' @author Tankred Ott
 #' @keywords internal
 # TODO: this could be simplified. It is verbose for now to be able to change stuff easily
-marginalPlotViolin <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FC8D62FF','#A6D85499'),
+marginalPlotViolin <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FC006299','#00BBAA88'),
                                singlePanel = TRUE, ...) {
   
   nPar <- ncol(posteriorMat)
