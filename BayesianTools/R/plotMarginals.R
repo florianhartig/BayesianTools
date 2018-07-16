@@ -125,7 +125,7 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
       
       plot(NULL, NULL, xlim = xrange[,i], ylim = yrange, main = NA,
            xlab = NA, ylab = NA, bty = 'n', yaxt = 'n', xaxt = 'n')
-      axis(1, at = xrange[,i], labels = NA, lwd.tick=0)
+      axis(1, at = xrange[,i], labels = NA, lwd.ticks=0)
       xticks <- axTicks(1)
       xticks <- xticks[xticks >= xrange[1,i] & xticks <= xrange[2,i]]
       
@@ -239,7 +239,7 @@ marginalPlotViolin <- function(posteriorMat, priorMat = NULL, xrange = NULL, col
       plot(NULL, NULL, xlim = xrange[,i], ylim = yrange, main = NA,
            xlab = NA, ylab = NA, bty = 'n', yaxt = 'n', xaxt = 'n')
 
-      axis(1, at = xrange[,i], labels = NA, lwd.tick=0)
+      axis(1, at = xrange[,i], labels = NA, lwd.ticks=0)
       xticks <- axTicks(1)
       xticks <- xticks[xticks >= xrange[1,i] & xticks <= xrange[2,i]]
 
