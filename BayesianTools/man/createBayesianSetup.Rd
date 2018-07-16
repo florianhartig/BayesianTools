@@ -65,7 +65,7 @@ test$likelihood$density(matrix(rep(1,4), nrow = 2))
 #test$posterior$density(matrix(rep(1,4), nrow = 2), returnAll = TRUE)
 test$likelihood$density(matrix(rep(1,4), nrow = 4))
 
-
+\dontrun{
 
 ## Example of how to use parallelization using the VSEM model
 # Note that the parallelization produces overhead and is not always
@@ -121,6 +121,8 @@ BSVSEM <- createBayesianSetup(likelihood, prior, best = refPars$best[parSel],
 # Remove the Bayesian Setup and close the cluster
 stopParallel(BSVSEM)
 rm(BSVSEM)
+
+}
 }
 \seealso{
 \code{\link{checkBayesianSetup}} \cr

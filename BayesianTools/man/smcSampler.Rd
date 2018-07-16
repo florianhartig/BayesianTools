@@ -64,7 +64,7 @@ settings <- list(initialParticles = 100, iterations = 5, resamplingSteps = 1)
 out2 <- runMCMC(bayesianSetup = bayesianSetup, sampler = "SMC", settings = settings)
 #plot(out2)
 
-
+\dontrun{
 
 ## Example for starting a new SMC run with results from a previous SMC run
 
@@ -122,7 +122,7 @@ par_pred <- apply(out_2$particles, 2, median)
 pred <- mod(par_pred)
 plotTimeSeries(yObs, pred)
 
-
+}
 
 
 
