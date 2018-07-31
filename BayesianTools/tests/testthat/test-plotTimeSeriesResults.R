@@ -1,5 +1,7 @@
 testthat::context("Test plotTimeSeriesResults")
 
+skip_on_cran()
+
 # see VSEMHelp
 PAR <- VSEMcreatePAR(1:1000)
 refPars <- VSEMgetDefaults()

@@ -20,6 +20,11 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
     
   setup <- checkBayesianSetup(bayesianSetup)
   
+  info = list()
+  info$resamplingAcceptance = matrix(nrow = iterations, ncol = resamplingSteps)
+  info$survivingParticles = rep(NA, iterations)
+  
+  
   if(class(initialParticles) == "numeric"){
     initialParticles = bayesianSetup$prior$sampler(initialParticles)
   }
@@ -62,6 +67,7 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
   
     sel = sample.int(n=length(likelihoodValues), size = length(likelihoodValues), replace = T, prob = relativeL)
     
+    info$survivingParticles[i] = length(unique(sel))
     
     particles = particles[sel,]
     
@@ -89,15 +95,15 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
     }
   }
   
-  rejectionRate = rejectionRate / (iterations * resamplingSteps)
-  
+  info$rejectionRate = rejectionRate / (iterations * resamplingSteps)
+
   out = list(
     setup = setup,
     initialParticles = initialParticles,
     particles = particles,
     posteriorValues = posterior,
     proposalGenerator = proposalGenerator,
-    summaries = list(rejectionRate = rejectionRate)
+    info = info
   )
   
   class(out) <- c("smcSampler", "bayesianOutput")
