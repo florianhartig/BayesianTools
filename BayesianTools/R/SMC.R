@@ -49,21 +49,33 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
   
   for (i in 1:iterations){
     
+    # Reweighting
+
+    # idea - adjust (1/iterations) such that always approx 30% of particles are maintain
+    # level = sort(likelihoodValues)[acceptanceTarget]
+    # best = likelihoodValues
+    
+    # Jeremia is using beta sequence 
+    
+    # https://github.com/florianhartig/BayesianTools/issues/23
+    
     posterior = setup$posterior$density(particles, returnAll = T)
     
     likelihoodValues <- posterior[,2]
-    
-    # idea - adjust (1/iterations) such that always approx 30% of particles are maintain
-    #level = sort(likelihoodValues)[acceptanceTarget]
-    #best = likelihoodValues
-    
-    ll = likelihoodValues - max(likelihoodValues, na.rm = T)
+
+        ll = likelihoodValues - max(likelihoodValues, na.rm = T)
     
     llCutoff = sort(ll)[acceptanceTarget] 
     
-    
-    
     relativeL = exp(likelihoodValues - max(likelihoodValues, na.rm = T))^(1/iterations)
+    
+    
+    # Re?sampling step 
+    
+    # Option 1) Always resample (default BT)
+    # Option 2) Keep weights and resample if ESS < something
+    
+    # Question: last step complete resampling, so that all particles are the same?
   
     sel = sample.int(n=length(likelihoodValues), size = length(likelihoodValues), replace = T, prob = relativeL)
     
@@ -72,6 +84,11 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
     particles = particles[sel,]
     
     if (numPar == 1) particles = matrix(particles, ncol = 1)
+    
+    # Mutate
+    
+    # 1) When to do the resampling
+    # 2) HOW - currently adaptive Metropolis, could also do DEzs step 
     
     if (resampling == T){
       
@@ -89,8 +106,6 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
         rejectionRate = rejectionRate + sum(accepted)
         
         particles[accepted, ] = particlesProposals[accepted, ]        
-        
-      
       }
     }
   }
