@@ -58,7 +58,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
         if(!is.null(sampler$setup$names)) colnames(temp) = sampler$setup$names
       }
       else {
-        if(!is.null(sampler$setup$names)) colnames(temp) = c(sampler$setup$names, "Lposterior", "Llikelihod", "Lprior")
+        if(!is.null(sampler$setup$names)) colnames(temp) = c(sampler$setup$names, "Lposterior", "Llikelihood", "Lprior")
       }
       
       ########################

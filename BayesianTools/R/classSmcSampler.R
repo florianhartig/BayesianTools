@@ -10,7 +10,7 @@ getSample.smcSampler <- function(sampler, parametersOnly = T, coda = F, start = 
   }
   else {
     out = cbind(sampler$particles[start:end,] , sampler$posterior[start:end,] )
-    if(!is.null(sampler$setup$names)) colnames(out) = c(sampler$setup$names, "Lposterior", "Llikelihod", "Lprior")
+    if(!is.null(sampler$setup$names)) colnames(out) = c(sampler$setup$names, "Lposterior", "Llikelihood", "Lprior")
   }
   
   ########################
