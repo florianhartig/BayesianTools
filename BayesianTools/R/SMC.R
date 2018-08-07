@@ -180,7 +180,7 @@ smcSampler <- function(bayesianSetup, reference=NULL, initialParticles = 1000, i
       }
       
       particles = particles[sel,]
-      info$survivingParticles[i] = length(unique(sel))
+      info$survivingParticles[icount] = length(unique(sel))
       
       # Set all weights equal
       weights[1:length(weights)] <- log(1/particleSize)
