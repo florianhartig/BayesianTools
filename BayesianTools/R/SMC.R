@@ -22,7 +22,7 @@
 #' @note The SMC currently assumes that the initial particle is sampled from the prior. If a better initial estimate of the posterior distribution is available, this the sampler should be modified to include this. Currently, however, this is not included in the code, so the appropriate adjustments have to be done by hand. 
 #' @export
 #' @example /inst/examples/SMCHelp.R
-smcSampler <- function(bayesianSetup, reference=NULL, initialParticles = 1000, iterations = 10, resampling = T, resamplingSteps = 2, proposal = NULL, exponents = NULL, adaptive = T, proposalScale = 0.5, x=3.11, m=7E-08, sampling="multinomial",ess.limit=NULL,lastResample = 1,pars.lower=NULL, pars.upper=NULL){
+smcSampler <- function(bayesianSetup, reference=NULL, initialParticles = 1000, iterations = 10, resampling = T, resamplingSteps = 2, proposal = NULL, exponents = NULL, adaptive = T, proposalScale = 0.5, x=3.11, m=7E-08, sampling="multinomial",ess.limit=NULL,lastResample = 1,pars.lower=NULL, pars.upper=NULL,mutate="Metropolis",b=1e-04){
   
   if(resamplingSteps < 1) stop("SMC error, resamplingSteps can't be < 1")
   
@@ -56,7 +56,9 @@ smcSampler <- function(bayesianSetup, reference=NULL, initialParticles = 1000, i
   posterior = matrix(nrow = particleSize, ncol = 3)
   numPar <- ncol(initialParticles)
   
-  if (is.null(proposal)) proposalGenerator = createProposalGenerator(rep(40,numPar))
+  if(mutate %in% c("Metropolis", "adaptive")){
+    if (is.null(proposal)) proposalGenerator = createProposalGenerator(rep(40,numPar))
+  }
   
   usedUp = 0
   
@@ -221,7 +223,12 @@ smcSampler <- function(bayesianSetup, reference=NULL, initialParticles = 1000, i
     # 1) When to do the resampling
     # 2) HOW - currently adaptive Metropolis, could also do DEzs step 
     
-    if (resampling == T){
+    # Terminology issue: in literature, "resampling" generally describes the replication of particles with high likelihood, i.e. the previous
+    # step. This step here is generally referred to as "mutate" or "move".
+    # It may be necessary to rename the parameters "resampling" and "resamplingSteps", as well as info$resamplingAcceptance
+    
+    #if (resampling == T){
+    if(mutate=="Metropolis"){
       
       if (adaptive == T){
         proposalGenerator = updateProposalGenerator(proposalGenerator, particles)
@@ -237,6 +244,43 @@ smcSampler <- function(bayesianSetup, reference=NULL, initialParticles = 1000, i
         rejectionRate = rejectionRate + sum(accepted)
         particles[accepted, ] = particlesProposals[accepted, ] 
         info$resamplingAcceptance[(icount-1),j] <- sum(accepted)/particleSize
+      }
+    } else if(mutate=="DE"){
+    # Differential evolution
+      # For now (test): basic DE algorithm
+      
+      for(j in 1:resamplingSteps){
+        
+        # Loop over particles
+        for(part in 1:particleSize){
+          particlesOld <- particles
+          particleDiff <- rep(0,numPar)
+          newParts <- rep(0L,2)
+          
+          # Sample 2 other particles
+          while(all(particleDiff==0) | part %in% newParts){
+            # The sampled particles might be identical (especially after resampling). Therefore, it is checked whether
+            # the difference between particles is non-zero for at least one parameter. If the particles are identical,
+            # the sampled particles are discarded and two new particles are sampled.
+            # Also, the sampled particles should not include the current particle.
+            newParts <- sample.int(n=particleSize,size=2)
+            particleDiff <- particlesOld[newParts[1],] - particlesOld[newParts[2],]
+          }
+          
+          particleProp <- particlesOld[part,] + (particleDiff * proposalScale) + runif(numPar,-b,b)
+          jumpProb <- exp(setup$posterior$density(particleProp) - likelihoodValues[part]) * exp(setup$prior$density(particleProp)   - setup$prior$density(particles[part,]))
+          
+          if(jumpProb > runif(length(jumpProb), 0 ,1)){
+            particles[part,] <- particleProp
+            if(is.na(info$resamplingAcceptance[(icount-1),j])){
+              info$resamplingAcceptance[(icount-1),j] <- 1/particleSize
+            } else{
+              info$resamplingAcceptance[(icount-1),j] <- info$resamplingAcceptance[(icount-1),j] + 1/particleSize
+            }  
+          } else{
+            particles[part,] <- particlesOld[part,]
+          }
+        }
       }
     }
     info$dist.vec[(icount-1)] <- getSampleDistance(particles, getSample(reference),type="BH")
