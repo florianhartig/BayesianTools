@@ -2,7 +2,6 @@
 #' @author Florian Hartig
 #' @description Sequential Monte Carlo Sampler
 #' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function 
-#' @param reference object of class MCMCsampler, used as a ground truth to assess performance of the SMC sampler
 #' @param initialParticles initial particles - either a draw from the prior, provided as a matrix with the single parameters as columns and each row being one particle (parameter vector), or a numeric value with the number of desired particles. In this case, the sampling option must be provided in the prior of the BayesianSetup. 
 #' @param iterations number of iterations
 #' @param resampling if new particles should be created at each iteration
@@ -18,11 +17,13 @@
 #' @param lastResample Iteration (starting from the end) at which particle resampling is forced. To deactivate this, set to a value < 0
 #' @param pars.lower Optional: vector contaiing the mimimum values of calibration parameters. Used to initialize the proposal function
 #' @param pars.upper Optional: vector contaiing the maximum values of calibration parameters. Used to initialize the proposal function
+#' @param diagnostics an optional function with diagnostics that are calculated on the particles during each SMC iteration
+
 #' @details The sampler can be used for rejection sampling as well as for sequential Monte Carlo. For the former case set the iterations to one.
 #' @note The SMC currently assumes that the initial particle is sampled from the prior. If a better initial estimate of the posterior distribution is available, this the sampler should be modified to include this. Currently, however, this is not included in the code, so the appropriate adjustments have to be done by hand. 
 #' @export
 #' @example /inst/examples/SMCHelp.R
-smcSampler <- function(bayesianSetup, reference=NULL, initialParticles = 1000, iterations = 10, resampling = T, resamplingSteps = 2, proposal = NULL, exponents = NULL, adaptive = T, proposalScale = 0.5, x=3.11, m=7E-08, sampling="multinomial",ess.limit=NULL,lastResample = 1,pars.lower=NULL, pars.upper=NULL,mutate="Metropolis",b=1e-04){
+smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, resampling = T, resamplingSteps = 2, proposal = NULL, exponents = NULL, adaptive = T, proposalScale = 0.5, x=3.11, m=7E-08, sampling="multinomial",ess.limit=NULL,lastResample = 1,pars.lower=NULL, pars.upper=NULL,mutate="Metropolis",b=1e-04, diagnostics = NULL){
   
   if(resamplingSteps < 1) stop("SMC error, resamplingSteps can't be < 1")
   
@@ -33,13 +34,10 @@ smcSampler <- function(bayesianSetup, reference=NULL, initialParticles = 1000, i
   info$dist.vec <- vector("numeric", iterations)
   info$res.of <- rep(FALSE, iterations)
   info$res.ess <- rep(FALSE, iterations)
-  
-  weights <- vector("numeric", initialParticles)
-  oldweights <- vector("numeric", initialParticles)
-  oldll <- vector("numeric", initialParticles)
-  oldInter <- vector("numeric", initialParticles)
-  expTrack <- vector("numeric", initialParticles)
-  
+
+
+  weights <- oldweights <- oldInter <- rep(0, initialParticles)
+
   setup <- checkBayesianSetup(bayesianSetup)
   
   if(class(initialParticles) == "numeric"){
@@ -283,7 +281,7 @@ smcSampler <- function(bayesianSetup, reference=NULL, initialParticles = 1000, i
         }
       }
     }
-    info$dist.vec[(icount-1)] <- getSampleDistance(particles, getSample(reference),type="BH")
+    if(!is.null(diagnostics)) info$diagnostics[[icount-1]] <- diagnostics(particles)
   }
   
   info$rejectionRate = rejectionRate / (iterations * resamplingSteps)
