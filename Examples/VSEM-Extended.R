@@ -40,6 +40,8 @@ likelihood <- function(par, sum = TRUE){
   else return(sum(llValues))
 }
 
+likelihood(refPars$best[parSel])
+
 # optional, you can also directly provide lower, upper in the createBayesianSetup, see help
 prior <- createUniformPrior(lower = refPars$lower[parSel], 
                             upper = refPars$upper[parSel], best = refPars$best[parSel])
@@ -96,6 +98,7 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = setti
 plot(out)
 summary(out)
 marginalPlot(out, prior = T)
+correlationPlot(out)
 gelmanDiagnostics(out) # should be below 1.05 for all parameters to demonstrate convergence 
 
 # Posterior predictive simulations
