@@ -23,7 +23,27 @@
 #' @note The SMC currently assumes that the initial particle is sampled from the prior. If a better initial estimate of the posterior distribution is available, this the sampler should be modified to include this. Currently, however, this is not included in the code, so the appropriate adjustments have to be done by hand. 
 #' @export
 #' @example /inst/examples/SMCHelp.R
-smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, resampling = T, resamplingSteps = 2, proposal = NULL, exponents = NULL, adaptive = T, proposalScale = 0.5, x=3.11, m=7E-08, sampling="multinomial",ess.limit=NULL,lastResample = 1,pars.lower=NULL, pars.upper=NULL,mutate="Metropolis",b=1e-04, diagnostics = NULL){
+smcSampler <- function(bayesianSetup, 
+                       initialParticles = 1000,
+                       iterations = 10, 
+                       resampling = T, 
+                       resamplingSteps = 2, 
+                       proposal = NULL, 
+                       exponents = NULL, 
+                       adaptive = T, 
+                       proposalScale = 0.5, 
+                       x=3.11, 
+                       m=7E-08, 
+                       sampling="multinomial",
+                       ess.limit=NULL,
+                       lastResample = 1,
+                       pars.lower=NULL, 
+                       pars.upper=NULL, 
+                       mutate="Metropolis", 
+                       b=1e-04, 
+                       diagnostics = NULL){
+  
+  ########### SETUP STEPS ########################
   
   if(resamplingSteps < 1) stop("SMC error, resamplingSteps can't be < 1")
   
@@ -36,12 +56,21 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
   info$res.ess <- rep(FALSE, iterations)
 
 
-  weights <- oldweights <- oldInter <- rep(0, initialParticles)
-
   setup <- checkBayesianSetup(bayesianSetup)
+  
+  ### InitialParticles
+  #TODO documentation
   
   if(class(initialParticles) == "numeric"){
     initialParticles = bayesianSetup$prior$sampler(initialParticles)
+    importanceDensity = bayesianSetup$prior$density
+  }
+  if(class(initialParticles) == "matrix"){
+    importanceDensity = bayesianSetup$prior$density
+  }
+  if(class(initialParticles) == "list"){
+    initialParticles = initialParticles$particles
+    importanceDensity = initialParticles$density
   }
   
   if (any(is.infinite(setup$prior$density(initialParticles)))) stop("initialParticles outside prior range")
@@ -51,6 +80,8 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
   particleSize = nrow(initialParticles)
   if(is.null(ess.limit)){ess.limit <- round(particleSize) * 0.5}
   
+  weights <- oldweights <- oldInter <- rep(0, particleSize)
+  
   posterior = matrix(nrow = particleSize, ncol = 3)
   numPar <- ncol(initialParticles)
   
@@ -59,7 +90,10 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
   }
   
   usedUp = 0
+
   
+  ########### WEIGHT SETUP ########################
+    
   # Define an exponential sequence of beta parameters, i.e. the exponents to weight the likelihood against prior.
   # Idea and parameter values from Jeremiah et al. (2012), Environ Modell Softw
   if(is.null(exponents)){
@@ -90,6 +124,7 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
   
   #for (i in 1:iterations){
   while(icount <= length(exponents)){
+    
     # Using a while loop instead of for because in the adaptive algorithm, the number of iterations may increase
     
     # Reweighting
@@ -101,26 +136,22 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
     # Jeremia is using beta sequence 
     
     # https://github.com/florianhartig/BayesianTools/issues/23
-    
-    posterior = setup$posterior$density(particles, returnAll = T)
-    priorValues <- posterior[,3]
-    likelihoodValues <- posterior[, 2]
-    postValues <- posterior[,1]
-    
+
     print(c("weights", head(weights)))
     
     ## Update weights
     # Create intermediary distribution
     curExp <- exponents[icount]
-    interDist <- curExp * postValues + (1-curExp) * priorValues
+    interDist <- curExp * setup$posterior$density(particles) 
+                + (1-curExp) * importanceDensity(particles)
     
     # Calculate new weights
     oldweights <- weights
     weights <- weights + (interDist - oldInter)
     
     # Normalize (log-)weights so that the sum (of non-logs) equals 1
-    sumw <- sum(sort(exp(weights)))
-    weights <- weights - log(sumw)
+
+    weights <- weights - BayesianTools:::logSumExp(weights)
     
     # It may occur that the difference between the new and old weights of a particle is so great that an overflow occurs.
     # In this case, the algorithm reduces the difference between the current and next intermediary distribution (i.e. the difference
@@ -144,6 +175,7 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
     # relativeL = exp(likelihoodValues - max(likelihoodValues, na.rm = T))^(1/iterations)
     
     
+    #########################################################
     # Re?sampling step 
     
     # Option 1) Always resample (default BT)
@@ -167,31 +199,20 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
     # on the location of particles in parameter space, the weights are not considered in the output)
     if(ess < ess.limit | icount == (length(exponents) - lastResample)){
       oldExp <- curExp
-      if(sampling == "multinomial"){
-        sel <- sample.int(n=length(likelihoodValues), size = length(likelihoodValues), replace = T, prob = exp(weights))
-      } else if(sampling == "residual"){
-        sel <- residualResampling(weights)
-      } else if(sampling == "systematic"){
-        sel <- systematicResampling(weights)
-      } else{
-        stop("Invalid string for resampling argument")
-      }
-      
+
+      sel = resample(weights, method = sampling)
+            
       particles = particles[sel,]
       info$survivingParticles[icount] = length(unique(sel))
       
       # Set all weights equal
       weights[1:length(weights)] <- log(1/particleSize)
       # Normalize (log-)weights so that the sum (of non-logs) equals 1
-      sumw <- sum(sort(exp(weights)))
-      weights <- weights - log(sumw)
+      weights <- weights - BayesianTools:::logSumExp(weights)
       
       # Get posterior values and distribution for new particles
-      posterior = setup$posterior$density(particles, returnAll = T)
-      priorValues <- posterior[,3]
-      likelihoodValues <- posterior[, 2]
-      postValues <- posterior[,1]
-      oldInter <- oldExp * postValues + (1-oldExp) * priorValues
+      oldInter <- curExp * setup$posterior$density(particles) 
+                + (1-curExp) * importanceDensity(particles)
       
       # Determine if exponents need to be modified
       if(ess < estar){
@@ -216,6 +237,7 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
     
     if (numPar == 1) particles = matrix(particles, ncol = 1)
     
+    ###########################################################
     # Mutate
     
     # 1) When to do the resampling
@@ -286,12 +308,13 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
   
   info$rejectionRate = rejectionRate / (iterations * resamplingSteps)
   
+  settings = list(initialParticles = initialParticles, proposalGenerator = proposalGenerator)
+  
   out = list(
     setup = setup,
-    initialParticles = initialParticles,
+    settings = settings,
     particles = particles,
-    posteriorValues = posterior,
-    proposalGenerator = proposalGenerator,
+    posterior = posterior,
     info = info
   )
   
@@ -301,6 +324,9 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
 }
 
 
+#' Residual Resampling
+#' 
+#' @keywords internal
 residualResampling <- function(weights){
   weights <- exp(weights)
   # Define number of replications for each particle (integer), as well as residuals
@@ -317,7 +343,6 @@ residualResampling <- function(weights){
   new.parts <- rep(1:length(weights), nrep.int)
   new.parts <- c(new.parts, missing)
   return(new.parts)
-  
 }
 
 systematicResampling <- function(weights){
@@ -346,3 +371,22 @@ systematicResampling <- function(weights){
   
   return(new.parts)
 }
+
+
+
+resample <- function(weights, method = "multinomial"){
+  
+  particleSize = length(weights)
+  
+  if(method == "multinomial"){
+    sel <- sample.int(n=particleSize, size = particleSize, replace = T, prob = exp(weights))
+  } else if(method == "residual"){
+    sel <- residualResampling(weights)
+  } else if(method == "systematic"){
+    sel <- systematicResampling(weights)
+  } else{
+    stop("Invalid string for resampling argument")
+  }
+  return(sel)
+}
+
