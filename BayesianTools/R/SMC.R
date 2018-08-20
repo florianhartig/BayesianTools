@@ -37,6 +37,7 @@ smcSampler <- function(bayesianSetup,
                        m=7E-08, 
                        sampling="multinomial",
                        ess.limit=NULL,
+                       ess.factor = 0.95,           # TODO document
                        lastResample = 1,
                        pars.lower=NULL, 
                        pars.upper=NULL, 
@@ -98,21 +99,20 @@ smcSampler <- function(bayesianSetup,
     
   # Define an exponential sequence of beta parameters, i.e. the exponents to weight the likelihood against prior.
   # Idea and parameter values from Jeremiah et al. (2012), Environ Modell Softw
-  if(is.null(exponents)){
-    iters <- seq(0,iterations)
-    exponents <- m * (iters*200/iterations)^x
-    exponents <- pmin(1,exponents)
-    exponents <- exponents[2:length(exponents)]
-  }
-  print(c("length xponents", length(exponents)))
-  print(c("exponents", exponents))
+  # if(is.null(exponents)){
+  #   iters <- seq(0,iterations)
+  #   exponents <- m * (iters*200/iterations)^x
+  #   exponents <- pmin(1,exponents)
+  #   exponents <- exponents[2:length(exponents)]
+  # }
   
   # Initial value for exponent: here the first value of the series is taken.
   # If the situation ESS < E* never occurs, sampler execution is the same as
   # with the non-adaptive algorithm
   estar <- round(0.2*particleSize)
   oldExp <- 0
-  curExp <- exponents[1]
+  #curExp <- exponents[1]
+  curExp <- 0 # For fully adaptive algorithm: initial value of curExp does not matter, but must be < 1
   
   icount <- 1 # Iterations counter
   
@@ -133,22 +133,26 @@ smcSampler <- function(bayesianSetup,
   }
   if (is.null(proposal)){ proposalGenerator = createProposalGenerator(sds)}
   
+  lastIteration <- FALSE
+  
   
   ##########################################################
   #                  Loop starts here                      #
   ##########################################################
   
   #for (i in 1:iterations){
-  while(icount <= length(exponents)){
+  # while(icount <= length(exponents)){
+  while(curExp <= 1 & !lastIteration){ # For fully adaptive algorithm
+    if(curExp == 1){lastIteration <- TRUE}
     
     #posteriorValues <- setup$posterior$density(particles) 
     #importanceValues <- importanceDensity(particles)
     
     if (numPar == 1) particles = matrix(particles, ncol = 1)
     
-    print(c("icount",icount))
-    print(c("posteriorValues",head(posteriorValues)))
-    print(c("importanceValues",head(importanceValues)))
+    # print(c("icount",icount))
+    # print(c("posteriorValues",head(posteriorValues)))
+    # print(c("importanceValues",head(importanceValues)))
     
     # Using a while loop instead of for because in the adaptive algorithm, the number of iterations may increase
     
@@ -250,45 +254,54 @@ smcSampler <- function(bayesianSetup,
     
     # https://github.com/florianhartig/BayesianTools/issues/23
     
+
     ## Update weights
     # Create intermediary distribution
-    curExp <- exponents[icount]
-    
+    #curExp <- exponents[icount]
+    ess <- 1 / sum(exp(2 * weights))
     oldInter <- oldExp * posteriorValues + (1-oldExp) * importanceValues
-    interDist <- curExp * posteriorValues + (1-curExp) * importanceValues
+    inter.out <- beta.search(ess=ess, target.ess = (ess * ess.factor), posteriorValues = posteriorValues, importanceValues = importanceValues, oldInter = oldInter, curWeights = weights, curExp = curExp)
+    curExp <- inter.out$newExp
+    weights <- inter.out$weights
+    interDist <- inter.out$interDist
+    ess <- inter.out$ess
+    
+    #interDist <- curExp * posteriorValues + (1-curExp) * importanceValues
     
     # Calculate new weights
     
     weights <- weights + (interDist - oldInter)
-    
     # Normalize (log-)weights so that the sum (of non-logs) equals 1
-
     weights <- weights - BayesianTools:::logSumExp(weights)
+    
+   
+    
     
     # It may occur that the difference between the new and old weights of a particle is so great that an overflow occurs.
     # In this case, the algorithm reduces the difference between the current and next intermediary distribution (i.e. the difference
     # between the current and next value of the exponent). As a result, one more iteration is added.
     # This is the same that happens when the effective sample size becomes *very* low.
     #if(is.infinite(sum(sort(exp(weights))))){
-    if(any(is.infinite(weights))){
-      print("Infinite weights sum; retrying with new intermediary distribution")
-      expdiff <- (exponents[icount] - exponents[(icount-1)]) * 0.5
-      newExp <- exponents[(icount-1)] + expdiff
-      exponents <- append(exponents,newExp,after=(icount-1))
-      weights <- oldweights
-      info$res.of[icount] <- TRUE
-      next
-    }
+
+    # if(any(is.infinite(weights))){
+    #   print("Infinite weights sum; retrying with new intermediary distribution")
+    #   expdiff <- (exponents[icount] - exponents[(icount-1)]) * 0.5
+    #   newExp <- exponents[(icount-1)] + expdiff
+    #   exponents <- append(exponents,newExp,after=(icount-1))
+    #   weights <- oldweights
+    #   info$res.of[icount] <- TRUE
+    #   next
+    # }
     
     print("-------")
     print(c("icount", icount))
-    print(c("particles", head(particles)))
-    print(c("importance", head(importanceValues)))
-    print(c("posterior", head(posteriorValues)))
-    print(c("interDist", head(interDist)))
-    print(c("oldInter", head(oldInter)))
-    print(c("weights", head(weights)))
-    print(c("oldweights", head(oldweights)))
+    # print(c("particles", head(particles)))
+    # print(c("importance", head(importanceValues)))
+    # print(c("posterior", head(posteriorValues)))
+    # print(c("interDist", head(interDist)))
+    # print(c("oldInter", head(oldInter)))
+    # print(c("weights", head(weights)))
+    # print(c("oldweights", head(oldweights)))
     
     # posterior = setup$posterior$density(particles, returnAll = T)
     # likelihoodValues <- posterior[,2]
@@ -309,7 +322,7 @@ smcSampler <- function(bayesianSetup,
     #sel = sample.int(n=length(likelihoodValues), size = length(likelihoodValues), replace = T, prob = relativeL)
     
     # Calculate effective sample size (ESS)
-    ess <- 1 / sum(exp(2 * weights))
+    #ess <- 1 / sum(exp(2 * weights))
 
     if(is.infinite(ess)){print(weights)}
     
@@ -325,33 +338,33 @@ smcSampler <- function(bayesianSetup,
       
       
       # Determine if exponents need to be modified
-      if(ess < estar){
-        # If yes:
-        # - discard newly sampled population of particles
-        # - do not increase counter
-        # - modify x
-        
-        expdiff <- (exponents[icount] - exponents[(icount-1)]) * 0.5
-        newExp <- exponents[(icount-1)] + expdiff
-        print(c("exponents[icount]",exponents[icount]))
-        print(c("exponents[icount-1]",exponents[icount-1]))
-        print(c("expdiff", expdiff))
-        print(c("newExp",newExp))
-        
-        weights <- oldweights
-        
-        if(icount==1){
-          newExp <- exponents[icount] * 0.5
-          exponents <- c(newExp,exponents)
-        } else { 
-          exponents <- append(exponents,newExp,after=(icount-1))
-        }
-        
-        print(c("length(exponents", length(exponents)))
-        print(c("new exponents", exponents))
-        info$res.ess[icount] <- TRUE
-        next
-      } 
+      # if(ess < estar){
+      #   # If yes:
+      #   # - discard newly sampled population of particles
+      #   # - do not increase counter
+      #   # - modify x
+      #   
+      #   expdiff <- (exponents[icount] - exponents[(icount-1)]) * 0.5
+      #   newExp <- exponents[(icount-1)] + expdiff
+      #   print(c("exponents[icount]",exponents[icount]))
+      #   print(c("exponents[icount-1]",exponents[icount-1]))
+      #   print(c("expdiff", expdiff))
+      #   print(c("newExp",newExp))
+      #   
+      #   weights <- oldweights
+      #   
+      #   if(icount==1){
+      #     newExp <- exponents[icount] * 0.5
+      #     exponents <- c(newExp,exponents)
+      #   } else { 
+      #     exponents <- append(exponents,newExp,after=(icount-1))
+      #   }
+      #   
+      #   print(c("length(exponents", length(exponents)))
+      #   print(c("new exponents", exponents))
+      #   info$res.ess[icount] <- TRUE
+      #   next
+      # } 
       
       oldExp <- curExp
 
@@ -373,8 +386,8 @@ smcSampler <- function(bayesianSetup,
       #oldInter <- curExp * posteriorValues + (1-curExp) * importanceValues
       
       print("-- Resampling")
-      print(c("posterior", head(posteriorValues)))
-      print(c("importance", head(importanceValues)))
+      # print(c("posterior", head(posteriorValues)))
+      # print(c("importance", head(importanceValues)))
       #print(c("oldInter", head(oldInter)))
       
 
@@ -419,6 +432,8 @@ smcSampler <- function(bayesianSetup,
   
 }
 
+######################################################
+# Auxiliary functions for resampling
 
 #' Residual Resampling
 #' 
@@ -486,15 +501,24 @@ resample <- function(weights, method = "multinomial"){
   return(sel)
 }
 
-beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldInter, curWeights, curExp, tol=0.001){
+######################################################
+
+# Auxiliary function for adaptive algorithm
+
+beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldInter, curWeights, curExp, tol=1){
   # A function to dynamically set the next exponent to build the next intermediary distribution.
   # Uses the bisection method. Following Jasra et al. (2001), Scand J Statist, doi: 10.1111/j.1467-9469.2010.00723.x
   
   # Initial exponent - set to 1 (maximum possible value)
   tryDiff <- 1 - curExp
+  a <- curExp
+  b <- 1
+  try.ess <- target.ess + (100*tol) # Dummy initial value that is sure to be different from target value
+  tryExp <- 0
   
-  while(abs(ess-target.ess) > tol){
-    tryExp <- curExp + tryDiff
+  while(abs(try.ess-target.ess) > tol & tryExp < 1){
+    #tryExp <- curExp + tryDiff
+    tryExp <- (a+b) * 0.5
     
     tryDist <- tryExp * posteriorValues + (1-tryExp) * importanceValues
     
@@ -502,33 +526,47 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
     # Normalize (log-)weights so that the sum (of non-logs) equals 1
     tryWeights <- tryWeights - BayesianTools:::logSumExp(tryWeights)
     
-    try.ess <- 1 / sum(exp(2 * weights))
+    try.ess <- 1 / sum(exp(2 * tryWeights))
+    
+    
+    print("---------------")
+    print(c("ess", ess))
+    print(c("target.ess", target.ess))
+    print(c("try.ess", try.ess))
+    print(c("a,b", a,b))
     
     if(try.ess - target.ess > tol){
       # Greater ESS than desired -> choose a *larger* exponent in the next iteration (efficiency)
-      tryDiff <- tryDiff + tryDiff * 0.5
+      #tryDiff <- tryDiff + tryDiff * 0.5
+      a <- tryExp
       
       # Exponent may not be greater than one
-      if(tryDiff + curExp >= 1){
-        tryExp <- 1
-        break
-      }
+      #if(tryDiff + curExp >= 1){
+      #  tryExp <- 1
+      #  break
+      #}
       
     } else if(try.ess - target.ess < -tol | any(is.infinite(tryWeights))){
       # Smaller ESS than desired -> choose a *smaller* exponent in the next iteration (stability)
       # Also includes a failsafe in the case of infinite weights (numerical issue)
-      tryDiff <- tryDiff - (tryDiff * 0.5)
+      #tryDiff <- tryDiff - (tryDiff * 0.5)
+      
+      b <- tryExp
       
       # Exponent may not decrease from previous value
-      if(tryDiff < 0){
+      #if(tryDiff < 0){
         # This should not occur - leaving it for testing only
-        stop("problem defining next exponent")
-      }
+      #  stop("problem defining next exponent")
+      #}
     }
   }
   
   out <- list(newExp=tryExp, weights=tryWeights, interDist=tryDist, ess=try.ess)
+  return(out)
 }
+
+######################################################
+# Auxiliary function for particle mutation
 
 
 mutate <- function(setup, particles, proposalGenerator, posteriorValues, importanceDensity, method, steps, proposalScale, adaptive = TRUE){
