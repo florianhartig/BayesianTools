@@ -50,12 +50,12 @@ smcSampler <- function(bayesianSetup,
   if(resamplingSteps < 1) stop("SMC error, resamplingSteps can't be < 1")
   
   info = list()
-  info$resamplingAcceptance = as.data.frame(matrix(nrow = iterations, ncol = resamplingSteps)) #Using DF instead of matrix because number of iterations may change due to adaptive algorithm
-  info$survivingParticles = rep(NA, iterations)
-  info$ess.vec <- vector("numeric", iterations)
-  info$dist.vec <- vector("numeric", iterations)
-  info$res.of <- rep(FALSE, iterations)
-  info$res.ess <- rep(FALSE, iterations)
+  # The number of iterations is not known at the beginning. Therefore, output vectors (with one value for each iteration)
+  # are made large enough that they will probably not need to be grown (growing arrays can be slow).
+  info$resamplingAcceptance = as.data.frame(matrix(nrow = 10000, ncol = resamplingSteps)) #Using DF instead of matrix because number of iterations may change due to adaptive algorithm
+  info$survivingParticles = rep(NA, 10000)
+  info$ess.vec <-  info$exponents <- vector("numeric", 10000)
+
 
   setup <- checkBayesianSetup(bayesianSetup)
   
@@ -73,8 +73,6 @@ smcSampler <- function(bayesianSetup,
     importanceDensity = initialParticles$density
     initialParticles = as.matrix(initialParticles$particles,ncol=1)
   }
-  
-  #print(c("density", setup$prior$density(initialParticles)))
   
   if (any(is.infinite(setup$prior$density(initialParticles)))) stop("initialParticles outside prior range")
   
@@ -142,17 +140,12 @@ smcSampler <- function(bayesianSetup,
   
   #for (i in 1:iterations){
   # while(icount <= length(exponents)){
-  while(curExp <= 1 & !lastIteration){ # For fully adaptive algorithm
-    if(curExp == 1){lastIteration <- TRUE}
-    
-    #posteriorValues <- setup$posterior$density(particles) 
-    #importanceValues <- importanceDensity(particles)
+  #while(curExp <= 1 & !lastIteration){ # For fully adaptive algorithm
+  #  if(curExp == 1){lastIteration <- TRUE}
+  while(curExp < 1){
     
     if (numPar == 1) particles = matrix(particles, ncol = 1)
     
-    # print(c("icount",icount))
-    # print(c("posteriorValues",head(posteriorValues)))
-    # print(c("importanceValues",head(importanceValues)))
     
     # Using a while loop instead of for because in the adaptive algorithm, the number of iterations may increase
     
@@ -236,7 +229,7 @@ smcSampler <- function(bayesianSetup,
     # }
     ####------------- Replaced by mutate function - End -------------------
     
-    mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = resamplingSteps, proposalScale = proposalScale, adaptive = adaptive)
+    mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = resamplingSteps, proposalScale = proposalScale, adaptive = adaptive, b=b)
     particles <- mutate.out$particles
     posteriorValues <- mutate.out$posteriorValues
     importanceValues <- mutate.out$importanceValues
@@ -257,7 +250,6 @@ smcSampler <- function(bayesianSetup,
 
     ## Update weights
     # Create intermediary distribution
-    #curExp <- exponents[icount]
     ess <- 1 / sum(exp(2 * weights))
     oldInter <- oldExp * posteriorValues + (1-oldExp) * importanceValues
     inter.out <- beta.search(ess=ess, target.ess = (ess * ess.factor), posteriorValues = posteriorValues, importanceValues = importanceValues, oldInter = oldInter, curWeights = weights, curExp = curExp)
@@ -265,16 +257,22 @@ smcSampler <- function(bayesianSetup,
     weights <- inter.out$weights
     interDist <- inter.out$interDist
     ess <- inter.out$ess
+    doResample <- inter.out$doResample
+    info$ess.vec[icount] <- ess
+    info$exponents[icount] <- curExp
+    if(abs(1-curExp) < 1e-03){
+      curExp <- 1
+    }
     
-    #interDist <- curExp * posteriorValues + (1-curExp) * importanceValues
+    print(c("weights U", head(weights)))
+    print(c("weights sum", BayesianTools:::logSumExp(weights)))
+    print(c("interDist", head(interDist)))
+    print(c("oldInter", head(oldInter)))
     
     # Calculate new weights
-    
-    weights <- weights + (interDist - oldInter)
+    #weights <- weights + (interDist - oldInter)
     # Normalize (log-)weights so that the sum (of non-logs) equals 1
-    weights <- weights - BayesianTools:::logSumExp(weights)
-    
-   
+    #weights <- weights - BayesianTools:::logSumExp(weights)
     
     
     # It may occur that the difference between the new and old weights of a particle is so great that an overflow occurs.
@@ -295,19 +293,6 @@ smcSampler <- function(bayesianSetup,
     
     print("-------")
     print(c("icount", icount))
-    # print(c("particles", head(particles)))
-    # print(c("importance", head(importanceValues)))
-    # print(c("posterior", head(posteriorValues)))
-    # print(c("interDist", head(interDist)))
-    # print(c("oldInter", head(oldInter)))
-    # print(c("weights", head(weights)))
-    # print(c("oldweights", head(oldweights)))
-    
-    # posterior = setup$posterior$density(particles, returnAll = T)
-    # likelihoodValues <- posterior[,2]
-    #     ll = likelihoodValues - max(likelihoodValues, na.rm = T)
-    # llCutoff = sort(ll)[acceptanceTarget] 
-    # relativeL = exp(likelihoodValues - max(likelihoodValues, na.rm = T))^(1/iterations)
     
     
     #########################################################
@@ -318,11 +303,7 @@ smcSampler <- function(bayesianSetup,
     # => for now, option 1 is activated if the argument ess.limit is set to a value >= the number of particles
     
     # Question: last step complete resampling, so that all particles are the same?
-    
-    #sel = sample.int(n=length(likelihoodValues), size = length(likelihoodValues), replace = T, prob = relativeL)
-    
-    # Calculate effective sample size (ESS)
-    #ess <- 1 / sum(exp(2 * weights))
+
 
     if(is.infinite(ess)){print(weights)}
     
@@ -334,38 +315,8 @@ smcSampler <- function(bayesianSetup,
     print(c("ess.limit", ess.limit))
     print(c("curExp", curExp))
 
-    if(ess < ess.limit | icount == (length(exponents) - lastResample)){
-      
-      
-      # Determine if exponents need to be modified
-      # if(ess < estar){
-      #   # If yes:
-      #   # - discard newly sampled population of particles
-      #   # - do not increase counter
-      #   # - modify x
-      #   
-      #   expdiff <- (exponents[icount] - exponents[(icount-1)]) * 0.5
-      #   newExp <- exponents[(icount-1)] + expdiff
-      #   print(c("exponents[icount]",exponents[icount]))
-      #   print(c("exponents[icount-1]",exponents[icount-1]))
-      #   print(c("expdiff", expdiff))
-      #   print(c("newExp",newExp))
-      #   
-      #   weights <- oldweights
-      #   
-      #   if(icount==1){
-      #     newExp <- exponents[icount] * 0.5
-      #     exponents <- c(newExp,exponents)
-      #   } else { 
-      #     exponents <- append(exponents,newExp,after=(icount-1))
-      #   }
-      #   
-      #   print(c("length(exponents", length(exponents)))
-      #   print(c("new exponents", exponents))
-      #   info$res.ess[icount] <- TRUE
-      #   next
-      # } 
-      
+    if(ess < ess.limit | icount == (length(exponents) - lastResample) | doResample){
+ 
       oldExp <- curExp
 
       sel = resample(weights, method = sampling)
@@ -380,42 +331,41 @@ smcSampler <- function(bayesianSetup,
       # Normalize (log-)weights so that the sum (of non-logs) equals 1
       weights <- weights - BayesianTools:::logSumExp(weights)
       
-      # Get posterior values and distribution for new particles
-      #oldInter <- curExp * setup$posterior$density(particles) 
-      #          + (1-curExp) * importanceDensity(particles)
-      #oldInter <- curExp * posteriorValues + (1-curExp) * importanceValues
-      
       print("-- Resampling")
-      # print(c("posterior", head(posteriorValues)))
-      # print(c("importance", head(importanceValues)))
-      #print(c("oldInter", head(oldInter)))
-      
-
-    } else{
-      # Save intermediate distribution for the next iteration
-      #oldInter <- interDist
-    }
+      mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = resamplingSteps, proposalScale = proposalScale, adaptive = adaptive, b=b)
+      particles <- mutate.out$particles
+      posteriorValues <- mutate.out$posteriorValues
+      importanceValues <- mutate.out$importanceValues
+      info$resamplingAcceptance[(icount),] <- mutate.out$acceptance
+    } 
     
     oldweights <- weights
-    
-    #print(c("oldInter saved", head(oldInter)))
-    
     info$ess.vec[icount] <- ess
     
     icount <- icount + 1    
-    #curExp <- m * (icount*200/iterations)^x
     oldExp <- curExp
     
     if(!is.null(diagnostics)) info$diagnostics[[icount-1]] <- diagnostics(particles)
   }
   
+  # Last resampling step, so that particles are distributed according to target distribution
+  sel = resample(weights, method = sampling)
+  particles = particles[sel,]
+  
   # Last mutation, to increase diversity between particles
-  mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = lastMutateSteps, proposalScale = proposalScale, adaptive = adaptive)
+  mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = lastMutateSteps, proposalScale = proposalScale, adaptive = adaptive, b=b)
   particles <- mutate.out$particles
   posteriorValues <- mutate.out$posteriorValues
   importanceValues <- mutate.out$importanceValues
+  lastAccept <- mutate.out$acceptance
   
   info$rejectionRate = rejectionRate / (iterations * resamplingSteps)
+  
+  info$resamplingAcceptance <- info$resamplingAcceptance[1:(icount-1),]
+  info$survivingParticles <- info$survivingParticles[1:(icount-1)]
+  info$exponents <- info$exponents[1:(icount-1)]
+  info$ess.vec <- info$ess.vec[1:(icount-1)]
+  info$lastAccept <- lastAccept
   
   settings = list(initialParticles = initialParticles, proposalGenerator = proposalGenerator)
   
@@ -457,13 +407,11 @@ residualResampling <- function(weights){
 }
 
 systematicResampling <- function(weights){
-  #print(weights)
   weights <- exp(weights)
   # Reorder weights in increasing order
   rank.weights <- rank(weights, ties.method = "first")
   sort.weights <- sort(weights)
   cumu.weights <- c(0,cumsum(sort.weights)[1:(length(weights)-1)])
-  #print(cumu.weights)
   n.parts <- length(weights)  # Number of particles
   
   u <- runif(n=1, min=0, max=1/n.parts)
@@ -472,10 +420,9 @@ systematicResampling <- function(weights){
   new.parts.sort <- vector("numeric", n.parts)
   for(i in 1:n.parts){
     U[i] <- ((i-1)/n.parts) + u
-    #print(c(i, U[i]))
+
     
     new.parts.sort[i] <- tail(which(cumu.weights <= U[i]),1)
-    #print(c("new.parts.sort", new.parts.sort[i]))
     # Match sorted ranks back to original order of weights
     new.parts[i] <- which(rank.weights==new.parts.sort[i])
   }
@@ -516,9 +463,19 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
   try.ess <- target.ess + (100*tol) # Dummy initial value that is sure to be different from target value
   tryExp <- 0
   
-  while(abs(try.ess-target.ess) > tol & tryExp < 1){
-    #tryExp <- curExp + tryDiff
+  print("*-*-*_*-*-*")
+  print(c("ess", ess))
+  print(c("curWeights", head(curWeights)))
+  
+  while(abs(try.ess-target.ess) > tol & tryExp < 1 & abs(b-a) > 1e-10){
     tryExp <- (a+b) * 0.5
+    
+    # print(c("ess", ess))
+    # print(c("target.ess", target.ess))
+    # print(c("try.ess", try.ess))
+    # print(c("curExp", curExp))
+    # print(c("tryExp", tryExp))
+    # print(c("a,b", a, b))
     
     tryDist <- tryExp * posteriorValues + (1-tryExp) * importanceValues
     
@@ -528,40 +485,30 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
     
     try.ess <- 1 / sum(exp(2 * tryWeights))
     
+    #print(c("new try.ess", try.ess))
     
-    print("---------------")
-    print(c("ess", ess))
-    print(c("target.ess", target.ess))
-    print(c("try.ess", try.ess))
-    print(c("a,b", a,b))
-    
-    if(try.ess - target.ess > tol){
+    if(try.ess - target.ess > tol & !any(is.infinite(tryWeights))){
       # Greater ESS than desired -> choose a *larger* exponent in the next iteration (efficiency)
-      #tryDiff <- tryDiff + tryDiff * 0.5
       a <- tryExp
-      
-      # Exponent may not be greater than one
-      #if(tryDiff + curExp >= 1){
-      #  tryExp <- 1
-      #  break
-      #}
-      
     } else if(try.ess - target.ess < -tol | any(is.infinite(tryWeights))){
       # Smaller ESS than desired -> choose a *smaller* exponent in the next iteration (stability)
       # Also includes a failsafe in the case of infinite weights (numerical issue)
-      #tryDiff <- tryDiff - (tryDiff * 0.5)
-      
       b <- tryExp
-      
-      # Exponent may not decrease from previous value
-      #if(tryDiff < 0){
-        # This should not occur - leaving it for testing only
-      #  stop("problem defining next exponent")
-      #}
     }
   }
   
-  out <- list(newExp=tryExp, weights=tryWeights, interDist=tryDist, ess=try.ess)
+  if(any(is.infinite(tryWeights)) | is.infinite(try.ess)){
+    doResample <- TRUE
+    tryExp <- curExp
+    tryWeights <- curWeights
+    tryDist <- oldInter
+    try.ess <- ess
+    print("OIOIOI")
+  } else{
+    doResample <- FALSE
+  }
+  
+  out <- list(newExp=tryExp, weights=tryWeights, interDist=tryDist, ess=try.ess, doResample = doResample)
   return(out)
 }
 
@@ -569,37 +516,69 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
 # Auxiliary function for particle mutation
 
 
-mutate <- function(setup, particles, proposalGenerator, posteriorValues, importanceDensity, method, steps, proposalScale, adaptive = TRUE){
+mutate <- function(setup, particles, proposalGenerator, posteriorValues, importanceDensity, method, steps, proposalScale, adaptive = TRUE, b){
+  print(c("method in mutate", method))
+  print(c("b",b))
   if(is.vector(particles)){particles = matrix(particles, ncol = 1)}
   acceptance <- vector("numeric", length=steps)
   importanceValues <- importanceDensity(particles)
   
-  if(method=="Metropolis"){
+  #if(method=="Metropolis"){
     if(adaptive){
       proposalGenerator = updateProposalGenerator(proposalGenerator, particles)
     }
     
     for(j in 1:steps){
-      particlesProposals = proposalGenerator$returnProposalMatrix(particles, scale = proposalScale)
+      
+      if(method=="Metropolis"){
+        particlesProposals = proposalGenerator$returnProposalMatrix(particles, scale = proposalScale)
+
+        
+      } else if(method=="DE"){
+        #particleDiffs <- vector("numeric", particleSize)
+        #randomTerms <- as.data.frame(matrix(ncol=ncol(particles), nrow = nrow(particles)))
+        particlesProposals <- particles
+        
+        for(part in 1:nrow(particles)){
+          particlesOld <- particles
+          particleDiff <- rep(0,ncol(particles))
+          newParts <- rep(0L,2)
+          
+          # Sample 2 other particles
+          while(all(particleDiff==0) | part %in% newParts){
+            # The sampled particles might be identical (especially after resampling). Therefore, it is checked whether
+            # the difference between particles is non-zero for at least one parameter. If the particles are identical,
+            # the sampled particles are discarded and two new particles are sampled.
+            # Also, the sampled particles should not include the current particle.
+            newParts <- sample.int(n=nrow(particles),size=2, replace=FALSE)
+            particleDiff <- particlesOld[newParts[1],] - particlesOld[newParts[2],]
+          }
+          numPar <- ncol(particles)
+          randVector <- runif(numPar,-b,b)
+          #print(c("part", part))
+          #print(c("Particle 1", head(particlesOld[newParts[1],])))
+          #print(c("Particle 2", head(particlesOld[newParts[2],])))
+          #print(c("particleDiff", head(particleDiff)))
+          particlesProposals[part,] <-   particles[part,] + (particleDiff * proposalScale) + randVector          
+        }  
+      }
+      
+      print(head(particlesProposals))
+      
       proposalPosteriors <- setup$posterior$density(particlesProposals) 
       proposalImportance <- importanceDensity(particlesProposals)
       
-      #jumpProb <- exp(setup$posterior$density(particlesProposals) - likelihoodValues[sel])^(i/iterations) * exp(setup$prior$density(particlesProposals)   - setup$prior$density(particles))
-      #jumpProb <- exp(setup$posterior$density(particlesProposals) - setup$posterior$density(particles)) * exp(setup$prior$density(particlesProposals)   - setup$prior$density(particles))
+      print(c("proposalPosteriors", head(proposalPosteriors)))
+      print(c("posteriorValues", head(posteriorValues)))
+        
       jumpProb <- exp(proposalPosteriors - posteriorValues) * exp(setup$prior$density(particlesProposals)   - setup$prior$density(particles))
-      #jumpProb <- exp(setup$posterior$density(particlesProposals) - posteriorValues) * exp(setup$prior$density(particlesProposals)   - setup$prior$density(particles))
-      
-      
-      print(c("particlesProposals", head(particlesProposals)))
-      print(c("particles", head(particles)))
+
       accepted <- jumpProb > runif(length(jumpProb), 0 ,1)
-      #rejectionRate = rejectionRate + sum(accepted)
       particles[accepted, ] = particlesProposals[accepted, ] 
       posteriorValues[accepted] <- proposalPosteriors[accepted]
       importanceValues[accepted] <- proposalImportance[accepted]
       acceptance[j] <- sum(accepted)/nrow(particles)
-      #info$resamplingAcceptance[(icount),j] <- sum(accepted)/particleSize
     }
-  }
+  #}
   out <- list(particles=particles, posteriorValues = posteriorValues, importanceValues = importanceValues, acceptance = acceptance)
 }
