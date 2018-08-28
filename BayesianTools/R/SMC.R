@@ -43,7 +43,8 @@ smcSampler <- function(bayesianSetup,
                        pars.upper=NULL, 
                        mutate.method ="Metropolis", # TODO document
                        b=1e-04,                     # TODO document
-                       diagnostics = NULL){
+                       diagnostics = NULL,
+                       reference=NULL){
   
   ########### SETUP STEPS ########################
   
@@ -54,7 +55,8 @@ smcSampler <- function(bayesianSetup,
   # are made large enough that they will probably not need to be grown (growing arrays can be slow).
   info$resamplingAcceptance = as.data.frame(matrix(nrow = 10000, ncol = resamplingSteps)) #Using DF instead of matrix because number of iterations may change due to adaptive algorithm
   info$survivingParticles = rep(NA, 10000)
-  info$ess.vec <-  info$exponents <- vector("numeric", 10000)
+  info$ess.vec <-  info$exponents <- info$diagnostics <- vector("numeric", 10000)
+  diag.end <- vector("numeric", lastMutateSteps)
 
 
   setup <- checkBayesianSetup(bayesianSetup)
@@ -159,75 +161,6 @@ smcSampler <- function(bayesianSetup,
     # step. This step here is generally referred to as "mutate" or "move".
     # It may be necessary to rename the parameters "resampling" and "resamplingSteps", as well as info$resamplingAcceptance
     
-    #if (resampling == T){
-    
-    
-    ####------------- Replaced by mutate function - Start -------------------
-    # if(mutate=="Metropolis"){
-    #   
-    #   if (adaptive == T){
-    #     proposalGenerator = updateProposalGenerator(proposalGenerator, particles)
-    #   }
-    #   
-    #   for (j in 1:resamplingSteps){
-    #     particlesProposals = proposalGenerator$returnProposalMatrix(particles, scale = proposalScale)
-    #     proposalPosteriors <- setup$posterior$density(particlesProposals) 
-    #     proposalImportance <- importanceDensity(particlesProposals)
-    #     
-    #     #jumpProb <- exp(setup$posterior$density(particlesProposals) - likelihoodValues[sel])^(i/iterations) * exp(setup$prior$density(particlesProposals)   - setup$prior$density(particles))
-    #     #jumpProb <- exp(setup$posterior$density(particlesProposals) - setup$posterior$density(particles)) * exp(setup$prior$density(particlesProposals)   - setup$prior$density(particles))
-    #     jumpProb <- exp(proposalPosteriors - posteriorValues) * exp(setup$prior$density(particlesProposals)   - setup$prior$density(particles))
-    #     #jumpProb <- exp(setup$posterior$density(particlesProposals) - posteriorValues) * exp(setup$prior$density(particlesProposals)   - setup$prior$density(particles))
-    #     
-    #     
-    #     print(c("particlesProposals", head(particlesProposals)))
-    #     print(c("particles", head(particles)))
-    #     accepted <- jumpProb > runif(length(jumpProb), 0 ,1)
-    #     rejectionRate = rejectionRate + sum(accepted)
-    #     particles[accepted, ] = particlesProposals[accepted, ] 
-    #     posteriorValues[accepted] <- proposalPosteriors[accepted]
-    #     importanceValues[accepted] <- proposalImportance[accepted]
-    #     info$resamplingAcceptance[(icount),j] <- sum(accepted)/particleSize
-    #   }
-    # } else if(mutate=="DE"){
-    #   # Differential evolution
-    #   # For now (test): basic DE algorithm
-    #   
-    #   for(j in 1:resamplingSteps){
-    #     
-    #     # Loop over particles
-    #     for(part in 1:particleSize){
-    #       particlesOld <- particles
-    #       particleDiff <- rep(0,numPar)
-    #       newParts <- rep(0L,2)
-    #       
-    #       # Sample 2 other particles
-    #       while(all(particleDiff==0) | part %in% newParts){
-    #         # The sampled particles might be identical (especially after resampling). Therefore, it is checked whether
-    #         # the difference between particles is non-zero for at least one parameter. If the particles are identical,
-    #         # the sampled particles are discarded and two new particles are sampled.
-    #         # Also, the sampled particles should not include the current particle.
-    #         newParts <- sample.int(n=particleSize,size=2)
-    #         particleDiff <- particlesOld[newParts[1],] - particlesOld[newParts[2],]
-    #       }
-    #       
-    #       particleProp <- particlesOld[part,] + (particleDiff * proposalScale) + runif(numPar,-b,b)
-    #       jumpProb <- exp(setup$posterior$density(particleProp) - likelihoodValues[part]) * exp(setup$prior$density(particleProp)   - setup$prior$density(particles[part,]))
-    #       
-    #       if(jumpProb > runif(length(jumpProb), 0 ,1)){
-    #         particles[part,] <- particleProp
-    #         if(is.na(info$resamplingAcceptance[(icount-1),j])){
-    #           info$resamplingAcceptance[(icount-1),j] <- 1/particleSize
-    #         } else{
-    #           info$resamplingAcceptance[(icount-1),j] <- info$resamplingAcceptance[(icount-1),j] + 1/particleSize
-    #         }  
-    #       } else{
-    #         particles[part,] <- particlesOld[part,]
-    #       }
-    #     }
-    #   }
-    # }
-    ####------------- Replaced by mutate function - End -------------------
     
     mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = resamplingSteps, proposalScale = proposalScale, adaptive = adaptive, b=b)
     particles <- mutate.out$particles
@@ -268,28 +201,6 @@ smcSampler <- function(bayesianSetup,
     print(c("weights sum", BayesianTools:::logSumExp(weights)))
     print(c("interDist", head(interDist)))
     print(c("oldInter", head(oldInter)))
-    
-    # Calculate new weights
-    #weights <- weights + (interDist - oldInter)
-    # Normalize (log-)weights so that the sum (of non-logs) equals 1
-    #weights <- weights - BayesianTools:::logSumExp(weights)
-    
-    
-    # It may occur that the difference between the new and old weights of a particle is so great that an overflow occurs.
-    # In this case, the algorithm reduces the difference between the current and next intermediary distribution (i.e. the difference
-    # between the current and next value of the exponent). As a result, one more iteration is added.
-    # This is the same that happens when the effective sample size becomes *very* low.
-    #if(is.infinite(sum(sort(exp(weights))))){
-
-    # if(any(is.infinite(weights))){
-    #   print("Infinite weights sum; retrying with new intermediary distribution")
-    #   expdiff <- (exponents[icount] - exponents[(icount-1)]) * 0.5
-    #   newExp <- exponents[(icount-1)] + expdiff
-    #   exponents <- append(exponents,newExp,after=(icount-1))
-    #   weights <- oldweights
-    #   info$res.of[icount] <- TRUE
-    #   next
-    # }
     
     print("-------")
     print(c("icount", icount))
@@ -345,25 +256,33 @@ smcSampler <- function(bayesianSetup,
     icount <- icount + 1    
     oldExp <- curExp
     
-    if(!is.null(diagnostics)) info$diagnostics[[icount-1]] <- diagnostics(particles)
+    if(!is.null(diagnostics)) info$diagnostics[[icount-1]] <- diagnostics(particles, reference)
   }
   
   # Last resampling step, so that particles are distributed according to target distribution
   sel = resample(weights, method = sampling)
   particles = particles[sel,]
+  info$survivingParticles[(icount-1)] <- length(unique(sel))
   
-  # Last mutation, to increase diversity between particles
-  mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = lastMutateSteps, proposalScale = proposalScale, adaptive = adaptive, b=b)
-  particles <- mutate.out$particles
-  posteriorValues <- mutate.out$posteriorValues
-  importanceValues <- mutate.out$importanceValues
-  lastAccept <- mutate.out$acceptance
+  for(mutateStep in 1:lastMutateSteps){
+    # Last mutation, to increase diversity between particles
+    mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = 1, proposalScale = proposalScale, adaptive = adaptive, b=b)
+    particles <- mutate.out$particles
+    posteriorValues <- mutate.out$posteriorValues
+    importanceValues <- mutate.out$importanceValues
+    lastAccept <- mutate.out$acceptance
+    if(!is.null(diagnostics)) diag.end[mutateStep] <- diagnostics(particles, reference)
+  }
   
   info$rejectionRate = rejectionRate / (iterations * resamplingSteps)
   
+  # Trim info objects (as their size = number of iterations were not known beforehand, they
+  # were allocated a large vector/matrix). Trim up to (icount-1), as icount got incremented
+  # at the end of the last iteration.
   info$resamplingAcceptance <- info$resamplingAcceptance[1:(icount-1),]
   info$survivingParticles <- info$survivingParticles[1:(icount-1)]
   info$exponents <- info$exponents[1:(icount-1)]
+  info$diagnostics <- c(info$diagnostics[1:(icount-1)], diag.end)
   info$ess.vec <- info$ess.vec[1:(icount-1)]
   info$lastAccept <- lastAccept
   
@@ -469,13 +388,7 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
   
   while(abs(try.ess-target.ess) > tol & tryExp < 1 & abs(b-a) > 1e-10){
     tryExp <- (a+b) * 0.5
-    
-    # print(c("ess", ess))
-    # print(c("target.ess", target.ess))
-    # print(c("try.ess", try.ess))
-    # print(c("curExp", curExp))
-    # print(c("tryExp", tryExp))
-    # print(c("a,b", a, b))
+
     
     tryDist <- tryExp * posteriorValues + (1-tryExp) * importanceValues
     
@@ -484,8 +397,6 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
     tryWeights <- tryWeights - BayesianTools:::logSumExp(tryWeights)
     
     try.ess <- 1 / sum(exp(2 * tryWeights))
-    
-    #print(c("new try.ess", try.ess))
     
     if(try.ess - target.ess > tol & !any(is.infinite(tryWeights))){
       # Greater ESS than desired -> choose a *larger* exponent in the next iteration (efficiency)
