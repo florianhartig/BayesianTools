@@ -1,5 +1,5 @@
 #' SMC sampler
-#' @author Florian Hartig
+#' @author Florian Hartig, Matthias Speich
 #' @description Sequential Monte Carlo Sampler
 #' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function 
 #' @param initialParticles initial particles - either a draw from the prior, provided as a matrix with the single parameters as columns and each row being one particle (parameter vector), or a numeric value with the number of desired particles. In this case, the sampling option must be provided in the prior of the BayesianSetup. 
@@ -162,13 +162,11 @@ smcSampler <- function(bayesianSetup,
     # It may be necessary to rename the parameters "resampling" and "resamplingSteps", as well as info$resamplingAcceptance
     
     
-    mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = resamplingSteps, proposalScale = proposalScale, adaptive = adaptive, b=b)
-    particles <- mutate.out$particles
-    posteriorValues <- mutate.out$posteriorValues
-    importanceValues <- mutate.out$importanceValues
-    info$resamplingAcceptance[(icount),] <- mutate.out$acceptance
-    
-    
+    # mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = resamplingSteps, proposalScale = proposalScale, adaptive = adaptive, b=b)
+    # particles <- mutate.out$particles
+    # posteriorValues <- mutate.out$posteriorValues
+    # importanceValues <- mutate.out$importanceValues
+    # info$resamplingAcceptance[(icount),] <- mutate.out$acceptance
     
     # Reweighting
     
@@ -197,15 +195,6 @@ smcSampler <- function(bayesianSetup,
       curExp <- 1
     }
     
-    print(c("weights U", head(weights)))
-    print(c("weights sum", BayesianTools:::logSumExp(weights)))
-    print(c("interDist", head(interDist)))
-    print(c("oldInter", head(oldInter)))
-    
-    print("-------")
-    print(c("icount", icount))
-    
-    
     #########################################################
     # Re?sampling step 
     
@@ -221,10 +210,6 @@ smcSampler <- function(bayesianSetup,
     # Determine if resampling is necessary - if yes, resample with probability given by the weight
     # Resample also on the last iteration, or at the iteration (starting from the end) given by the parameter lastResample (output is based
     # on the location of particles in parameter space, the weights are not considered in the output)
-    
-    print(c("ess", ess))
-    print(c("ess.limit", ess.limit))
-    print(c("curExp", curExp))
 
     if(ess < ess.limit | icount == (length(exponents) - lastResample) | doResample){
  
@@ -414,7 +399,6 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
     tryWeights <- curWeights
     tryDist <- oldInter
     try.ess <- ess
-    print("OIOIOI")
   } else{
     doResample <- FALSE
   }
@@ -427,14 +411,13 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
 # Auxiliary function for particle mutation
 
 
-mutate <- function(setup, particles, proposalGenerator, posteriorValues, importanceDensity, method, steps, proposalScale, adaptive = TRUE, b){
+mutate <- function(setup, particles, proposalGenerator, posteriorValues, importanceDensity, method, steps, proposalScale, adaptive = TRUE, b=1E-04){
   print(c("method in mutate", method))
   print(c("b",b))
   if(is.vector(particles)){particles = matrix(particles, ncol = 1)}
   acceptance <- vector("numeric", length=steps)
   importanceValues <- importanceDensity(particles)
   
-  #if(method=="Metropolis"){
     if(adaptive){
       proposalGenerator = updateProposalGenerator(proposalGenerator, particles)
     }
@@ -446,8 +429,7 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
 
         
       } else if(method=="DE"){
-        #particleDiffs <- vector("numeric", particleSize)
-        #randomTerms <- as.data.frame(matrix(ncol=ncol(particles), nrow = nrow(particles)))
+
         particlesProposals <- particles
         
         for(part in 1:nrow(particles)){
@@ -466,22 +448,14 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
           }
           numPar <- ncol(particles)
           randVector <- runif(numPar,-b,b)
-          #print(c("part", part))
-          #print(c("Particle 1", head(particlesOld[newParts[1],])))
-          #print(c("Particle 2", head(particlesOld[newParts[2],])))
-          #print(c("particleDiff", head(particleDiff)))
           particlesProposals[part,] <-   particles[part,] + (particleDiff * proposalScale) + randVector          
         }  
       }
       
-      print(head(particlesProposals))
-      
+
       proposalPosteriors <- setup$posterior$density(particlesProposals) 
       proposalImportance <- importanceDensity(particlesProposals)
-      
-      print(c("proposalPosteriors", head(proposalPosteriors)))
-      print(c("posteriorValues", head(posteriorValues)))
-        
+
       jumpProb <- exp(proposalPosteriors - posteriorValues) * exp(setup$prior$density(particlesProposals)   - setup$prior$density(particles))
 
       accepted <- jumpProb > runif(length(jumpProb), 0 ,1)
