@@ -2,6 +2,7 @@ context("Test SMC and utility functions") # Must be at the top of the file (http
 
 library(testthat)
 library(BayesianTools)
+library(Matching)
 
 test <- "exact"
 
@@ -9,7 +10,7 @@ test <- "exact"
 
 
 
-set.seed(3)
+set.seed(123)
 
 
 
@@ -73,11 +74,74 @@ test_that("mutation works", {
   setup = createBayesianSetup(ll, lower = c(-10), upper = c(10))
   
   particles <- runif(n=5000, min=-10, max=10)
+  particles <- matrix(particles, ncol=1)
   importanceDensity <- function(x){return(dunif(x, min=-10, max=10, log = TRUE))}
   
+  ### Testing *Metropolis* implementation
+  
   posteriorValues <- setup$posterior$density(particles)
-  
   # Initialize proposal Generator
-  proposalGenerator <- createProposalGenerator()
+  proposalGenerator <- createProposalGenerator(covariance=var(particles))
+  mutate.test <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method="Metropolis", steps=50, proposalScale = 0.5)
   
+  # Outputs should be normally distributed after a couple of steps
+  ks.pval <- ks.test(mutate.test$particles, rnorm(n=length(test.smc$particles)))$p.value
+  expect_gt(ks.pval,0.05)
+  
+  ### Testing *Differential Evolution* implementation
+  
+  mutate.test <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method="DE", steps=50, proposalScale = 0.5)
+  
+  # Outputs should be normally distributed after a couple of steps
+  ks.pval <- ks.test(mutate.test$particles, rnorm(n=length(test.smc$particles)))$p.value
+  expect_gt(ks.pval,0.05)
+})
+
+test_that("univariate SMC sampler works", {
+  ll = function(x) sum(dnorm(x, log = T))
+  setup = createBayesianSetup(ll, lower = c(-10), upper = c(10))
+  
+  initialParticles <- list()
+  initialParticles$particles <- runif(n=5000, min=-10, max=10)
+  initialParticles$density <- function(x){return(dunif(x, min=-10, max=10, log = TRUE))}
+  
+  # Test with *Metropolis* mutation
+  test.smc <- smcSampler(setup, initialParticles = initialParticles, mutate.method ="Metropolis",sampling="systematic",adaptive=TRUE, ess.factor=0.99, resamplingSteps = 1)
+  ks.pval <- ks.boot(rnorm(n=length(test.smc$particles)), test.smc$particles)$ks.boot.pvalue
+  expect_gt(ks.pval,0.05)
+  
+  # Test with *Differential Evolution* mutation
+  test.smc <- smcSampler(setup, initialParticles = initialParticles, mutate.method ="DE",sampling="systematic",adaptive=TRUE, ess.factor=0.99, resamplingSteps = 1)
+  ks.pval <- ks.boot(rnorm(n=length(test.smc$particles)), test.smc$particles)$ks.boot.pvalue
+  expect_gt(ks.pval,0.05)
+})
+
+test_that("2D sampler works", {
+  ll = function(x) sum(dnorm(x, log = T))
+  setup = createBayesianSetup(ll, lower = c(-10,-10), upper = c(10,10))
+  
+  initialParticles <- list()
+  part1 <- runif(n=5000, min=-10, max=10)
+  part2 <- runif(n=5000, min=-10, max=10)
+  initialParticles$particles <- data.frame(part1,part2)
+  initialParticles$density <- function(x){return(rep(dunif(1, min=-10, max=10, log = TRUE), nrow(x)))}
+  
+  ### Test with *Metropolis* mutation
+  test.smc <- smcSampler(setup, initialParticles = initialParticles, mutate.method ="Metropolis",sampling="systematic",adaptive=TRUE, ess.factor=0.99, resamplingSteps = 1)
+  
+  #ks.pval1 <- ks.test(test.smc$particles[,1], rnorm(n=length(test.smc$particles)))$p.value
+  ks.pval1 <- ks.boot(rnorm(n=length(test.smc$particles[,1])), test.smc$particles[,1])$ks.boot.pvalue
+  expect_gt(ks.pval1,0.05)
+
+  ks.pval2 <- ks.boot(rnorm(n=length(test.smc$particles[,2])), test.smc$particles[,2])$ks.boot.pvalue
+  expect_gt(ks.pval2,0.05)
+  
+  ### Test with *Differential Evolution* mutation
+  test.smc <- smcSampler(setup, initialParticles = initialParticles, mutate.method ="DE",sampling="systematic",adaptive=TRUE, ess.factor=0.99, resamplingSteps = 1)
+  
+  ks.pval1 <- ks.boot(rnorm(n=length(test.smc$particles[,1])), test.smc$particles[,1])$ks.boot.pvalue
+  expect_gt(ks.pval1,0.05)
+  
+  ks.pval2 <- ks.boot(rnorm(n=length(test.smc$particles[,2])), test.smc$particles[,2])$ks.boot.pvalue
+  expect_gt(ks.pval2,0.05)
 })
