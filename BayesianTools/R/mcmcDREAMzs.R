@@ -165,8 +165,8 @@ DREAMzs <- function(bayesianSetup,
 
   
   # assign memory for Z and write first values in Z
-  M <- nrow(Z[complete.cases(Z),])
-  Zold <- Z[complete.cases(Z),]
+  M <- nrow(Z[complete.cases(Z),,drop = FALSE])
+  Zold <- Z[complete.cases(Z),,drop = FALSE]
   Z <- matrix(NA, nrow= M + floor((n.iter) /settings$ZupdateFrequency) * Npop, ncol=Npar)
   Z[1:M,] <- Zold
   
