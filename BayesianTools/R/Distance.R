@@ -30,7 +30,8 @@ getSampleDistance <- function(sample1, sample2, type = "KL"){
     # The following code is copied from package fpc
     
     aggregatesigma <- (Sigma1+Sigma2)/2
-    d1 <- mahalanobis(mu1,mu2,aggregatesigma,tol=1e-20)/8 # tol (tolerance) argument gets passed to solve(). Avoids crashes if there are very small values in the covariance matrices
+    #d1 <- mahalanobis(mu1,mu2,aggregatesigma,tol=1e-20)/8 # tol (tolerance) argument gets passed to solve(). Avoids crashes if there are very small values in the covariance matrices
+    d1 <- mahalanobis(mu1,mu2,aggregatesigma,tol=.Machine$double.xmin)/8 # tol (tolerance) argument gets passed to solve(). Avoids crashes if there are very small values in the covariance matrices
     d2 <- log(det(as.matrix(aggregatesigma))/sqrt(det(as.matrix(Sigma1))*
                                                     det(as.matrix(Sigma2))))/2
     out <- d1+d2
