@@ -21,7 +21,7 @@ getSampleDistance <- function(sample1, sample2, type = "KL"){
     x = FNN::KL.dist(sample1, sample2, k=10)
     out = mean(x) # FH: no idea if the mean is a good idea. KL.dist returns one value per cluster size, I don't know which value is best chosen
     
-  } else if(type == "BH" ){
+  } else if(type == "BH" | type == "BHs" ){
     Sigma1 = cov(sample1)
     Sigma2 = cov(sample2)
     mu1 = colMeans(sample1)
@@ -34,7 +34,11 @@ getSampleDistance <- function(sample1, sample2, type = "KL"){
     d1 <- mahalanobis(mu1,mu2,aggregatesigma,tol=.Machine$double.xmin)/8 # tol (tolerance) argument gets passed to solve(). Avoids crashes if there are very small values in the covariance matrices
     d2 <- log(det(as.matrix(aggregatesigma))/sqrt(det(as.matrix(Sigma1))*
                                                     det(as.matrix(Sigma2))))/2
+    if(type == "BH"){
     out <- d1+d2
+    } else if (type == "BHs"){
+      out <- c(d1, d2)
+    }
     
     # end fpc
     
