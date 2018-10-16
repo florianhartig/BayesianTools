@@ -695,7 +695,7 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
         
       }
       
-      print(head(scale.factors, 100))
+      #print(head(scale.factors, 100))
       #plot(density(scale.factors), xlim=c(0,1))
       
     }
