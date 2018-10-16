@@ -59,8 +59,9 @@ smcSampler <- function(bayesianSetup,
   # are made large enough that they will probably not need to be grown (growing arrays can be slow).
   if(resamplingSteps > 0) info$resamplingAcceptance = as.data.frame(matrix(nrow = 10000, ncol = resamplingSteps)) #Using DF instead of matrix because number of iterations may change due to adaptive algorithm
   info$survivingParticles = rep(NA, 10000)
-  info$ess.vec <-  info$exponents <- info$diagnostics <- vector("numeric", 10000)
-  diag.end <- lastAccept <- vector("numeric", lastMutateSteps)
+  info$ess.vec <-  info$exponents <- vector("numeric", 10000)
+  info$diagnostics <- diag.end <- list()
+  lastAccept <- vector("numeric", lastMutateSteps)
 
 
   setup <- checkBayesianSetup(bayesianSetup)
@@ -105,7 +106,7 @@ smcSampler <- function(bayesianSetup,
   usedUp = 0
   
   #### TEST
-  proposalScale <- runif(nrow(particles), min = 1e-06, max = 1)
+  #proposalScale <- runif(nrow(particles), min = 1e-06, max = 1)
   Z <- particles
 
   
@@ -209,7 +210,8 @@ smcSampler <- function(bayesianSetup,
     ess <- 1 / sum(exp(2 * weights))
     oldInter <- oldExp * posteriorValues + (1-oldExp) * importanceValues
     
-    inter.out <- beta.search(ess=ess, target.ess = (ess * ess.factor), posteriorValues = posteriorValues, importanceValues = importanceValues, oldInter = oldInter, curWeights = weights, curExp = curExp)
+    #inter.out <- beta.search(ess=ess, target.ess = (ess * ess.factor), posteriorValues = posteriorValues, importanceValues = importanceValues, oldInter = oldInter, curWeights = weights, curExp = curExp)
+    inter.out <- beta.search(ess=ess, target.ess = (ess.limit-1), posteriorValues = posteriorValues, importanceValues = importanceValues, oldInter = oldInter, curWeights = weights, curExp = curExp)
     curExp <- inter.out$newExp
     weights <- inter.out$weights
     interDist <- inter.out$interDist
@@ -274,22 +276,23 @@ smcSampler <- function(bayesianSetup,
           proposalScale <- mutate.out$proposalScale
         }
         
-        plot(density(particles[,1]), xlim=c(0.314, 0.681), main = nrow(unique(particles)))
+        #plot(density(particles[,1]), xlim=c(0.314, 0.681), main = c(curExp, nrow(unique(particles))))
         
         #Z <- rbind(Z, particles)
         
-        while(nrow(unique(particles)) < nrow(particles) * 0.5){
-          mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = resamplingSteps, proposalScale = proposalScale, adaptive = adaptive, b=b, min.pars = min.pars, max.pars = max.pars, Z = NULL)
-          particles <- mutate.out$particles
-          posteriorValues <- mutate.out$posteriorValues
-          importanceValues <- mutate.out$importanceValues
-          info$resamplingAcceptance[(icount),] <- mutate.out$acceptance
-          if(length(proposalScale) > 1){
-            proposalScale <- mutate.out$proposalScale
-          }
-
-          plot(density(particles[,1]), xlim=c(0.314, 0.681), main = c("oi", nrow(unique(particles))))
-        }
+        # while(nrow(unique(particles)) < nrow(particles) * 0.5){
+        #   mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = resamplingSteps, proposalScale = proposalScale, adaptive = adaptive, b=b, min.pars = min.pars, max.pars = max.pars, Z = NULL)
+        # 
+        #   particles <- mutate.out$particles
+        #   posteriorValues <- mutate.out$posteriorValues
+        #   importanceValues <- mutate.out$importanceValues
+        #   info$resamplingAcceptance[(icount),] <- mutate.out$acceptance
+        #   if(length(proposalScale) > 1){
+        #     proposalScale <- mutate.out$proposalScale
+        #   }
+        # 
+        #   plot(density(particles[,1]), xlim=c(0.314, 0.681), main = c("oi", curExp, nrow(unique(particles))))
+        # }
           
       }
       
@@ -333,9 +336,9 @@ smcSampler <- function(bayesianSetup,
       posteriorValues <- mutate.out$posteriorValues
       importanceValues <- mutate.out$importanceValues
       lastAccept[mutateStep] <- mutate.out$acceptance
-      if(!is.null(diagnostics)) diag.end[mutateStep] <- diagnostics(particles, reference)
+      if(!is.null(diagnostics)) diag.end[[mutateStep]] <- diagnostics(particles, reference)
       
-      plot(density(particles[,1]), xlim=c(0.314, 0.681))
+      #plot(density(particles[,1]), xlim=c(0.314, 0.681))
       
       #Z <- rbind(Z, particles)
     }
@@ -353,7 +356,8 @@ smcSampler <- function(bayesianSetup,
   if(resamplingSteps > 0) info$resamplingAcceptance <- info$resamplingAcceptance[1:(icount-1),]
   info$survivingParticles <- info$survivingParticles[1:(icount-1)]
   info$exponents <- info$exponents[1:(icount-1)]
-  info$diagnostics <- c(info$diagnostics[1:(icount-1)], diag.end)
+  #info$diagnostics <- c(info$diagnostics[[1:(icount-1)]], diag.end)
+  info$diagnostics <- c(info$diagnostics, diag.end)
   info$ess.vec <- info$ess.vec[1:(icount-1)]
   if(resamplingSteps > 0) info$lastAccept <- lastAccept
   info$elapsed.time <- elapsed.time
@@ -691,7 +695,7 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
         
       }
       
-      #print(head(scale.factors, 100))
+      print(head(scale.factors, 100))
       #plot(density(scale.factors), xlim=c(0,1))
       
     }
