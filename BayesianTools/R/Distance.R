@@ -32,8 +32,7 @@ getSampleDistance <- function(sample1, sample2, type = "KL"){
     aggregatesigma <- (Sigma1+Sigma2)/2
     #d1 <- mahalanobis(mu1,mu2,aggregatesigma,tol=1e-20)/8 # tol (tolerance) argument gets passed to solve(). Avoids crashes if there are very small values in the covariance matrices
     d1 <- mahalanobis(mu1,mu2,aggregatesigma,tol=.Machine$double.xmin)/8 # tol (tolerance) argument gets passed to solve(). Avoids crashes if there are very small values in the covariance matrices
-    d2 <- log(det(as.matrix(aggregatesigma))/sqrt(det(as.matrix(Sigma1))*
-                                                    det(as.matrix(Sigma2))))/2
+    d2 <- log(det(as.matrix(aggregatesigma))/sqrt(det(as.matrix(Sigma1))*det(as.matrix(Sigma2))))/2
     if(type == "BH"){
     out <- d1+d2
     } else if (type == "BHs"){
@@ -50,7 +49,7 @@ getSampleDistance <- function(sample1, sample2, type = "KL"){
     sd2 = apply(sample2, 2, sd)
     mu1 = colMeans(sample1)
     mu2 = colMeans(sample2)
-    dev = sum( ((mu1 - mu2)/sd1)^2 + ((mu1 - mu2)/sd1)^2  )
+    dev = sum( ((mu1 - mu2)/sd1)^2 + ((sd1 - sd2)/sd1)^2  )
     
     out = sqrt( 1/(2*length(mu1)) * dev )
     
