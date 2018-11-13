@@ -33,7 +33,7 @@ summary.mcmcSamplerList <- function(object, ...){
   mcmcsampler <- sampler[[1]]$settings$sampler
   
   runtime <- 0
-  for(i in 1:length(sampler)) runtime <- runtime+sampler[[i]]$settings$runtime[3]
+  for(i in 1:length(sampler)) runtime <- runtime+sampler[[i]]$info$runtime[3]
 
   correlations <- round(cor(getSample(sampler)),3)
 
