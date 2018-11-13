@@ -236,9 +236,11 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
       mcmcSampler$settings = settings
     }
 
-    mcmcSampler$settings$runtime = mcmcSampler$settings$runtime + proc.time() - ptm
+    mcmcSampler$info$sessionInfo = utils::sessionInfo()
+    
+    mcmcSampler$info$runtime = mcmcSampler$info$runtime + proc.time() - ptm
     if(is.null(settings$message) || settings$message == TRUE){
-    message("runMCMC terminated after ", mcmcSampler$settings$runtime[3], "seconds")
+      message("runMCMC terminated after ", mcmcSampler$info$runtime[3], "seconds")
     }
     return(mcmcSampler)
   }
@@ -448,9 +450,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   }
   
   defaultSettings$nrChains = 1
-  defaultSettings$runtime = 0
-  defaultSettings$sessionInfo = utils::sessionInfo()
-  
+
   nam = names(defaultSettings)
   
   for (i in 1:length(defaultSettings)){
