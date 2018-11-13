@@ -649,6 +649,18 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
       jumpProb <- exp(proposalPosteriors - posteriorValues + r_extra)
 
       accepted <- jumpProb > runif(length(jumpProb), 0 ,1)
+      
+      if(sum(is.na(accepted)) > 1){
+        print("sum is.na accepted", sum(is.na(accepted)))
+        print("proposalPosteriors")
+        print(proposalPosteriors)
+        print("posteriorValues")
+        print(posteriorValues)
+        print("r_extra")
+        print(r_extra)
+        
+      }
+      
       particles[accepted, ] = particlesProposals[accepted, ] 
       posteriorValues[accepted] <- proposalPosteriors[accepted]
       importanceValues[accepted] <- proposalImportance[accepted]
