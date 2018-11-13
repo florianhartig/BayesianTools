@@ -12,3 +12,11 @@ FNN::KL.dist(X, Y, k=10)
 getSampleDistance(X,Y, type = "KL")
 getSampleDistance(X,Y, type = "BH")
 getSampleDistance(X,Y, type = "D")
+
+# the distance functions are independent of the scale of the parameters, see e.g.
+
+scale = 2
+getSampleDistance(data.frame(rnorm(1000), rnorm(1000, sd = scale)), 
+                  data.frame(rnorm(1000), rnorm(1000, mean = scale, sd = scale)), type = "BH")
+getSampleDistance(data.frame(rnorm(1000), rnorm(1000, sd = scale)), 
+                  data.frame(rnorm(1000), rnorm(1000, mean = scale, sd = scale)), type = "D")
