@@ -131,7 +131,7 @@ summary.mcmcSampler <- function(object, ...){
   psf <- FALSE
   
   mcmcsampler <- sampler$settings$sampler
-  runtime <- sampler$settings$runtime[3]
+  runtime <- sampler$info$runtime[3]
   correlations <- round(cor(getSample(sampler)),3)
   
   chain <- getSample(sampler, parametersOnly = T, coda = T, ...)
