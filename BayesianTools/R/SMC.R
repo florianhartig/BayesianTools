@@ -471,6 +471,25 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
     
     tryWeights <- curWeights + (tryDist - oldInter)
     # Normalize (log-)weights so that the sum (of non-logs) equals 1
+    
+    ### DEBUG
+    if(sum(is.na(tryWeights)) > 0){
+      print("DEBUG")
+      print("tryWeights")
+      print(tryWeights)
+      print("tryDist")
+      print(tryDist)
+      print("oldInter")
+      print(oldInter)
+      print(c("curExp", curExp))
+      print(c("tryExp", tryExp))
+      print(c("a", a))
+      print(c("b", b))
+      print("posteriorValues")
+      print(posteriorValues)
+      print("importanceValues")
+      print(importanceValues)
+    }
 
     tryWeights <- tryWeights - BayesianTools:::logSumExp(tryWeights)
     try.ess <- 1 / sum(exp(2 * tryWeights))
