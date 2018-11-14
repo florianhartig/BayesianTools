@@ -20,3 +20,18 @@ getSampleDistance(data.frame(rnorm(1000), rnorm(1000, sd = scale)),
                   data.frame(rnorm(1000), rnorm(1000, mean = scale, sd = scale)), type = "BH")
 getSampleDistance(data.frame(rnorm(1000), rnorm(1000, sd = scale)), 
                   data.frame(rnorm(1000), rnorm(1000, mean = scale, sd = scale)), type = "D")
+
+
+# To get an idea about how the distance functions approach zero for a perfect sampler
+# use the following code where we sample 2 distributions directly from their 
+# rnorm function 
+
+getD <- function(n){
+  x1 = matrix(rnorm(n), ncol = 10)
+  x2 = matrix(rnorm(n), ncol = 10)
+  getSampleDistance(x1, x2, type = "D" )  
+}
+
+test = seq(1000, 30000, 1000)
+plot(test, sapply(test, getD), ylim = c(0,0.4))
+abline(h=0, col = "red")
