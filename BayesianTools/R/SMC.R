@@ -167,6 +167,14 @@ smcSampler <- function(bayesianSetup,
   #  if(curExp == 1){lastIteration <- TRUE}
   while(curExp < 1){
     
+    ### TEMPORARY DEBUG
+    if(sum(is.nan(importanceValues)) > 1){
+      print("NaN in importanceValues")
+      print(c("indices", which(is.nan(importanceValues))))
+      print("Particles with NaN:")
+      print(particles[is.nan(importanceValues),])
+    }
+    
     # Update particle min/max (if a particle is more "extreme" than previously recorded)
     cur.min <- apply(particles,2,min)
     cur.max <- apply(particles,2,max)
