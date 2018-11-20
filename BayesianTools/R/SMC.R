@@ -170,19 +170,19 @@ smcSampler <- function(bayesianSetup,
     ### TEMPORARY DEBUG
     if(sum(is.nan(posteriorValues)) > 0 | sum(is.na(posteriorValues)) > 0 | sum(is.infinite(posteriorValues)) > 0){
       print("NaN / NA / Infinite in importanceValues")
-      if(sum(is.nan(posteriorValues)) > 1){
+      if(sum(is.nan(posteriorValues)) > 0){
         print(c("NaN indices", which(is.nan(posteriorValues))))
         print("Particles with NaN:")
         print(particles[is.nan(posteriorValues),])
       }
       
-      if(sum(is.na(posteriorValues)) > 1){
+      if(sum(is.na(posteriorValues)) > 0){
         print(c("NA indices", which(is.na(posteriorValues))))
         print("Particles with NA:")
         print(particles[is.na(posteriorValues),])
       }
       
-      if(sum(is.infinite(posteriorValues)) > 1){
+      if(sum(is.infinite(posteriorValues)) > 0){
         print(c("Infinite indices", which(is.infinite(posteriorValues))))
         print("Particles with Infinite:")
         print(particles[is.infinite(posteriorValues),])
