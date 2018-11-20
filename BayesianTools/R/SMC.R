@@ -168,11 +168,25 @@ smcSampler <- function(bayesianSetup,
   while(curExp < 1){
     
     ### TEMPORARY DEBUG
-    if(sum(is.nan(importanceValues)) > 1){
-      print("NaN in importanceValues")
-      print(c("indices", which(is.nan(importanceValues))))
-      print("Particles with NaN:")
-      print(particles[is.nan(importanceValues),])
+    if(sum(is.nan(posteriorValues)) > 0 | sum(is.na(posteriorValues)) > 0 | sum(is.infinite(posteriorValues)) > 0){
+      print("NaN / NA / Infinite in importanceValues")
+      if(sum(is.nan(posteriorValues)) > 1){
+        print(c("NaN indices", which(is.nan(posteriorValues))))
+        print("Particles with NaN:")
+        print(particles[is.nan(posteriorValues),])
+      }
+      
+      if(sum(is.na(posteriorValues)) > 1){
+        print(c("NA indices", which(is.na(posteriorValues))))
+        print("Particles with NA:")
+        print(particles[is.na(posteriorValues),])
+      }
+      
+      if(sum(is.infinite(posteriorValues)) > 1){
+        print(c("Infinite indices", which(is.infinite(posteriorValues))))
+        print("Particles with Infinite:")
+        print(particles[is.infinite(posteriorValues),])
+      }
     }
     
     # Update particle min/max (if a particle is more "extreme" than previously recorded)
@@ -461,7 +475,7 @@ resample <- function(weights, method = "multinomial"){
 
 beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldInter, curWeights, curExp, tol=1){
   # A function to dynamically set the next exponent to build the next intermediary distribution.
-  # Uses the bisection method. Following Jasra et al. (2001), Scand J Statist, doi: 10.1111/j.1467-9469.2010.00723.x
+  # Uses the bisection method. Following Jasra et al. (2011), Scand J Statist, doi: 10.1111/j.1467-9469.2010.00723.x
   
   # Initial exponent - set to 1 (maximum possible value)
   tryDiff <- 1 - curExp
@@ -497,6 +511,7 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
       print(posteriorValues)
       print("importanceValues")
       print(importanceValues)
+
     }
 
     tryWeights <- tryWeights - BayesianTools:::logSumExp(tryWeights)
