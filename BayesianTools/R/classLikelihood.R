@@ -19,9 +19,9 @@ createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplic
     out <- tryCatch(
     {
       y = likelihood(x, ...)
-      if (any(y == Inf )){
+      if (any(y == Inf | is.nan(y) | is.na(y))){
+        warning(paste("BayesianTools warning: positive Inf or NA / nan values occured in the likelihood. Setting likelihood to -Inf. Original value was", y, "for parameters", x))
         y[is.infinite(y)] = -Inf
-        warning("Positive Inf values occured in the likelihood. Set to -Inf")
       }
       y 
     },
@@ -136,7 +136,10 @@ likelihoodAR1 <- function(predicted, observed, sd, a){
   n = length(observed)
   
   res = predicted - observed
-  ll =  0.5 * (  - log(2*pi)
+  
+  # this calculates the unconditiona LL for this data, see e.g. http://stat.unicas.it/downloadStatUnicas/seminari/2008/Julliard0708_1.pdf
+  
+  ll =  0.5 * (  - n * log(2*pi)
                  - n * log(sd^2) 
                  + log( 1- a^2 )
                  - (1- a^2) / sd^2 * res[1]^2

@@ -139,7 +139,7 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
       
     }
     
-    mtext('Marginal parameter uncertainity', outer = TRUE, cex = 1.5)
+    mtext('Marginal parameter uncertainty', outer = TRUE, cex = 1.5)
 
   } else {
     mfrow <- if (nPar < 16) getPanels(nPar) else c(4,4)
@@ -162,7 +162,7 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
       polygon(postX, postY, col = col[1], border = 1)
       if (!is.null(priorX)) polygon(priorX, priorY, col = col[2], border = 1)
       
-      if (i %% 16 == 1) mtext('Marginal parameter uncertainity', outer = TRUE, cex = 1.5)
+      if (i %% 16 == 1) mtext('Marginal parameter uncertainty', outer = TRUE, cex = 1.5)
     }
   }
   
@@ -251,7 +251,7 @@ marginalPlotViolin <- function(posteriorMat, priorMat = NULL, xrange = NULL, col
       
     }
     
-    mtext('Marginal parameter uncertainity', outer = TRUE, cex = 1.5)
+    mtext('Marginal parameter uncertainty', outer = TRUE, cex = 1.5)
     
   } else {
     mfrow <- if (nPar < 16) getPanels(nPar) else c(4,4)
@@ -277,7 +277,7 @@ marginalPlotViolin <- function(posteriorMat, priorMat = NULL, xrange = NULL, col
       polygon(postX, postY, col = col[1], border = 1)
       if (!is.null(priorX)) polygon(priorX, priorY, col = col[2], border = 1)
       
-      if (i %% 16 == 1) mtext('Marginal parameter uncertainity', outer = TRUE, cex = 1.5)
+      if (i %% 16 == 1) mtext('Marginal parameter uncertainty', outer = TRUE, cex = 1.5)
     }
   }
   
