@@ -21,7 +21,7 @@ createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplic
       y = likelihood(x, ...)
       if (any(y == Inf | is.nan(y) | is.na(y))){
         warning(paste("BayesianTools warning: positive Inf or NA / nan values occured in the likelihood. Setting likelihood to -Inf. Original value was", y, "for parameters", x))
-        y[is.infinite(y)] = -Inf
+        y[is.infinite(y) | is.nan(y) | is.na(y)] = -Inf
       }
       y 
     },
