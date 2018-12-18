@@ -260,10 +260,10 @@ getSample.MCMC_refClass <- function(sampler, parametersOnly = T, coda = F, start
 #' 
 mergeChains <- function(l, ...){
   
-  x = getSample(l[[1]]$chains, ...)
+  x = getSample(l[[1]], ...)
   
   for(i in 2:length(l)){
-    x = rbind(x, getSample(l[[i]]$chains, ...))
+    x = rbind(x, getSample(l[[i]], ...))
   }
   return(x)
 }

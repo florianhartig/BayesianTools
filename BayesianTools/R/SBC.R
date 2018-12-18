@@ -59,7 +59,7 @@ calibrationTest <- function(posteriorList, priorDraws, ...){
   par(oldPar)  
   
   out = list()
-  out$statistic = c(observed = MI$observed, expected = MI$expected, sd = MI$sd)
+  out$statistic = NULL
   out$method = "ks.test on rank statistics posterior / parameters"
   out$alternative = "two.sided"
   out$p.value = res
