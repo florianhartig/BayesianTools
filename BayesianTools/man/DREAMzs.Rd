@@ -4,11 +4,11 @@
 \alias{DREAMzs}
 \title{DREAMzs}
 \usage{
-DREAMzs(bayesianSetup, settings = list(iterations = 10000, nCR = 3, gamma =
-  NULL, eps = 0, e = 0.05, pCRupdate = FALSE, updateInterval = 10, burnin = 0,
-  thin = 1, adaptation = 0.2, parallel = NULL, Z = NULL, ZupdateFrequency = 10,
-  pSnooker = 0.1, DEpairs = 2, consoleUpdates = 10, startValue = NULL,
-  currentChain = 1, message = FALSE))
+DREAMzs(bayesianSetup, settings = list(iterations = 10000, nCR = 3, gamma
+  = NULL, eps = 0, e = 0.05, pCRupdate = FALSE, updateInterval = 10, burnin
+  = 0, thin = 1, adaptation = 0.2, parallel = NULL, Z = NULL,
+  ZupdateFrequency = 10, pSnooker = 0.1, DEpairs = 2, consoleUpdates = 10,
+  startValue = NULL, currentChain = 1, message = FALSE))
 }
 \arguments{
 \item{bayesianSetup}{Object of class 'bayesianSetup' or 'bayesianOuput'.}

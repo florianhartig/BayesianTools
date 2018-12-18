@@ -4,10 +4,11 @@
 \alias{DE}
 \title{Differential-Evolution MCMC}
 \usage{
-DE(bayesianSetup, settings = list(startValue = NULL, iterations = 10000, f =
-  -2.38, burnin = 0, thin = 1, eps = 0, consoleUpdates = 100, blockUpdate =
-  list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, groupStart =
-  1000, groupIntervall = 1000), currentChain = 1, message = TRUE))
+DE(bayesianSetup, settings = list(startValue = NULL, iterations = 10000,
+  f = -2.38, burnin = 0, thin = 1, eps = 0, consoleUpdates = 100,
+  blockUpdate = list("none", k = NULL, h = NULL, pSel = NULL, pGroup =
+  NULL, groupStart = 1000, groupIntervall = 1000), currentChain = 1,
+  message = TRUE))
 }
 \arguments{
 \item{bayesianSetup}{a BayesianSetup with the posterior density function to be sampled from}
