@@ -4,7 +4,8 @@
 \alias{VSEMcreateLikelihood}
 \title{Create an example dataset, and from that a likelihood or posterior for the VSEM model}
 \usage{
-VSEMcreateLikelihood(likelihoodOnly = F, plot = F, selection = c(1:6, 12))
+VSEMcreateLikelihood(likelihoodOnly = F, plot = F, selection = c(1:6,
+  12))
 }
 \arguments{
 \item{likelihoodOnly}{switch to devide whether to create only a likelihood, or a full bayesianSetup with uniform priors.}

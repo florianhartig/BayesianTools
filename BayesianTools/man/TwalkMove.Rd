@@ -4,9 +4,9 @@
 \alias{TwalkMove}
 \title{Wrapper for step function}
 \usage{
-TwalkMove(Npar, FUN, x, Eval, x2, Eval2, at = 6, aw = 1.5, pn1 = min(Npar,
-  4)/Npar, Ptrav = 0.4918, Pwalk = 0.4918, Pblow = 0.0082,
-  Phop = 0.0082)
+TwalkMove(Npar, FUN, x, Eval, x2, Eval2, at = 6, aw = 1.5,
+  pn1 = min(Npar, 4)/Npar, Ptrav = 0.4918, Pwalk = 0.4918,
+  Pblow = 0.0082, Phop = 0.0082)
 }
 \arguments{
 \item{Npar}{Number of parameters}
