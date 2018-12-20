@@ -728,7 +728,13 @@ exp(M1$marginalLikelihod - M2$marginalLikelihod)
 
 BF > 1 means the evidence is in favor of M1. See Kass, R. E. & Raftery, A. E. (1995) Bayes Factors. J. Am. Stat. Assoc., Amer Statist Assn, 90, 773-795.
 
-Note that we would have to multiply still with the model priors to arrive at Bayesian model weights. 
+Assuming equal prior weights on all models, we can calculate the posterior weight of M1 as 
+
+```{r}
+exp(M1$marginalLikelihod) / ( exp(M1$marginalLikelihod) + exp(M2$marginalLikelihod))
+```
+
+If models have different priors, multiply with the prior probabilities of each model. 
 
 
 ### Model comparison via DIC
