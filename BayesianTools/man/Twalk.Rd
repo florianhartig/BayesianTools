@@ -4,9 +4,9 @@
 \alias{Twalk}
 \title{T-walk MCMC}
 \usage{
-Twalk(bayesianSetup, settings = list(iterations = 10000, at = 6, aw = 1.5, pn1
-  = NULL, Ptrav = 0.4918, Pwalk = 0.4918, Pblow = 0.0082, burnin = 0, thin = 1,
-  startValue = NULL, consoleUpdates = 100, message = TRUE))
+Twalk(bayesianSetup, settings = list(iterations = 10000, at = 6, aw =
+  1.5, pn1 = NULL, Ptrav = 0.4918, Pwalk = 0.4918, Pblow = 0.0082, burnin =
+  0, thin = 1, startValue = NULL, consoleUpdates = 100, message = TRUE))
 }
 \arguments{
 \item{bayesianSetup}{Object of class 'bayesianSetup' or 'bayesianOuput'.}

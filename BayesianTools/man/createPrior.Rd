@@ -4,8 +4,8 @@
 \alias{createPrior}
 \title{Creates a standardized prior class}
 \usage{
-createPrior(density = NULL, sampler = NULL, lower = NULL, upper = NULL,
-  best = NULL)
+createPrior(density = NULL, sampler = NULL, lower = NULL,
+  upper = NULL, best = NULL)
 }
 \arguments{
 \item{density}{Prior density}
