@@ -1,15 +1,13 @@
 ---
-title: "Bayesian Tools"
+title: "Bayesian Tools - General-Purpose MCMC and SMC Samplers and Tools for Bayesian Statistics"
 output: 
   rmarkdown::html_vignette:
     toc: true
 vignette: >
   %\VignetteIndexEntry{Manual for the BayesianTools R package}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-abstract: "The BayesianTools (BT) package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques for system models. 
-\n \n \n"
-
+  %\VignetteEngine{knitr::rmarkdown}
+abstract: "The BayesianTools (BT) package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques for system models." 
 ---
 
 ```{r global_options, include=FALSE}
@@ -364,7 +362,7 @@ out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 
 # MCMC sampler reference
 
-## runMCMC
+## The runMCMC() function
 
 The runMCMC function is the central function for starting MCMC algorithms in the BayesianTools package. It requires a bayesianSetup, a choice of sampler (standard is DEzs), and optionally changes to the standard settings of the chosen sampler.
 
@@ -723,7 +721,7 @@ M2
 Bayes factor (need to reverse the log)
 
 ```{r}
-exp(M1$marginalLikelihod - M2$marginalLikelihod)
+exp(M1$ln.ML - M2$ln.ML)
 ```
 
 BF > 1 means the evidence is in favor of M1. See Kass, R. E. & Raftery, A. E. (1995) Bayes Factors. J. Am. Stat. Assoc., Amer Statist Assn, 90, 773-795.
@@ -731,10 +729,10 @@ BF > 1 means the evidence is in favor of M1. See Kass, R. E. & Raftery, A. E. (1
 Assuming equal prior weights on all models, we can calculate the posterior weight of M1 as 
 
 ```{r}
-exp(M1$marginalLikelihod) / ( exp(M1$marginalLikelihod) + exp(M2$marginalLikelihod))
+exp(M1$ln.ML) / ( exp(M1$ln.ML) + exp(M2$ln.ML))
 ```
 
-If models have different priors, multiply with the prior probabilities of each model. 
+If models have different model priors, multiply with the prior probabilities of each model. 
 
 
 ### Model comparison via DIC
