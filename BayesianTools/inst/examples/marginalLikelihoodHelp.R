@@ -10,14 +10,14 @@ y <-  1 * x + 1*x^2 + rnorm(n=sampleSize,mean=0,sd=10)
 # linear and quadratic effect
 likelihood1 <- function(param){
   pred = param[1] + param[2]*x + param[3] * x^2
-  singlelikelihoods = dnorm(y, mean = pred, sd = 1/(param[4]^2), log = T)
+  singlelikelihoods = dnorm(y, mean = pred, sd = 1/(param[4]^2), log = TRUE)
   return(sum(singlelikelihoods))  
 }
 
 # linear  effect
 likelihood2 <- function(param){
   pred = param[1] + param[2]*x 
-  singlelikelihoods = dnorm(y, mean = pred, sd = 1/(param[3]^2), log = T)
+  singlelikelihoods = dnorm(y, mean = pred, sd = 1/(param[3]^2), log = TRUE)
   return(sum(singlelikelihoods))  
 }
 
