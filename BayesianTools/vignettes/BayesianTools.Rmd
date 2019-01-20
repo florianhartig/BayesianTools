@@ -5,8 +5,8 @@ output:
     toc: true
 vignette: >
   %\VignetteIndexEntry{Manual for the BayesianTools R package}
-  %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 abstract: "The BayesianTools (BT) package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques for system models." 
 ---
 
