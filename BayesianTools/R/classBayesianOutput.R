@@ -120,9 +120,10 @@ getSample.integer <- function(sampler, parametersOnly = T, coda = F, start = 1, 
   return(out)
 }
 
-# Why is this not exported?
+#' @author Tankred Ott
+#' @export
 getSample.data.frame <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
-  getSample(matrix(sampler), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
+  getSample(as.matrix(sampler), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
 }
 
 
@@ -239,6 +240,32 @@ getSample.MCMC <- function(sampler, parametersOnly = T, coda = F, start = 1, end
 #' @export
 getSample.MCMC_refClass <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   return(getSample(as.matrix(sampler$mvSamples), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics))
+}
+
+
+#' Merge Chains
+#' 
+#' Merge a list of MCMCs or chains
+#' 
+#' The function merges a list of MCMC objects. Requirement is that the list contains classes for which the getSample function works
+#' 
+#' @param l the list with MCMC outputs
+#' @param ... arguments to be passed on to getSample
+#' 
+#' @return a matrix
+#' 
+#' @author Florian Hartig
+#' 
+#' @export
+#' 
+mergeChains <- function(l, ...){
+  
+  x = getSample(l[[1]], ...)
+  
+  for(i in 2:length(l)){
+    x = rbind(x, getSample(l[[i]], ...))
+  }
+  return(x)
 }
 
 

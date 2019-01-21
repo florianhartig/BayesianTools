@@ -7,7 +7,7 @@
 # outputs are tested. For the validity of the mcmc sampling
 # algorithms see the respective tests.
 
-
+skip_on_cran()
 
 context("Test workflow of package")
 

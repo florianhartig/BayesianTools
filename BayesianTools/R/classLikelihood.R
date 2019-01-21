@@ -19,15 +19,15 @@ createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplic
     out <- tryCatch(
     {
       y = likelihood(x, ...)
-      if (any(y == Inf )){
-        y[is.infinite(y)] = -Inf
-        warning("Positive Inf values occured in the likelihood. Set to -Inf")
+      if (any(y == Inf | is.nan(y) | is.na(y) | !is.numeric(y))){
+        message(paste("BayesianTools warning: positive Inf or NA / nan values, or non-numeric values occured in the likelihood. Setting likelihood to -Inf.\n Original value was", y, "for parameters", x, "\n\n "))
+        y[is.infinite(y) | is.nan(y) | is.na(y) | !is.numeric(y)] = -Inf
       }
       y 
     },
     error=function(cond){
       cat(c("Parameter values ", x, "\n"))
-      warning("Problem encountered in the calculation of the likelihood with parameter ", x, "\n Error message was", cond, "\n set result of the parameter evaluation to -Inf ", "ParameterValues ")
+      message("Problem encountered in the calculation of the likelihood with parameter ", x, "\n Error message was", cond, "\n set result of the parameter evaluation to -Inf ", "ParameterValues ")
       return(-Inf)
     }
         )
@@ -96,7 +96,7 @@ createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplic
     }
     else stop("parameter must be vector or matrix")
   }
-  out<- list(density = parallelDensity, sampler = sampler, cl = cl, pwLikelihood = pwLikelihood)
+  out<- list(density = parallelDensity, sampler = sampler, cl = cl, pwLikelihood = pwLikelihood, parNames = names)
   class(out) <- "likelihood"
   return(out)
 }
@@ -136,7 +136,10 @@ likelihoodAR1 <- function(predicted, observed, sd, a){
   n = length(observed)
   
   res = predicted - observed
-  ll =  0.5 * (  - log(2*pi)
+  
+  # this calculates the unconditiona LL for this data, see e.g. http://stat.unicas.it/downloadStatUnicas/seminari/2008/Julliard0708_1.pdf
+  
+  ll =  0.5 * (  - n * log(2*pi)
                  - n * log(sd^2) 
                  + log( 1- a^2 )
                  - (1- a^2) / sd^2 * res[1]^2

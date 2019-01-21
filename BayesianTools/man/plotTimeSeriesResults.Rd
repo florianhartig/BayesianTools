@@ -12,9 +12,9 @@ plotTimeSeriesResults(sampler, model, observed, error = NULL,
 
 \item{model}{function that calculates model predictions for a given parameter vector}
 
-\item{observed}{observed values}
+\item{observed}{observed values as vector}
 
-\item{error}{function with signature f(mean, par) that generates error expectations from mean model predictions. Par is a vector from the matrix with the parameter samples (full length). f needs to know which of these parameters are parameters of the error function}
+\item{error}{function with signature f(mean, par) that generates observations with error (error = stochasticity according to what is assumed in the likelihood) from mean model predictions. Par is a vector from the matrix with the parameter samples (full length). f needs to know which of these parameters are parameters of the error function. See example in \code{\link{VSEM}}}
 
 \item{plotResiduals}{logical determining whether residuals should be plotted}
 
@@ -26,6 +26,22 @@ plotTimeSeriesResults(sampler, model, observed, error = NULL,
 }
 \description{
 Creates a time series plot typical for an MCMC / SMC fit
+}
+\examples{
+# Create time series
+ts <- VSEMcreatePAR(1:100)
+
+# create fake "predictions"
+pred <- ts + rnorm(length(ts), mean = 0, sd = 2)
+
+# plot time series
+par(mfrow=c(1,2))
+
+plotTimeSeries(observed = ts, main="Observed")
+plotTimeSeries(observed = ts, predicted = pred, main = "Observed and predicted")
+
+par(mfrow=c(1,1))
+
 }
 \author{
 Florian Hartig

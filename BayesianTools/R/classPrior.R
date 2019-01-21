@@ -63,6 +63,13 @@ createPrior <- function(density = NULL, sampler = NULL, lower = NULL, upper = NU
   }
   
   # Check and parallelize the sampler
+  # if no sampler is passed, but lower and upper, generate uniform sampler
+  if (is.null(sampler) && !is.null(lower) && !is.null(upper)) {
+    sampler <- function(n = 1) {
+      runif(n, lower, upper)
+    }
+  } 
+  
   if(!is.null(sampler)){
     npar <- length(sampler())
     parallelSampler <- function(n=NULL){
@@ -74,14 +81,24 @@ createPrior <- function(density = NULL, sampler = NULL, lower = NULL, upper = NU
       } 
       return(out)
     }
-  }
-  else parallelSampler = function(n = NULL){
+  } else parallelSampler = function(n = NULL){
    stop("Attept to call the sampling function of the prior, although this function has not been provided in the Bayesian setup. A likely cause of this error is that you use a function or sampling algorithm that tries to sample from the prior. Either change the settings of your function, or provide a sampling function in your BayesianSetup (see ?createBayesianSetup, and ?createPrior)") 
+  }
+  
+  checkPrior <- function(x = NULL, z = FALSE){
+    if(is.null(x)) x <- parallelSampler(1000)
+    if(is.function(x)) x <- x()
+    if(!is.matrix(x)) x <- parallelSampler(1000)
+    check <- parallelDensity(x)
+      if(any(is.infinite(check))) {
+        if(z) warning("Z matrix values outside prior range", call. = FALSE)
+        else warning("Start values outside prior range", call. = FALSE)
+      }
   }
   
 
   
-  out<- list(density = parallelDensity, sampler = parallelSampler, lower = lower, upper = upper, best = best, originalDensity = density)
+  out<- list(density = parallelDensity, sampler = parallelSampler, lower = lower, upper = upper, best = best, originalDensity = density, checkStart = checkPrior)
   class(out) <- "prior"
   return(out)
 }
@@ -215,3 +232,22 @@ createPriorDensity <- function(sampler, method = "multivariate", eps = 1e-10, lo
 }
 
 
+
+#' @author Maximilian Pichler
+
+#' @export
+
+print.prior <- function(x, ...){
+  cat('Prior: \n\n')
+  
+  prior = x
+  info = c( "lower", "upper","best")
+  maxPar =  max(length(prior$lower),length(prior$lupper))
+  if(maxPar == 0) maxPar = ncol(prior$sampler())
+  priorInfo = data.frame(matrix(NA, ncol = 3, nrow = maxPar))
+  colnames(priorInfo) = info
+  for(i in 1:3) if(!is.null(prior[[info[i]]])) priorInfo[,i] <- prior[[info[i]]]
+  rownames(priorInfo) <- sapply(1:maxPar, FUN = function(x) return(paste("par",x)))
+  print(priorInfo)
+  
+}

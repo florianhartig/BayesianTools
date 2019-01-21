@@ -1,5 +1,7 @@
 context("Test utility functions")
 
+skip_on_cran()
+
 # sampleEquallySpaced
 test_that("sampleEquallySpaced returns right number of samples", {
   # number of tests
@@ -57,6 +59,23 @@ test_that("sampleEquallySpaced returns right number of samples", {
       expect_true(nrow(result) == test_len)
     }
   }
+})
+
+
+# test various prior/bayesianSetup print outputs
+test_that("test bayesianSetup and prior print functions",{
+  
+  prior = createPrior(sampler =  function(n=1) return(cbind(rnorm(n),rnorm(n), rnorm(n))))
+  ll = testDensityMultiNormal
+  
+  expect_output(print(createBayesianSetup(likelihood = ll,  lower = c(-10,3), upper =c(10,3))))
+  expect_output(print(createBayesianSetup(likelihood = ll, prior = prior )))
+  expect_output(print(createBayesianSetup(likelihood = ll, prior = prior, names = c("A","B","C"))))
+  expect_error(print(createBayesianSetup(likelihood = ll)))
+  expect_output(print(createPrior(sampler =  function(n=1) return(cbind(rnorm(n),rnorm(n), rnorm(n))))))
+  expect_output(print(createUniformPrior(lower = c(0,0), upper = c(0,5))))
+  expect_output(print(createTruncatedNormalPrior(c(0,0),c(0.4,5), lower = c(-2,-2), upper = c(1,1))))
+  
 })
 
 

@@ -1,6 +1,6 @@
 context("Test convergence of all samplers")
 
-
+skip_on_cran()
 
 set.seed(1)
 library(BayesianTools)
@@ -41,7 +41,7 @@ for(i in 1:2){
   for(k in 1:(length(samp))){
     out <- runMCMC(setup, sampler = samp[k], settings = settings[[k]])
 
-    sample <- getSample(out, numSamples = 1000, start = 1000)
+    sample <- suppressWarnings(getSample(out, numSamples = 1000, start = 1000))
 
     if(nrPar[i] == 1){
       ks <- suppressWarnings(ks.test(as.vector(sample), rnorm(1000))$p.value)

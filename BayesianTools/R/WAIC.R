@@ -36,9 +36,7 @@
 #' @seealso \code{\link{DIC}}, \code{\link{MAP}}, \code{\link{marginalLikelihood}}
 #' @export
 WAIC <- function(bayesianOutput, numSamples = 1000, ...){
-  
- 
-  
+
   x = getSample(bayesianOutput, parametersOnly = F,  ...)
   
   # Catch nPars and ll density for mcmcList
@@ -63,7 +61,7 @@ WAIC <- function(bayesianOutput, numSamples = 1000, ...){
   
   pointWiseLikelihood = t(llDensity(x[i,1:nPars], sum = F))
   
-  lppd <- sum(apply(pointWiseLikelihood, 2, BayesianTools::logSumExp, mean = T))
+  lppd <- sum(apply(pointWiseLikelihood, 2, logSumExp, mean = T))
 
   # Calculating pWAIC options
 

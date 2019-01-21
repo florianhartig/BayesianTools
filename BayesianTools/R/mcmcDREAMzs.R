@@ -7,10 +7,10 @@
 ##' @param iterations Number of model evaluations
 ##' @param nCR parameter determining the number of cross-over proposals.  If nCR = 1 all parameters are updated jointly.
 ##' @param updateInterval determining the intervall for the pCR (crossover probabilities) update
-##' @param gamma Kurtosis parameter Bayesian Inference Scheme. Default is 0.
-##' @param eps Ergodicity term. Default to 0.
-##' @param e Ergodicity term. Default to 5e-2.
-##' @param pCRupdate Update of crossover probabilities, default is TRUE
+##' @param gamma Kurtosis parameter Bayesian Inference Scheme. 
+##' @param eps Ergodicity term
+##' @param e Ergodicity term
+##' @param pCRupdate Update of crossover probabilities
 ##' @param burnin number of iterations treated as burn-in. These iterations are not recorded in the chain.
 ##' @param thin thin thinning parameter. Determines the interval in which values are recorded.
 ##' @param adaptation Number or percentage of samples that are used for the adaptation in DREAM (see Details)
@@ -165,8 +165,8 @@ DREAMzs <- function(bayesianSetup,
 
   
   # assign memory for Z and write first values in Z
-  M <- nrow(Z)
-  Zold <- Z
+  M <- nrow(Z[complete.cases(Z),,drop = FALSE])
+  Zold <- Z[complete.cases(Z),,drop = FALSE]
   Z <- matrix(NA, nrow= M + floor((n.iter) /settings$ZupdateFrequency) * Npop, ncol=Npar)
   Z[1:M,] <- Zold
   

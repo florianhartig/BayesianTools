@@ -57,7 +57,7 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = setti
 
 plot(out)
 summary(out)
-marginalPlot(out, scale = T)
+marginalPlot(out)
 gelmanDiagnostics(out) # should be below 1.05 for all parameters to demonstrate convergence 
 
 # Posterior predictive simulations

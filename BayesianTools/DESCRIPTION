@@ -1,13 +1,14 @@
 Package: BayesianTools
 Title: General-Purpose MCMC and SMC Samplers and Tools for Bayesian Statistics
-Version: 0.1.4
-Date: 2017-12-20
-Authors@R: c(person("Florian", "Hartig", email = "florian.hartig@biologie.uni-regensburg.de", role = c("aut", "cre")), person("Francesco", "Minunno", role = c("aut")), person("Stefan", " Paul", role = c("aut") ),  person("David", "Cameron", role = "ctb"), person("Tankred", "Ott", role = "ctb"))
+Version: 0.1.6
+Date: 2019-01-22
+Authors@R: c(person("Florian", "Hartig", email = "florian.hartig@biologie.uni-regensburg.de", role = c("aut", "cre")), person("Francesco", "Minunno", role = c("aut")), person("Stefan", " Paul", role = c("aut") ),  person("David", "Cameron", role = "ctb"), person("Tankred", "Ott", role = "ctb"), person("Maximilian", "Pichler", role = "ctb"))
 Author: Florian Hartig [aut, cre],
     Francesco Minunno [aut],
     Stefan Paul [aut],
     David Cameron [ctb],
-    Tankred Ott [ctb]
+    Tankred Ott [ctb],
+    Maximilian Pichler [ctb]
 Maintainer: Florian Hartig <florian.hartig@biologie.uni-regensburg.de>
 Description: General-purpose MCMC and SMC samplers, as well as plot and
     diagnostic functions for Bayesian statistics, with a particular focus on
@@ -17,7 +18,7 @@ Description: General-purpose MCMC and SMC samplers, as well as plot and
     Monte Carlo (SMC) particle filter.
 Depends:
     R (>= 3.1.2)
-License: CC BY-SA 4.0
+License: GPL-3
 Imports:
     coda,
     emulator,
@@ -34,6 +35,7 @@ Imports:
     utils,
     graphics,
     DHARMa,
+    gap,
     bridgesampling
 Suggests:
     DEoptim,
@@ -42,11 +44,10 @@ Suggests:
     knitr,
     rmarkdown,
     roxygen2,
-    testthat,
-    gap
+    testthat
 LinkingTo: Rcpp
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 URL: https://github.com/florianhartig/BayesianTools
 BugReports: https://github.com/florianhartig/BayesianTools/issues
 VignetteBuilder: knitr

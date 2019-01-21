@@ -1,6 +1,47 @@
 This file contains CRAN submission info / communication
 
 
+## Version 0.1.6
+
+### Submission 1
+
+This is minor update, adding a few new functionalities and a few bugfixes (see NEWS).
+
+This release was tested without apparent problems under
+
+* local MAC OS 10.14.1 (Mojave), R 3.5.1
+* http://win-builder.r-project.org/ - oldrelease / devel / release
+* Linux (Travis CI) - oldrel / release / devel
+
+
+## Version 0.1.5
+
+
+### Submission 2
+
+This update of the BayesianTools package contains a number of improvements and bugfixes. See NEWS for changes. 
+
+CRAN MESSAGE: Please reduce runtime, e.g. by unning less important tests onyl conditional if some environment variable is set that you only define on your machine? 
+
+--> I have added a skip_on_CRAN to most tests - I hope this fixes the incoming issue with the time for the tests 
+
+This release was tested without apparent problems under
+
+* local MAC OS 10.13.4 (17E199), R 3.5.0
+* http://win-builder.r-project.org/ - oldrelease / devel / realease
+* Linux (Travis CI) - oldrel / release / devel
+
+### S1
+
+This update of the BayesianTools package contains a number of improvements and bugfixes. See NEWS for changes. 
+
+This release was tested without apparent problems under
+
+* local MAC OS 10.13.4 (17E199), R 3.5.0
+* http://win-builder.r-project.org/ - oldrelease / devel / realease
+* Linux (Travis CI) - oldrel / release / devel
+
+
 ## Version 0.1.4
 
 A bunch of smaller updates to the package. 

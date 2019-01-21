@@ -4,7 +4,8 @@
 \alias{getDharmaResiduals}
 \title{Creates a DHARMa object}
 \usage{
-getDharmaResiduals(model, parMatrix, numSamples, observed, error, plot = TRUE)
+getDharmaResiduals(model, parMatrix, numSamples, observed, error,
+  plot = TRUE)
 }
 \arguments{
 \item{model}{function that calculates model predictions for a given parameter vector}

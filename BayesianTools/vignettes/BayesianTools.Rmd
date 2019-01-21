@@ -1,15 +1,13 @@
 ---
-title: "Bayesian Tools"
+title: "Bayesian Tools - General-Purpose MCMC and SMC Samplers and Tools for Bayesian Statistics"
 output: 
   rmarkdown::html_vignette:
     toc: true
 vignette: >
   %\VignetteIndexEntry{Manual for the BayesianTools R package}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
-abstract: "The BayesianTools (BT) package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques for system models. 
-\n \n \n"
-
+  \usepackage[utf8]{inputenc}
+abstract: "The BayesianTools (BT) package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques for system models." 
 ---
 
 ```{r global_options, include=FALSE}
@@ -107,7 +105,7 @@ and plottted with several plot functions. The marginalPlot can either be plotted
 ```{r}
 plot(out) # plot internally calls tracePlot(out)
 correlationPlot(out)
-marginalPlot(out)
+marginalPlot(out, prior = TRUE)
 ```
 
 Other Functions that can be applied to all samplers include model selection scores such as the DIC and the marginal Likelihood (for the calculation of the Bayes factor, see later section for more details), and the Maximum Aposteriori Value (MAP). For the marginal likelihood calculation it is possible to chose from a set of methods (see "?marginalLikelihood").
@@ -207,13 +205,106 @@ likelihood <- function(matrix){
 }
 
 ## Create Bayesian Setup
-BS <- createBayesianSetup(likelihood, parallel = "external" ...)
+BS <- createBayesianSetup(likelihood, parallel = "external", ...)
 
 ## Run MCMC
 runMCMC(BS, sampler = "SMC", ...)
 ```
 
+
+
+#### 3. Multi-core and cluster calculations
+If you want to run your calculations on a cluster there are several ways to achieve it.
+
+In the first case you want to parallize n internal (not overall chains) on n cores. The argument "parallel = T" in "createBayesianSetup" allows only at most parallelization on 3 cores for the SMC, DEzs and DreamsSamplers. But by setting "parallel = n" to n cores in the "createBayesianSetup" and providing the settings list a "startValue" matrix with n rows, the internal chains of DEzs and DREAMzs will be parallelized on n cores. This works only for the DEzs and DREAMzs samplers.
+
+```{r, eval = FALSE}
+## n = Number of cores
+x <- c(1:10)
+likelihood <- function(param) return(sum(dnorm(x, mean = param, log = T)))
+bayesianSetup <- createBayesianSetup(likelihood, parallel = n, lower = -5, upper = 5)
+
+## give runMCMC a matrix with n rows of proposals as startValues or sample n times from the previous created sampler
+out <- runMCMC(bayesianSetup, settings = list(iterations = 100000, startValues = bayesianSetup$prior$sampler(n)))
+
+```
+
+In the second case you want to parallize n internal chains on n cores with a external parallilzed likelihood function. Unlike the previous case, that way DEzs, DREAMzs, and SMC samplers can be parallelized. 
+
+```{r, eval = FALSE}
+### Create cluster with n cores
+cl <- parallel::makeCluster(n)
+
+## Definition of the likelihood
+likelihood  <- function(X) sum(dnorm(c(1:10), mean = X, log = T))
+
+## Definition of the likelihood which will be calculated in parallel. Instead of the parApply function, we could also define a costly parallelized likelihood
+pLikelihood <- function(param) parallel::parApply(cl = cl, X = param, MARGIN = 1, FUN = likelihood)
+
+## export functions, dlls, libraries
+# parallel::clusterEvalQ(cl, library(BayesianTools))
+parallel::clusterExport(cl, varlist = list(likelihood))
+
+## create BayesianSetup
+bayesianSetup <- createBayesianSetup(pLikelihood, lower = -10, upper = 10, parallel = 'external')
+
+## For this case we want to parallelize the internal chains, therefore we create a n row matrix with startValues, if you parallelize a model in the likelihood, do not set a n*row Matrix for startValue
+settings = list(iterations = 100, nrChains = 1, startValue = bayesianSetup$prior$sampler(n))
+
+## runMCMC
+out <- runMCMC(bayesianSetup, settings, sampler = "DEzs")
+```
+
+In a another case your likelihood requires a parallized model. Start your cluster and export your model, the required libraries, and dlls. Now you can start your calculations with the argument "parallel = external" in createBayesianSetup.
+
+```{r, eval = FALSE}
+### Create cluster with n cores
+cl <- parallel::makeCluster(n)
+
+## export your model
+# parallel::clusterExport(cl, varlist = list(complexModel))
+
+## Definition of the likelihood
+likelihood  <- function(param) {
+  # ll <- complexModel(param)
+  # return(ll)
+} 
+
+## create BayesianSetup and settings
+bayesianSetup <- createBayesianSetup(likelihood, lower = -10, upper = 10, parallel = 'external')
+settings = list(iterations = 100, nrChains = 1)
+
+## runMCMC
+out <- runMCMC(bayesianSetup, settings)
+
+```
+
+In the last case you can parallize over whole chain calculations. However, here the likelihood itself will not be parallelized. Each chain will be run on one core and the likelihood will be calculated on that core.
+
+```{r, eval = FALSE}
+### Definition of likelihood function
+x <- c(1:10)
+likelihood <- function(param) return(sum(dnorm(x, mean = param, log = T)))
+
+## Create BayesianSetup and settings
+bayesianSetup <- createBayesianSetup(likelihood, lower = -10, upper = 10, parallel = F)
+settings = list(iterations = 100000)
+
+## Start cluster with n cores for n chains and export BayesianTools library
+cl <- parallel::makeCluster(n)
+parallel::clusterEvalQ(cl, library(BayesianTools))
+
+## calculate parallel n chains, for each chain the likelihood will be calculated on one core
+out <- parallel::parLapply(cl, 1:n, fun = function(X, bayesianSetup, settings) runMCMC(bayesianSetup, settings, sampler = "DEzs"), bayesianSetup, settings)
+
+## Combine the chains
+out <- createMcmcSamplerList(out)
+```
+
+
+
 ** Remark: even though parallelization can significantly reduce the computation time, it is not always useful because of the so-called communication overhead (computational time for distributing and retrieving infos from the parallel cores). For models with low computational cost, this procedure can take more time than the actual evaluation of the likelihood. If in doubt, make a small comparison of the runtime before starting your large sampling. **
+
 
 
 ## Reference on creating priors 
@@ -271,7 +362,7 @@ out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 
 # MCMC sampler reference
 
-## runMCMC
+## The runMCMC() function
 
 The runMCMC function is the central function for starting MCMC algorithms in the BayesianTools package. It requires a bayesianSetup, a choice of sampler (standard is DEzs), and optionally changes to the standard settings of the chosen sampler.
 
@@ -289,7 +380,7 @@ settings = list(iterations = 10000, nrChains= 3, message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 
 plot(out)
-marginalPlot(out)
+marginalPlot(out, prior = T)
 correlationPlot(out)
 gelmanDiagnostics(out, plot=T)
 
@@ -630,12 +721,18 @@ M2
 Bayes factor (need to reverse the log)
 
 ```{r}
-exp(M1$marginalLikelihod - M2$marginalLikelihod)
+exp(M1$ln.ML - M2$ln.ML)
 ```
 
 BF > 1 means the evidence is in favor of M1. See Kass, R. E. & Raftery, A. E. (1995) Bayes Factors. J. Am. Stat. Assoc., Amer Statist Assn, 90, 773-795.
 
-Note that we would have to multiply still with the model priors to arrive at Bayesian model weights. 
+Assuming equal prior weights on all models, we can calculate the posterior weight of M1 as 
+
+```{r}
+exp(M1$ln.ML) / ( exp(M1$ln.ML) + exp(M2$ln.ML))
+```
+
+If models have different model priors, multiply with the prior probabilities of each model. 
 
 
 ### Model comparison via DIC
