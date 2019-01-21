@@ -60,11 +60,11 @@ test_that("createBayesianSetup works with lower/upper input", {
   bs1 = NULL; bs2 = NULL; bs3 = NULL; bs4 = NULL;
   testthat::expect_error({
     bs1 <- createBayesianSetup(likelihood = ll, lower = lower, upper = upper)
-    testthat::expect_true({bs1$prior$lower == bs1$info$plotLower && bs1$prior$upper == bs1$info$plotUpper})
+    testthat::expect_true({ all (bs1$prior$lower == bs1$info$plotLower & bs1$prior$upper == bs1$info$plotUpper)})
   }, NA, label = "lower/upper only")
   testthat::expect_error({
     bs2 <- createBayesianSetup(likelihood = ll, lower = lower, upper = upper, priorSampler = samp)
-    testthat::expect_true({bs1$prior$lower == bs1$info$plotLower && bs1$prior$upper == bs1$info$plotUpper})
+    testthat::expect_true({all(bs1$prior$lower == bs1$info$plotLower & bs1$prior$upper == bs1$info$plotUpper)})
   }, NA, label = "lower/upper and priorSampler")
   testthat::expect_true({
     toString(bs1) == toString(bs2)
