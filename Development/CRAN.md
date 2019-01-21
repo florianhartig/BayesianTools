@@ -1,5 +1,19 @@
 This file contains CRAN submission info / communication
 
+
+## Version 0.1.6
+
+### Submission 1
+
+This is minor update, adding a few new functionalities and a few bugfixes (see NEWS).
+
+This release was tested without apparent problems under
+
+* local MAC OS 10.14.1 (Mojave), R 3.5.1
+* http://win-builder.r-project.org/ - oldrelease / devel / release
+* Linux (Travis CI) - oldrel / release / devel
+
+
 ## Version 0.1.5
 
 
