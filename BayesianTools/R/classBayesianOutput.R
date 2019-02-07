@@ -75,6 +75,7 @@ getSample.matrix <- function(sampler, parametersOnly = T, coda = F, start = 1, e
 }
 
 
+#' @rdname getSample
 #' @author Tankred Ott
 #' @export
 # TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector istead of a matrix, if 
@@ -98,6 +99,7 @@ getSample.double <- function(sampler, parametersOnly = T, coda = F, start = 1, e
 }
 
 
+#' @rdname getSample
 #' @author Tankred Ott
 #' @export
 # TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector instead of a matrix, if 
@@ -120,13 +122,14 @@ getSample.integer <- function(sampler, parametersOnly = T, coda = F, start = 1, 
   return(out)
 }
 
+#' @rdname getSample
 #' @author Tankred Ott
 #' @export
 getSample.data.frame <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   getSample(as.matrix(sampler), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
 }
 
-
+#' @rdname getSample
 #' @author Tankred Ott
 #' @export
 getSample.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
@@ -162,6 +165,7 @@ getSample.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end
 
 # The following two S3 implementations make getSample compatible with coda::mcmc and coda::mcmc.list
 
+#' @rdname getSample
 #' @author Tankred Ott
 #' @export
 getSample.mcmc <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
@@ -196,6 +200,7 @@ getSample.mcmc <- function(sampler, parametersOnly = T, coda = F, start = 1, end
 
 
 #' @author Tankred Ott
+#' @rdname getSample
 #' @export
 getSample.mcmc.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   
@@ -230,12 +235,14 @@ getSample.mcmc.list <- function(sampler, parametersOnly = T, coda = F, start = 1
 
 # getSample implementation for nimble objects
 
+#' @rdname getSample
 #' @author Tankred Ott
 #' @export
 getSample.MCMC <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   return(getSample(as.matrix(sampler$mvSamples), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics))
 }
 
+#' @rdname getSample
 #' @author Tankred Ott
 #' @export
 getSample.MCMC_refClass <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
