@@ -19,7 +19,10 @@ logSumExp<- function(x, mean = F) {
     x = x[x != -Inf] 
   } 
   
-  if ( max(abs(x)) > max(x) ) offset <- min(x) else offset <- max(x)
+  # seems that this created problems in the presence of small values,
+  # doesn't seem to be a need to shift towards min
+  # if ( max(abs(x)) > max(x) ) offset <- min(x) else offset <- max(x)
+  offset <- max(x)
   if (mean == T) out = log(sum(exp(x - offset))/nObs) + offset
   else out = log(sum(exp(x - offset))) + offset
   return(out)
