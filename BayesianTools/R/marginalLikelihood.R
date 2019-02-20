@@ -10,9 +10,9 @@
 #' Calcluated the marginal likelihood from a set of MCMC samples
 #' @export
 #' @author Florian Hartig
-#' @param sampler an object that implements the getSample function, i.e. a mcmc / smc Sampler (list)
+#' @param sampler an MCMC or SMC sampler or list, or for method "Prior" also a BayesianSetup
 #' @param numSamples number of samples to use. How this works, and if it requires recalculating the likelihood, depends on the method
-#' @param method method to choose. Currently available are "Chib" (default), the harmonic mean "HM", sampling from the prior "prior", and bridge sampling "Bridge". See details
+#' @param method method to choose. Currently available are "Chib" (default), the harmonic mean "HM", sampling from the prior "Prior", and bridge sampling "Bridge". See details
 #' @param ... further arguments passed to \code{\link{getSample}}
 #' @details The marginal likelihood is the average likelihood across the prior space. It is used, for example, for Bayesian model selection and model averaging. 
 #' 
@@ -24,7 +24,7 @@
 #' 
 #' In BT, we return the log ML, so you will have to exp all values for this formula. 
 #' 
-#' It is well-known that the ML is VERY dependent on the prior, and in particular the choice of the width of uninformative priors may have major impacts on the relative weights of the models. It has therefore been suggested to not use the ML for model averaging / selection on uninformative priors. If you have no informative priors, and option is to split the data into two parts, use one part to generate informative priors for the model, and the second part for the model selection. See Dormann et al., 2018, in particular the Appendix, for an example. 
+#' It is well-known that the ML is VERY dependent on the prior, and in particular the choice of the width of uninformative priors may have major impacts on the relative weights of the models. It has therefore been suggested to not use the ML for model averaging / selection on uninformative priors. If you have no informative priors, and option is to split the data into two parts, use one part to generate informative priors for the model, and the second part for the model selection. See help for an example. 
 #' 
 #' The marginalLikelihood function currently implements four ways to calculate the marginal likelihood. Be aware that marginal likelihood calculations are notoriously prone to numerical stability issues. Especially in high-dimensional parameter spaces, there is no guarantee that any of the implemented algorithms will converge reasonably fast. The recommended (and default) method is the method "Chib" (Chib and Jeliazkov, 2001), which is based on MCMC samples, with a limited number of additional calculations. Despite being the current recommendation, note there are some numeric issues with this algorithm that may limit reliability for larger dimensions.
 #'   
@@ -46,16 +46,17 @@
 #' @seealso \code{\link{WAIC}}, \code{\link{DIC}}, \code{\link{MAP}}
 marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...){
   
-  # TODO: maybe we should add a check for class here to stop people from trying to use
-  #       this on samples that are acquired via getSample
-  setup <- NULL
+
   if ((class(sampler)[1] %in% c("mcmcSamplerList", "smcSamplerList"))) {
     setup <- sampler[[1]]$setup
     posterior = sampler[[1]]$setup$posterior$density 
-  } else {
+  } else if ((class(sampler)[1] %in% c("mcmcSampler", "smcSampler"))) {
     setup <- sampler$setup
     posterior = sampler$setup$posterior$density 
-  }
+  } else if ((class(sampler)[1] %in% c("BayesianSetup"))) {
+    setup <- sampler
+    posterior = sampler$posterior$density 
+  } else stop("sampler must be a sampler or a BayesianSetup")
   
   
   if (method == "Chib"){
