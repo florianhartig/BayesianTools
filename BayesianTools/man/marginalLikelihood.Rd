@@ -190,7 +190,7 @@ marginalLikelihood(out, method = "HM", numSamples =  500)$ln.ML - theory
 marginalLikelihood(out, method = "Bridge", numSamples =  500)$ln.ML - theory
 
 
-# higher dimensions - wide prior - HM and bridge don't work.
+# higher dimensions - wide prior - HM and Prior don't work
 
 likelihood <- function(x) sum(msm::dtnorm(x, log = TRUE, lower = -10, upper = 10))
 prior = createUniformPrior(lower = rep(-10,3), upper = rep(10,3))
