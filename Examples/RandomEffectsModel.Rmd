@@ -7,6 +7,8 @@ output:
     keep_md: yes
     toc: yes
 abstract: "This example shows how to specify a random effect model with the BT package" 
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r}
@@ -61,7 +63,7 @@ settings <- list(iterations = 10000, message=F)
 
 res <- runMCMC(bayesianSetup = setup, settings = settings)
 summary(res)
-marginalPlot(res)
+marginalPlot(res, which = 1:3, start = 300)
 
 ```
 
