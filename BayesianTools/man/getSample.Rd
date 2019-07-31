@@ -4,8 +4,8 @@
 \alias{getSample}
 \title{Extracts the sample from a bayesianOutput}
 \usage{
-getSample(sampler, parametersOnly = T, coda = F, start = 1, end = NULL,
-  thin = 1, numSamples = NULL, whichParameters = NULL,
+getSample(sampler, parametersOnly = T, coda = F, start = 1,
+  end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL,
   includesProbabilities = F, reportDiagnostics = FALSE, ...)
 }
 \arguments{

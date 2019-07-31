@@ -189,6 +189,7 @@ createBetaPrior<- function(a, b, lower=0, upper=1){
 
 
 #' Fits a density function to a multivariate sample
+#' 
 #' @author Florian Hartig
 #' @export
 #' @param sampler an object of class BayesianOutput or a matrix 
@@ -198,6 +199,17 @@ createBetaPrior<- function(a, b, lower=0, upper=1){
 #' @param upper vector with upper bounds of parameter for the new prior, independent of the input sample
 #' @param best vector with "best" values of parameter for the new prior, independent of the input sample
 #' @param ... parameters to pass on to the getSample function
+#' 
+#' @details This function fits a density estimator to a multivariate (typically a posterior) sample. The main purpose is to summarize a posterior sample as a pdf, in order to include it as a prior in a new analysis, for example when new data becomes available, or to calculate a fractional Bayes factor (see \code{\link{marginalLikelihood}}).
+#' 
+#' The limitation of this function is that we currently only implement a multivariate normal density estimator, so you will have a loss of information if your posterior is not approximately multivariate normal, which is likely the case if you have weak data. Extending the function to include more flexible density estimators (e.g. gaussian processes) is on our todo list, but it's quite tricky to get this stable, so I'm not sure when we will have this working. In general, creating reliable empirical density estimates in high-dimensional parameter spaces is extremely tricky, regardless of the software you are using. 
+#'  
+#' For that reason, it is usually recommended to not update the posterior with this option, but rather:
+#' 
+#' 1. If the full dataset is available, to make a single, or infrequent updates, recompute the entire model with the full / updated data
+#' 
+#' 2. For frequent updates, consider using SMC instead of MCMC sampling. SMC sampling doesn't require an analytical summary of the posterior. 
+#' 
 #' @seealso \code{\link{createPrior}} \cr
 #'          \code{\link{createBetaPrior}} \cr
 #'          \code{\link{createTruncatedNormalPrior}} \cr

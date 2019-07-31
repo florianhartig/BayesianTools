@@ -19,15 +19,15 @@ createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplic
     out <- tryCatch(
     {
       y = likelihood(x, ...)
-      if (any(y == Inf | is.nan(y) | is.na(y))){
-        warning(paste("BayesianTools warning: positive Inf or NA / nan values occured in the likelihood. Setting likelihood to -Inf. Original value was", y, "for parameters", x))
-        y[is.infinite(y) | is.nan(y) | is.na(y)] = -Inf
+      if (any(y == Inf | is.nan(y) | is.na(y) | !is.numeric(y))){
+        message(paste("BayesianTools warning: positive Inf or NA / nan values, or non-numeric values occured in the likelihood. Setting likelihood to -Inf.\n Original value was", y, "for parameters", x, "\n\n "))
+        y[is.infinite(y) | is.nan(y) | is.na(y) | !is.numeric(y)] = -Inf
       }
       y 
     },
     error=function(cond){
       cat(c("Parameter values ", x, "\n"))
-      warning("Problem encountered in the calculation of the likelihood with parameter ", x, "\n Error message was", cond, "\n set result of the parameter evaluation to -Inf ", "ParameterValues ")
+      message("Problem encountered in the calculation of the likelihood with parameter ", x, "\n Error message was", cond, "\n set result of the parameter evaluation to -Inf ", "ParameterValues ")
       return(-Inf)
     }
         )

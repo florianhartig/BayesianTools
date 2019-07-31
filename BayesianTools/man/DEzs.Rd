@@ -4,12 +4,12 @@
 \alias{DEzs}
 \title{Differential-Evolution MCMC zs}
 \usage{
-DEzs(bayesianSetup, settings = list(iterations = 10000, Z = NULL, startValue =
-  NULL, pSnooker = 0.1, burnin = 0, thin = 1, f = 2.38, eps = 0, parallel =
-  NULL, pGamma1 = 0.1, eps.mult = 0.2, eps.add = 0, consoleUpdates = 100,
-  zUpdateFrequency = 1, currentChain = 1, blockUpdate = list("none", k = NULL, h
-  = NULL, pSel = NULL, pGroup = NULL, groupStart = 1000, groupIntervall = 1000),
-  message = TRUE))
+DEzs(bayesianSetup, settings = list(iterations = 10000, Z = NULL,
+  startValue = NULL, pSnooker = 0.1, burnin = 0, thin = 1, f = 2.38, eps =
+  0, parallel = NULL, pGamma1 = 0.1, eps.mult = 0.2, eps.add = 0,
+  consoleUpdates = 100, zUpdateFrequency = 1, currentChain = 1, blockUpdate
+  = list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, groupStart
+  = 1000, groupIntervall = 1000), message = TRUE))
 }
 \arguments{
 \item{bayesianSetup}{a BayesianSetup with the posterior density function to be sampled from}

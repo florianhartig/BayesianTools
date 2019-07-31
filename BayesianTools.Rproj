@@ -17,4 +17,4 @@ PackageUseDevtools: Yes
 PackagePath: BayesianTools
 PackageInstallArgs: --no-multiarch --with-keep.source
 PackageCheckArgs: --as-cran
-PackageRoxygenize: rd,collate,namespace
+PackageRoxygenize: rd,collate,namespace,vignette

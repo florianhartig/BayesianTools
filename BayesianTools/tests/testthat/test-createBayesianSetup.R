@@ -60,14 +60,44 @@ test_that("createBayesianSetup works with lower/upper input", {
   bs1 = NULL; bs2 = NULL; bs3 = NULL; bs4 = NULL;
   testthat::expect_error({
     bs1 <- createBayesianSetup(likelihood = ll, lower = lower, upper = upper)
-    testthat::expect_true({bs1$prior$lower == bs1$info$plotLower && bs1$prior$upper == bs1$info$plotUpper})
+    testthat::expect_true({ all (bs1$prior$lower == bs1$info$plotLower & bs1$prior$upper == bs1$info$plotUpper)})
   }, NA, label = "lower/upper only")
   testthat::expect_error({
     bs2 <- createBayesianSetup(likelihood = ll, lower = lower, upper = upper, priorSampler = samp)
-    testthat::expect_true({bs1$prior$lower == bs1$info$plotLower && bs1$prior$upper == bs1$info$plotUpper})
+    testthat::expect_true({all(bs1$prior$lower == bs1$info$plotLower & bs1$prior$upper == bs1$info$plotUpper)})
   }, NA, label = "lower/upper and priorSampler")
   testthat::expect_true({
     toString(bs1) == toString(bs2)
   }, label = "consistent results")
 })
+
+
+test_that("likelihood properly handles exceptions", {
+  
+  likelihood = function(x){
+    if(x == 1) return(1) 
+    if(x == 2) stop()
+    if(x == 3) return(Inf)
+    if(x == 4) return(-Inf)
+    if(x == 5) return(NaN)
+    if(x == 6) return(NA)
+    if(x == 7) return(F)
+    if(x == 8) return("test")
+    
+  }
+  setup <- createBayesianSetup(likelihood, lower = -1, upper = 10)
+  
+  expect(setup$posterior$density(1))
+  expect_equal(setup$posterior$density(2), -Inf)
+  expect_equal(setup$posterior$density(3), -Inf)
+  expect_equal(setup$posterior$density(4), - Inf)
+  expect_equal(setup$posterior$density(5), - Inf)
+  expect_equal(setup$posterior$density(6), - Inf)
+  expect_equal(setup$posterior$density(7), -Inf)
+  # This doesn't work yet, but not sure if it's neccessary to fix it
+  #expect_equal(setup$posterior$density(8), - Inf)
+  
+
+})
+
 

@@ -1,6 +1,6 @@
 #' Main wrapper function to start MCMCs, particle MCMCs and SMCs
 #' @author Florian Hartig
-#' @param bayesianSetup either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for further details. 
+#' @param bayesianSetup either a BayesianSetup (see \code{\link{createBayesianSetup}}) or a BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for how to restart a sampler. 
 #' @param sampler sampling algorithm to be run. Default is DEzs. Options are "Metropolis", "AM", "DR", "DRAM", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions. 
 #' @param settings list with settings for each sampler (see help of sampler for details). If a setting is not provided, defaults (see \code{\link{applySettingsDefault}}) will be used. You can see the default values by running \code{\link{applySettingsDefault}} with the respective sampler name, or in the help of the samplers. 
 #' @details The runMCMC function can be started with either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. If a bayesianSetup is provided, check if appropriate parallization options are used - many samplers can make use of parallelization if this option is activated when the class is created.
@@ -69,13 +69,15 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
     
   ## NOT RESTART STARTS HERE ###################
     
-  }else{
+  }else if(class(bayesianSetup) == "BayesianSetup"){
     restart <- FALSE
+
     if(is.null(settings$parallel)) settings$parallel <- bayesianSetup$parallel
-    if(is.numeric(settings$parallel)) settings$parallel <- TRUE
+    if(is.numeric(settings$parallel)) settings$parallel <- TRUE      
+
     setup <- checkBayesianSetup(bayesianSetup, parallel = settings$parallel)
     settings <- applySettingsDefault(settings = settings, sampler = sampler, check = TRUE)
-  }
+  } else stop("runMCMC requires a class of type BayesianOutput or BayesianSetup")
   
   ###### END RESTART ##############
   

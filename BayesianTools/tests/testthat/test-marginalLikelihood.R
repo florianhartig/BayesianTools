@@ -13,17 +13,18 @@ settings <- list(iterations=10000)
 out <- runMCMC(setup)
 
 testthat::test_that("marginalLikelihood with method 'Chib' runs without error", {
-  testthat::expect_error(marginalLikelihood(sampler = out, method = "Chib"), NA)
+  marginalLikelihood(sampler = out, method = "Chib")
 })
 
 testthat::test_that("marginalLikelihood with method 'HM' runs without error", {
-  testthat::expect_error(marginalLikelihood(sampler = out, method = "HM"), NA)
+  marginalLikelihood(sampler = out, method = "HM")
 })
 
 testthat::test_that("marginalLikelihood with method 'Bridge' runs without error", {
-  testthat::expect_error(marginalLikelihood(sampler = out, method = "Chib"), NA)
+  marginalLikelihood(sampler = out, method = "Bridge")
 })
 
-testthat::test_that("marginalLikelihood with method 'prior' runs without error", {
-  testthat::expect_error(marginalLikelihood(sampler = out, method = "Chib"), NA)
+testthat::test_that("marginalLikelihood with method 'Prior' runs without error", {
+  marginalLikelihood(sampler = out, method = "Prior")
+  marginalLikelihood(sampler = setup, method = "Prior")
 })

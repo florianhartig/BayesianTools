@@ -4,11 +4,11 @@
 \alias{DREAMzs}
 \title{DREAMzs}
 \usage{
-DREAMzs(bayesianSetup, settings = list(iterations = 10000, nCR = 3, gamma =
-  NULL, eps = 0, e = 0.05, pCRupdate = FALSE, updateInterval = 10, burnin = 0,
-  thin = 1, adaptation = 0.2, parallel = NULL, Z = NULL, ZupdateFrequency = 10,
-  pSnooker = 0.1, DEpairs = 2, consoleUpdates = 10, startValue = NULL,
-  currentChain = 1, message = FALSE))
+DREAMzs(bayesianSetup, settings = list(iterations = 10000, nCR = 3, gamma
+  = NULL, eps = 0, e = 0.05, pCRupdate = FALSE, updateInterval = 10, burnin
+  = 0, thin = 1, adaptation = 0.2, parallel = NULL, Z = NULL,
+  ZupdateFrequency = 10, pSnooker = 0.1, DEpairs = 2, consoleUpdates = 10,
+  startValue = NULL, currentChain = 1, message = FALSE))
 }
 \arguments{
 \item{bayesianSetup}{Object of class 'bayesianSetup' or 'bayesianOuput'.}
@@ -21,13 +21,13 @@ DREAMzs(bayesianSetup, settings = list(iterations = 10000, nCR = 3, gamma =
 
 \item{updateInterval}{determining the intervall for the pCR (crossover probabilities) update}
 
-\item{gamma}{Kurtosis parameter Bayesian Inference Scheme. Default is 0.}
+\item{gamma}{Kurtosis parameter Bayesian Inference Scheme.}
 
-\item{eps}{Ergodicity term. Default to 0.}
+\item{eps}{Ergodicity term}
 
-\item{e}{Ergodicity term. Default to 5e-2.}
+\item{e}{Ergodicity term}
 
-\item{pCRupdate}{Update of crossover probabilities, default is TRUE}
+\item{pCRupdate}{Update of crossover probabilities}
 
 \item{burnin}{number of iterations treated as burn-in. These iterations are not recorded in the chain.}
 

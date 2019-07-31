@@ -1,5 +1,25 @@
 NOTE: for more news about the package, see https://github.com/florianhartig/BayesianTools/releases
 
+# BayesianTools 0.1.6
+
+New features
+
+- calibrationTest + helper functions to test for  https://github.com/florianhartig/BayesianTools/pull/172
+
+Major changes
+
+- None
+
+Minor changes
+
+- Help improvements and clarifications
+
+Bugfixes 
+
+- Bugfix AR1 likelihood https://github.com/florianhartig/BayesianTools/issues/169
+- Bugfix restart MCMC https://github.com/florianhartig/BayesianTools/issues/158
+
+
 # BayesianTools 0.1.5
 
 Changes / improvements

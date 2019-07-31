@@ -243,3 +243,29 @@ getSample.MCMC_refClass <- function(sampler, parametersOnly = T, coda = F, start
 }
 
 
+#' Merge Chains
+#' 
+#' Merge a list of MCMCs or chains
+#' 
+#' The function merges a list of MCMC objects. Requirement is that the list contains classes for which the getSample function works
+#' 
+#' @param l the list with MCMC outputs
+#' @param ... arguments to be passed on to getSample
+#' 
+#' @return a matrix
+#' 
+#' @author Florian Hartig
+#' 
+#' @export
+#' 
+mergeChains <- function(l, ...){
+  
+  x = getSample(l[[1]], ...)
+  
+  for(i in 2:length(l)){
+    x = rbind(x, getSample(l[[i]], ...))
+  }
+  return(x)
+}
+
+
