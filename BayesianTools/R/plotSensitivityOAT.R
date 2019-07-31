@@ -4,7 +4,7 @@
 #' @param selection indices of selected parameters
 #' @param equalScale if T, y axis of all plots will have the same scale
 #' @note This function can also be used for sensitivity analysis of an arbitrary output - just create a BayesianSetup with this output. 
-#' @example #' @example /inst/examples/plotSensitivityHelp.R
+#' @example /inst/examples/plotSensitivityHelp.R
 #' @export
 plotSensitivity <- function(bayesianSetup, selection = NULL, equalScale = T){
   
