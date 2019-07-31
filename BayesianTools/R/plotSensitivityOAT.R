@@ -38,6 +38,9 @@ plotSensitivity <- function(bayesianSetup, selection = NULL, equalScale = T){
       plot(resp~par, xlab = bayesianSetup$names[n], type = "l", col = "red", data = post[[j]])
       abline(v = refPar[n])
     }
+    
+    names(post) = bayesianSetup$names
+    post$reference = refPar
 
     par(oldPar)
     return(post)
