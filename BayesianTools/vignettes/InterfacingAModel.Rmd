@@ -4,7 +4,7 @@ output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Manual for the BayesianTools R package}
+  %\VignetteIndexEntry{Interfacing your model with R}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 abstract: "This tutorial discusses how to interface models written in other programming languages with R, so that they can be fit with BayesianTools" 
@@ -41,7 +41,9 @@ What happens now depends on how your model is programmed - I have listed the ste
 \item Model parameters are hard-coded in the executable
 \end{enumerate}
 
-\paragraph{Case 1 - model programmed in R} Usually, you will have to do nothing. Just make sure you can call your model like that
+### Case 1 - model programmed in R
+
+Usually, you will have to do nothing. Just make sure you can call your model like that
 
 ```{r, eval = F}
 runMyModel(par)
@@ -49,13 +51,14 @@ runMyModel(par)
 
 
 
-\paragraph{Case 2}
+### Case 2 - model programmed in C / C++, interfaced with RCPP
 
 RCPP is a highly flexible environment to interface between R and C/C++. If your model is coded in C / C++, RCPP offers the most save and powerful way to connect with R (much more flexible than with command line or dll).  However, doing the interface may need some larger adjustments in the beginning, and there can be technical problems that are difficult to solve for beginners. We do not recommend to attempt this unless you have RCPP experience, and thus we do not provide further help on this topic. 
 
 
+### Case 3 - compiled executable, parameters set via command line (std I/O)
 
-\paragraph{Case 3 - compiled model, parameters set via command line} Usually, you will have to do nothing. Just make sure you can call your model like that
+If your model is written in a compiled or interpreted language, and accepts parameters via std I/O, wrapping is usually nothing more than writing the system call in an R function. An example would be 
 
 ```{r, eval = F}
 runMyModel(par){
@@ -71,25 +74,21 @@ runMyModel(par){
 
 Note: If you have problems with the system command, try system2.
 
-\paragraph{Case 4 - compiled dll, parameters are set via dll interface } 
+### Case 4 - compiled dll, parameters are set via dll interface
 
-If you have your model prepared as a dll, or you can prepare it that way, you can use the \ref{https://stat.ethz.ch/R-manual/R-devel/library/base/html/dynload.html}{dyn.load()} function to link to your model
+If you have your model prepared as a dll, or you can prepare it that way, you can use the \ref{https://stat.ethz.ch/R-manual/R-devel/library/base/html/dynload.html}{dyn.load()} function to link R to your model
 
 ```{r, eval = F}
-runMyModel(par)
-```
-
-
-<<eval = F>>=
 dyn.load(model)
 
 runMyModel(par){
-  
-# model call here 
-@
+  # model call here 
+}
+```
 
+The tricky thing in this approach is that you have to code the interface to your dll, which technically means in most programming languages to set your variables as external or something similar, so that they can be accessed from the outside. How this works will depend on the programming language. 
 
-\paragraph{Case 5 - compiled model, parameters set via parameter file or in any other method} 
+### Case 5 - compiled model, parameters set via parameter file or in any other method
 
 Many models read parameters with a parameter file. In this case you want to do something like this
 
@@ -129,12 +128,10 @@ setUpModel <- function(parameterTemplate, site, localConditions){
 
 How you do the write parameter function depends on the file format you use for the parameters. In general, you probably want to create a template parameter file that you use as a base and from which you change parameters 
 
-
-
 * If your parameter file is in an *.xml format*, check out the xml functions in R
 * If your parameter file is in a *general text format*, the best option may be to create a template parameter file, place a unique string at the locations of the parameters that you want to replace, and then use string replace functions in R, e.g. [grep](https://stat.ethz.ch/R-manual/R-devel/library/base/html/grep.html) to replace this string. 
 
-\paragraph{Case 6 - compiled model, parameters cannot be changed}
+### Case 6 - compiled model, parameters cannot be changed
 
 You have to change your model code to achieve one of the former options. If the model is in C/C++, going directly to RCPP seems the best alternative.   
 
