@@ -43,11 +43,13 @@ Creates a standardized collection of prior, likelihood and posterior functions, 
 \details{
 If prior is of class prior (e.g. create with \code{\link{createPrior}}), priorSampler, lower, upper and best will be ignored.\cr If prior is a function (log prior density), priorSampler (custom sampler), or lower/upper (uniform sampler) is required.\cr If prior is NULL, and lower and upper are passed, a uniform prior (see \code{\link{createUniformPrior}}) will be created with boundaries lower and upper.
 
-For parallelization, option T means that an automatic parallelization via R is attempted, or "external", in which case it is assumed that the likelihood is already parallelized. In this case it needs to accept a matrix with parameters as columns.
-Further you can specify the packages, objects and DLLs that are exported to the cluster. 
-By default a copy of your workspace is exported. However, depending on your workspace this can be very inefficient.
+For parallelization, option parallel = T means that an automatic parallelization via a standard R socket cluster is attempted. By default, a copy of your workspace, including DLLs and objects are exporte to the cluster workers. Because this can be very inefficient, you can explictly specify the packages, objects and DLLs that are to be exported via parallelOptions.
 
-For more details, make sure to read the vignette (run vignette("BayesianTools", package="BayesianTools")
+Using parallel = T requires that the function to be parallelized is well encapsulate, i.e. can run on a shared memory / shared hard disk machine in parallel without interfering with each other. For some functions and programs, this is not the case, so that a custom-programmed parallelization is required. 
+
+In this case, and only in this case, you should specify parallel = "external". In this case, it is assumed that the likelihood is programmed such that it accepts a matrix with parameters as columns and the different model runs as rows. It is then up to the user if and how to parallelize this function. This option gives most flexibility to the user, in particular for complicated parallel architecture or shared memory problems.
+
+For more details on parallelization, make sure to read the vignette (run vignette("BayesianTools", package="BayesianTools"))
 }
 \examples{
 ll <- function(x) sum(dnorm(x, log = TRUE))

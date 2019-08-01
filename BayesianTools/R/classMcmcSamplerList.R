@@ -28,7 +28,8 @@ summary.mcmcSamplerList <- function(object, ...){
   DInf <- DIC(sampler)
   MAPvals <- round(MAP(sampler)$parametersMAP,3)
 
-  psf <- round(gelmanDiagnostics(sampler)$psrf[,1], 3)
+  gelDiag <- gelmanDiagnostics(sampler)
+  psf <- round(gelDiag$psrf[,1], 3)
   
   mcmcsampler <- sampler[[1]]$settings$sampler
   
@@ -42,7 +43,7 @@ summary.mcmcSamplerList <- function(object, ...){
   if("mcmc.list" %in% class(sampler)){
     nrChain <- length(sampler)
     nrIter <- nrow(sampler[[1]])
-    conv <- round(coda::gelman.diag(sampler)$mpsrf,3)
+    conv <- round(gelDiag$mpsrf,3)
     npar <- ncol(sampler[[1]])
     lowerq <- upperq <- numeric(npar)
     medi <- numeric(npar)
