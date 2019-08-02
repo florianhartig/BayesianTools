@@ -5,7 +5,7 @@
 
 # BayesianTools
 
-R package for performing Bayesian inference, including various MCMC and SMC sampling algorithms!
+R package for performing Bayesian inference, including various MCMC and SMC sampling algorithms! A google scholar list of studies citing BT is [here](https://scholar.google.com/scholar?oi=bibs&hl=en&cites=15191862660990668802,4910024394983334104&as_sdt=5).
 
 ## Getting BayesianTools
 
