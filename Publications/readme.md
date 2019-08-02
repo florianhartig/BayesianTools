@@ -1,2 +1,2 @@
-# Core repo for publications using the BT package
+# Core folder for publications using the BT package
 
