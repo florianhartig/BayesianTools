@@ -5,7 +5,7 @@
 \title{Standard GOF metrics
 Startvalues for sampling with nrChains > 1 : if you want to provide different start values for the different chains, provide a list}
 \usage{
-GOF(observed, predicted, plot = F)
+GOF(observed, predicted, plot = F, centered = T)
 }
 \arguments{
 \item{observed}{observed values}
@@ -13,6 +13,8 @@ GOF(observed, predicted, plot = F)
 \item{predicted}{predicted values}
 
 \item{plot}{should a plot be created}
+
+\item{centered}{if T, variables are centered to the mean of the observations, i.e. the intercept is for the mean value of the observation}
 }
 \value{
 A list with the following entries: rmse = root mean squared error, mae = mean absolute error, slope = slope of regression, offset = intercept of regression, R2 = R2 of regression
@@ -22,13 +24,16 @@ Standard GOF metrics
 Startvalues for sampling with nrChains > 1 : if you want to provide different start values for the different chains, provide a list
 }
 \details{
-The function considers predicted ~ observed and calculates
+The function considers observed ~ predicted and calculates
 
 1) rmse = root mean squared error
 2) mae = mean absolute errorr
 3) a linear regression with slope, intercept and coefficient of determination R2
 
-For the linear regression, the x axis is centered, meaning that the intercept is the difference between observed / predicted for the MEAN predicted value. This setting avoids a correlation between slope and intercept (that the intercept is != 0 as soon as the slope is !=0)
+For the linear regression, centered = T means that variables will be centered around the mean value of the observation. This setting avoids a correlation between slope and intercept (that the intercept is != 0 as soon as the slope is !=0)
+}
+\note{
+In principle, it is possible to plot observed ~ predicted and predicted ~ observed. However, if we assume that the error is mainly on the y axis (observations), i.e. that observations scatter around the true (ideal) value, we should plot observed ~ predicted. See Pineiro et al. (2008). How to evaluate models: observed vs. predicted or predicted vs. observed?. Ecological Modelling, 216(3-4), 316-322.
 }
 \examples{
 
