@@ -14,17 +14,22 @@ plotSensitivity <- function(bayesianSetup, selection = NULL, equalScale = T){
   post = list()
   lowS = bayesianSetup$prior$lower[selection]
   upS = bayesianSetup$prior$upper[selection]
-  refPar = bayesianSetup$prior$best
+  refPar = bayesianSetup$prior$best[selection]
+  names = bayesianSetup$names[selection]
+  fullRefPar <- bayesianSetup$prior$best
   
   minR = Inf
   maxR = -Inf
   
   for (j in 1:n){
     post[[j]] <- data.frame(par = seq(lowS[j], upS[j], len = 20), resp = rep(NA, 20))
+    
     for (i in 1:20){
       parS <- refPar
-      parS[n] = post[[j]]$par[i]
-      post[[j]]$resp[i] = bayesianSetup$posterior$density(parS)
+      parS[j] = post[[j]]$par[i]
+      parS2 = fullRefPar
+      parS2[selection] = parS
+      post[[j]]$resp[i] = bayesianSetup$posterior$density(parS2)
     }
     minR = min(minR, post[[j]]$resp)
     maxR = max(maxR, post[[j]]$resp)
@@ -34,17 +39,17 @@ plotSensitivity <- function(bayesianSetup, selection = NULL, equalScale = T){
   
   
   for (i in 1:n){
-    plot(resp~par, xlab = bayesianSetup$names[n], type = "l", col = "red", data = post[[j]])
-    abline(v = refPar[n])
+    if(equalScale == T) plot(resp~par, xlab = names[i], type = "l", col = "red", data = post[[i]], ylim = c(minR, maxR), ylab = "Response")
+    else plot(resp~par, xlab = names[i], type = "l", col = "red", data = post[[i]], ylab = "Response")
+    
+    abline(v = refPar[i])
   }
   
-  names(post) = bayesianSetup$names
+  names(post) = names
   post$reference = refPar
-
+  
   par(oldPar)
   return(post)
-
-
 }
 
 
