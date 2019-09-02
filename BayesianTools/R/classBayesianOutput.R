@@ -22,6 +22,9 @@ getSample <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NU
 
 # TODO: here we have to check many times if the object is a matrix to 
 # cover edge cases (single row/col). Maybe this should be restructured
+
+#' @rdname getSample
+#' @author Florian Hartig
 #' @export
 getSample.matrix <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   
@@ -50,7 +53,6 @@ getSample.matrix <- function(sampler, parametersOnly = T, coda = F, start = 1, e
       out <- sampleEquallySpaced(out, numSamples)
     } else {
       sel = seq(1, nTotalSamples, by = thin)
-      
       out = out[sel,]
       if (!is.matrix(out)) out <- matrix(out, ncol = nPars)
     }

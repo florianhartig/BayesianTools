@@ -41,6 +41,8 @@ bayesianSetup <- createBayesianSetup(likelihood, prior, names = rownames(refPars
 # settings for the sampler, iterations should be increased for real applicatoin
 settings <- list(iterations = 2000, nrChains = 2)
 
+\dontrun{
+
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
 
 # Posterior predictive simulations
@@ -59,7 +61,6 @@ createError <- function(mean, par){
   return(rnorm(length(mean), mean = mean, sd = par[7]))
 }
 
-\dontrun{
 
 # plot prior predictive distribution and prior predictive simulations
 plotTimeSeriesResults(sampler = out, model = createPredictions, observed = obs[,1],

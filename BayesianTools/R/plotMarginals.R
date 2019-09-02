@@ -12,7 +12,7 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #' @param ... additional arguments passed to \code{\link{getSample}}. If you have a high number of draws from the posterior it is advised to set numSamples (to e.g. 5000) for performance reasons.
 #' @example /inst/examples/marginalPlotHelp.R
 #' @author Tankred Ott
-marginalPlot <- function(x, prior = FALSE, xrange = NULL, type = 'd', singlePanel = TRUE, settings = NULL,
+marginalPlot <- function(x, prior = TRUE, xrange = NULL, type = 'd', singlePanel = FALSE, settings = NULL,
                          nPriorDraws = 10000, ...) {
   
   posteriorMat <- getSample(x, parametersOnly = TRUE, ...)

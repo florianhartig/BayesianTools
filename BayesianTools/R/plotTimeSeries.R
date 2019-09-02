@@ -8,10 +8,8 @@
 #' @param xlab a title for the x axis
 #' @param ylab a title for the y axis
 #' @param ... further arguments passed to \code{\link[graphics]{plot}}
-#' @seealso \code{\link{plotTimeSeriesResults}}  \cr
-#'          \code{\link{marginalPlot}} \cr
-#'          \code{\link{tracePlot}} \cr
-#'          \code{\link{correlationPlot}}
+#' @details Values for confidence and prediction bands can be generated with \code{\link{getPredictiveIntervals}}. For a more elaborate version of this plot, see \code{\link{plotTimeSeriesResults}}
+#' @seealso \code{\link{marginalPlot}}, \code{\link{tracePlot}}, \code{\link{correlationPlot}}
 #' @example /inst/examples/plotTimeSeriesHelp.R
 #' @export
 plotTimeSeries <- function(observed = NULL, predicted = NULL, x = NULL, confidenceBand = NULL, predictionBand = NULL, xlab = "Time", ylab = "Observed / predicted values", ...){
@@ -64,6 +62,7 @@ plotTimeSeriesResiduals <- function(residuals, x = NULL, main = "residuals"){
 #' @param plotResiduals logical determining whether residuals should be plotted
 #' @param prior if a prior sampler is implemented, setting this parameter to TRUE will draw model parameters from the prior instead of the posterior distribution
 #' @param ... further arguments passed to \code{\link[graphics]{plot}}
+#' @seealso \code{\link{getPredictiveIntervals}}
 #' @example /inst/examples/plotTimeSeriesHelp.R
 #' @export
 plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotResiduals = TRUE, start = 1, prior = FALSE, ...){
