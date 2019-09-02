@@ -243,6 +243,24 @@ runParallel<- function(parList){
 runParallel(c(1,2))
 ```
 
+Something like the previous loop is automatized in BayesianTools. You can create a parallel model evaluation function with the function generateParallelExecuter, or alternatively directly in the createBayesianSetup
+
+```{r}
+library(BayesianTools)
+parModel <- generateParallelExecuter(mymodel)
+```
+
+
+### Thread safety
+
+Thread safety quite generally means that you can execute multiple instances of your code on your hardware. There are various things that can limit Thread safety, for example 
+
+* writing outputs to file (several threads might write to the same file at the same time)
+
+
+
+
+
 
 
 
