@@ -3,7 +3,7 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 
 #' Plot MCMC marginals
 #' @param x bayesianOutput, or matrix or data.frame containing with samples as rows and parameters as columns
-#' @param prior logical determining whether the prior should be plotted, or if x is matrix oder data.frame, a matrix of prior draws with draws as rows and parameters as columns
+#' @param prior if x is a bayesianOutput, T/F will determine if the prior is drawn (default = T). If x is matrix oder data.frame, a prior can be drawn if a matrix of prior draws with values as rows and parameters as columns can be provided here. 
 #' @param xrange vector or matrix of plotting ranges for the x axis. If matrix, the rows must be parameters and the columns min and max values.
 #' @param type character determining the plot type. Either 'd' for density plot, or 'v' for violin plot
 #' @param singlePanel logical, determining whether the parameter should be plotted in a single panel or each in its own panel
@@ -12,21 +12,42 @@ marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 #' @param ... additional arguments passed to \code{\link{getSample}}. If you have a high number of draws from the posterior it is advised to set numSamples (to e.g. 5000) for performance reasons.
 #' @example /inst/examples/marginalPlotHelp.R
 #' @author Tankred Ott
-marginalPlot <- function(x, prior = TRUE, xrange = NULL, type = 'd', singlePanel = FALSE, settings = NULL,
+marginalPlot <- function(x, prior = NULL, xrange = NULL, type = 'd', singlePanel = FALSE, settings = NULL,
                          nPriorDraws = 10000, ...) {
   
   posteriorMat <- getSample(x, parametersOnly = TRUE, ...)
   
   # check prior
-  priorMat <- if (!is.null(prior) & prior != FALSE) {
-    if ('bayesianOutput' %in% class(x)) bs <- getSetup(x)$prior$sampler(nPriorDraws) # draw prior from bayesianSetup
-    else if (any(c('data.frame', 'matrix') %in% class(prior))) {
-      if (ncol(posteriorMat) == ncol(prior)) prior
-      else stop('posterior and prior must have the same number of parameters/columns')
-    } else stop('prior must be matrix or data.frame, or NULL, if x is matrix/data.frame')
-  } else NULL
   
-  if (!is.null(priorMat)) colnames(priorMat) <- colnames(posteriorMat)
+  if ('bayesianOutput' %in% class(x)) {
+    
+    # default T 
+    if (is.null(prior)) prior = TRUE
+    
+    if (any(c('data.frame', 'matrix') %in% class(prior))) priorMat = prior
+    else if (is.logical(prior)){
+      if (prior == TRUE) priorMat = getSetup(x)$prior$sampler(nPriorDraws) # draw prior from bayesianSetup
+      else if (prior == F) priorMat = NULL
+    }
+    else stop('wrong argument to prior')
+  } else {
+    
+    # default F
+    if (is.null(prior)) prior = FALSE
+    
+    if (any(c('data.frame', 'matrix') %in% class(prior))) priorMat = prior    
+    else if (is.logical(prior)){
+      priorMat = NULL
+      if (prior == TRUE) message("prior = T will only have an effect if x is of class BayesianOutput")
+    } 
+    else stop('wrong argument to prior')
+  }
+
+  if (!is.null(priorMat)) {
+    if (ncol(posteriorMat) != ncol(priorMat)) stop("wrong dimensions of prior")
+    colnames(priorMat) <- colnames(posteriorMat)    
+  }
+    
   nPar <- ncol(posteriorMat)
   
   # check xrange
