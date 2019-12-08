@@ -643,7 +643,7 @@ plot(out)
 Note that the use of a number for initialParticles requires that the bayesianSetup includes the possibility to sample from the prior. 
 
 
-# Model comparison and averaging
+# Bayesian model comparison and averaging
 
 There are a number of Bayesian model selection and model comparison methods. The BT implements three of the most common of them, the DIC, the WAIC, and the Bayes factor. 
 
