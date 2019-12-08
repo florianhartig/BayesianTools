@@ -35,7 +35,7 @@ plotSensitivity <- function(bayesianSetup, selection = NULL, equalScale = T){
     maxR = max(maxR, post[[j]]$resp)
   }
   
-  oldPar = par(mfrow = BayesianTools:::getPanels(n))
+  oldPar = par(mfrow = getPanels(n))
   
   
   for (i in 1:n){
