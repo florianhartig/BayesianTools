@@ -43,6 +43,9 @@ plotTimeSeries(observed = ts, predicted = pred, main = "Observed and predicted")
 par(mfrow=c(1,1))
 
 }
+\seealso{
+\code{\link{getPredictiveIntervals}}
+}
 \author{
 Florian Hartig
 }

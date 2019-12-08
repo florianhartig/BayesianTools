@@ -28,6 +28,9 @@ plotTimeSeries(observed = NULL, predicted = NULL, x = NULL,
 \description{
 Plots a time series, with the option to include confidence and prediction band
 }
+\details{
+Values for confidence and prediction bands can be generated with \code{\link{getPredictiveIntervals}}. For a more elaborate version of this plot, see \code{\link{plotTimeSeriesResults}}
+}
 \examples{
 # Create time series
 ts <- VSEMcreatePAR(1:100)
@@ -45,10 +48,7 @@ par(mfrow=c(1,1))
 
 }
 \seealso{
-\code{\link{plotTimeSeriesResults}}  \cr
-         \code{\link{marginalPlot}} \cr
-         \code{\link{tracePlot}} \cr
-         \code{\link{correlationPlot}}
+\code{\link{marginalPlot}}, \code{\link{tracePlot}}, \code{\link{correlationPlot}}
 }
 \author{
 Florian Hartig

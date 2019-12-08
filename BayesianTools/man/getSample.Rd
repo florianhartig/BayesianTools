@@ -2,6 +2,7 @@
 % Please edit documentation in R/classBayesianOutput.R
 \name{getSample}
 \alias{getSample}
+\alias{getSample.matrix}
 \alias{getSample.double}
 \alias{getSample.integer}
 \alias{getSample.data.frame}
@@ -15,6 +16,11 @@
 getSample(sampler, parametersOnly = T, coda = F, start = 1,
   end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL,
   includesProbabilities = F, reportDiagnostics = FALSE, ...)
+
+\method{getSample}{matrix}(sampler, parametersOnly = T, coda = F,
+  start = 1, end = NULL, thin = "auto", numSamples = NULL,
+  whichParameters = NULL, includesProbabilities = F,
+  reportDiagnostics = F, ...)
 
 \method{getSample}{double}(sampler, parametersOnly = T, coda = F,
   start = 1, end = NULL, thin = "auto", numSamples = NULL,
@@ -112,6 +118,8 @@ sample_2 <- getSample(out_2, numSamples = 100)
 
 }
 \author{
+Florian Hartig
+
 Florian Hartig
 
 Tankred Ott

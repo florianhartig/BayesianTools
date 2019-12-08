@@ -7,7 +7,7 @@
 logSumExp(x, mean = F)
 }
 \arguments{
-\item{x}{values}
+\item{x}{values at log scale}
 
 \item{mean}{logical, determines whether the mean should be used instead of the sum}
 }
