@@ -10,7 +10,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     
     if(parametersOnly == T) {
       out = sampler$chain[start:end,1:sampler$setup$numPars] 
-      if(class(out) == "numeric") out = as.matrix(out) # case 1 parameter
+      if(class(out)[1] == "numeric") out = as.matrix(out) # case 1 parameter
       if(!is.null(sampler$setup$names)) colnames(out) = sampler$setup$names
     }
     else {
