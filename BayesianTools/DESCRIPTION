@@ -1,8 +1,8 @@
 Package: BayesianTools
 Title: General-Purpose MCMC and SMC Samplers and Tools for Bayesian Statistics
-Version: 0.1.6.1
-Date: 2019-01-22
-Authors@R: c(person("Florian", "Hartig", email = "florian.hartig@biologie.uni-regensburg.de", role = c("aut", "cre")), person("Francesco", "Minunno", role = c("aut")), person("Stefan", " Paul", role = c("aut") ),  person("David", "Cameron", role = "ctb"), person("Tankred", "Ott", role = "ctb"), person("Maximilian", "Pichler", role = "ctb"))
+Version: 0.1.7
+Date: 2019-12-10
+Authors@R: c(person("Florian", "Hartig", email = "florian.hartig@biologie.uni-regensburg.de", role = c("aut", "cre"), comment=c(ORCID="0000-0002-6255-9059")), person("Francesco", "Minunno", role = c("aut")), person("Stefan", " Paul", role = c("aut") ),  person("David", "Cameron", role = "ctb"), person("Tankred", "Ott", role = "ctb"), person("Maximilian", "Pichler", role = "ctb"))
 Author: Florian Hartig [aut, cre],
     Francesco Minunno [aut],
     Stefan Paul [aut],
@@ -51,3 +51,4 @@ RoxygenNote: 6.1.1
 URL: https://github.com/florianhartig/BayesianTools
 BugReports: https://github.com/florianhartig/BayesianTools/issues
 VignetteBuilder: knitr
+Encoding: UTF-8

@@ -235,7 +235,7 @@ getSample.mcmc.list <- function(sampler, parametersOnly = T, coda = F, start = 1
 }
 
 
-# getSample implementation for nimble objects
+# getSample implementation for nimble objects of class MCMC
 
 #' @rdname getSample
 #' @author Tankred Ott

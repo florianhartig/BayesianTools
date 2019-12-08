@@ -96,8 +96,9 @@ exp(M1$ln.ML) / ( exp(M1$ln.ML) + exp(M2$ln.ML))
 #############################################################
 # Fractional Bayes factor
 
-# Motivation: ML is very dependent on the prior, which is a problem if you have uninformative priors 
-# you can see this via rerunning the upper example with changed priors - suddenly, support for M1 is gone
+# Motivation: ML is very dependent on the prior, which is a problem if you 
+# have uninformative priors. you can see this via rerunning the upper  
+# example with changed priors - suddenly, support for M1 is gone
 
 
 setUp1 <- createBayesianSetup(likelihood1, 

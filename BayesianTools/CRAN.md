@@ -1,5 +1,16 @@
 This file contains CRAN submission info / communication
 
+## Version 0.1.7
+
+### Submission 1
+
+This is minor update that was neccesary because of a change to behavior of class(matrix) in CRAN devel, see https://github.com/florianhartig/BayesianTools/issues/191
+
+This release was tested without apparent problems under
+
+* local MAC OS 10.14.6 (Mojave), R 3.6.1
+* http://win-builder.r-project.org/ - oldrelease / devel / release
+* Linux (Travis CI) - oldrel / release / devel
 
 ## Version 0.1.6
 
