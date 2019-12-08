@@ -35,7 +35,7 @@ thinMatrix <- function(mat, thin = "auto"){
 #' @return sclaed matrix
 #' @keywords internal
 scaleMatrix <- function(mat, min, max){
-  if(class(mat) %in% c("matrix", "data.frame")){
+  if(class(mat)[1] %in% c("matrix", "data.frame")){
     for(i in 1:ncol(mat)){
       mat[,i] <- (mat[,i] - min[i]) / (max[i] - min[i])
     }    

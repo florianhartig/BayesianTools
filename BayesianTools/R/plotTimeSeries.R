@@ -83,7 +83,7 @@ plotTimeSeriesResults <- function(sampler, model, observed, error = NULL, plotRe
   
   if(prior == FALSE){
     if(inherits(sampler,"bayesianOutput")) parMatrix = getSample(sampler, start = start)
-    else if (class(sampler) == "matrix") parMatrix = sampler
+    else if (class(sampler)[1] == "matrix") parMatrix = sampler
     else if ("mcmc.list" %in% class(sampler) || "mcmc" %in% class(sampler)) parMatrix = getSample(sampler, start = start)
     else stop("wrong type given to variable sampler")    
   }else if (prior == TRUE){

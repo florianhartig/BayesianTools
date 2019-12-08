@@ -4,7 +4,7 @@
 #' @export
 getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics= F, ...){
   
-  if (class(sampler$chain) == "matrix"){
+  if (class(sampler$chain)[1] == "matrix"){
     
     if(is.null(end)) end = nrow(sampler$chain)
     
@@ -35,6 +35,8 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     if(thin == 1 && !is.null(numSamples)){
       out <- sampleEquallySpaced(out, numSamples)
     }
+
+    # TODO - see matrix, need to check if both thing and numSamples is set 
     
     #############
     
