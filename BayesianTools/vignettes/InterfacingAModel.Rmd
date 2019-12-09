@@ -216,7 +216,7 @@ To parallelize the model itself will be interesting in particular for very large
 
 Let's assume thus that we want to run several model evaluations in R in parallel, on multiple cores of across a cluster or grid computing system. A first requirement to do so is to to have your model wrapped into an R function (see PREVIOUS SECTION). 
 
-If that is the case, R offers a number of options to run functions in parallel. The easiest is to use the parallel package that comes with the R core. For other packages, see the internet and the CRAN task view on [High Performance Computing](https://cran.r-project.org/web/views/HighPerformanceComputing.html)
+If that is the case, R offers a number of options to run functions in parallel. The easiest is to use the parallel package that comes with the R core. For other packages, see the internet and the CRAN task view on [High Performance Computing](https://CRAN.R-project.org/view=HighPerformanceComputing)
 
 As an example, assume we have the following, very simple model:
 
