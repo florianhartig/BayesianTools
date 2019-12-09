@@ -2,12 +2,7 @@ Package: BayesianTools
 Title: General-Purpose MCMC and SMC Samplers and Tools for Bayesian Statistics
 Version: 0.1.7
 Date: 2019-12-10
-Authors@R: c(person("Florian", "Hartig", email = "florian.hartig@biologie.uni-regensburg.de", role = c("aut", "cre"), comment=c(ORCID="0000-0002-6255-9059")), 
-person("Francesco", "Minunno", role = c("aut")), 
-person("Stefan", " Paul", role = c("aut") ),  
-person("David", "Cameron", role = "ctb"), 
-person("Tankred", "Ott", role = "ctb"), 
-person("Maximilian", "Pichler", role = "ctb"))
+Authors@R: c(person("Florian", "Hartig", email = "florian.hartig@biologie.uni-regensburg.de", role = c("aut", "cre"), comment=c(ORCID="0000-0002-6255-9059")), person("Francesco", "Minunno", role = c("aut")), person("Stefan", " Paul", role = c("aut") ),  person("David", "Cameron", role = "ctb"), person("Tankred", "Ott", role = "ctb"), person("Maximilian", "Pichler", role = "ctb"))
 Description: General-purpose MCMC and SMC samplers, as well as plot and
     diagnostic functions for Bayesian statistics, with a particular focus on
     calibrating complex system models. Implemented samplers include various
