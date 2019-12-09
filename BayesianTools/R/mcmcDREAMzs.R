@@ -104,7 +104,7 @@ DREAMzs <- function(bayesianSetup,
     if(is.function(settings$startValue)){
       X = settings$startValue()
     }
-    if(class(settings$startValue) == "numeric"){
+    if(class(settings$startValue)[1] == "numeric"){
       X = bayesianSetup$prior$sampler(settings$startValue)
     }
     
@@ -118,7 +118,7 @@ DREAMzs <- function(bayesianSetup,
       Z = settings$Z()
     }
     
-    if(class(settings$Z) == "numeric"){
+    if(class(settings$Z)[1] == "numeric"){
       Z = bayesianSetup$prior$sampler(settings$Z)
     }
     if(is.matrix(settings$Z)) Z <- settings$Z

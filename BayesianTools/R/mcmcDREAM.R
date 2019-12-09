@@ -99,7 +99,7 @@ DREAM <- function(bayesianSetup,   settings = list(
     if(is.function(settings$startValue)){
       X = settings$startValue()
     }
-    if(class(settings$startValue) == "numeric"){
+    if(class(settings$startValue)[1] == "numeric"){
       X = bayesianSetup$prior$sampler(settings$startValue)
     }
     if(is.matrix(settings$startValue)) X <- settings$startValue

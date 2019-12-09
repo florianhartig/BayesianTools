@@ -54,27 +54,27 @@ test_that("getSample works for mcmc", {
     res_gs <- getSample(dat, coda = FALSE, thin = thin)
     res_coda <- window(x = dat, start = 1, end = len, thin = thin)
     expect_equal(length(res_gs), length(res_coda))
-    expect_true(class(res_gs) == "numeric")
+    expect_true(class(res_gs)[1] == "numeric")
     
     # thinning == number of samples
     r <- getSample(dat, coda = FALSE, thin = len)
     expect_true(r[1] == dat[1])
-    expect_true(class(r) == "numeric")
+    expect_true(class(r)[1] == "numeric")
     
     # thinning too large
     r <- suppressWarnings(getSample(dat, coda = FALSE, thin = sample((len+1):(len + len/5), 1)))
     expect_true(r[1] == dat[1])
-    expect_true(class(r) == "numeric")
+    expect_true(class(r)[1] == "numeric")
     
     # thinning to low
     r <- suppressWarnings(getSample(dat, coda = FALSE, thin = sample((-len/5):0, 1)))
     expect_equal(length(r), length(dat))
-    expect_true(class(r) == "numeric")
+    expect_true(class(r)[1] == "numeric")
     
     # thinning == 1
     r <- getSample(dat, coda = FALSE, thin = 1)
     expect_equal(length(r), length(dat))
-    expect_true(class(r) == "numeric")
+    expect_true(class(r)[1] == "numeric")
   }
   
   
