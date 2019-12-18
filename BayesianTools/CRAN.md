@@ -4,7 +4,7 @@ This file contains CRAN submission info / communication
 
 ### Submission 1
 
-This is minor update that was neccesary because of a change to behavior of class(matrix) in CRAN devel, see https://github.com/florianhartig/BayesianTools/issues/191
+This is minor update that was neccesary because of a change to behavior of class(matrix) in CRAN devel, see https://github.com/florianhartig/BayesianTools/issues/191. See NEWS for changes.
 
 This release was tested without apparent problems under
 
