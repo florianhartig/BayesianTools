@@ -10,7 +10,11 @@ r:
   
 cache: packages
 
+# Install nlopt package to help nloptr install
+# glpk-utils and libglpk-dev are needed because of DHARMa #166
 addons:
   apt:
     packages:
       - libnlopt-dev
+      - glpk-utils
+      - libglpk-dev
