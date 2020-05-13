@@ -7,7 +7,7 @@
 mergeChains(l, ...)
 }
 \arguments{
-\item{l}{the list with MCMC outputs}
+\item{l}{a list with MCMC outputs}
 
 \item{...}{arguments to be passed on to getSample}
 }

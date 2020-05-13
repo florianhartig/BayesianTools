@@ -1,5 +1,6 @@
 #' Function to combine chains
-#' @param x chains
+#' 
+#' @param x a list of MCMC chains
 #' @param merge logical determines whether chains should be merged
 #' @return combined chains
 #' @keywords internal

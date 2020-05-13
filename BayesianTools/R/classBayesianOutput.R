@@ -258,7 +258,7 @@ getSample.MCMC_refClass <- function(sampler, parametersOnly = T, coda = F, start
 #' 
 #' The function merges a list of MCMC objects. Requirement is that the list contains classes for which the getSample function works
 #' 
-#' @param l the list with MCMC outputs
+#' @param l a list with MCMC outputs
 #' @param ... arguments to be passed on to getSample
 #' 
 #' @return a matrix
