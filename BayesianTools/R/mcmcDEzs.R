@@ -11,7 +11,7 @@
 #' @param burnin number of iterations treated as burn-in. These iterations are not recorded in the chain.
 #' @param thin thinning parameter. Determines the interval in which values are recorded.
 #' @param eps small number to avoid singularity
-#' @param f scaling factor gamma
+#' @param f scaling factor for gamma
 #' @param parallel logical, determines weather parallel computing should be attempted (see details)
 #' @param pGamma1 probability determining the frequency with which the scaling is set to 1 (allows jumps between modes)
 #' @param eps.mult random term (multiplicative error)
@@ -20,6 +20,7 @@
 #' @param message logical determines whether the sampler's progress should be printed
 #' @references ter  Braak C. J. F., and Vrugt J. A. (2008). Differential Evolution Markov Chain with snooker updater and fewer chains. Statistics and Computing http://dx.doi.org/10.1007/s11222-008-9104-9 
 #' @export
+#' @example /inst/examples/DEfamilyHelp.R
 #' @seealso \code{\link{DE}}
 #' @details For parallel computing, the likelihood density in the bayesianSetup needs to be parallelized, i.e. needs to be able to operate on a matrix of proposals
 #' 

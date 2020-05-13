@@ -14,6 +14,7 @@
 #' @param message logical determines whether the sampler's progress should be printed
 #' @references Braak, Cajo JF Ter. "A Markov Chain Monte Carlo version of the genetic algorithm Differential Evolution: easy Bayesian computing for real parameter spaces." Statistics and Computing 16.3 (2006): 239-249.
 #' @export
+#' @example /inst/examples/DEfamilyHelp.R
 #' @seealso \code{\link{DEzs}}
 #' @details For blockUpdate the first element in the list determines the type of blocking.
 #' Possible choices are
