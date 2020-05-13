@@ -4,8 +4,15 @@
 \alias{createPriorDensity}
 \title{Fits a density function to a multivariate sample}
 \usage{
-createPriorDensity(sampler, method = "multivariate", eps = 1e-10,
-  lower = NULL, upper = NULL, best = NULL, ...)
+createPriorDensity(
+  sampler,
+  method = "multivariate",
+  eps = 1e-10,
+  lower = NULL,
+  upper = NULL,
+  best = NULL,
+  ...
+)
 }
 \arguments{
 \item{sampler}{an object of class BayesianOutput or a matrix}

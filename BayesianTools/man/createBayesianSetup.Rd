@@ -4,11 +4,21 @@
 \alias{createBayesianSetup}
 \title{Creates a standardized collection of prior, likelihood and posterior functions, including error checks etc.}
 \usage{
-createBayesianSetup(likelihood, prior = NULL, priorSampler = NULL,
-  parallel = FALSE, lower = NULL, upper = NULL, best = NULL,
-  names = NULL, parallelOptions = list(variables = "all", packages =
-  "all", dlls = NULL), catchDuplicates = FALSE, plotLower = NULL,
-  plotUpper = NULL, plotBest = NULL)
+createBayesianSetup(
+  likelihood,
+  prior = NULL,
+  priorSampler = NULL,
+  parallel = FALSE,
+  lower = NULL,
+  upper = NULL,
+  best = NULL,
+  names = NULL,
+  parallelOptions = list(variables = "all", packages = "all", dlls = NULL),
+  catchDuplicates = FALSE,
+  plotLower = NULL,
+  plotUpper = NULL,
+  plotBest = NULL
+)
 }
 \arguments{
 \item{likelihood}{log likelihood density function}

@@ -4,12 +4,14 @@
 \alias{DEzs}
 \title{Differential-Evolution MCMC zs}
 \usage{
-DEzs(bayesianSetup, settings = list(iterations = 10000, Z = NULL,
-  startValue = NULL, pSnooker = 0.1, burnin = 0, thin = 1, f = 2.38, eps =
-  0, parallel = NULL, pGamma1 = 0.1, eps.mult = 0.2, eps.add = 0,
-  consoleUpdates = 100, zUpdateFrequency = 1, currentChain = 1, blockUpdate
-  = list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, groupStart
-  = 1000, groupIntervall = 1000), message = TRUE))
+DEzs(
+  bayesianSetup,
+  settings = list(iterations = 10000, Z = NULL, startValue = NULL, pSnooker = 0.1,
+    burnin = 0, thin = 1, f = 2.38, eps = 0, parallel = NULL, pGamma1 = 0.1, eps.mult =
+    0.2, eps.add = 0, consoleUpdates = 100, zUpdateFrequency = 1, currentChain = 1,
+    blockUpdate = list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, groupStart
+    = 1000, groupIntervall = 1000), message = TRUE)
+)
 }
 \arguments{
 \item{bayesianSetup}{a BayesianSetup with the posterior density function to be sampled from}
@@ -30,7 +32,7 @@ DEzs(bayesianSetup, settings = list(iterations = 10000, Z = NULL,
 
 \item{eps}{small number to avoid singularity}
 
-\item{f}{scaling factor gamma}
+\item{f}{scaling factor for gamma}
 
 \item{parallel}{logical, determines weather parallel computing should be attempted (see details)}
 
@@ -71,6 +73,39 @@ Possible choices are
  to be updated. By default all groups have the same probability.
  Finally "groupStart" defines the starting point of the groupUpdate and "groupIntervall" the intervall
  in which the groups are evaluated.
+}
+\examples{
+library(BayesianTools)
+
+ll <- generateTestDensityMultiNormal(sigma = "no correlation")
+bayesianSetup <- createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
+
+settings = list(iterations = 200)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+summary(out)
+
+# all DE family samplers have a number of internal chains that can be
+# parallelized. Here examples how to change the internal chains
+settings = list(startValue = 4, iterations = 200)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+summary(out)
+
+# Start with explicit start values
+settings = list(startValue = matrix(rnorm(12), nrow = 4, ncol = 3), 
+                iterations = 200)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+summary(out)
+
+# Start with explicit start values for the Z matrix - this is often useful
+# to improve sampler convergence, 
+# see also https://github.com/florianhartig/BayesianTools/issues/79
+settings = list(startValue = matrix(rnorm(12), nrow = 4, ncol = 3),
+                Z = matrix(rnorm(300), nrow = 100, ncol = 3),
+                iterations = 200)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+summary(out)
+
+
 }
 \references{
 ter  Braak C. J. F., and Vrugt J. A. (2008). Differential Evolution Markov Chain with snooker updater and fewer chains. Statistics and Computing http://dx.doi.org/10.1007/s11222-008-9104-9

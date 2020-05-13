@@ -4,9 +4,16 @@
 \alias{plotTimeSeries}
 \title{Plots a time series, with the option to include confidence and prediction band}
 \usage{
-plotTimeSeries(observed = NULL, predicted = NULL, x = NULL,
-  confidenceBand = NULL, predictionBand = NULL, xlab = "Time",
-  ylab = "Observed / predicted values", ...)
+plotTimeSeries(
+  observed = NULL,
+  predicted = NULL,
+  x = NULL,
+  confidenceBand = NULL,
+  predictionBand = NULL,
+  xlab = "Time",
+  ylab = "Observed / predicted values",
+  ...
+)
 }
 \arguments{
 \item{observed}{observed values}

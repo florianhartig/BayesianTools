@@ -4,8 +4,13 @@
 \alias{updateProposalGenerator}
 \title{To update settings of an existing proposal genenerator}
 \usage{
-updateProposalGenerator(proposal, chain = NULL, message = F,
-  eps = 1e-10, manualScaleAdjustment = 1)
+updateProposalGenerator(
+  proposal,
+  chain = NULL,
+  message = F,
+  eps = 1e-10,
+  manualScaleAdjustment = 1
+)
 }
 \arguments{
 \item{proposal}{an object of class proposalGenerator}

@@ -4,8 +4,16 @@
 \alias{AM}
 \title{The Adaptive Metropolis Algorithm}
 \usage{
-AM(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL,
-  parmax = NULL, FUN, f = 1, eps = 0)
+AM(
+  startValue = NULL,
+  iterations = 10000,
+  nBI = 0,
+  parmin = NULL,
+  parmax = NULL,
+  FUN,
+  f = 1,
+  eps = 0
+)
 }
 \arguments{
 \item{startValue}{vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.}

@@ -4,8 +4,16 @@
 \alias{DR}
 \title{The Delayed Rejection Algorithm}
 \usage{
-DR(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL,
-  parmax = NULL, f1 = 1, f2 = 0.5, FUN)
+DR(
+  startValue = NULL,
+  iterations = 10000,
+  nBI = 0,
+  parmin = NULL,
+  parmax = NULL,
+  f1 = 1,
+  f2 = 0.5,
+  FUN
+)
 }
 \arguments{
 \item{startValue}{vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.}

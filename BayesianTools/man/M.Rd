@@ -4,8 +4,16 @@
 \alias{M}
 \title{The Metropolis Algorithm}
 \usage{
-M(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL,
-  parmax = NULL, f = 1, FUN, consoleUpdates = 1000)
+M(
+  startValue = NULL,
+  iterations = 10000,
+  nBI = 0,
+  parmin = NULL,
+  parmax = NULL,
+  f = 1,
+  FUN,
+  consoleUpdates = 1000
+)
 }
 \arguments{
 \item{startValue}{vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.}

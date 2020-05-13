@@ -4,8 +4,14 @@
 \alias{marginalPlotViolin}
 \title{Plot marginals as violin plot}
 \usage{
-marginalPlotViolin(posteriorMat, priorMat = NULL, xrange = NULL,
-  col = c("#FC006299", "#00BBAA88"), singlePanel = TRUE, ...)
+marginalPlotViolin(
+  posteriorMat,
+  priorMat = NULL,
+  xrange = NULL,
+  col = c("#FC006299", "#00BBAA88"),
+  singlePanel = TRUE,
+  ...
+)
 }
 \arguments{
 \item{posteriorMat}{matrix with samples as rows and parameters as columns}
