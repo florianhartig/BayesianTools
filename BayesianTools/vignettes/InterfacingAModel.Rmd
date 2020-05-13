@@ -19,44 +19,61 @@ knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
 set.seed(123)
 ```
 
+# Interfacing a model with BT - step-by-step guide
 
-# Creating an R package from your code
+## Step 1: Create a runModel(par) function
 
-The first step is optional, but we recommend that you take it from the start, because there is really no downside to it. You work with R code in several files that you run by hand, or diretly put all code into an R package. Creating and managing R packages is very easy, and it's easier to pass on your code because everything, including help, is in on package.
-
-\marginnote{To create an R package, follow the tutorial \href{http://biometry.github.io/APES/R/R70-PackageDevelopment.html}{here}. Remember to create a good documentation using Roxygen. Examples can be found in the COST repository.}
-
-\section{Step 1: Running your model from R } 
-
-To make parameter variation of calibrations from R, the first thing thing we need to do is to be able to execute the model with a given set of parameters. We will assume that we want to run the model with parameters coded in an object called *par*, which should be either a (named) vector or a list. 
+A basic requirement to allow calibration in BT is that we need to be able to execute the model with a given set of parameters. Strictly speaking, BT will not see the model as such, but requires a likelihood function with interface likelihood(par), where par is a vector, but in this function, you will then probably run the model with parameters par, where par could stay a vector, or be transformed to another format, e.g. data.frame, matrix or list. 
 
 What happens now depends on how your model is programmed - I have listed the steps in order of convenience / speed. If your model has never been interfaced with R you will likely have to move down to the last option. 
 
 \begin{enumerate}
 \item Model in R, or R interface existing 
+\item Model can be compiled and linked as a dll
 \item Model is in C/C++ and can be interfaced with RCPP
 \item Model can be compiled as executable and accepts parameters via the command line
-\item Model can be compiled and linked as a dll
 \item Model can be compiled as executable reads parameters via parameter file
 \item Model parameters are hard-coded in the executable
 \end{enumerate}
 
 ### Case 1 - model programmed in R
 
-Usually, you will have to do nothing. Just make sure you can call your model like that
+Usually, you will have to do nothing. Just make sure you can call your model a in
 
 ```{r, eval = F}
 runMyModel(par)
 ```
 
+Typically this function will directly return the model outputs, so step 2 can be skipped.  
+
+### Case 2 - compiled dll, parameters are set via dll interface
+
+If you have your model prepared as a dll, or you can prepare it that way, you can use the \ref{https://stat.ethz.ch/R-manual/R-devel/library/base/html/dynload.html}{dyn.load()} function to link R to your model
+
+```{r, eval = F}
+dyn.load(model)
+
+runMyModel(par){
+  out = # model call here 
+  # process out
+  return(out)
+}
+```
+
+Again, if you implement this, you will also typically return the output directly via the dll and not write to file, which means that step 2 can be skipped.  
+
+The tricky thing in this approach is that you have to code the interface to your dll, which technically means in most programming languages to set your variables as external or something similar, so that they can be accessed from the outside. How this works will depend on the programming language. 
 
 
-### Case 2 - model programmed in C / C++, interfaced with RCPP
+### Case 3 - model programmed in C / C++, interfaced with RCPP
 
-RCPP is a highly flexible environment to interface between R and C/C++. If your model is coded in C / C++, RCPP offers the most save and powerful way to connect with R (much more flexible than with command line or dll).  However, doing the interface may need some larger adjustments in the beginning, and there can be technical problems that are difficult to solve for beginners. We do not recommend to attempt this unless you have RCPP experience, and thus we do not provide further help on this topic. 
+RCPP is a highly flexible environment to interface between R and C/C++. If your model is coded in C / C++, RCPP offers the most save and powerful way to connect with R (much more flexible than with command line or dll).  
 
+However, doing the interface may need some adjustments to the code, and there can be technical problems that are difficult to solve for beginners. I do not recommend to attempt interfacing an existing C/C++ model unless you have RCPP experience, or at least very food C/C++ experience. 
 
-### Case 3 - compiled executable, parameters set via command line (std I/O)
+Again, if you implement this, you will also typically return the output directly via the dll and not write to file, which means that step 2 can be skipped.  
+
+### Case 4 - compiled executable, parameters set via command line (std I/O)
 
 If your model is written in a compiled or interpreted language, and accepts parameters via std I/O, wrapping is usually nothing more than writing the system call in an R function. An example would be 
 
@@ -66,27 +83,14 @@ runMyModel(par){
   # Create here a string with what you would write to call the model from the command line
   systemCall <- paste("model.exe", par[1], par[2])
   
-  # this 
-  system(systemCall)
+  out = system(systemCall,  intern = TRUE) # intern indicates whether to capture the output of the command as an R character vector
+  
+  # write here to convert out in the apprpriate R classes
   
 }
 ```
 
-Note: If you have problems with the system command, try system2.
-
-### Case 4 - compiled dll, parameters are set via dll interface
-
-If you have your model prepared as a dll, or you can prepare it that way, you can use the \ref{https://stat.ethz.ch/R-manual/R-devel/library/base/html/dynload.html}{dyn.load()} function to link R to your model
-
-```{r, eval = F}
-dyn.load(model)
-
-runMyModel(par){
-  # model call here 
-}
-```
-
-The tricky thing in this approach is that you have to code the interface to your dll, which technically means in most programming languages to set your variables as external or something similar, so that they can be accessed from the outside. How this works will depend on the programming language. 
+Note: If you have problems with the system command, try system2. If the model returns the output via std.out, you can catch this and convert it and skip step 2. If your model writes to file, go to step 2. 
 
 ### Case 5 - compiled model, parameters set via parameter file or in any other method
 
@@ -112,7 +116,6 @@ writeParameters(par){
 }
 ```
 
-
 Depending on your problem, it can also make sense to define a setup function such as
 
 ```{r, eval = F}
@@ -125,7 +128,6 @@ setUpModel <- function(parameterTemplate, site, localConditions){
 }
 ```
 
-
 How you do the write parameter function depends on the file format you use for the parameters. In general, you probably want to create a template parameter file that you use as a base and from which you change parameters 
 
 * If your parameter file is in an *.xml format*, check out the xml functions in R
@@ -135,9 +137,9 @@ How you do the write parameter function depends on the file format you use for t
 
 You have to change your model code to achieve one of the former options. If the model is in C/C++, going directly to RCPP seems the best alternative.   
 
+## Step 2: Reading back data
 
-# Step 2: Reading back data
-
+If your model returns the output directly (which is highly preferable, ), you can skip this step. 
 
 For simple models, you might consider returning the model output directly with the runMyModel function. This is probably so for cases a) and b) above, i.e. model is already in R, or accepts parameters via command line. 
 
@@ -179,6 +181,16 @@ output <- getData(type = DesiredType)
 
 plot(output)
 ```
+
+
+
+
+## Step 3 (optional) - creating an R package from your code
+
+The last step is optional, but we recommend that you take it from the start, because there is really no downside to it. You work with R code in several files that you run by hand, or diretly put all code into an R package. Creating and managing R packages is very easy, and it's easier to pass on your code because everything, including help, is in on package. To create an R package, follow the tutorial \href{http://biometry.github.io/APES/R/R70-PackageDevelopment.html}{here}. Remember to create a good documentation using Roxygen. 
+
+
+
 
 
 
