@@ -9,25 +9,27 @@ output:
     keep_md: yes
 ---
 
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
+```
 
-
-
+```{r, echo = F, message = F}
+set.seed(123)
+```
 
 
 ## How to use the SMC function in your own work
 
 To **use the SMC function in your own work**, install the following development branch, which will soon be merged with the main BT branch and included in CRAN. This branch includes updated documentation and further integration of the SMC function in the BT environment. 
 
-
-```r
+```{r, eval = F}
 devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", 
                                  ref = "SMC-Merge", dependencies = T, build_vignettes = F)
 ```
 
 To get help on the SMC function, use ?smcSampler. Here a short example on how to calibrate a model with this function:
 
-
-```r
+```{r}
 library(BayesianTools)
 bayesianSetup <- createBayesianSetup(likelihood = generateTestDensityMultiNormal(), 
                                      lower = rep(-10, 3),
@@ -37,14 +39,11 @@ SMCout <- smcSampler(bayesianSetup)
 marginalPlot(SMCout, type = "d", singlePanel = T)
 ```
 
-![](readme_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
-
 ## How to reproduce the results in the paper
 
 To **reproduce the results in the paper**, you should the code branch with the BT version with which results were created, which is 
 
-
-```r
+```{r, eval = F}
 devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", 
                                  ref = "SMC", dependencies = T, build_vignettes = F)
 ```
