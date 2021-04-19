@@ -4,11 +4,13 @@
 \alias{DREAMzs}
 \title{DREAMzs}
 \usage{
-DREAMzs(bayesianSetup, settings = list(iterations = 10000, nCR = 3, gamma
-  = NULL, eps = 0, e = 0.05, pCRupdate = FALSE, updateInterval = 10, burnin
-  = 0, thin = 1, adaptation = 0.2, parallel = NULL, Z = NULL,
-  ZupdateFrequency = 10, pSnooker = 0.1, DEpairs = 2, consoleUpdates = 10,
-  startValue = NULL, currentChain = 1, message = FALSE))
+DREAMzs(
+  bayesianSetup,
+  settings = list(iterations = 10000, nCR = 3, gamma = NULL, eps = 0, e = 0.05,
+    pCRupdate = FALSE, updateInterval = 10, burnin = 0, thin = 1, adaptation = 0.2,
+    parallel = NULL, Z = NULL, ZupdateFrequency = 10, pSnooker = 0.1, DEpairs = 2,
+    consoleUpdates = 10, startValue = NULL, currentChain = 1, message = FALSE)
+)
 }
 \arguments{
 \item{bayesianSetup}{Object of class 'bayesianSetup' or 'bayesianOuput'.}
@@ -56,7 +58,7 @@ mcmc.object containing the following elements: chains, X, pCR, Z
 DREAMzs
 }
 \details{
-Insted of a bayesianSetup, the function can take the output of a previous run to restart the sampler 
+Insted of a bayesianSetup, the function can take the output of a previous run to restart the sampler
 from the last iteration. Due to the sampler's internal structure you can only use the output
 of DREAMzs.
 If you provide a matrix with start values the number of rows detemines the number of chains that are run.
@@ -68,12 +70,45 @@ monitored and left to the user. This can easily be done with coda::gelman.diag(c
 Further the proposed delayed rejectio step in Vrugt et al. (2009) is not implemented here.\cr\cr
 During the adaptation phase DREAM is running two mechanisms to enhance the sampler's efficiency.
 First the disribution of crossover values is tuned to favor large jumps in the parameter space.
-The crossover probabilities determine how many parameters are updated simultaneously. 
+The crossover probabilities determine how many parameters are updated simultaneously.
 Second outlier chains are replanced as they can largely deteriorate the sampler's performance.
 However, these steps destroy the detailed balance of the chain. Consequently these parts of the chain
 should be discarded when summarizing posterior moments. This can be done automatically during the
 sampling process (i.e. burnin > adaptation) or subsequently by the user. We chose to distinguish between
 the burnin and adaptation phase to allow the user more flexibility in the sampler's settings.
+}
+\examples{
+library(BayesianTools)
+
+ll <- generateTestDensityMultiNormal(sigma = "no correlation")
+bayesianSetup <- createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
+
+settings = list(iterations = 200)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+summary(out)
+
+# all DE family samplers have a number of internal chains that can be
+# parallelized. Here examples how to change the internal chains
+settings = list(startValue = 4, iterations = 200)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+summary(out)
+
+# Start with explicit start values
+settings = list(startValue = matrix(rnorm(12), nrow = 4, ncol = 3), 
+                iterations = 200)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+summary(out)
+
+# Start with explicit start values for the Z matrix - this is often useful
+# to improve sampler convergence, 
+# see also https://github.com/florianhartig/BayesianTools/issues/79
+settings = list(startValue = matrix(rnorm(12), nrow = 4, ncol = 3),
+                Z = matrix(rnorm(300), nrow = 100, ncol = 3),
+                iterations = 200)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+summary(out)
+
+
 }
 \references{
 Vrugt, Jasper A., et al. "Accelerating Markov chain Monte Carlo simulation by differential evolution with self-adaptive randomized subspace sampling." International Journal of Nonlinear Sciences and Numerical Simulation 10.3 (2009): 273-290.

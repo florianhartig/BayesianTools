@@ -4,11 +4,13 @@
 \alias{DE}
 \title{Differential-Evolution MCMC}
 \usage{
-DE(bayesianSetup, settings = list(startValue = NULL, iterations = 10000,
-  f = -2.38, burnin = 0, thin = 1, eps = 0, consoleUpdates = 100,
-  blockUpdate = list("none", k = NULL, h = NULL, pSel = NULL, pGroup =
-  NULL, groupStart = 1000, groupIntervall = 1000), currentChain = 1,
-  message = TRUE))
+DE(
+  bayesianSetup,
+  settings = list(startValue = NULL, iterations = 10000, f = -2.38, burnin = 0, thin =
+    1, eps = 0, consoleUpdates = 100, blockUpdate = list("none", k = NULL, h = NULL, pSel
+    = NULL, pGroup = NULL, groupStart = 1000, groupIntervall = 1000), currentChain = 1,
+    message = TRUE)
+)
 }
 \arguments{
 \item{bayesianSetup}{a BayesianSetup with the posterior density function to be sampled from}
@@ -56,6 +58,39 @@ Possible choices are
  to be updated. By default all groups have the same probability.
  Finally "groupStart" defines the starting point of the groupUpdate and "groupIntervall" the intervall
  in which the groups are evaluated.
+}
+\examples{
+library(BayesianTools)
+
+ll <- generateTestDensityMultiNormal(sigma = "no correlation")
+bayesianSetup <- createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
+
+settings = list(iterations = 200)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+summary(out)
+
+# all DE family samplers have a number of internal chains that can be
+# parallelized. Here examples how to change the internal chains
+settings = list(startValue = 4, iterations = 200)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+summary(out)
+
+# Start with explicit start values
+settings = list(startValue = matrix(rnorm(12), nrow = 4, ncol = 3), 
+                iterations = 200)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+summary(out)
+
+# Start with explicit start values for the Z matrix - this is often useful
+# to improve sampler convergence, 
+# see also https://github.com/florianhartig/BayesianTools/issues/79
+settings = list(startValue = matrix(rnorm(12), nrow = 4, ncol = 3),
+                Z = matrix(rnorm(300), nrow = 100, ncol = 3),
+                iterations = 200)
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+summary(out)
+
+
 }
 \references{
 Braak, Cajo JF Ter. "A Markov Chain Monte Carlo version of the genetic algorithm Differential Evolution: easy Bayesian computing for real parameter spaces." Statistics and Computing 16.3 (2006): 239-249.

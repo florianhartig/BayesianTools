@@ -3,7 +3,7 @@
 
 #' Funktion to compute log(sum(exp(x))
 #' @author Florian Hartig
-#' @param x values
+#' @param x values at log scale
 #' @param mean logical, determines whether the mean should be used instead of the sum
 #' @details This function computes log(sum(exp(x)), using the offset trick to avoid numeric overflow, see, e.g. http://jblevins.org/notes/log-sum-exp. The mean option allows calculating logMeanExp
 #' 

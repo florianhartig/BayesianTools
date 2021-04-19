@@ -4,13 +4,21 @@
 \alias{marginalPlot}
 \title{Plot MCMC marginals}
 \usage{
-marginalPlot(x, prior = FALSE, xrange = NULL, type = "d",
-  singlePanel = TRUE, settings = NULL, nPriorDraws = 10000, ...)
+marginalPlot(
+  x,
+  prior = NULL,
+  xrange = NULL,
+  type = "d",
+  singlePanel = FALSE,
+  settings = NULL,
+  nPriorDraws = 10000,
+  ...
+)
 }
 \arguments{
 \item{x}{bayesianOutput, or matrix or data.frame containing with samples as rows and parameters as columns}
 
-\item{prior}{logical determining whether the prior should be plotted, or if x is matrix oder data.frame, a matrix of prior draws with draws as rows and parameters as columns}
+\item{prior}{if x is a bayesianOutput, T/F will determine if the prior is drawn (default = T). If x is matrix oder data.frame, a prior can be drawn if a matrix of prior draws with values as rows and parameters as columns can be provided here.}
 
 \item{xrange}{vector or matrix of plotting ranges for the x axis. If matrix, the rows must be parameters and the columns min and max values.}
 

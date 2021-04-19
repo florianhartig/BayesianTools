@@ -1,51 +1,50 @@
 ### DREAMzs algorithm
 
-##' DREAMzs
-##' @author Stefan Paul
-##' @param bayesianSetup Object of class 'bayesianSetup' or 'bayesianOuput'.
-##' @param settings list with parameter values
-##' @param iterations Number of model evaluations
-##' @param nCR parameter determining the number of cross-over proposals.  If nCR = 1 all parameters are updated jointly.
-##' @param updateInterval determining the intervall for the pCR (crossover probabilities) update
-##' @param gamma Kurtosis parameter Bayesian Inference Scheme. 
-##' @param eps Ergodicity term
-##' @param e Ergodicity term
-##' @param pCRupdate Update of crossover probabilities
-##' @param burnin number of iterations treated as burn-in. These iterations are not recorded in the chain.
-##' @param thin thin thinning parameter. Determines the interval in which values are recorded.
-##' @param adaptation Number or percentage of samples that are used for the adaptation in DREAM (see Details)
-##' @param DEpairs Number of pairs used to generate proposal
-##' @param ZupdateFrequency frequency to update Z matrix
-##' @param pSnooker probability of snooker update
-##' @param Z starting matrix for Z
-##' @param startValue eiter a matrix containing the start values (see details), an integer to define the number of chains that are run, a function to sample the start values or NUll, in which case the values are sampled from the prior.
-##' @param consoleUpdates Intervall in which the sampling progress is printed to the console
-##' @param message logical determines whether the sampler's progress should be printed
-##' @return mcmc.object containing the following elements: chains, X, pCR, Z
-##' @references Vrugt, Jasper A., et al. "Accelerating Markov chain Monte Carlo simulation by differential evolution with self-adaptive randomized subspace sampling." International Journal of Nonlinear Sciences and Numerical Simulation 10.3 (2009): 273-290.
-#' @references ter  Braak C. J. F., and Vrugt J. A. (2008). Differential Evolution Markov Chain with snooker updater and fewer chains. Statistics and Computing http://dx.doi.org/10.1007/s11222-008-9104-9 
-##' @details Insted of a bayesianSetup, the function can take the output of a previous run to restart the sampler 
-##' from the last iteration. Due to the sampler's internal structure you can only use the output
-##' of DREAMzs.
-##' If you provide a matrix with start values the number of rows detemines the number of chains that are run.
-##' The number of coloumns must be equivalent to the number of parameters in your bayesianSetup. \cr\cr
-##' There are several small differences in the algorithm presented here compared to the original paper by Vrugt et al. (2009). Mainly
-##' the algorithm implemented here does not have an automatic stopping criterion. Hence, it will
-##' always run the number of iterations specified by the user. Also, convergence is not
-##' monitored and left to the user. This can easily be done with coda::gelman.diag(chain).
-##' Further the proposed delayed rejectio step in Vrugt et al. (2009) is not implemented here.\cr\cr
-##' During the adaptation phase DREAM is running two mechanisms to enhance the sampler's efficiency.
-##' First the disribution of crossover values is tuned to favor large jumps in the parameter space.
-##' The crossover probabilities determine how many parameters are updated simultaneously. 
-##' Second outlier chains are replanced as they can largely deteriorate the sampler's performance.
-##' However, these steps destroy the detailed balance of the chain. Consequently these parts of the chain
-##' should be discarded when summarizing posterior moments. This can be done automatically during the
-##' sampling process (i.e. burnin > adaptation) or subsequently by the user. We chose to distinguish between
-##' the burnin and adaptation phase to allow the user more flexibility in the sampler's settings.
-##' 
-##' @seealso \code{\link{DREAM}}
-##' @export
-
+#' DREAMzs
+#' @author Stefan Paul
+#' @param bayesianSetup Object of class 'bayesianSetup' or 'bayesianOuput'.
+#' @param settings list with parameter values
+#' @param iterations Number of model evaluations
+#' @param nCR parameter determining the number of cross-over proposals.  If nCR = 1 all parameters are updated jointly.
+#' @param updateInterval determining the intervall for the pCR (crossover probabilities) update
+#' @param gamma Kurtosis parameter Bayesian Inference Scheme.
+#' @param eps Ergodicity term
+#' @param e Ergodicity term
+#' @param pCRupdate Update of crossover probabilities
+#' @param burnin number of iterations treated as burn-in. These iterations are not recorded in the chain.
+#' @param thin thin thinning parameter. Determines the interval in which values are recorded.
+#' @param adaptation Number or percentage of samples that are used for the adaptation in DREAM (see Details)
+#' @param DEpairs Number of pairs used to generate proposal
+#' @param ZupdateFrequency frequency to update Z matrix
+#' @param pSnooker probability of snooker update
+#' @param Z starting matrix for Z
+#' @param startValue eiter a matrix containing the start values (see details), an integer to define the number of chains that are run, a function to sample the start values or NUll, in which case the values are sampled from the prior.
+#' @param consoleUpdates Intervall in which the sampling progress is printed to the console
+#' @param message logical determines whether the sampler's progress should be printed
+#' @return mcmc.object containing the following elements: chains, X, pCR, Z
+#' @references Vrugt, Jasper A., et al. "Accelerating Markov chain Monte Carlo simulation by differential evolution with self-adaptive randomized subspace sampling." International Journal of Nonlinear Sciences and Numerical Simulation 10.3 (2009): 273-290.
+#' @references ter  Braak C. J. F., and Vrugt J. A. (2008). Differential Evolution Markov Chain with snooker updater and fewer chains. Statistics and Computing http://dx.doi.org/10.1007/s11222-008-9104-9
+#' @details Insted of a bayesianSetup, the function can take the output of a previous run to restart the sampler
+#' from the last iteration. Due to the sampler's internal structure you can only use the output
+#' of DREAMzs.
+#' If you provide a matrix with start values the number of rows detemines the number of chains that are run.
+#' The number of coloumns must be equivalent to the number of parameters in your bayesianSetup. \cr\cr
+#' There are several small differences in the algorithm presented here compared to the original paper by Vrugt et al. (2009). Mainly
+#' the algorithm implemented here does not have an automatic stopping criterion. Hence, it will
+#' always run the number of iterations specified by the user. Also, convergence is not
+#' monitored and left to the user. This can easily be done with coda::gelman.diag(chain).
+#' Further the proposed delayed rejectio step in Vrugt et al. (2009) is not implemented here.\cr\cr
+#' During the adaptation phase DREAM is running two mechanisms to enhance the sampler's efficiency.
+#' First the disribution of crossover values is tuned to favor large jumps in the parameter space.
+#' The crossover probabilities determine how many parameters are updated simultaneously.
+#' Second outlier chains are replanced as they can largely deteriorate the sampler's performance.
+#' However, these steps destroy the detailed balance of the chain. Consequently these parts of the chain
+#' should be discarded when summarizing posterior moments. This can be done automatically during the
+#' sampling process (i.e. burnin > adaptation) or subsequently by the user. We chose to distinguish between
+#' the burnin and adaptation phase to allow the user more flexibility in the sampler's settings.
+#' @example /inst/examples/DEfamilyHelp.R
+#' @seealso \code{\link{DREAM}}
+#' @export
 DREAMzs <- function(bayesianSetup,
                     settings = list(iterations = 10000,
                                     nCR = 3,
@@ -104,7 +103,7 @@ DREAMzs <- function(bayesianSetup,
     if(is.function(settings$startValue)){
       X = settings$startValue()
     }
-    if(class(settings$startValue) == "numeric"){
+    if(class(settings$startValue)[1] == "numeric"){
       X = bayesianSetup$prior$sampler(settings$startValue)
     }
     
@@ -118,7 +117,7 @@ DREAMzs <- function(bayesianSetup,
       Z = settings$Z()
     }
     
-    if(class(settings$Z) == "numeric"){
+    if(class(settings$Z)[1] == "numeric"){
       Z = bayesianSetup$prior$sampler(settings$Z)
     }
     if(is.matrix(settings$Z)) Z <- settings$Z

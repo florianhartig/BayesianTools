@@ -2,10 +2,11 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BayesianTools)](https://cran.r-project.org/package=BayesianTools)
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.1.2-6666ff.svg)](https://cran.r-project.org/)
+[![](https://cranlogs.r-pkg.org/badges/BayesianTools)](https://cran.r-project.org/package=BayesianTools)
 
 # BayesianTools
 
-R package for performing Bayesian inference, including various MCMC and SMC sampling algorithms!
+R package for performing Bayesian inference, including various MCMC and SMC sampling algorithms! A google scholar list of studies citing BT is [here](https://scholar.google.com/scholar?oi=bibs&hl=en&cites=15191862660990668802,4910024394983334104&as_sdt=5).
 
 ## Getting BayesianTools
 
@@ -58,9 +59,7 @@ We highly welcome questions by users, so don't be shy - any questions, even if i
 
 If you want to ask a question or report a bug, the most convenient way for us would be to provide a [reproducible example](http://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example) via the GitHub [issues](https://github.com/florianhartig/BayesianTools/issues)
 
-## Acknowledgements
 
-Work on this package was facilicated through meetings of [Cost Action FP 1304 Profound](http://www.cost.eu/COST_Actions/fps/FP1304). 
 
 
 

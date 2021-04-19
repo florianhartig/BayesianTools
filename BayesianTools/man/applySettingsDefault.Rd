@@ -4,8 +4,7 @@
 \alias{applySettingsDefault}
 \title{Provides the default settings for the different samplers in runMCMC}
 \usage{
-applySettingsDefault(settings = NULL, sampler = "DEzs",
-  check = FALSE)
+applySettingsDefault(settings = NULL, sampler = "DEzs", check = FALSE)
 }
 \arguments{
 \item{settings}{optional list with parameters that will be used instead of the defaults}

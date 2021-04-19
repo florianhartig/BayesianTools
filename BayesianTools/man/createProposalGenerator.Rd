@@ -4,10 +4,17 @@
 \alias{createProposalGenerator}
 \title{Factory that creates a proposal generator}
 \usage{
-createProposalGenerator(covariance, gibbsProbabilities = NULL,
-  gibbsWeights = NULL, otherDistribution = NULL,
-  otherDistributionLocation = NULL, otherDistributionScaled = F,
-  message = F, method = "chol", scalingFactor = 2.38)
+createProposalGenerator(
+  covariance,
+  gibbsProbabilities = NULL,
+  gibbsWeights = NULL,
+  otherDistribution = NULL,
+  otherDistributionLocation = NULL,
+  otherDistributionScaled = F,
+  message = F,
+  method = "chol",
+  scalingFactor = 2.38
+)
 }
 \arguments{
 \item{covariance}{covariance matrix. Can also be vector of the sqrt of diagonal elements --> standard deviation}

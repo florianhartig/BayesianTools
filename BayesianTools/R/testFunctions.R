@@ -49,6 +49,19 @@ testDensityBanana <- function (p){
   return(mvtnorm::dmvnorm(P, mean = rep(0, length(P)), sigma = Cov, log = T))
 }
 
+#' Normal likelihood
+#' 
+#' 
+#' A non-elliptical, bivariate density function proposed by Gelman and Meng (1991). 
+
+testDensityGelmanMeng <- function(x, A = 1, B = 0, C1 = 3, C2 = 3, log = TRUE) {
+  if (is.vector(x)) x <- matrix(x, nrow = 1)
+  r <- -0.5 * (A * x[,1]^2 * x[,2]^2 + x[,1]^2 + x[,2]^2
+      - 2 * B * x[,1] * x[,2] - 2 * C1 * x[,1] - 2 * C2 * x[,2])
+  if (!log) r <- exp(r)
+  as.vector(r)
+}
+
 
 #' Normal likelihood
 #' @author Florian Hartig

@@ -4,11 +4,14 @@
 \alias{Metropolis}
 \title{Creates a Metropolis-type MCMC with options for covariance adaptatin, delayed rejection, Metropolis-within-Gibbs, and tempering}
 \usage{
-Metropolis(bayesianSetup, settings = list(startValue = NULL, optimize =
-  T, proposalGenerator = NULL, consoleUpdates = 100, burnin = 0, thin = 1,
-  parallel = NULL, adapt = T, adaptationInterval = 500, adaptationNotBefore
-  = 3000, DRlevels = 1, proposalScaling = NULL, adaptationDepth = NULL,
-  temperingFunction = NULL, gibbsProbabilities = NULL, message = TRUE))
+Metropolis(
+  bayesianSetup,
+  settings = list(startValue = NULL, optimize = T, proposalGenerator = NULL,
+    consoleUpdates = 100, burnin = 0, thin = 1, parallel = NULL, adapt = T,
+    adaptationInterval = 500, adaptationNotBefore = 3000, DRlevels = 1, proposalScaling =
+    NULL, adaptationDepth = NULL, temperingFunction = NULL, gibbsProbabilities = NULL,
+    message = TRUE)
+)
 }
 \arguments{
 \item{bayesianSetup}{either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function}

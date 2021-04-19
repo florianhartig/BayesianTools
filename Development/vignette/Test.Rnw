@@ -1,0 +1,12 @@
+%\VignetteEngine{knitr::knitr} 
+%\VignetteEncoding{UTF-8} t
+%\VignetteIndexEntry{test}.
+
+\documentclass{article}
+
+\begin{document}
+
+asdf
+
+
+\end{document}

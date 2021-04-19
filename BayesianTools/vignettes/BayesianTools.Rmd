@@ -216,17 +216,17 @@ runMCMC(BS, sampler = "SMC", ...)
 #### 3. Multi-core and cluster calculations
 If you want to run your calculations on a cluster there are several ways to achieve it.
 
-In the first case you want to parallize n internal (not overall chains) on n cores. The argument "parallel = T" in "createBayesianSetup" allows only at most parallelization on 3 cores for the SMC, DEzs and DreamsSamplers. But by setting "parallel = n" to n cores in the "createBayesianSetup" and providing the settings list a "startValue" matrix with n rows, the internal chains of DEzs and DREAMzs will be parallelized on n cores. This works only for the DEzs and DREAMzs samplers.
+In the first case you want to parallize n internal (not overall chains) on n cores. The argument "parallel = T" in "createBayesianSetup" allows only at most parallelization on 3 cores for the SMC, DEzs and DreamsSamplers. But by setting "parallel = n" to n cores in the "createBayesianSetup", the internal chains of DEzs and DREAMzs will be parallelized on n cores. This works only for the DEzs and DREAMzs samplers.
 
 ```{r, eval = FALSE}
 ## n = Number of cores
+n=2
 x <- c(1:10)
 likelihood <- function(param) return(sum(dnorm(x, mean = param, log = T)))
 bayesianSetup <- createBayesianSetup(likelihood, parallel = n, lower = -5, upper = 5)
 
 ## give runMCMC a matrix with n rows of proposals as startValues or sample n times from the previous created sampler
-out <- runMCMC(bayesianSetup, settings = list(iterations = 100000, startValues = bayesianSetup$prior$sampler(n)))
-
+out <- runMCMC(bayesianSetup, settings = list(iterations = 1000))
 ```
 
 In the second case you want to parallize n internal chains on n cores with a external parallilzed likelihood function. Unlike the previous case, that way DEzs, DREAMzs, and SMC samplers can be parallelized. 
@@ -643,7 +643,7 @@ plot(out)
 Note that the use of a number for initialParticles requires that the bayesianSetup includes the possibility to sample from the prior. 
 
 
-# Model comparison and averaging
+# Bayesian model comparison and averaging
 
 There are a number of Bayesian model selection and model comparison methods. The BT implements three of the most common of them, the DIC, the WAIC, and the Bayes factor. 
 

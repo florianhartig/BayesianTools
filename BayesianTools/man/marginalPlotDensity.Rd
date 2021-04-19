@@ -4,8 +4,14 @@
 \alias{marginalPlotDensity}
 \title{Plot marginals as densities}
 \usage{
-marginalPlotDensity(posteriorMat, priorMat = NULL, xrange = NULL,
-  col = c("#FC006299", "#00BBAA88"), singlePanel = TRUE, ...)
+marginalPlotDensity(
+  posteriorMat,
+  priorMat = NULL,
+  xrange = NULL,
+  col = c("#FC006299", "#00BBAA88"),
+  singlePanel = TRUE,
+  ...
+)
 }
 \arguments{
 \item{posteriorMat}{matrix with samples as rows and parameters as columns}

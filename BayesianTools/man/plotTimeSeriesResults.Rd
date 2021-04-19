@@ -4,8 +4,16 @@
 \alias{plotTimeSeriesResults}
 \title{Creates a time series plot typical for an MCMC / SMC fit}
 \usage{
-plotTimeSeriesResults(sampler, model, observed, error = NULL,
-  plotResiduals = TRUE, start = 1, prior = FALSE, ...)
+plotTimeSeriesResults(
+  sampler,
+  model,
+  observed,
+  error = NULL,
+  plotResiduals = TRUE,
+  start = 1,
+  prior = FALSE,
+  ...
+)
 }
 \arguments{
 \item{sampler}{Either a) a matrix b) an MCMC object (list or not), or c) an SMC object}
@@ -42,6 +50,9 @@ plotTimeSeries(observed = ts, predicted = pred, main = "Observed and predicted")
 
 par(mfrow=c(1,1))
 
+}
+\seealso{
+\code{\link{getPredictiveIntervals}}
 }
 \author{
 Florian Hartig

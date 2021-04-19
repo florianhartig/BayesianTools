@@ -69,7 +69,7 @@ smcSampler <- function(bayesianSetup,
   ### InitialParticles
   #TODO documentation
   
-  if(class(initialParticles) == "numeric"){
+  if(class(initialParticles)[1] == "numeric"){
     initialParticles = bayesianSetup$prior$sampler(initialParticles)
     importanceDensity = bayesianSetup$prior$density
   }

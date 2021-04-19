@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{getPanels}
 \alias{getPanels}
-\title{Calculates the panel combination for par(mfrow = )}
+\title{getPanels}
 \usage{
 getPanels(x)
 }
@@ -10,9 +10,8 @@ getPanels(x)
 \item{x}{the desired number of panels}
 }
 \description{
-Calculates the panel combination for par(mfrow = )
+Calculates the argument x for par(mfrow = x) for a desired number of panels
 }
 \author{
 Florian Hartig
 }
-\keyword{internal}

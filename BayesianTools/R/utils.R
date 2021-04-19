@@ -35,7 +35,7 @@ thinMatrix <- function(mat, thin = "auto"){
 #' @return sclaed matrix
 #' @keywords internal
 scaleMatrix <- function(mat, min, max){
-  if(class(mat) %in% c("matrix", "data.frame")){
+  if(class(mat)[1] %in% c("matrix", "data.frame")){
     for(i in 1:ncol(mat)){
       mat[,i] <- (mat[,i] - min[i]) / (max[i] - min[i])
     }    
@@ -60,10 +60,13 @@ metropolisRatio <- function(LP2, LP1, tempering = 1){
 } 
 
 
-#' Calculates the panel combination for par(mfrow = )
+#' getPanels
+#' 
+#' Calculates the argument x for par(mfrow = x) for a desired number of panels
+#' 
 #' @author Florian Hartig
 #' @param x the desired number of panels 
-#' @keywords internal
+#' @export
 getPanels <- function(x){
   if (x <= 0) stop("number can't be < 1")
   

@@ -1,5 +1,14 @@
 NOTE: for more news about the package, see https://github.com/florianhartig/BayesianTools/releases
 
+
+# BayesianTools 0.1.7
+
+The release was neccessary because of a change to CRAN, see https://github.com/florianhartig/BayesianTools/issues/191
+
+Bugfixes 
+
+- various small bugfixes, see 
+
 # BayesianTools 0.1.6
 
 New features

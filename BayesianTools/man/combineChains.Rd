@@ -7,7 +7,7 @@
 combineChains(x, merge = T)
 }
 \arguments{
-\item{x}{chains}
+\item{x}{a list of MCMC chains}
 
 \item{merge}{logical determines whether chains should be merged}
 }

@@ -64,8 +64,12 @@ likelihood2 <- function(param){
   return(sum(singlelikelihoods))  
 }
 
-setUp1 <- createBayesianSetup(likelihood1, lower = c(-5,-5,-5,0.01), upper = c(5,5,5,30))
-setUp2 <- createBayesianSetup(likelihood2, lower = c(-5,-5,0.01), upper = c(5,5,30))
+setUp1 <- createBayesianSetup(likelihood1, 
+                              lower = c(-5,-5,-5,0.01), 
+                              upper = c(5,5,5,30))
+setUp2 <- createBayesianSetup(likelihood2, 
+                              lower = c(-5,-5,0.01), 
+                              upper = c(5,5,30))
 
 out1 <- runMCMC(bayesianSetup = setUp1)
 M1 = marginalLikelihood(out1, start = 1000)
@@ -92,12 +96,17 @@ exp(M1$ln.ML) / ( exp(M1$ln.ML) + exp(M2$ln.ML))
 #############################################################
 # Fractional Bayes factor
 
-# Motivation: ML is very dependent on the prior, which is a problem if you have uninformative priors 
-# you can see this via rerunning the upper example with changed priors - suddenly, support for M1 is gone
+# Motivation: ML is very dependent on the prior, which is a problem if you 
+# have uninformative priors. you can see this via rerunning the upper  
+# example with changed priors - suddenly, support for M1 is gone
 
 
-setUp1 <- createBayesianSetup(likelihood1, lower = c(-500,-500,-500,0.01), upper = c(500,500,500,3000))
-setUp2 <- createBayesianSetup(likelihood2, lower = c(-500,-500,0.01), upper = c(500,500,3000))
+setUp1 <- createBayesianSetup(likelihood1, 
+                              lower = c(-500,-500,-500,0.01), 
+                              upper = c(500,500,500,3000))
+setUp2 <- createBayesianSetup(likelihood2, 
+                              lower = c(-500,-500,0.01), 
+                              upper = c(500,500,3000))
 
 out1 <- runMCMC(bayesianSetup = setUp1)
 M1 = marginalLikelihood(out1, start = 1000)
@@ -129,14 +138,22 @@ likelihood2 <- function(param){
   return(sum(singlelikelihoods[seq(1, 30, 2)]))  
 }
 
-setUp1 <- createBayesianSetup(likelihood1, lower = c(-500,-500,-500,0.01), upper = c(500,500,500,3000))
-setUp2 <- createBayesianSetup(likelihood2, lower = c(-500,-500,0.01), upper = c(500,500,3000))
+setUp1 <- createBayesianSetup(likelihood1, 
+                              lower = c(-500,-500,-500,0.01), 
+                              upper = c(500,500,500,3000))
+setUp2 <- createBayesianSetup(likelihood2, 
+                              lower = c(-500,-500,0.01), 
+                              upper = c(500,500,3000))
 
 out1 <- runMCMC(bayesianSetup = setUp1)
 out2 <- runMCMC(bayesianSetup = setUp2)
 
-newPrior1 = createPriorDensity(out1, start = 200, lower = c(-500,-500,-500,0.01), upper = c(500,500,500,3000))
-newPrior2 = createPriorDensity(out2, start = 200, lower = c(-500,-500,0.01), upper = c(500,500,3000))
+newPrior1 = createPriorDensity(out1, start = 200, 
+                               lower = c(-500,-500,-500,0.01), 
+                               upper = c(500,500,500,3000))
+newPrior2 = createPriorDensity(out2, start = 200, 
+                               lower = c(-500,-500,0.01), 
+                               upper = c(500,500,3000))
 
 # now rerun this with likelihoods for the other half of the data and new prior
 

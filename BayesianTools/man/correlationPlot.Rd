@@ -4,8 +4,15 @@
 \alias{correlationPlot}
 \title{Flexible function to create correlation density plots}
 \usage{
-correlationPlot(mat, density = "smooth", thin = "auto",
-  method = "pearson", whichParameters = NULL, scaleCorText = T, ...)
+correlationPlot(
+  mat,
+  density = "smooth",
+  thin = "auto",
+  method = "pearson",
+  whichParameters = NULL,
+  scaleCorText = T,
+  ...
+)
 }
 \arguments{
 \item{mat}{object of class "bayesianOutput" or a matrix or data frame of variables}
