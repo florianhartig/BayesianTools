@@ -3,6 +3,9 @@
 #' @param x a list of MCMC chains
 #' @param merge logical determines whether chains should be merged
 #' @return combined chains
+#' 
+#' @note to combine several chains to a single McmcSamplerList, see \code{\link{createMcmcSamplerList}}
+#' 
 #' @keywords internal
 combineChains <- function(x, merge = T){
   

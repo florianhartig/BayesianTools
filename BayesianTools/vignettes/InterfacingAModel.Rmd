@@ -190,22 +190,16 @@ plot(output)
 The last step is optional, but we recommend that you take it from the start, because there is really no downside to it. You work with R code in several files that you run by hand, or diretly put all code into an R package. Creating and managing R packages is very easy, and it's easier to pass on your code because everything, including help, is in on package. To create an R package, follow the tutorial \href{http://biometry.github.io/APES/R/R70-PackageDevelopment.html}{here}. Remember to create a good documentation using Roxygen. 
 
 
-
-
-
-
 # Speed optimization and parallelization
 
 For running sensitivity analyses or calibrations, runtime is often an issue. Before you parallelize, make sure your model is as fast as possible. 
 
 ## Easy things
 
-
 * Are you compiling with maximum optimization (e.g. -o3 in cpp)
 * If you have a spin-up phase, could you increase the time-step during this phase?
 * Could you increase the time step generally
 * Do you write unnecessary outputs that you could turn off (harddisk I/O is often slow)?
-
 
 ## Difficult things
 
@@ -214,21 +208,27 @@ For running sensitivity analyses or calibrations, runtime is often an issue. Bef
 * Code optimization: did you use a profiler? Read up on code optimization
 * Check for unnecessary calculations in your code / introduce compiler flags where appropriate
 
-
 ## Parallelization
 
-A possibilty to speed up the run time of your model is to run it on multiple cores (CPU's). To do so, you have two choices:
+A possibility to speed up the run time of your model is to run it on multiple cores (CPU's). To do so, you have two choices:
 
 1. Parallelize the model itself
-2. Parallelize the model call, so that you can do several model evaluations in parallel
+2. Parallelize the model call, so that BT can do several model evaluations in parallel
 
-Which makes more sense depends a lot on your problem. The usual advice in parallel computing is to parallelize the outer loops first to minimize commonication, which would suggest to start with 2. This is also much easier to program. This approach is particular useful for algorithms that can use a large number of cores in parallel, e.g. sensitivity analyses or SMC sampling. MCMC samplers or optimization algorithms, however, can typically only use a limited number of cores. 
+Which of the two makes more sense depends a lot on your problem. To parallelize the model itself will be interesting in particular for very large models, which could otherwise not be calibrated with MCMCs. However, this approach will typically require to write parallel C/C++ code and require advanced programming skills, which is the reason why we will not further discuss it here. 
 
-To parallelize the model itself will be interesting in particular for very large models, which could otherwise not be calibrated with MCMCs. However, this approach will typically require to write parrallel C/C++ code and require advanced programming skills, which is the reason why we will not further discuss it here. 
+The usual advice in parallel computing is anyway to parallelize the outer loops first, to minimize communication overhead, which would suggest to start with parallelizing model evaluations. This is also much easier to program. Even within this, there are two levels of parallelization possible: 
 
-Let's assume thus that we want to run several model evaluations in R in parallel, on multiple cores of across a cluster or grid computing system. A first requirement to do so is to to have your model wrapped into an R function (see PREVIOUS SECTION). 
+1. Parallelize the call of several MCMC / SMC samplers
+2. Parallelize within the MCMC / SMC samplers
 
-If that is the case, R offers a number of options to run functions in parallel. The easiest is to use the parallel package that comes with the R core. For other packages, see the internet and the CRAN task view on [High Performance Computing](https://CRAN.R-project.org/view=HighPerformanceComputing)
+Currently, BT only supports parallelization within MCMCs / SMCs, but it easy to also implement between sampler parallelization by hand. Both approaches are describe below. 
+
+### Within sampler parallelization 
+
+Within-sampler parallelization is particular useful for algorithms that can use a large number of cores in parallel, e.g. sensitivity analyses or SMC sampling. For the MCMCs, it depends on the settings and the algorithm how much parallelization they can make use of. In general, MCMCs are Markovian, as the name says, i.e. the set up a chain of sequential model evaluations, and those calls can therefore not be fully parallelized. However, a number of MCMCs in the BT package uses MCMC algorithms that can be partly parallelized, in particular the population MCMC algorithms DE/DEzs/DREAM/DREAMzs. For all these cases, BT will automatically use parallelization of the BT setup indicates that this is implemented. 
+
+How to do this? A first requirement to do so is to to have your model wrapped into an R function (see PREVIOUS SECTION). If that is the case, R offers a number of options to run functions in parallel. The easiest is to use the parallel package that comes with the R core. For other packages, see the internet and the CRAN task view on [High Performance Computing](https://CRAN.R-project.org/view=HighPerformanceComputing)
 
 As an example, assume we have the following, very simple model:
 
@@ -247,20 +247,41 @@ library(parallel)
 cl <- makeCluster(2)
 
 runParallel<- function(parList){
-  
   parSapply(cl, parList, mymodel)
-  
 }
 
 runParallel(c(1,2))
 ```
 
-Something like the previous loop is automatized in BayesianTools. You can create a parallel model evaluation function with the function generateParallelExecuter, or alternatively directly in the createBayesianSetup
+You could use this principle to build your own parallelized likelihood. However, something very similar to the previous loop is automatized in BayesianTools. You can directly create a parallel model evaluation function with the function generateParallelExecuter, or alternatively directly in the createBayesianSetup
 
 ```{r}
 library(BayesianTools)
 parModel <- generateParallelExecuter(mymodel)
 ```
+
+If your model is tread-safe, you should be able to run this out of the box. I therefore recommend using the hand-coded paraellelization only of the model is not thread-safe. 
+
+### Running several MCMCs in parallel
+
+Additionally to the within-chain parallelization, you can also run several MCMCs in parallel, and combine them later to a single McmcSamplerList
+
+```{r}
+library(BayesianTools)
+
+ll <- generateTestDensityMultiNormal(sigma = "no correlation")
+bayesianSetup <- createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
+
+settings = list(iterations = 200)
+
+# run the several MCMCs chains either in seperate R sessions, or via R parallel packages
+out1 <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+out2 <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = settings)
+
+res <- createMcmcSamplerList(list(out1, out2))
+plot(res)
+```
+
 
 
 ### Thread safety
