@@ -46,12 +46,12 @@ Windows users: the package contains c++ code, so if you compile yourself, you ne
 
 ### Older releases
 
-To install a specific (older) release, decide for the version number that you want to install in [https://github.com/florianhartig/BayesianTools/releases](https://github.com/florianhartig/BayesianTools/releases) (version numbering corresponds to CRAN, but there may be smaller releases that were not pushed to CRAN) and run, e.g.  
+To install a specific (older) release or a branch, decide for the version number / branch that you want to install in [https://github.com/florianhartig/BayesianTools/releases](https://github.com/florianhartig/BayesianTools/releases) (version numbering corresponds to CRAN, but there may be smaller releases that were not pushed to CRAN) and run, e.g.  
 
 ```{r}
 devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", ref = "v0.0.10", dependencies = T, build_vignettes = T)
 ```
-with v0.0.10 replaced by the appropriate version number. 
+with v0.0.10 replaced by the appropriate version number or branch. 
 
 ## Getting help
 
