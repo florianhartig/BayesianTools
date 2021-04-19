@@ -1,17 +1,17 @@
 ---
-title: "Speich et al., Sequential Monte-Carlo algorithms for Bayesian model calibration"
-abstract: "This folder documents the scripts used to generate the simulations described in the manuscript “Sequential Monte-Carlo algorithms for Bayesian model calibration – a review and method comparison” by M. Speich, C.F. Dormann and F. Hartig, currently in revision." 
-editor_options: 
-  chunk_output_type: console
 output: 
   html_document: 
-    toc: yes
     keep_md: yes
 ---
 
 
 
 
+
+
+# Speich et al., Sequential Monte-Carlo algorithms for Bayesian model calibration
+
+**Summary:** This folder documents the scripts used to generate the simulations described in the manuscript “Sequential Monte-Carlo algorithms for Bayesian model calibration – a review and method comparison” by M. Speich, C.F. Dormann and F. Hartig, currently in revision.
 
 
 ## How to use the SMC function in your own work
