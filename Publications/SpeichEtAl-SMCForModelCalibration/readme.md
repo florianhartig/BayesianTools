@@ -1,5 +1,7 @@
 This folder documents the scripts used to generate the simulations described in the manuscript “Sequential Monte-Carlo algorithms for Bayesian model calibration – a review and method comparison” by M. Speich, C.F. Dormann and F. Hartig, currently in revision.
 
+## How to use the SMC function in your own work
+
 To **use the SMC function in your own work**, install the following development branch, which will soon be merged with the main BT branch and included in CRAN. This branch includes updated documentation and further integration of the SMC function in the BT environment. 
 
 ```{r}
@@ -7,14 +9,15 @@ devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "Bayesia
                                  ref = "SMC-merge", dependencies = T, build_vignettes = T)
 ```
 
-To get help on the SMC function, use ?smcSampler. A short example on how to calibrate a model with this function:
+To get help on the SMC function, use ?smcSampler. Here a short example on how to calibrate a model with this function:
 
 
 ```{r}
-devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", 
-                                 ref = "SMC", dependencies = T, build_vignettes = T)
+x
 ```
 
+
+## How to reproduce the results in the paper
 
 To **reproduce the results in the paper**, you should the code branch with the BT version with which results were created, which is 
 
