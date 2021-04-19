@@ -5,7 +5,8 @@
 #' @param initialParticles initial particles - either a draw from the prior, provided as a matrix with the single parameters as columns and each row being one particle (parameter vector), or a numeric value with the number of desired particles. In this case, the sampling option must be provided in the prior of the BayesianSetup. 
 #' @param iterations number of iterations
 #' @param resampling if new particles should be created at each iteration
-#' @param resamplingSteps how many resampling (MCMC) steps between the iterations
+#' @param resamplingSteps how many resampling (MCMC) steps between the SMC iterations
+#' @param lastMutateSteps how many resampling (MCMC) steps after the SMC iterations
 #' @param proposal optional proposal class
 #' @param exponents series of exponents to build the intermediate distributions
 #' @param adaptive should the covariance of the proposal be adapted during sampling
@@ -14,9 +15,12 @@
 #' @param m Parameter to generate the exponential sequence for building intermediary distributions. Default value from Jeremiah et al. (2012)
 #' @param sampling Which algorithm to use for particle (re)sampling. Options are "multinomial" (default), "residual" and "systematic"
 #' @param ess.limit Threshold value of effective sample size below which resampling is done. By default, the value is set to half the number of particles. To resample at each step, use a value >= the number of particles.
+#' @param ess.factor 
 #' @param lastResample Iteration (starting from the end) at which particle resampling is forced. To deactivate this, set to a value < 0
 #' @param pars.lower Optional: vector contaiing the mimimum values of calibration parameters. Used to initialize the proposal function
 #' @param pars.upper Optional: vector contaiing the maximum values of calibration parameters. Used to initialize the proposal function
+#' @param mutate.method MCMC method for the resampling. Either "Metropolis" or "DE"
+#' @param b parameter for snooker update in DE
 #' @param diagnostics an optional function with diagnostics that are calculated on the particles during each SMC iteration
 
 #' @details The sampler can be used for rejection sampling as well as for sequential Monte Carlo. For the former case set the iterations to one.
@@ -28,7 +32,7 @@ smcSampler <- function(bayesianSetup,
                        iterations = 10, 
                        resampling = T, 
                        resamplingSteps = 2, 
-                       lastMutateSteps = 5,         # TODO document
+                       lastMutateSteps = 5,         
                        proposal = NULL, 
                        exponents = NULL, 
                        adaptive = T, 
@@ -46,7 +50,7 @@ smcSampler <- function(bayesianSetup,
                        diagnostics = NULL,
                        reference=NULL){
   
-  ########### SETUP STEPS ########################
+  # SETUP STEPS 
   
   # Timing: normally done in mcmcRun.R. Timing is included in this function for the purpose of testing the SMC function.
   # Starting the clock
@@ -110,7 +114,7 @@ smcSampler <- function(bayesianSetup,
   Z <- particles
 
   
-  ########### WEIGHT SETUP ########################
+  # WEIGHT SETUP 
     
   # Define an exponential sequence of beta parameters, i.e. the exponents to weight the likelihood against prior.
   # Idea and parameter values from Jeremiah et al. (2012), Environ Modell Softw
@@ -157,10 +161,6 @@ smcSampler <- function(bayesianSetup,
   max.pars <- apply(particles,2,max)
   
   
-  ##########################################################
-  #                  Loop starts here                      #
-  ##########################################################
-  
   #for (i in 1:iterations){
   # while(icount <= length(exponents)){
   #while(curExp <= 1 & !lastIteration){ # For fully adaptive algorithm
@@ -199,7 +199,6 @@ smcSampler <- function(bayesianSetup,
     
     # Using a while loop instead of for because in the adaptive algorithm, the number of iterations may increase
     
-    ###########################################################
     # Mutate
     
     # 1) When to do the resampling
@@ -248,7 +247,6 @@ smcSampler <- function(bayesianSetup,
       curExp <- 1
     }
     
-    #########################################################
     # Re?sampling step 
 
     # Determine if resampling is necessary - if yes, resample with probability given by the weight
@@ -399,12 +397,6 @@ smcSampler <- function(bayesianSetup,
   
 }
 
-######################################################
-# END of SMC function
-######################################################
-
-######################################################
-# Auxiliary functions for resampling
 
 #' Residual Resampling
 #' 
@@ -452,7 +444,10 @@ systematicResampling <- function(weights){
 }
 
 
-
+#' Auxiliary function for adaptive SMC algorithm 
+#' 
+#' 
+#' @keywords internal
 resample <- function(weights, method = "multinomial"){
   
   particleSize = length(weights)
@@ -469,10 +464,11 @@ resample <- function(weights, method = "multinomial"){
   return(sel)
 }
 
-######################################################
 
-# Auxiliary function for adaptive algorithm
-
+#' Auxiliary function for adaptive SMC algorithm 
+#' 
+#' 
+#' @keywords internal
 beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldInter, curWeights, curExp, tol=1){
   # A function to dynamically set the next exponent to build the next intermediary distribution.
   # Uses the bisection method. Following Jasra et al. (2011), Scand J Statist, doi: 10.1111/j.1467-9469.2010.00723.x
@@ -543,10 +539,11 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
   return(out)
 }
 
-######################################################
-# Auxiliary function for particle mutation
 
-
+#' Auxiliary function for particle mutation
+#' 
+#' 
+#' @keywords internal
 mutate <- function(setup, particles, proposalGenerator, posteriorValues, importanceDensity, method, steps, proposalScale, adaptive = TRUE, b=1E-04, min.pars=NULL, max.pars=NULL, Z = NULL){
 
   if(is.vector(particles)){particles = matrix(particles, ncol = 1)}
@@ -763,11 +760,19 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
   return(out)
 }
 
+
+#' Scale particles
+#' 
+#' @keywords internal
 scale.particles <- function(particle.row, min.pars, max.pars){
   scaled.particles <- (particle.row - min.pars) / (max.pars - min.pars)
   return(scaled.particles)
 }
 
+
+#' Calculate rao diversity
+#' 
+#' @keywords internal
 rao.div <- function(scaled.particles){
   # Determine unique particles, their sum and pairwise difference
   unique.particles <- unique(scaled.particles)
@@ -797,7 +802,7 @@ rao.div <- function(scaled.particles){
 }
 
 
-######
+
 # Auxiliary function to calculate Metropolis ratio when log-likelihood values are very large
 
 # largeRatio <- function(a,b){
