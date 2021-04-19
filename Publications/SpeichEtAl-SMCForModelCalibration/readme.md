@@ -5,7 +5,7 @@ To run the scripts, you should NOT use the CRAN version of BayesianTools, but in
 
 ```{r}
 devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", 
-                                 ref = "", dependencies = T, build_vignettes = T)
+                                 ref = "SMC", dependencies = T, build_vignettes = T)
 ```
 
 You should then be able to run the following scripts, which were used to recreate the examples in the paper: 
