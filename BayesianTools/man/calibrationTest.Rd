@@ -7,14 +7,14 @@
 calibrationTest(posteriorList, priorDraws, ...)
 }
 \arguments{
-\item{posteriorList}{a list with posterior samples. List items must be of a class that is supported by \code{\link{getSample}}}
+\item{posteriorList}{a list with posterior samples. List items must be of a class that is supported by \code{\link{getSample}}. This includes BayesianTools objects, but also matrix and data.frame}
 
 \item{priorDraws}{a matrix with parameter values, drawn from the prior, that were used to simulate the data underlying the posteriorList. If colnames are provided, these will be used in the plots}
 
 \item{...}{arguments to be passed to \code{\link{getSample}}. Consider in particular the thinning option.}
 }
 \description{
-This function data averaged posterior
+This function performs simulation-based calibration tests based on the idea that posteriors averaged over the prior should yield the prior.
 }
 \details{
 The purpose of this function is to evaluate the results of a simulation-based calibration of an MCMC analysis. 
@@ -25,14 +25,19 @@ Briefly, the idea is to repeatedly
 2. simulate new data based on these parameters, 
 3. calculate the posterior for these data
 
-If the sampler and the likelihood are implemented correctly, the average of over all the posterior distribution should then again yield the prior (e.g. Cook et al., 2006). 
+If the sampler and the likelihood are implemented correctly, the average over all the posterior distribution should then again yield the prior (e.g. Cook et al., 2006). 
 
 To test if this is the case, we implement the methods suggested by Talts et al., which is to calculate the rank statistics between the parameter draws and the posterior draws, which we then formally evaluate with a qq unif plot, and a ks.test
 
-We speculate that a ks.test between the two distribution would likely give an identical result, but this is not noted in Talts et al.
-
+I speculate that a ks.test between the two distribution would likely give an identical result, but this is not noted in Talts et al.
 
 Cook, S. R., Gelman, A. and Rubin, D. B. (2006). Validation of Software for Bayesian Models Using Posterior Quantiles. J. Comput. Graph. Stat. 15 675-692.
 
 Talts, Sean, Michael Betancourt, Daniel Simpson, Aki Vehtari, and Andrew Gelman. "Validating Bayesian Inference Algorithms with Simulation-Based Calibration." arXiv preprint arXiv:1804.06788 (2018).
+}
+\note{
+This function was implemented for the tests in Maliet, Odile, Florian Hartig, and Hélène Morlon. "A model with many small shifts for estimating species-specific diversification rates." Nature ecology & evolution 3.7 (2019): 1086-1092. The code linked with this paper provides a further example of its use.
+}
+\author{
+
 }
