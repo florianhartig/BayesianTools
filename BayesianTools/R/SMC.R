@@ -41,12 +41,12 @@ smcSampler <- function(bayesianSetup,
                        m=7E-08, 
                        sampling="multinomial",
                        ess.limit=NULL,
-                       ess.factor = 0.95,           # TODO document
+                       ess.factor = 0.95,           
                        lastResample = 1,
                        pars.lower=NULL, 
                        pars.upper=NULL, 
-                       mutate.method ="Metropolis", # TODO document
-                       b=1e-04,                     # TODO document
+                       mutate.method ="Metropolis", 
+                       b=1e-04,                     
                        diagnostics = NULL,
                        reference=NULL){
   
