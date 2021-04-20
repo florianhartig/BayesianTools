@@ -4,9 +4,13 @@ output:
     keep_md: yes
 ---
 
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
+```
 
-
-
+```{r, echo = F, message = F}
+set.seed(123)
+```
 
 
 # Speich et al., Sequential Monte-Carlo algorithms for Bayesian model calibration
@@ -17,16 +21,14 @@ output:
 
 To **use the SMC function in your own work**, install the following development branch, which will soon be merged with the main BT branch and included in CRAN. This branch includes updated documentation and further integration of the SMC function in the BT environment. 
 
-
-```r
+```{r, eval = F}
 devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", 
                                  ref = "SMC-Merge", dependencies = T, build_vignettes = F)
 ```
 
 Here a short example on how to calibrate a model with this function:
 
-
-```r
+```{r}
 library(BayesianTools)
 bayesianSetup <- createBayesianSetup(likelihood = generateTestDensityMultiNormal(), 
                                      lower = rep(-10, 3),
@@ -35,8 +37,6 @@ bayesianSetup <- createBayesianSetup(likelihood = generateTestDensityMultiNormal
 SMCout <- smcSampler(bayesianSetup)
 marginalPlot(SMCout, type = "d", singlePanel = T)
 ```
-
-![](readme_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 
 In this case, the calibration target was a simple multivariate normal likelihood (created by generateTestDensityMultiNormal), multiplied with wide uniform priors (provided by the lower / upper argument). If calibrating your own model, you would have to switch this to your desired likelihood / prior. 
 
@@ -47,8 +47,7 @@ In this case, the calibration target was a simple multivariate normal likelihood
 
 To exactly reproduce the results in the paper, you should install the code branch with the BT version with which results were created, which is 
 
-
-```r
+```{r, eval = F}
 devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", 
                                  ref = "SMC", dependencies = T, build_vignettes = F)
 ```

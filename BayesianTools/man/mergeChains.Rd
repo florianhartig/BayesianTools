@@ -7,18 +7,18 @@
 mergeChains(l, ...)
 }
 \arguments{
-\item{l}{a list with MCMC outputs}
+\item{l}{a list with objects that can be accessed with \code{\link{getSample}}}
 
-\item{...}{arguments to be passed on to getSample}
+\item{...}{arguments to be passed on to \code{\link{getSample}}}
 }
 \value{
 a matrix
 }
 \description{
-Merge a list of MCMCs or chains
+Merge a list of outputs from MCMC / SMC samplers
 }
 \details{
-The function merges a list of MCMC objects. Requirement is that the list contains classes for which the getSample function works
+The function merges a list of outputs from MCMC / SMC samplers into a single matrix. Requirement is that the list contains classes for which the \code{\link{getSample}} function works
 }
 \author{
 Florian Hartig

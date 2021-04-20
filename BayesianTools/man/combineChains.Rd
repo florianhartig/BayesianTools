@@ -17,4 +17,7 @@ combined chains
 \description{
 Function to combine chains
 }
+\note{
+to combine several chains to a single McmcSamplerList, see \code{\link{createMcmcSamplerList}}
+}
 \keyword{internal}
