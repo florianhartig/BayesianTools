@@ -96,7 +96,7 @@ marginalPlot <- function(x, prior = NULL, xrange = NULL, type = 'd', singlePanel
 #' @author Tankred Ott
 #' @keywords internal
 # TODO: this could be simplified. It is verbose for now to be able to change stuff easily
-marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FC006299','#00BBAA88'), 
+marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FC006299','#00BBAA30'), 
                                 singlePanel = TRUE, ...) {
   
   nPar <- ncol(posteriorMat)
