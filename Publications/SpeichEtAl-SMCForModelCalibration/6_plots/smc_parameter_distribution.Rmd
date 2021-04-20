@@ -1,0 +1,145 @@
+---
+title: "SMC Experiments - Parameter distributions"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+*Supplementary material for the manuscript submitted by Speich, Dormann and Hartig to Ecological Modelling.*
+
+This document gives a detailed account of the experiments described in the main paper. Concretely, it shows the marginal distributions of the parameters obtained in the SMC experiments and in the MCMC reference simulations.
+
+Parameter values are given for the following simulation experiments:
+
+* VSEM - Case with strong correlation
+* VSEM - Case without strong correlation
+* 3PGN
+
+Since the model used in the 3PGN_sleep experiments is identical to the one in 3PGN, figures for the 3PGN_sleep are omitted. 
+
+
+# VSEM - Case with strong correlation
+
+## Parameter list
+
+## Parameter distribution
+
+### Reference MCMC simulation
+
+```{r mcmc.VSEMa, echo=FALSE, fig.height=6}
+library(BayesianTools)
+
+filepath <- "C:\\Users\\spei\\Desktop\\Oldies\\SMC\\"
+load(paste0(filepath,"reference_VSEMa_list.RData"))
+par(mar=c(2.1,2.1,2.1,2.1))
+marginalPlot(save.list[[3]])
+
+```
+
+### SMC simulations
+```{r smc.VSEMa, echo=FALSE, fig.height=6}
+
+pars <- expand.grid(l = c("50", "75", "90"),
+                    s = c("0.01", "0.1", "0.333", "0.5"),
+                    p = c("5000", "20000", "50000", "1e+05"),
+                    r = c("2", "5", "10", "20", "30"))
+
+for(i in 1:nrow(pars)){
+  print(c("Number of particles N: ", as.character(pars[i, "p"])))
+  print(c("Threshold for resample-move step [% of N]: ", as.character(pars[i, "l"])))
+  print(c("Scaling factor for mutation steps: ", as.character(pars[i, "s"])))
+  print(c("Number of mutation steps: ", as.character(pars[i, "r"])))
+  
+  load(paste0(filepath, "VSEMa1\\p_", as.character(pars[i, "p"]),
+              "l_", as.character(pars[i, "l"]),
+              "s_", as.character(pars[i, "s"]),
+              "r_", as.character(pars[i, "r"]),
+              ".RData"))
+  marginalPlot(smc.VSEMa)
+}
+
+```
+
+# VSEM - Case without strong correlation
+
+## Parameter list
+
+## Parameter distribution
+
+### Reference MCMC simulation
+
+```{r mcmc.VSEMb, echo=FALSE, fig.height=6}
+library(BayesianTools)
+
+load(paste0(filepath,"reference_VSEMb_list.RData"))
+par(mar=c(2.1,2.1,2.1,2.1))
+marginalPlot(save.list[[3]])
+
+```
+
+### SMC simulations
+```{r smc.VSEMb, echo=FALSE, fig.height=6}
+
+pars <- expand.grid(l = c("50", "75", "90"),
+                    s = c("0.01", "0.1", "0.333", "0.5"),
+                    p = c("5000", "20000", "50000", "1e+05"),
+                    r = c("2", "5", "10", "20", "30"))
+
+for(i in 1:nrow(pars)){
+  print(c("Number of particles N: ", as.character(pars[i, "p"])))
+  print(c("Threshold for resample-move step [% of N]: ", as.character(pars[i, "l"])))
+  print(c("Scaling factor for mutation steps: ", as.character(pars[i, "s"])))
+  print(c("Number of mutation steps: ", as.character(pars[i, "r"])))
+  
+  load(paste0(filepath, "VSEMb1\\p_", as.character(pars[i, "p"]),
+              "l_", as.character(pars[i, "l"]),
+              "s_", as.character(pars[i, "s"]),
+              "r_", as.character(pars[i, "r"]),
+              ".RData"))
+  marginalPlot(smc.VSEMb)
+}
+
+```
+
+# 3PGN
+
+## Parameter list
+
+## Parameter distribution
+
+### Reference MCMC simulation
+
+```{r mcmc.3PG, echo=FALSE, fig.height=12}
+
+load(paste0(filepath,"reference_threePGN_list.RData"))
+par(mar=c(2.1,2.1,2.1,2.1))
+marginalPlot(save.list[[3]])
+
+```
+
+### SMC simulations
+```{r smc.3PGN, echo=FALSE, fig.height=12}
+
+pars <- expand.grid(l = c("50", "75", "90"),
+                    s = c("0.01", "0.1", "0.333", "0.5"),
+                    p = c("5000", "20000", "50000", "1e+05"),
+                    r = c("2", "5", "10", "20", "30"))
+
+for(i in 1:nrow(pars)){
+  
+  print(c("Number of particles N: ", as.character(pars[i, "p"])))
+  print(c("Threshold for resample-move step [% of N]: ", as.character(pars[i, "l"])))
+  print(c("Scaling factor for mutation steps: ", as.character(pars[i, "s"])))
+  print(c("Number of mutation steps: ", as.character(pars[i, "r"])))
+
+  load(paste0(filepath, "threePGN1\\p_", as.character(pars[i, "p"]),
+              "l_", as.character(pars[i, "l"]),
+              "s_", as.character(pars[i, "s"]),
+              "r_", as.character(pars[i, "r"]),
+              ".RData"))
+  marginalPlot(smc.3pg)
+}
+
+```
