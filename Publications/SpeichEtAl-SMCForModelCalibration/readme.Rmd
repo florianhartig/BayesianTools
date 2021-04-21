@@ -26,7 +26,7 @@ devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "Bayesia
                                  ref = "SMC-Merge", dependencies = T, build_vignettes = F)
 ```
 
-Here a short example on how to calibrate a model with this function:
+Here a short example on how to calibrate a model with this function. In this case, the calibration target is a simple multivariate normal likelihood (created by generateTestDensityMultiNormal), multiplied with wide uniform priors (provided by the lower / upper argument). If calibrating your own model, you would have to switch this to your desired likelihood / prior. 
 
 ```{r}
 library(BayesianTools)
@@ -38,14 +38,11 @@ SMCout <- smcSampler(bayesianSetup)
 marginalPlot(SMCout, type = "d", singlePanel = T)
 ```
 
-In this case, the calibration target was a simple multivariate normal likelihood (created by generateTestDensityMultiNormal), multiplied with wide uniform priors (provided by the lower / upper argument). If calibrating your own model, you would have to switch this to your desired likelihood / prior. 
-
-* To understand how other calibration targets can be specified, see the help of ?createBayesianSetup, as well as the [general tutorial / vignette of the BT package](https://cran.r-project.org/web/packages/BayesianTools/vignettes/BayesianTools.html). For a realistic example (calibration of small ecosystem model), see ?VSEM 
-* Note that the online vignette does not yet include the latest changes to the SMC sampler which is described in Speich et al. To get help on those settings, run ?smcSampler (provided that the development version was installed as explained above). 
+To understand how other calibration targets can be specified, see the help of ?createBayesianSetup, as well as the [general tutorial / vignette of the BT package](https://cran.r-project.org/web/packages/BayesianTools/vignettes/BayesianTools.html). For a realistic example (calibration of small ecosystem model), see ?VSEM. Note that the online vignette does not yet include the latest changes to the SMC sampler which is described in Speich et al. To get help on those settings, run ?smcSampler (provided that the development version was installed as explained above). 
 
 ## How to reproduce the results in the paper
 
-To exactly reproduce the results in the paper, you should install the code branch with the BT version with which results were created, which is 
+To exactly reproduce the results in the paper, you should install the (older) branch that contains the BT version with which results were created. You can do this via
 
 ```{r, eval = F}
 devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "BayesianTools", 
