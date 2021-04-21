@@ -49,6 +49,7 @@ For reproducing our resutls, you should install the 3PG implementation in the th
 
 For new simulations, we recommend switching to the r3PG package, which is available from CRAN and described in Trotsiuk, Volodymyr, Florian Hartig, and David I. Forrester. "r3PG–An r package for simulating forest growth using the 3‐PG process‐based model." Methods in Ecology and Evolution 11.11 (2020): 1470-1475. This package and the paper also include some extended documentation of the model. 
 
+The following reference parameters (for the creation of the synthetic data) and prior ranges were used for the 3PG model. 
 
 ```{r, echo = F}
 library(threePGN)
@@ -59,13 +60,11 @@ parameters = data.frame(reference = ref.pars, priorMin = min.pars, priorMax = ma
 parameters
 ```
 
-The following reference parameters (for the creation of the synthetic data) and prior ranges were used for the 3PG model. 
+The meaning and units of the parameters are described in 
 
 ```{r, eval = F}
 ?threePGN::data_param
 ```
-
-The meaning and units of the parameters are described in ?threePGN::data_param
 
 
 # Reference posterior estimates
