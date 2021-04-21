@@ -52,6 +52,8 @@ devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "Bayesia
                                  ref = "SMC", dependencies = T, build_vignettes = F)
 ```
 
+Also, you will need to install the threePGN R package from [https://github.com/ForModLabUHel/threePGN-package](https://github.com/ForModLabUHel/threePGN-package)
+
 You should then be able to run the following scripts, which were used to recreate the examples in the paper: 
 
 ### 1.	Scripts to generate reference MCMC data
@@ -72,4 +74,8 @@ This folder contains the files used for the benchmark of SMC under different par
 
 ### 5.	Launch scripts
 
-This file provides examples of files used to launch our scripts on the NEMO cluster, using the MOAB scheduling system. They cannot be executed on a cluster with a different scheduler, but provide some guidance on how to specify the command-line arguments.
+This folder provides examples of files used to launch our scripts on the NEMO cluster, using the MOAB scheduling system. They cannot be executed on a cluster with a different scheduler, but provide some guidance on how to specify the command-line arguments.
+
+### 6.	Model description, priors and posterior estimates
+
+This folder contains model and parameter descriptions, prior settings, and posterior estimates of the MCMC and SMC samplers.
