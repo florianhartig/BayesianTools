@@ -4,25 +4,27 @@
 #' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function 
 #' @param initialParticles initial particles - either a draw from the prior, provided as a matrix with the single parameters as columns and each row being one particle (parameter vector), or a numeric value with the number of desired particles. In this case, the sampling option must be provided in the prior of the BayesianSetup. 
 #' @param iterations number of iterations
-#' @param resampling deprecated, use resamplingSteps to modify resampling 
-#' @param resamplingSteps how many resampling (MCMC) steps between the SMC iterations. A value of 20 or higher is recommended.
+#' 
+#' @param exponents series of exponents to build the intermediate distributions
 #' @param lastMutateSteps how many resampling (MCMC) steps after the SMC iterations to increase sample diversity.
 #' @param proposal optional proposal class
-#' @param exponents series of exponents to build the intermediate distributions
-#' @param adaptive should the covariance of the proposal be adapted during sampling
-#' @param proposalScale scaling factor for the proposal generation. Can be adapted if there is too much / too little rejection. Experience from MCMC sampling suggests an optimal value of 2.38/sqrt(2*d) (where d is the number of parameters), and first experiments suggest that this value is also appropriate for SMC sampling.
 #' @param x Parameter to generate the exponential sequence for building intermediary distributions. Default value from Jeremiah et al. (2012)
 #' @param m Parameter to generate the exponential sequence for building intermediary distributions. Default value from Jeremiah et al. (2012)
 #' @param sampling Which algorithm to use for particle (re)sampling. Options are "multinomial" (default), "residual" and "systematic"
 #' @param ess.limit Threshold value of effective sample size below which resampling is done (fraction of effective sample size). By default, the value is set to half the number of particles. To resample at each step, use a value >= the number of particles.
 #' @param ess.factor 
 #' @param lastResample Iteration (starting from the end) at which particle resampling is forced. To deactivate this, set to a value < 0
+#'
+#' @param resampling deprecated, use resamplingSteps to modify resampling 
+#' @param resamplingSteps how many resampling (MCMC) steps between the SMC iterations. A value of 20 or higher is recommended.
+#' @param adaptive should the covariance of the proposal be adapted during re-sampling
+#' @param proposalScale scaling factor for the proposal generation. Can be adapted if there is too much / too little rejection. Experience from MCMC sampling suggests an optimal value of 2.38/sqrt(2*d) (where d is the number of parameters), and first experiments suggest that this value is also appropriate for SMC sampling.
 #' @param pars.lower Optional: vector containing the mimimum values of calibration parameters. Used to initialize the proposal function
 #' @param pars.upper Optional: vector containing the maximum values of calibration parameters. Used to initialize the proposal function
 #' @param mutate.method MCMC method for the resampling. Either "Metropolis" (default) or "DE"
 #' @param b parameter for snooker update in DE, set by default to 10e-4. As b implies a certain scale for the parameters, b should be either scaled to the parameter uncertainty, or parameters should be scaled.
 #' @param diagnostics an optional function with diagnostics that are calculated on the particles during each SMC iteration
-
+#'
 #' @details The sampler can be used for rejection sampling as well as for sequential Monte Carlo. For the former case set the iterations to one.
 #' @note The SMC currently assumes that the initial particle is sampled from the prior. If a better initial estimate of the posterior distribution is available, this the sampler should be modified to include this. Currently, however, this is not included in the code, so the appropriate adjustments have to be done by hand. 
 #' @export
