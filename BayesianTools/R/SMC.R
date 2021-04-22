@@ -4,7 +4,7 @@
 #' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function 
 #' @param initialParticles initial particles - either a draw from the prior, provided as a matrix with the single parameters as columns and each row being one particle (parameter vector), or a numeric value with the number of desired particles. In this case, the sampling option must be provided in the prior of the BayesianSetup. 
 #' @param iterations number of iterations
-#' @param resampling if new particles should be created at each iteration
+#' @param resampling deprecated, use resamplingSteps to modify resampling 
 #' @param resamplingSteps how many resampling (MCMC) steps between the SMC iterations. A value of 20 or higher is recommended.
 #' @param lastMutateSteps how many resampling (MCMC) steps after the SMC iterations to increase sample diversity.
 #' @param proposal optional proposal class
@@ -30,7 +30,7 @@
 smcSampler <- function(bayesianSetup, 
                        initialParticles = 1000,
                        iterations = 10, 
-                       resampling = T, 
+                       resampling = NULL, 
                        resamplingSteps = 2, 
                        lastMutateSteps = 5,         
                        proposal = NULL, 
@@ -51,6 +51,8 @@ smcSampler <- function(bayesianSetup,
                        reference=NULL){
   
   # SETUP STEPS 
+  
+  if(!is.null(resampling)) message("resampling is deprecated, use resamplingSteps to control resampling") 
   
   # Timing: normally done in mcmcRun.R. Timing is included in this function for the purpose of testing the SMC function.
   # Starting the clock
@@ -239,7 +241,6 @@ smcSampler <- function(bayesianSetup,
     ess <- inter.out$ess
     doResample <- inter.out$doResample
     
-
     
     info$ess.vec[icount] <- ess
     info$exponents[icount] <- curExp
@@ -247,7 +248,7 @@ smcSampler <- function(bayesianSetup,
       curExp <- 1
     }
     
-    # Re?sampling step 
+    # Resampling step 
 
     # Determine if resampling is necessary - if yes, resample with probability given by the weight
     # Resample also on the last iteration, or at the iteration (starting from the end) given by the parameter lastResample (output is based
@@ -273,9 +274,6 @@ smcSampler <- function(bayesianSetup,
       # Normalize (log-)weights so that the sum (of non-logs) equals 1
       weights <- weights - BayesianTools:::logSumExp(weights)
       
-
-
-      
       ## Check diversity of particles, and require a mutate step if necessary
       # Scale particles 
       #print(c("nrow unique particles", nrow(unique(particles))))
@@ -294,7 +292,7 @@ smcSampler <- function(bayesianSetup,
         info$resamplingAcceptance[(icount),] <- mutate.out$acceptance
         if(length(proposalScale) > 1){
           proposalScale <- mutate.out$proposalScale
-        }
+      }
         
         #plot(density(particles[,1]), xlim=c(0.314, 0.681), main = c(curExp, nrow(unique(particles))))
         
@@ -326,8 +324,6 @@ smcSampler <- function(bayesianSetup,
     #   importanceValues <- mutate.out$importanceValues
     #   info$resamplingAcceptance[(icount),] <- mutate.out$acceptance
     # }
-    
-
     
     oldweights <- weights
     info$ess.vec[icount] <- ess
