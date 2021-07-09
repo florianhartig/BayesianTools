@@ -1,4 +1,7 @@
-#' Runs Gelman Diagnotics over an BayesianOutput
+#' Gelman Diagnostics
+#' 
+#' Runs Gelman Diagnotics for an object of class BayesianOutput
+#' 
 #' @author Florian Hartig
 #' @param sampler an object of class mcmcSampler or mcmcSamplerList
 #' @param thin parameter determining the thinning intervall. Either an integer or "auto" (default) for automatic thinning.
@@ -26,9 +29,12 @@ gelmanDiagnostics <- function(sampler, thin = "auto", plot = F, ...){
     rownames(diag$psrf) = colnames(sample)
     diag$mpsrf = NA  
   } 
-  # Wrapper around the gelman.plot to filter out getSample arguments from ...
-  gP <- function(...,start, end, parametersOnly, coda, numSamples, whichParameters, includesProbabilities, reportDiagnostics, thin, plot, sampler) coda::gelman.plot(sample, ...)
-  if(plot == T & ! is.na(diag$mpsrf)) do.call(gP, as.list(match.call()))
+  if(pars == 1) diag$mpsrf = NA  # fixes #221
+  if(plot == T & ! is.na(diag$mpsrf)){
+    # Wrapper around the gelman.plot to filter out getSample arguments from ...
+    gP <- function(...,start, end, parametersOnly, coda, numSamples, whichParameters, includesProbabilities, reportDiagnostics, thin, plot, sampler) coda::gelman.plot(sample, ...)
+    do.call(gP, as.list(match.call()))
+  } 
   return(diag)
 }
 
