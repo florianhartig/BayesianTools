@@ -19,6 +19,9 @@ correlationPlot<- function(mat, density = "smooth", thin = "auto", method = "pea
   mat = getSample(mat, thin = thin, whichParameters = whichParameters, ...)
   
   numPars = ncol(mat)
+  
+  if(numPars < 2) stop("BayesianTools::correlationPlot - using this function only makes sense if you have more than 1 parameter")
+  
   names = colnames(mat)
   
   panel.hist.dens <- function(x, ...)
