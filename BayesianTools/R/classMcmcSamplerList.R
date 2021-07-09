@@ -85,7 +85,9 @@ summary.mcmcSamplerList <- function(object, ...){
   cat("# MCMC sampler: ",mcmcsampler, "\n")
   cat("# Nr. Chains: ", nrChain, "\n")
   cat("# Iterations per chain: ", nrIter, "\n")
-  cat("# Rejection rate: ", round(mean(coda::rejectionRate(sampler)),3), "\n")
+  cat("# Rejection rate: ", ifelse(object[[1]]$setup$numPars == 1, # this is a hack because coda::rejectionRate does not work for 1-d MCMC lists
+                                   round(mean(sapply(sampler, coda::rejectionRate)),3), 
+                                   round(mean(coda::rejectionRate(sampler)),3) ), "\n")
   cat("# Effective sample size: ", round(mean(coda::effectiveSize(sampler)),0), "\n")
   cat("# Runtime: ", runtime, " sec.","\n", "\n")
   cat("# Parameters\n")
