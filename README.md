@@ -40,7 +40,11 @@ devtools::install_github(repo = "florianhartig/BayesianTools", subdir = "Bayesia
 
 New developments will be done in extra branches and will be tested before merging in the developtment branch, so the developmet version should usually be usable (consider it in a beta stage), while feature branches should be considered alpha. 
 
-Status master development branch [![Build Status](https://travis-ci.org/florianhartig/BayesianTools.svg?branch=master)](https://travis-ci.org/florianhartig/BayesianTools)
+
+Status master development branch 
+
+* Travis CI [![Build Status](https://travis-ci.org/florianhartig/BayesianTools.svg?branch=master)](https://travis-ci.org/florianhartig/BayesianTools)
+* GH Action [![R-CMD-check](https://github.com/florianhartig/BayesianTools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/florianhartig/BayesianTools/actions/workflows/R-CMD-check.yaml)
 
 Windows users: the package contains c++ code, so if you compile yourself, you need [RTools](https://cran.r-project.org/bin/windows/Rtools/) installed. 
 
