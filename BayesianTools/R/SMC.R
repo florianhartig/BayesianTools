@@ -1,10 +1,10 @@
 #' SMC sampler
 #' @author Florian Hartig, Matthias Speich
 #' @description Sequential Monte Carlo Sampler
-#' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function 
-#' @param initialParticles initial particles - either a draw from the prior, provided as a matrix with the single parameters as columns and each row being one particle (parameter vector), or a numeric value with the number of desired particles. In this case, the sampling option must be provided in the prior of the BayesianSetup. 
+#' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function
+#' @param initialParticles initial particles - either a draw from the prior, provided as a matrix with the single parameters as columns and each row being one particle (parameter vector), or a numeric value with the number of desired particles. In this case, the sampling option must be provided in the prior of the BayesianSetup.
 #' @param iterations number of iterations
-#' 
+#'
 #' @param exponents series of exponents to build the intermediate distributions
 #' @param lastMutateSteps how many resampling (MCMC) steps after the SMC iterations to increase sample diversity.
 #' @param proposal optional proposal class
@@ -12,56 +12,56 @@
 #' @param m Parameter to generate the exponential sequence for building intermediary distributions. Default value from Jeremiah et al. (2012)
 #' @param sampling Which algorithm to use for particle (re)sampling. Options are "multinomial" (default), "residual" and "systematic"
 #' @param ess.limit Threshold value of effective sample size below which resampling is done (fraction of effective sample size). By default, the value is set to half the number of particles. To resample at each step, use a value >= the number of particles.
-#' @param ess.factor 
+#' @param ess.factor
 #' @param lastResample Iteration (starting from the end) at which particle resampling is forced. To deactivate this, set to a value < 0
 #'
-#' @param resampling deprecated, use resamplingSteps to modify resampling 
+#' @param resampling deprecated, use resamplingSteps to modify resampling
 #' @param resamplingSteps how many resampling (MCMC) steps between the SMC iterations. A value of 20 or higher is recommended.
+#' @param mutate.method MCMC method for the resampling. Either "Metropolis" (default) or "DE"
 #' @param adaptive should the covariance of the proposal be adapted during re-sampling
 #' @param proposalScale scaling factor for the proposal generation. Can be adapted if there is too much / too little rejection. Experience from MCMC sampling suggests an optimal value of 2.38/sqrt(2*d) (where d is the number of parameters), and first experiments suggest that this value is also appropriate for SMC sampling.
-#' @param pars.lower Optional: vector containing the mimimum values of calibration parameters. Used to initialize the proposal function
-#' @param pars.upper Optional: vector containing the maximum values of calibration parameters. Used to initialize the proposal function
-#' @param mutate.method MCMC method for the resampling. Either "Metropolis" (default) or "DE"
+#' @param pars.lower Optional: vector containing the minimum values of calibration parameters. Used to initialise the proposal function
+#' @param pars.upper Optional: vector containing the maximum values of calibration parameters. Used to initialise the proposal function
 #' @param b parameter for snooker update in DE, set by default to 10e-4. As b implies a certain scale for the parameters, b should be either scaled to the parameter uncertainty, or parameters should be scaled.
 #' @param diagnostics an optional function with diagnostics that are calculated on the particles during each SMC iteration
 #'
 #' @details The sampler can be used for rejection sampling as well as for sequential Monte Carlo. For the former case set the iterations to one.
-#' @note The SMC currently assumes that the initial particle is sampled from the prior. If a better initial estimate of the posterior distribution is available, this the sampler should be modified to include this. Currently, however, this is not included in the code, so the appropriate adjustments have to be done by hand. 
+#' @note The SMC currently assumes that the initial particle is sampled from the prior. If a better initial estimate of the posterior distribution is available, this the sampler should be modified to include this. Currently, however, this is not included in the code, so the appropriate adjustments have to be done by hand.
 #' @export
 #' @example /inst/examples/SMCHelp.R
-smcSampler <- function(bayesianSetup, 
+smcSampler <- function(bayesianSetup,
                        initialParticles = 1000,
-                       iterations = 10, 
-                       resampling = NULL, 
-                       resamplingSteps = 2, 
-                       lastMutateSteps = 5,         
-                       proposal = NULL, 
-                       exponents = NULL, 
-                       adaptive = T, 
-                       proposalScale = 0.5, 
-                       x=3.11, 
-                       m=7E-08, 
+                       iterations = 10,
+                       resampling = NULL,
+                       resamplingSteps = 2,
+                       lastMutateSteps = 5,
+                       proposal = NULL,
+                       exponents = NULL,
+                       adaptive = T,
+                       proposalScale = 0.5,
+                       x=3.11,
+                       m=7E-08,
                        sampling="multinomial",
                        ess.limit=NULL,
-                       ess.factor = 0.95,           
+                       ess.factor = 0.95,
                        lastResample = 1,
-                       pars.lower=NULL, 
-                       pars.upper=NULL, 
-                       mutate.method ="Metropolis", 
-                       b=1e-04,                     
+                       pars.lower=NULL,
+                       pars.upper=NULL,
+                       mutate.method ="Metropolis",
+                       b=1e-04,
                        diagnostics = NULL,
                        reference=NULL){
-  
-  # SETUP STEPS 
-  
-  if(!is.null(resampling)) message("resampling is deprecated, use resamplingSteps to control resampling") 
-  
+
+  # SETUP STEPS
+
+  if(!is.null(resampling)) message("resampling is deprecated, use resamplingSteps to control resampling")
+
   # Timing: normally done in mcmcRun.R. Timing is included in this function for the purpose of testing the SMC function.
   # Starting the clock
   ptm <- proc.time()
-  
+
   #if(resamplingSteps < 1) stop("SMC error, resamplingSteps can't be < 1")
-  
+
   info = list()
   # The number of iterations is not known at the beginning. Therefore, output vectors (with one value for each iteration)
   # are made large enough that they will probably not need to be grown (growing arrays can be slow).
@@ -73,10 +73,10 @@ smcSampler <- function(bayesianSetup,
 
 
   setup <- checkBayesianSetup(bayesianSetup)
-  
+
   ### InitialParticles
   #TODO documentation
-  
+
   if(class(initialParticles)[1] == "numeric"){
     initialParticles = bayesianSetup$prior$sampler(initialParticles)
     importanceDensity = bayesianSetup$prior$density
@@ -94,32 +94,32 @@ smcSampler <- function(bayesianSetup,
       initialParticles <- initialParticles$particles
     }
   }
-  
+
   if (any(is.infinite(setup$prior$density(initialParticles)))) stop("initialParticles outside prior range")
-  
+
   particles <- initialParticles
   rejectionRate = 0
   particleSize = nrow(initialParticles)
   if(is.null(ess.limit)){ess.limit <- round(particleSize) * 0.5}
-  
+
   weights <- oldweights <- oldInter <- rep(0, particleSize)
-  
+
   posterior = matrix(nrow = particleSize, ncol = 3)
   numPar <- ncol(initialParticles)
-  
+
   if(mutate.method %in% c("Metropolis", "adaptive")){
     if (is.null(proposal)) proposalGenerator = createProposalGenerator(rep(40,numPar))
   }
-  
+
   usedUp = 0
-  
+
   #### TEST
   #proposalScale <- runif(nrow(particles), min = 1e-06, max = 1)
   Z <- particles
 
-  
-  # WEIGHT SETUP 
-    
+
+  # WEIGHT SETUP
+
   # Define an exponential sequence of beta parameters, i.e. the exponents to weight the likelihood against prior.
   # Idea and parameter values from Jeremiah et al. (2012), Environ Modell Softw
   # if(is.null(exponents)){
@@ -128,7 +128,7 @@ smcSampler <- function(bayesianSetup,
   #   exponents <- pmin(1,exponents)
   #   exponents <- exponents[2:length(exponents)]
   # }
-  
+
   # Initial value for exponent: here the first value of the series is taken.
   # If the situation ESS < E* never occurs, sampler execution is the same as
   # with the non-adaptive algorithm
@@ -136,41 +136,41 @@ smcSampler <- function(bayesianSetup,
   oldExp <- 0
   #curExp <- exponents[1]
   curExp <- 0 # For fully adaptive algorithm: initial value of curExp does not matter, but must be < 1
-  
+
   icount <- 1 # Iterations counter
-  
+
   # All particles are given equal weight at initialization
   weights[1:length(weights)] <- log(1/particleSize)
   oldweights <- weights
-  
+
   # Initial importance distribution
   importanceValues <- importanceDensity(particles)
   #print("Calculating initial posteriors")
-  posteriorValues <- setup$posterior$density(particles) 
+  posteriorValues <- setup$posterior$density(particles)
   #print("Initial posteriors done")
   #oldInter <- importanceValues
   oldExp <- 0
-  
+
   if(!is.null(pars.lower) & !is.null(pars.lower)){
     sds <- 0.1 * (pars.upper - pars.lower)
   } else{
     sds <- rep(40,numPar)
   }
   if (is.null(proposal)){ proposalGenerator = createProposalGenerator(sds)}
-  
+
   lastIteration <- FALSE
-  
+
   ## Estimate minimum and maximum value of each parameter (from initial population)
   min.pars <- apply(particles,2,min)
   max.pars <- apply(particles,2,max)
-  
-  
+
+
   #for (i in 1:iterations){
   # while(icount <= length(exponents)){
   #while(curExp <= 1 & !lastIteration){ # For fully adaptive algorithm
   #  if(curExp == 1){lastIteration <- TRUE}
   while(curExp < 1){
-    
+
     ### TEMPORARY DEBUG
     if(sum(is.nan(posteriorValues)) > 0 | sum(is.na(posteriorValues)) > 0 | sum(is.infinite(posteriorValues)) > 0){
       print("NaN / NA / Infinite in importanceValues")
@@ -179,20 +179,20 @@ smcSampler <- function(bayesianSetup,
         print("Particles with NaN:")
         print(particles[is.nan(posteriorValues),])
       }
-      
+
       if(sum(is.na(posteriorValues)) > 0){
         print(c("NA indices", which(is.na(posteriorValues))))
         print("Particles with NA:")
         print(particles[is.na(posteriorValues),])
       }
-      
+
       if(sum(is.infinite(posteriorValues)) > 0){
         print(c("Infinite indices", which(is.infinite(posteriorValues))))
         print("Particles with Infinite:")
         print(particles[is.infinite(posteriorValues),])
       }
     }
-    
+
     # Update particle min/max (if a particle is more "extreme" than previously recorded)
     cur.min <- apply(particles,2,min)
     cur.max <- apply(particles,2,max)
@@ -200,41 +200,41 @@ smcSampler <- function(bayesianSetup,
     max.pars <- pmax(max.pars, cur.max)
 
     if (numPar == 1) particles = matrix(particles, ncol = 1)
-    
+
     # Using a while loop instead of for because in the adaptive algorithm, the number of iterations may increase
-    
+
     # Mutate
-    
+
     # 1) When to do the resampling
-    # 2) HOW - currently adaptive Metropolis, could also do DEzs step 
-    
+    # 2) HOW - currently adaptive Metropolis, could also do DEzs step
+
     # Terminology issue: in literature, "resampling" generally describes the replication of particles with high likelihood, i.e. the previous
     # step. This step here is generally referred to as "mutate" or "move".
     # It may be necessary to rename the parameters "resampling" and "resamplingSteps", as well as info$resamplingAcceptance
-    
-    
+
+
     # mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = resamplingSteps, proposalScale = proposalScale, adaptive = adaptive, b=b)
     # particles <- mutate.out$particles
     # posteriorValues <- mutate.out$posteriorValues
     # importanceValues <- mutate.out$importanceValues
     # info$resamplingAcceptance[(icount),] <- mutate.out$acceptance
-    
+
     # Reweighting
-    
+
     # idea - adjust (1/iterations) such that always approx 30% of particles are maintain
     # level = sort(likelihoodValues)[acceptanceTarget]
     # best = likelihoodValues
-    
-    # Jeremia is using beta sequence 
-    
+
+    # Jeremia is using beta sequence
+
     # https://github.com/florianhartig/BayesianTools/issues/23
-    
+
 
     ## Update weights
     # Create intermediary distribution
     ess <- 1 / sum(exp(2 * weights))
     oldInter <- oldExp * posteriorValues + (1-oldExp) * importanceValues
-    
+
     #inter.out <- beta.search(ess=ess, target.ess = (ess * ess.factor), posteriorValues = posteriorValues, importanceValues = importanceValues, oldInter = oldInter, curWeights = weights, curExp = curExp)
     inter.out <- beta.search(ess=ess, target.ess = (ess.limit-1), posteriorValues = posteriorValues, importanceValues = importanceValues, oldInter = oldInter, curWeights = weights, curExp = curExp)
     curExp <- inter.out$newExp
@@ -242,42 +242,42 @@ smcSampler <- function(bayesianSetup,
     interDist <- inter.out$interDist
     ess <- inter.out$ess
     doResample <- inter.out$doResample
-    
-    
+
+
     info$ess.vec[icount] <- ess
     info$exponents[icount] <- curExp
     if(abs(1-curExp) < 1e-03){
       curExp <- 1
     }
-    
-    # Resampling step 
+
+    # Resampling step
 
     # Determine if resampling is necessary - if yes, resample with probability given by the weight
     # Resample also on the last iteration, or at the iteration (starting from the end) given by the parameter lastResample (output is based
     # on the location of particles in parameter space, the weights are not considered in the output)
 
     if(ess < ess.limit | icount == (length(exponents) - lastResample)  | doResample){
- 
+
       oldExp <- curExp
 
       sel = resample(weights, method = sampling)
-      
+
       particles = particles[sel,]
-      
+
       #print(apply(particles, 2, sd))
       #print(apply(particles, 2, sd)/apply(particles, 2, mean))
 
       posteriorValues <- posteriorValues[sel]
       importanceValues <- importanceValues[sel]
       info$survivingParticles[icount] = length(unique(sel))
-      
+
       # Set all weights equal
       weights[1:length(weights)] <- log(1/particleSize)
       # Normalize (log-)weights so that the sum (of non-logs) equals 1
       weights <- weights - BayesianTools:::logSumExp(weights)
-      
+
       ## Check diversity of particles, and require a mutate step if necessary
-      # Scale particles 
+      # Scale particles
       #print(c("nrow unique particles", nrow(unique(particles))))
       #print(c("curExp", curExp))
       #if(nrow(unique(particles)) < 1000){
@@ -285,7 +285,7 @@ smcSampler <- function(bayesianSetup,
       #diversity <- rao.div(scaled.particles = scaled.particles)
       #print(c("Diversity", diversity))
       #}
-      
+
       if(resamplingSteps > 0){
         mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = resamplingSteps, proposalScale = proposalScale, adaptive = adaptive, b=b, min.pars = min.pars, max.pars = max.pars, Z = NULL)
         particles <- mutate.out$particles
@@ -295,14 +295,14 @@ smcSampler <- function(bayesianSetup,
         if(length(proposalScale) > 1){
           proposalScale <- mutate.out$proposalScale
       }
-        
+
         #plot(density(particles[,1]), xlim=c(0.314, 0.681), main = c(curExp, nrow(unique(particles))))
-        
+
         #Z <- rbind(Z, particles)
-        
+
         # while(nrow(unique(particles)) < nrow(particles) * 0.5){
         #   mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = resamplingSteps, proposalScale = proposalScale, adaptive = adaptive, b=b, min.pars = min.pars, max.pars = max.pars, Z = NULL)
-        # 
+        #
         #   particles <- mutate.out$particles
         #   posteriorValues <- mutate.out$posteriorValues
         #   importanceValues <- mutate.out$importanceValues
@@ -310,14 +310,14 @@ smcSampler <- function(bayesianSetup,
         #   if(length(proposalScale) > 1){
         #     proposalScale <- mutate.out$proposalScale
         #   }
-        # 
+        #
         #   plot(density(particles[,1]), xlim=c(0.314, 0.681), main = c("oi", curExp, nrow(unique(particles))))
         # }
-          
+
       }
-      
-    } 
-    
+
+    }
+
     ## Mutate step if required because of nuerical issues or low particle diversity
     # if(doResample){
     #   mutate.out <- mutate(setup = setup, particles = particles, proposalGenerator = proposalGenerator, posteriorValues = posteriorValues, importanceDensity = importanceDensity, method = mutate.method, steps = resamplingSteps, proposalScale = proposalScale, adaptive = adaptive, b=b)
@@ -326,26 +326,26 @@ smcSampler <- function(bayesianSetup,
     #   importanceValues <- mutate.out$importanceValues
     #   info$resamplingAcceptance[(icount),] <- mutate.out$acceptance
     # }
-    
+
     oldweights <- weights
     info$ess.vec[icount] <- ess
-    
-    icount <- icount + 1    
+
+    icount <- icount + 1
     oldExp <- curExp
-    
+
     if(!is.null(diagnostics)) info$diagnostics[[icount-1]] <- diagnostics(particles, reference)
   }
-  
+
   if (numPar == 1) particles = matrix(particles, ncol = 1)
-  
+
   # Last resampling step, so that particles are distributed according to target distribution
   sel = resample(weights, method = sampling)
   particles = particles[sel,]
   info$survivingParticles[(icount-1)] <- length(unique(sel))
-  
+
   #print("last")
   #print(apply(particles, 2, sd)/apply(particles, 2, mean))
-  
+
   if(resamplingSteps > 0){
     for(mutateStep in 1:lastMutateSteps){
       # Last mutation, to increase diversity between particles
@@ -355,19 +355,19 @@ smcSampler <- function(bayesianSetup,
       importanceValues <- mutate.out$importanceValues
       lastAccept[mutateStep] <- mutate.out$acceptance
       if(!is.null(diagnostics)) diag.end[[mutateStep]] <- diagnostics(particles, reference)
-      
+
       #plot(density(particles[,1]), xlim=c(0.314, 0.681))
-      
+
       #Z <- rbind(Z, particles)
     }
 
   }
   info$rejectionRate = rejectionRate / (iterations * resamplingSteps)
-  
+
   # Timing: normally done in mcmcRun.R. Timing is included in this function for the purpose of testing the SMC function.
   # Stopping the clock
   elapsed.time <- proc.time() - ptm
-  
+
   # Trim info objects (as their size = number of iterations were not known beforehand, they
   # were allocated a large vector/matrix). Trim up to (icount-1), as icount got incremented
   # at the end of the last iteration.
@@ -379,9 +379,9 @@ smcSampler <- function(bayesianSetup,
   info$ess.vec <- info$ess.vec[1:(icount-1)]
   if(resamplingSteps > 0) info$lastAccept <- lastAccept
   info$elapsed.time <- elapsed.time
-  
+
   settings = list(initialParticles = initialParticles, proposalGenerator = proposalGenerator)
-  
+
   out = list(
     setup = setup,
     settings = settings,
@@ -389,15 +389,15 @@ smcSampler <- function(bayesianSetup,
     posterior = posterior,
     info = info
   )
-  
+
   class(out) <- c("smcSampler", "bayesianOutput")
   return(out)
-  
+
 }
 
 
 #' Residual Resampling
-#' 
+#'
 #' @keywords internal
 residualResampling <- function(weights){
   weights <- exp(weights)
@@ -405,12 +405,12 @@ residualResampling <- function(weights){
   nrep <- weights * length(weights)
   nrep.int <- floor(nrep)
   residuals <- nrep - nrep.int
-  
+
   # Resample remaining particles based on residuals
   length.missing <- length(weights) - sum(nrep.int)
   missing <- vector("numeric", length.missing)
   missing <- sample.int(n=length(weights), size=length.missing, replace = TRUE, prob = residuals)
-  
+
   # Return the indices of particles to be resampled
   new.parts <- rep(1:length(weights), nrep.int)
   new.parts <- c(new.parts, missing)
@@ -424,7 +424,7 @@ systematicResampling <- function(weights){
   sort.weights <- sort(weights)
   cumu.weights <- c(0,cumsum(sort.weights)[1:(length(weights)-1)])
   n.parts <- length(weights)  # Number of particles
-  
+
   u <- runif(n=1, min=0, max=1/n.parts)
   U <- vector("numeric", n.parts)
   new.parts <- vector("numeric", n.parts)
@@ -432,24 +432,24 @@ systematicResampling <- function(weights){
   for(i in 1:n.parts){
     U[i] <- ((i-1)/n.parts) + u
 
-    
+
     new.parts.sort[i] <- tail(which(cumu.weights <= U[i]), 1)
     # Match sorted ranks back to original order of weights
     new.parts[i] <- which(rank.weights==new.parts.sort[i])
   }
-  
+
   return(new.parts)
 }
 
 
-#' Auxiliary function for adaptive SMC algorithm 
-#' 
-#' 
+#' Auxiliary function for adaptive SMC algorithm
+#'
+#'
 #' @keywords internal
 resample <- function(weights, method = "multinomial"){
-  
+
   particleSize = length(weights)
-  
+
   if(method == "multinomial"){
     sel <- sample.int(n=particleSize, size = particleSize, replace = T, prob = exp(weights))
   } else if(method == "residual"){
@@ -463,14 +463,14 @@ resample <- function(weights, method = "multinomial"){
 }
 
 
-#' Auxiliary function for adaptive SMC algorithm 
-#' 
-#' 
+#' Auxiliary function for adaptive SMC algorithm
+#'
+#'
 #' @keywords internal
 beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldInter, curWeights, curExp, tol=1){
   # A function to dynamically set the next exponent to build the next intermediary distribution.
   # Uses the bisection method. Following Jasra et al. (2011), Scand J Statist, doi: 10.1111/j.1467-9469.2010.00723.x
-  
+
   # Initial exponent - set to 1 (maximum possible value)
   tryDiff <- 1 - curExp
   a <- curExp
@@ -478,16 +478,16 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
   try.ess <- target.ess + (100*tol) # Dummy initial value that is sure to be different from target value
   tryExp <- 0
 
-  
+
   while(abs(try.ess-target.ess) > tol & tryExp < 1 & abs(b-a) > 1e-10){
     tryExp <- (a+b) * 0.5
 
-    
+
     tryDist <- tryExp * posteriorValues + (1-tryExp) * importanceValues
-    
+
     tryWeights <- curWeights + (tryDist - oldInter)
     # Normalize (log-)weights so that the sum (of non-logs) equals 1
-    
+
     ### DEBUG
     if(sum(is.na(tryWeights)) > 0){
       print("DEBUG")
@@ -510,7 +510,7 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
 
     tryWeights <- tryWeights - BayesianTools:::logSumExp(tryWeights)
     try.ess <- 1 / sum(exp(2 * tryWeights))
-    
+
     if(try.ess - target.ess > tol & !any(is.infinite(tryWeights))){
       # Greater ESS than desired -> choose a *larger* exponent in the next iteration (efficiency)
       a <- tryExp
@@ -522,7 +522,7 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
   }
 
 
-  
+
   if(any(is.infinite(tryWeights)) | is.infinite(try.ess)){
     doResample <- TRUE
     tryExp <- curExp
@@ -532,51 +532,51 @@ beta.search <- function(ess, target.ess, posteriorValues, importanceValues, oldI
   } else{
     doResample <- FALSE
   }
-  
+
   out <- list(newExp=tryExp, weights=tryWeights, interDist=tryDist, ess=try.ess, doResample = doResample)
   return(out)
 }
 
 
 #' Auxiliary function for particle mutation
-#' 
-#' 
+#'
+#'
 #' @keywords internal
 mutate <- function(setup, particles, proposalGenerator, posteriorValues, importanceDensity, method, steps, proposalScale, adaptive = TRUE, b=1E-04, min.pars=NULL, max.pars=NULL, Z = NULL){
 
   if(is.vector(particles)){particles = matrix(particles, ncol = 1)}
   acceptance <- vector("numeric", length=steps)
   importanceValues <- importanceDensity(particles)
-  
-  
+
+
   if(length(proposalScale) == 1){
     scale.factors <- rep(proposalScale, nrow(particles))
   } else {
     scale.factors <- proposalScale
     scaled.particles <- t(apply(particles, 1, scale.particles, min.pars = min.pars, max.pars = max.pars))
   }
-  
+
   if(is.null(Z)){
     Z <- particles
   }
-  
+
   r_extra <- vector("numeric", length = nrow(particles))
 
-  
+
     if(adaptive){
       proposalGenerator = updateProposalGenerator(proposalGenerator, particles)
     }
-    
+
     for(j in 1:steps){
-      
+
       if(method=="Metropolis"){
         particlesProposals = proposalGenerator$returnProposalMatrix(particles, scale = proposalScale)
       } else if(method=="DE"){
 
         particlesProposals <- particles
-        
+
         for(part in 1:nrow(particles)){
-          
+
           if(runif(1) < 0.1) {
             ## Snooker update
             particlesOld <- particles
@@ -584,7 +584,7 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
             particleDiff23 <- rep(0,ncol(particles))
             particleDiff13 <- rep(0,ncol(particles))
             newParts <- rep(0L,3)
-            
+
             # Sample 3 other particles
             #while(all(particleDiff12==0) | all(particleDiff23==0) | all(particleDiff13==0) | part %in% newParts){
             while(all(particleDiff12==0) | all(particleDiff23==0) | all(particleDiff13==0)){
@@ -597,26 +597,26 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
               particleDiff23 <- Z[newParts[2],] - Z[newParts[3],]
               particleDiff13 <- Z[newParts[1],] - Z[newParts[3],]
             }
-            
+
             x_z <- particles[part,] - Z[newParts[3],]
             D2 <- max(sum(x_z*x_z), 1.0e-300)
             projdiff <- sum((Z[newParts[1],] -Z[newParts[2],]) * x_z)/D2 # inner_product of difference with x_z / squared norm x_z
             particlesProposals[part,] <- particles[part,] + runif(1, min=1.2, max=2.2) * projdiff * x_z
-            
+
             x_z <- particlesProposals[part,] - Z[newParts[3],]
             D2prop <- max(sum(x_z*x_z), 1.0e-300)
             r_extra[part] <- ((ncol(particles)-1)/2) * (log(D2prop) - log(D2))
-            
+
             #if(part %in% 1:10){
             #  print(c("Part snooker", part, r_extra[part]))
             #}
-            
-          } else{ 
+
+          } else{
             ## No snooker
             particlesOld <- particles
             particleDiff <- rep(0,ncol(particles))
             newParts <- rep(0L,2)
-            
+
             # Sample 2 other particles
             #while(all(particleDiff==0) | part %in% newParts){
             while(all(particleDiff==0)){
@@ -629,9 +629,9 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
             }
             numPar <- ncol(particles)
             randVector <- runif(numPar,-b,b)
-            particlesProposals[part,] <-   particles[part,] + (particleDiff * scale.factors[part]) + randVector  
+            particlesProposals[part,] <-   particles[part,] + (particleDiff * scale.factors[part]) + randVector
             r_extra[part] <- 0
-            
+
             # if(part %in% 1:6){
             #   print(c("Part ", part))
             #   print("Particle")
@@ -643,23 +643,23 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
             #  print(c("Part NO snooker", part, r_extra[part]))
             #}
           }
-        }  
+        }
       }
-      
 
-      proposalPosteriors <- setup$posterior$density(particlesProposals) 
+
+      proposalPosteriors <- setup$posterior$density(particlesProposals)
       proposalImportance <- importanceDensity(particlesProposals)
-      
+
       #print(c("Priors", head(setup$prior$density(particlesProposals), 10)))
       #print(c("Proposals post", head(proposalPosteriors, 10)))
       #print(c("Particles post", head(posteriorValues, 10)))
-      
+
       #print(c("Infinite", sum(is.infinite(proposalPosteriors))))
       #print(c("Infinite prior", sum(is.infinite(setup$prior$density(particlesProposals)))))
-      
+
       #print(c("Minus Infinite", sum(proposalPosteriors== -Inf)))
       #print(c("Minus Infinite prior", sum(setup$prior$density(particlesProposals)== -Inf)))
-      
+
       ### TODO: why is jumpProb not simply the ratio of posteriors, i.e. why include the prior?
       # This has no influence on the current experiments (with flat priors), but needs to be clarified before other uses.
 
@@ -667,7 +667,7 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
       jumpProb <- exp(proposalPosteriors - posteriorValues + r_extra)
 
       accepted <- jumpProb > runif(length(jumpProb), 0 ,1)
-      
+
       if(sum(is.na(accepted)) > 1){
         print("sum is.na accepted", sum(is.na(accepted)))
         print("proposalPosteriors")
@@ -676,29 +676,29 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
         print(posteriorValues)
         print("r_extra")
         print(r_extra)
-        
+
       }
-      
-      particles[accepted, ] = particlesProposals[accepted, ] 
+
+      particles[accepted, ] = particlesProposals[accepted, ]
       posteriorValues[accepted] <- proposalPosteriors[accepted]
       importanceValues[accepted] <- proposalImportance[accepted]
       acceptance[j] <- sum(accepted)/nrow(particles)
-      
+
       ## Adaptation of scaling factors following Fearnhead & Taylor (2013)
       if(length(proposalScale) > 1){
-      
+
         ### Calculate ESJD for each proposal
         ##Scale particles
         scaled.proposals <- t(apply(particlesProposals, 1, scale.particles, min.pars = min.pars, max.pars = max.pars))
-        
-        
+
+
         #print("scaled.particles")
         #print(head(scaled.particles))
-        
+
         #print("scaled.proposals")
         #print(head(scaled.proposals))
-        
-        
+
+
         #esjd <- vector("numeric", nrow(particles))
         esjd <- vector("numeric", sum(r_extra == 0))
         loop.ind <- 0
@@ -712,18 +712,18 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
           #if(r_extra[part] != 0){print("Snooker")}
           #print(c("dist, jumpProb, post, prop",dist(rbind(scaled.particles[part,], scaled.proposals[part,])), jumpProb[part], posteriorValues[part], proposalPosteriors[part]))
         }
-        
+
         #print(c("length esjd", length(esjd)))
-        
+
         esjd[is.infinite(esjd)] <- 0
         #print(c("esjd", head(esjd)))
         #print(c("max esjd", max(esjd)))
-        
+
         # Normalize
         esjd <- esjd/sum(esjd)
         #print(c("esjd norm", head(esjd)))
         #print(c("max esjd norm", max(esjd)))
-        
+
         # Resample and add noise
         sel <- resample(log(esjd), "systematic")
        #print(c("sel", head(sel)))
@@ -733,20 +733,20 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
         } else{
           scale.factors <- scale.factors[ind.nosnooker[sel]] #+ rnorm(length(scale.factors), 0, 0.015)
         }
-        
+
         # Draw scale factors from normal distribution
         mean.sf <- mean(scale.factors)
         sd.sf <- sd(scale.factors)
-        
+
         scale.factors <- rnorm(n = nrow(particles), mean = mean.sf, sd = max(0.05,sd.sf))
-        
+
         scale.factors[scale.factors <= 0] <- 1E-06
-        
+
       }
-      
+
       #print(head(scale.factors, 100))
       #plot(density(scale.factors), xlim=c(0,1))
-      
+
     }
   #}
   if(length(proposalScale) == 1){
@@ -754,13 +754,13 @@ mutate <- function(setup, particles, proposalGenerator, posteriorValues, importa
   } else{
     out <- list(particles=particles, posteriorValues = posteriorValues, importanceValues = importanceValues, acceptance = acceptance, proposalScale = scale.factors)
   }
-  
+
   return(out)
 }
 
 
 #' Scale particles
-#' 
+#'
 #' @keywords internal
 scale.particles <- function(particle.row, min.pars, max.pars){
   scaled.particles <- (particle.row - min.pars) / (max.pars - min.pars)
@@ -769,7 +769,7 @@ scale.particles <- function(particle.row, min.pars, max.pars){
 
 
 #' Calculate rao diversity
-#' 
+#'
 #' @keywords internal
 rao.div <- function(scaled.particles){
   # Determine unique particles, their sum and pairwise difference
@@ -784,18 +784,18 @@ rao.div <- function(scaled.particles){
       }
     }, cur.unique = unique.particles[i,]))
   }
-  
+
   unique.count <- unique.count/nrow(scaled.particles)
-  
+
   total.dist <- 0
-  
+
   for(i in 1:(nrow(unique.particles)-1)){
     for(j in (i+1):nrow(unique.particles)){
       #total.dist <- total.dist + dist(unique.particles[c(i,j),]) * unique.count[i] * unique.count[j]
       total.dist <- total.dist + sum(abs(unique.particles[i,] - unique.particles[j,])) * unique.count[i] * unique.count[j]
     }
   }
-  
+
   return(total.dist)
 }
 
@@ -805,5 +805,5 @@ rao.div <- function(scaled.particles){
 
 # largeRatio <- function(a,b){
 #   # Determine the larger of the two numbers
-#   
+#
 # }
