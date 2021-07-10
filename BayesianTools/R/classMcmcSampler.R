@@ -40,7 +40,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     
     #############
     
-    if (!is.null(whichParameters)) out = out[,whichParameters]
+    if (!is.null(whichParameters)) out = out[,whichParameters, drop = F]
     if(coda == T) out = makeObjectClassCodaMCMC(out, start = start, end = end, thin = thin)
   } 
   else if (class(sampler$chain) == "mcmc.list"){
@@ -91,7 +91,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       
       #############
       
-      if (!is.null(whichParameters)) temp = temp[,whichParameters]
+      if (!is.null(whichParameters)) temp = temp[,whichParameters, drop = F]
       out[[i]] = makeObjectClassCodaMCMC(temp, start = start, end = end, thin = thin)
     }
     class(out) = "mcmc.list" 

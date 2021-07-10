@@ -68,7 +68,7 @@ getSample.matrix <- function(sampler, parametersOnly = T, coda = F, start = 1, e
     # }
     #############
     
-    if (!is.null(whichParameters)) out = out[,whichParameters]
+    if (!is.null(whichParameters)) out = out[,whichParameters, drop = FALSE]
     if(coda == T) out = makeObjectClassCodaMCMC(out, start = start, end = end, thin = thin)
 
     if(reportDiagnostics == T){
