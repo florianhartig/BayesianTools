@@ -11,6 +11,8 @@ test_that("Default works in principle",{
   settings <- list(iterations = 20000, adapt = T, DRlevels = 2, optimize = T, burnin=1000, adaptationInterval=10)
   applySettingsDefault(settings = settings, sampler = "Metropolis", check = FALSE)
   applySettingsDefault(settings = settings, sampler = "Metropolis", check = TRUE)
+  
+  applySettingsDefault(settings = settings, sampler = "DRAM", check = TRUE)
 
   }
 )
