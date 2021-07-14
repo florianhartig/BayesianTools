@@ -7,22 +7,21 @@
 #' @param upper vector with upper prior limits
 #' @param best vector with best prior values
 #' @param names optional vector with parameter names
-#' @param parallel parallelization option. Default is F. Other options are T, or "external". See details.
-#' @param parallelOptions list containing three lists. First "packages" determines the R packages necessary to run the likelihood function. Second "variables" the objects in the global envirnment needed to run the likelihood function and third "dlls" the DLLs needed to run the likelihood function (see Details and Examples). 
+#' @param parallel parallelization option. Default is F. Other options include T, or "external". See details.
+#' @param parallelOptions list containing three lists. First "packages" determines the R packages necessary to run the likelihood function. Second "variables" the objects in the global environment needed to run the likelihood function and third "dlls" the DLLs needed to run the likelihood function (see Details and Examples). 
 #' @param catchDuplicates Logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns. 
 #' @param plotLower vector with lower limits for plotting
 #' @param plotUpper vector with upper limits for plotting
 #' @param plotBest vector with best values for plotting
 #' @details If prior is of class prior (e.g. create with \code{\link{createPrior}}), priorSampler, lower, upper and best will be ignored.\cr If prior is a function (log prior density), priorSampler (custom sampler), or lower/upper (uniform sampler) is required.\cr If prior is NULL, and lower and upper are passed, a uniform prior (see \code{\link{createUniformPrior}}) will be created with boundaries lower and upper.
 #' 
-#' For parallelization, option parallel = T means that an automatic parallelization via a standard R socket cluster is attempted. By default, a copy of your workspace, including DLLs and objects are exporte to the cluster workers. Because this can be very inefficient, you can explictly specify the packages, objects and DLLs that are to be exported via parallelOptions.
+#' For parallelization, Bayesiantools requies that the likelihood can evaluate several parameter vectors (supplied as a matrix) in parallel. 
 #' 
-#' Using parallel = T requires that the function to be parallelized is well encapsulate, i.e. can run on a shared memory / shared hard disk machine in parallel without interfering with each other. For some functions and programs, this is not the case, so that a custom-programmed parallelization is required. 
+#' * parallel = T means that an automatic parallelization of the likelihood via a standard R socket cluster is attempted, using the function \code{\link{generateParallelExecuter}}. By default, of the N cores detected on the computer, N-1 cores are requested. Alternatively, you can provide a integer number to parallel, specifying the cores reserved for the cluster. When the cluster is cluster is created, a copy of your workspace, including DLLs and objects are exported to the cluster workers. Because this can be very inefficient, you can explicitly specify the packages, objects and DLLs that are to be exported via parallelOptions. Using parallel = T requires that the function to be parallelized is well encapsulate, i.e. can run on a shared memory / shared hard disk machine in parallel without interfering with each other. 
 #' 
-#' In this case, and only in this case, you should specify parallel = "external". In this case, it is assumed that the likelihood is programmed such that it accepts a matrix with parameters as columns and the different model runs as rows. It is then up to the user if and how to parallelize this function. This option gives most flexibility to the user, in particular for complicated parallel architecture or shared memory problems.
+#' If automatic parallelization cannot be done (e.g. because dlls are not thread-safe or write to shared disk), and only in this case, you should specify parallel = "external". In this case, it is assumed that the likelihood is programmed such that it accepts a matrix with parameters as columns and the different model runs as rows. It is then up to the user if and how to parallelize this function. This option gives most flexibility to the user, in particular for complicated parallel architecture or shared memory problems.
 #'
-#' For more details on parallelization, make sure to read the vignette (run vignette("BayesianTools", package="BayesianTools"))
-#'
+#' For more details on parallelization, make sure to read both vignettes, in particular the section on the likelihood in the main vignette, and the section on parallelization in the vignette on interfacing models.
 #' 
 #' @export
 #' @seealso \code{\link{checkBayesianSetup}} \cr

@@ -1,9 +1,9 @@
-#' Factory to generate a parallel executer of an existing function
+#' Factory to generate a parallel executor of an existing function
 #' 
 #' @author Florian Hartig
-#' @param fun function to be changed to parallel exectution
+#' @param fun function to be changed to parallel execution
 #' @param parallel should a parallel R cluster be used or not. If set to T, cores will be detected automatically and n-1 of the available n cores of the machine will be used. Alternatively, you can set the number of cores used by hand
-#' @param parallelOptions list containing three lists. First "packages" determines the R packages necessary to run the likelihood function. Second "variables" the objects in the global envirnment needed to run the likelihood function and third "dlls" the DLLs needed to run the likelihood function (see Details).
+#' @param parallelOptions list containing three lists. First "packages" determines the R packages necessary to run the likelihood function. Second "variables" the objects in the global environment needed to run the likelihood function and third "dlls" the DLLs needed to run the likelihood function (see Details).
 #' @note Can also be used to make functions compatible with library sensitivity
 #' @details For parallelization, option T means that an automatic parallelization via R is attempted, or "external", in which case it is assumed that the likelihood is already parallelized. In this case it needs to accept a matrix with parameters as columns.
 #' Further you can specify the packages, objects and DLLs that are exported to the cluster. 
