@@ -2,7 +2,7 @@
 % Please edit documentation in R/BayesianSetupGenerateParallel.R
 \name{generateParallelExecuter}
 \alias{generateParallelExecuter}
-\title{Factory to generate a parallel executer of an existing function}
+\title{Factory to generate a parallel executor of an existing function}
 \usage{
 generateParallelExecuter(
   fun,
@@ -11,14 +11,14 @@ generateParallelExecuter(
 )
 }
 \arguments{
-\item{fun}{function to be changed to parallel exectution}
+\item{fun}{function to be changed to parallel execution}
 
 \item{parallel}{should a parallel R cluster be used or not. If set to T, cores will be detected automatically and n-1 of the available n cores of the machine will be used. Alternatively, you can set the number of cores used by hand}
 
-\item{parallelOptions}{list containing three lists. First "packages" determines the R packages necessary to run the likelihood function. Second "variables" the objects in the global envirnment needed to run the likelihood function and third "dlls" the DLLs needed to run the likelihood function (see Details).}
+\item{parallelOptions}{list containing three lists. First "packages" determines the R packages necessary to run the likelihood function. Second "variables" the objects in the global environment needed to run the likelihood function and third "dlls" the DLLs needed to run the likelihood function (see Details).}
 }
 \description{
-Factory to generate a parallel executer of an existing function
+Factory to generate a parallel executor of an existing function
 }
 \details{
 For parallelization, option T means that an automatic parallelization via R is attempted, or "external", in which case it is assumed that the likelihood is already parallelized. In this case it needs to accept a matrix with parameters as columns.
