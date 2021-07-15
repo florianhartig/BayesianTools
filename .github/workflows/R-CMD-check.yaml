@@ -45,7 +45,7 @@ jobs:
       
       - name: Query dependencies
         run: |
-          setwd("DHARMa")
+          setwd("BayesianTools")
           install.packages('remotes')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), "../.github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), "../.github/R-version")
@@ -62,7 +62,7 @@ jobs:
       - name: Install system dependencies
         if: runner.os == 'Linux'
         run: |
-          cd DHARMa
+          cd BayesianTools
           while read -r cmd
           do
             eval sudo $cmd
@@ -70,7 +70,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          setwd("DHARMa")
+          setwd("BayesianTools")
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
@@ -80,7 +80,7 @@ jobs:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
           CI: true
         run: |
-          rcmdcheck::rcmdcheck("DHARMa", args = c("--no-multiarch", "--no-manual"), error_on = "warning", check_dir = "check")
+          rcmdcheck::rcmdcheck("BayesianTools", args = c("--no-multiarch", "--no-manual"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
         
       - name: Check
@@ -88,7 +88,7 @@ jobs:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
           CI: true
         run: |
-          rcmdcheck::rcmdcheck("DHARMa", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+          rcmdcheck::rcmdcheck("BayesianTools", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
 
       - name: Upload check results
