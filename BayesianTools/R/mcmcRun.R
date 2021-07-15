@@ -147,7 +147,6 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
         setup = setup,
         settings = settings,
         chain = out$Draws,
-        codaChain = coda::mcmc(out$Draws),
         X = out$X,
         sampler = "DE"
       )
@@ -165,7 +164,6 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
         setup = setup,
         settings = settings,
         chain = out$Draws,
-        codaChain = coda::mcmc(out$Draws),
         X = out$X,
         Z = out$Z,
         sampler = "DEzs"

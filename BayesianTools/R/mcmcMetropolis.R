@@ -188,10 +188,8 @@ sampleMetropolis <- function(mcmcSampler, iterations){
   }
   }
   
-  # Make sure chain has right size
+  # Make sure chain has right size TODO - why is this neccessary
   mcmcSampler$chain <- mcmcSampler$chain[1:counter,]
-  
-  mcmcSampler$codaChain = coda::mcmc(mcmcSampler$chain)
   mcmcSampler$funEvals <- CounterFunEvals
   mcmcSampler$acceptanceRate <- CounterAccept/CounterFunEvals
   return(mcmcSampler)
