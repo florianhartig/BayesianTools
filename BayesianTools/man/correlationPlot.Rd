@@ -64,8 +64,8 @@ The code for the correlation density plot originates from Hartig, F.; Dislich, C
 }
 \seealso{
 \code{\link{marginalPlot}} \cr
-         \code{\link{plotTimeSeries}} \cr
-         \code{\link{tracePlot}} \cr
+\code{\link{plotTimeSeries}} \cr
+\code{\link{tracePlot}} \cr
 }
 \author{
 Florian Hartig

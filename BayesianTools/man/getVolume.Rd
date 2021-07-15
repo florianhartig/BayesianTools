@@ -19,7 +19,7 @@ getVolume(sampler, prior = F, method = "MVN", ...)
 Calculate posterior volume
 }
 \details{
-The idea of this function is to provide an estimate of the "posterior volume", i.e. how "broad" the posterior is. One potential application is to the overall reduction of parametric uncertainty between different data types, or between prior and posterior.  
+The idea of this function is to provide an estimate of the "posterior volume", i.e. how "broad" the posterior is. One potential application is to the overall reduction of parametric uncertainty between different data types, or between prior and posterior.
 
 Implemented methods for volume estimation:
 

@@ -34,6 +34,6 @@ tracePlot(sampler = out, thin = 10, start = 500, whichParameters = 2)
 }
 \seealso{
 \code{\link{marginalPlot}} \cr
-         \code{\link{plotTimeSeries}} \cr
-         \code{\link{correlationPlot}}
+\code{\link{plotTimeSeries}} \cr
+\code{\link{correlationPlot}}
 }

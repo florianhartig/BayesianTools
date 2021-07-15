@@ -66,10 +66,10 @@ out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 }
 \seealso{
 \code{\link{createPriorDensity}} \cr
-         \code{\link{createBetaPrior}} \cr
-         \code{\link{createUniformPrior}} \cr
-         \code{\link{createTruncatedNormalPrior}}\cr
-         \code{\link{createBayesianSetup}}\cr
+\code{\link{createBetaPrior}} \cr
+\code{\link{createUniformPrior}} \cr
+\code{\link{createTruncatedNormalPrior}}\cr
+\code{\link{createBayesianSetup}}\cr
 }
 \author{
 Florian Hartig

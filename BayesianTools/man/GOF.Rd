@@ -25,10 +25,11 @@ Startvalues for sampling with nrChains > 1 : if you want to provide different st
 }
 \details{
 The function considers observed ~ predicted and calculates
-
-1) rmse = root mean squared error
-2) mae = mean absolute errorr
-3) a linear regression with slope, intercept and coefficient of determination R2
+\enumerate{
+\item rmse = root mean squared error
+\item mae = mean absolute errorr
+\item a linear regression with slope, intercept and coefficient of determination R2
+}
 
 For the linear regression, centered = T means that variables will be centered around the mean value of the observation. This setting avoids a correlation between slope and intercept (that the intercept is != 0 as soon as the slope is !=0)
 }

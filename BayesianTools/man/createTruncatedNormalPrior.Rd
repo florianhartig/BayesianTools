@@ -29,10 +29,10 @@ prior$sampler()
 }
 \seealso{
 \code{\link{createPriorDensity}} \cr
-         \code{\link{createPrior}} \cr
-         \code{\link{createBetaPrior}} \cr
-         \code{\link{createUniformPrior}} \cr
-         \code{\link{createBayesianSetup}} \cr
+\code{\link{createPrior}} \cr
+\code{\link{createBetaPrior}} \cr
+\code{\link{createUniformPrior}} \cr
+\code{\link{createBayesianSetup}} \cr
 }
 \author{
 Florian Hartig

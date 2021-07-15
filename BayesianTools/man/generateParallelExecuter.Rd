@@ -22,8 +22,8 @@ Factory to generate a parallel executor of an existing function
 }
 \details{
 For parallelization, option T means that an automatic parallelization via R is attempted, or "external", in which case it is assumed that the likelihood is already parallelized. In this case it needs to accept a matrix with parameters as columns.
-Further you can specify the packages, objects and DLLs that are exported to the cluster. 
-By default a copy of your workspace is exported. However, depending on your workspace this can be very inefficient. 
+Further you can specify the packages, objects and DLLs that are exported to the cluster.
+By default a copy of your workspace is exported. However, depending on your workspace this can be very inefficient.
 
 Alternatively you can specify the environments and packages in the likelihood function (e.g. BayesianTools::VSEM() instead of VSEM()).
 }

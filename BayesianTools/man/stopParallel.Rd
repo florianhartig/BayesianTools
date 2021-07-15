@@ -10,7 +10,7 @@ stopParallel(bayesianSetup)
 \item{bayesianSetup}{object of class BayesianSetup}
 }
 \description{
-Function closes 
+Function closes
 the parallel executer (if available)
 }
 \author{

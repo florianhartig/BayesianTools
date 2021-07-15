@@ -53,9 +53,10 @@ Creates a standardized collection of prior, likelihood and posterior functions, 
 \details{
 If prior is of class prior (e.g. create with \code{\link{createPrior}}), priorSampler, lower, upper and best will be ignored.\cr If prior is a function (log prior density), priorSampler (custom sampler), or lower/upper (uniform sampler) is required.\cr If prior is NULL, and lower and upper are passed, a uniform prior (see \code{\link{createUniformPrior}}) will be created with boundaries lower and upper.
 
-For parallelization, Bayesiantools requies that the likelihood can evaluate several parameter vectors (supplied as a matrix) in parallel. 
-
-* parallel = T means that an automatic parallelization of the likelihood via a standard R socket cluster is attempted, using the function \code{\link{generateParallelExecuter}}. By default, of the N cores detected on the computer, N-1 cores are requested. Alternatively, you can provide a integer number to parallel, specifying the cores reserved for the cluster. When the cluster is cluster is created, a copy of your workspace, including DLLs and objects are exported to the cluster workers. Because this can be very inefficient, you can explicitly specify the packages, objects and DLLs that are to be exported via parallelOptions. Using parallel = T requires that the function to be parallelized is well encapsulate, i.e. can run on a shared memory / shared hard disk machine in parallel without interfering with each other. 
+For parallelization, Bayesiantools requies that the likelihood can evaluate several parameter vectors (supplied as a matrix) in parallel.
+\itemize{
+\item parallel = T means that an automatic parallelization of the likelihood via a standard R socket cluster is attempted, using the function \code{\link{generateParallelExecuter}}. By default, of the N cores detected on the computer, N-1 cores are requested. Alternatively, you can provide a integer number to parallel, specifying the cores reserved for the cluster. When the cluster is cluster is created, a copy of your workspace, including DLLs and objects are exported to the cluster workers. Because this can be very inefficient, you can explicitly specify the packages, objects and DLLs that are to be exported via parallelOptions. Using parallel = T requires that the function to be parallelized is well encapsulate, i.e. can run on a shared memory / shared hard disk machine in parallel without interfering with each other.
+}
 
 If automatic parallelization cannot be done (e.g. because dlls are not thread-safe or write to shared disk), and only in this case, you should specify parallel = "external". In this case, it is assumed that the likelihood is programmed such that it accepts a matrix with parameters as columns and the different model runs as rows. It is then up to the user if and how to parallelize this function. This option gives most flexibility to the user, in particular for complicated parallel architecture or shared memory problems.
 
@@ -138,8 +139,8 @@ rm(BSVSEM)
 }
 \seealso{
 \code{\link{checkBayesianSetup}} \cr
-         \code{\link{createLikelihood}} \cr
-         \code{\link{createPrior}} \cr
+\code{\link{createLikelihood}} \cr
+\code{\link{createPrior}} \cr
 }
 \author{
 Florian Hartig, Tankred Ott

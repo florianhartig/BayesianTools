@@ -17,15 +17,16 @@ calibrationTest(posteriorList, priorDraws, ...)
 This function performs simulation-based calibration tests based on the idea that posteriors averaged over the prior should yield the prior.
 }
 \details{
-The purpose of this function is to evaluate the results of a simulation-based calibration of an MCMC analysis. 
+The purpose of this function is to evaluate the results of a simulation-based calibration of an MCMC analysis.
 
 Briefly, the idea is to repeatedly
+\enumerate{
+\item sample parameters from the prior,
+\item simulate new data based on these parameters,
+\item calculate the posterior for these data
+}
 
-1. sample parameters from the prior, 
-2. simulate new data based on these parameters, 
-3. calculate the posterior for these data
-
-If the sampler and the likelihood are implemented correctly, the average over all the posterior distribution should then again yield the prior (e.g. Cook et al., 2006). 
+If the sampler and the likelihood are implemented correctly, the average over all the posterior distribution should then again yield the prior (e.g. Cook et al., 2006).
 
 To test if this is the case, we implement the methods suggested by Talts et al., which is to calculate the rank statistics between the parameter draws and the posterior draws, which we then formally evaluate with a qq unif plot, and a ks.test
 

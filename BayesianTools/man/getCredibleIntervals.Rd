@@ -16,7 +16,7 @@ Calculate confidence region from an MCMC or similar sample
 }
 \seealso{
 \code{\link{getPredictiveDistribution}} \cr
-         \code{\link{getPredictiveIntervals}} \cr
+\code{\link{getPredictiveIntervals}} \cr
 }
 \author{
 Florian Hartig

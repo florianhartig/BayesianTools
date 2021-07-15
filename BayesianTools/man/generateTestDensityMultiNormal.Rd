@@ -41,7 +41,7 @@ density(x[1,])
 }
 \seealso{
 \code{\link{testDensityBanana}} \cr
-         \code{\link{testLinearModel}}
+\code{\link{testLinearModel}}
 }
 \author{
 Florian Hartig

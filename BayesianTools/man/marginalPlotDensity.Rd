@@ -8,7 +8,7 @@ marginalPlotDensity(
   posteriorMat,
   priorMat = NULL,
   xrange = NULL,
-  col = c("#FC006299", "#00BBAA88"),
+  col = c("#FC006299", "#00BBAA30"),
   singlePanel = TRUE,
   ...
 )

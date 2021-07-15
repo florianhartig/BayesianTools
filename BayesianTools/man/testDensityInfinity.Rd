@@ -16,7 +16,7 @@ Test function infinity ragged
 }
 \seealso{
 \code{\link{generateTestDensityMultiNormal}} \cr
-         \code{\link{testDensityBanana}}
+\code{\link{testDensityBanana}}
 }
 \author{
 Florian Hartig

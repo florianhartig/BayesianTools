@@ -26,10 +26,10 @@ for details see \code{\link{createPrior}}
 }
 \seealso{
 \code{\link{createPriorDensity}} \cr
-         \code{\link{createPrior}} \cr
-         \code{\link{createTruncatedNormalPrior}} \cr
-         \code{\link{createUniformPrior}} \cr
-         \code{\link{createBayesianSetup}} \cr
+\code{\link{createPrior}} \cr
+\code{\link{createTruncatedNormalPrior}} \cr
+\code{\link{createUniformPrior}} \cr
+\code{\link{createBayesianSetup}} \cr
 }
 \author{
 Florian Hartig

@@ -21,7 +21,7 @@ plot(y)
 }
 \seealso{
 \code{\link{generateTestDensityMultiNormal}} \cr
-         \code{\link{testDensityBanana}}
+\code{\link{testDensityBanana}}
 }
 \author{
 Florian Hartig

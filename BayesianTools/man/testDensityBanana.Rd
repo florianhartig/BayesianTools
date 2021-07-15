@@ -17,7 +17,7 @@ inspired from package FMEmcmc, seems to go back to Laine M (2008). Adaptive MCMC
 }
 \seealso{
 \code{\link{generateTestDensityMultiNormal}} \cr
-         \code{\link{testLinearModel}}
+\code{\link{testLinearModel}}
 }
 \author{
 Florian Hartig

@@ -31,7 +31,7 @@ Creates a standardized likelihood class#'
 }
 \seealso{
 \code{\link{likelihoodIidNormal}} \cr
-         \code{\link{likelihoodAR1}} \cr
+\code{\link{likelihoodAR1}} \cr
 }
 \author{
 Florian Hartig

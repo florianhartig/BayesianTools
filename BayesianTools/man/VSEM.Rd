@@ -33,7 +33,7 @@ The model calculates Gross Primary Productivity (GPP) using a very simple light-
 
 A parameter (GAMMA) determines the fraction of GPP that is autotrophic respiration. The Net Primary Productivity (NPP) is then allocated to above and below-ground vegetation via a fixed allocation fraction. Carbon is lost from the plant pools to a single soil pool via fixed turnover rates. Heterotropic respiration in the soil is determined via a soil turnover rate.
 
-The model equations are 
+The model equations are
 
 -- Photosynthesis
 

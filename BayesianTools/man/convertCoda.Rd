@@ -16,11 +16,11 @@ convertCoda(sampler, names = NULL, info = NULL, likelihood = NULL)
 \item{likelihood}{likelihood function used in the sampling (see Details)}
 }
 \description{
-Function is used to make the plot and diagnostic functions 
+Function is used to make the plot and diagnostic functions
 available for coda::mcmc objects
 }
 \details{
-The parameter 'likelihood' is optional for most functions but can be needed e.g for 
+The parameter 'likelihood' is optional for most functions but can be needed e.g for
 using the \code{\link{DIC}} function.
 
 Also the parameter info is optional for most uses. However for some functions (e.g. \code{\link{MAP}})
