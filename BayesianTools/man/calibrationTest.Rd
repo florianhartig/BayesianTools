@@ -40,5 +40,5 @@ Talts, Sean, Michael Betancourt, Daniel Simpson, Aki Vehtari, and Andrew Gelman.
 This function was implemented for the tests in Maliet, Odile, Florian Hartig, and Hélène Morlon. "A model with many small shifts for estimating species-specific diversification rates." Nature ecology & evolution 3.7 (2019): 1086-1092. The code linked with this paper provides a further example of its use.
 }
 \author{
-
+Florian Hartig
 }

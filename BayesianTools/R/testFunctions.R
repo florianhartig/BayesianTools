@@ -49,11 +49,16 @@ testDensityBanana <- function (p){
   return(mvtnorm::dmvnorm(P, mean = rep(0, length(P)), sigma = Cov, log = T))
 }
 
-#' Normal likelihood
+#' GelmanMeng test function
 #' 
+#' @param x parameter vector
+#' @param A function parameter
+#' @param B function parameter
+#' @param C1 function parameter
+#' @param C2 function parameter
+#' @param log log
 #' 
 #' A non-elliptical, bivariate density function proposed by Gelman and Meng (1991). 
-
 testDensityGelmanMeng <- function(x, A = 1, B = 0, C1 = 3, C2 = 3, log = TRUE) {
   if (is.vector(x)) x <- matrix(x, nrow = 1)
   r <- -0.5 * (A * x[,1]^2 * x[,2]^2 + x[,1]^2 + x[,2]^2

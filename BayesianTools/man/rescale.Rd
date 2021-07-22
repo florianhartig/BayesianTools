@@ -7,11 +7,11 @@
 rescale(x, from, to)
 }
 \arguments{
-\item{x}{Vector of values}
+\item{x}{vector of values tp be scaled}
 
-\item{from}{vector, interval of which x are elements. from\link{1} must be the lower, from\link{2} the upper bound.}
+\item{from}{vector of length 2, original interval (lower, upper)}
 
-\item{to}{vector, interval to which the elements should be scaled. to\link{1} must be the lower, to\link{2} the upper bound.}
+\item{to}{vector of length 2, target interval (lower, upper)}
 }
 \description{
 Rescales values in the interval "from" (lower, upper) to the new interval "to" (lower, upper).
