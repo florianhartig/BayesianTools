@@ -198,6 +198,7 @@ createBetaPrior<- function(a, b, lower=0, upper=1){
 #' @param lower vector with lower bounds of parameter for the new prior, independent of the input sample
 #' @param upper vector with upper bounds of parameter for the new prior, independent of the input sample
 #' @param best vector with "best" values of parameter for the new prior, independent of the input sample
+#' @param scaling optional scaling factor for the covariance. If scaling > 1 will create a prior wider than the posterior, < 1 a prior more narrow than the posterior. Scaling is linear to the posterior width, i.e. scaling = 2 will create a prior that with 2x the sd of the original posterior. 
 #' @param ... parameters to pass on to the getSample function
 #' 
 #' @details This function fits a density estimator to a multivariate (typically a posterior) sample. The main purpose is to summarize a posterior sample as a pdf, in order to include it as a prior in a new analysis, for example when new data becomes available, or to calculate a fractional Bayes factor (see \code{\link{marginalLikelihood}}).
@@ -216,13 +217,13 @@ createBetaPrior<- function(a, b, lower=0, upper=1){
 #'          \code{\link{createUniformPrior}} \cr
 #'          \code{\link{createBayesianSetup}} \cr
 #' @example /inst/examples/createPriorDensity.R
-createPriorDensity <- function(sampler, method = "multivariate", eps = 1e-10, lower = NULL, upper = NULL, best = NULL, ...){
+createPriorDensity <- function(sampler, method = "multivariate", eps = 1e-10, lower = NULL, upper = NULL, best = NULL, scaling = 1, ...){
   
   x = getSample(sampler, ...)
 
   if(method == "multivariate"){
     nPars = ncol(x)
-    covar = cov(x) 
+    covar = cov(x) * scaling^2
     mean = apply(x, 2, mean)
     if(is.null(lower)) lower = rep(-Inf, length = length(mean))
     if(is.null(upper)) upper = rep(Inf, length = length(mean))
