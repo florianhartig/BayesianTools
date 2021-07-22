@@ -39,7 +39,7 @@ summary.mcmcSamplerList <- function(object, ...){
   correlations <- round(cor(getSample(sampler)),3)
 
   
-  sampler <- getSample(sampler, parametersOnly = T, coda = T)
+  sampler <- getSample(sampler, parametersOnly = T, coda = T, ...)
   if("mcmc.list" %in% class(sampler)){
     nrChain <- length(sampler)
     nrIter <- nrow(sampler[[1]])

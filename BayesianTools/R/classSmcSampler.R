@@ -49,7 +49,7 @@ getSample.smcSampler <- function(sampler, parametersOnly = T, coda = F, start = 
 summary.smcSampler<- function(object, ...){
   sampler <- object
   print("SMC sampler output")
-  summary(getSample(sampler))
+  summary(getSample(sampler, ...))
 }
 
 #' @method plot smcSampler
