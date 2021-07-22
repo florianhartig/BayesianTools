@@ -14,9 +14,7 @@ editor_options:
 ```{r}
 set.seed(123)
 library(BayesianTools)
-
 ```
-
 
 # Creation of test case
 
@@ -35,22 +33,29 @@ y <- a * x + b + rnorm(55,0,sd = sigma) + randomEffect[group]
 plot(x,y, col = group, pch = 3)
 ```
 
+
+# Fitting the model with Maximum Likelihood, lme4
+
+Adding the random intercept on group. Note that the variances are not correctly estimated. 
+
+```{r, fig.width=5, fig.height=5}
+library(lme4)
+fit <- lmer(y ~ x + (1|group))
+summary(fit)
+plot(x,y, col = group,  pch = 3)
+for(i in 1:11){
+  abline(coef(fit)$group[i,1], coef(fit)$group[i,2], col = i)
+}
+```
+
+
 # Fitting the random effects model with BayesianTools 
 
 ```{r}
 likelihood <- function(par){
-  
-  ax = par[1]
-  bx = par[2]
-  sigmax <- par[3]
-  rsigmax = par[4]
-  randomEffectx = par[5:15]
-  
-  llRandom = sum(dnorm(randomEffectx, sd = rsigmax, log = T))
-  
-  llObservation = sum(dnorm(ax * x + bx + randomEffectx[group] - y , sd = sigmax, log = T))
+  llObservation = sum(dnorm(par[1] * x +  par[2] + par[group+4] - y , sd = par[3], log = T))
+  llRandom = sum(dnorm(par[5:15], sd = par[4], log = T))
   return(llRandom + llObservation)
-  
 }
 ```
 
@@ -58,19 +63,20 @@ likelihood <- function(par){
 ```{r, message=F}
 library(BayesianTools)
 
-setup <- createBayesianSetup(likelihood = likelihood, lower = c(-20,-20,0,0,rep(-100,11)), upper = c(20,20,50,100,rep(100,11)))
-settings <- list(iterations = 10000, message=F)
+setup <- createBayesianSetup(likelihood = likelihood, 
+                             lower = c(-20,-50,0,0,rep(-100,11)), 
+                             upper = c(20,50,50,100,rep(100,11)),
+                             names = c("a", "b", "err-sd", "RE-sd", 1:11))
+settings <- list(iterations = 30000, nrChains = 2)
 
 res <- runMCMC(bayesianSetup = setup, settings = settings)
-summary(res)
-marginalPlot(res, which = 1:3, start = 300)
-
+plot(res, which = 1:4)
+marginalPlot(res, start = 5000, prior = T, which = 1:4)
+summary(res, start=5000)
 ```
 
 
-# Fitting the model with alternative options
-
-## Bayesian fit with JAGS
+# Fitting the model with JAGS
 
 ```{r}
   # 1) Model definition exactly how we created our data 
@@ -113,25 +119,10 @@ For random effects and similar, I often prefer the R2jags package - not only tha
 
 ```{r,  fig.width=18, fig.height=18}
 library(R2jags)
-system.time(R2JagsResults <- jags(data=Data, inits=inits.fn, parameters.to.save=c("a","b","sigma", "rSigma", "r"), n.chains=1, n.iter=10000, model.file=textConnection(modelCode)))
+system.time(R2JagsResults <- jags(data=Data, inits=inits.fn, parameters.to.save=c("a","b","sigma", "rSigma", "r"), n.chains=3, n.iter=10000, model.file=textConnection(modelCode)))
 
 plot(R2JagsResults)
 print(R2JagsResults)
 
 ```
 
-
-## Fitting the model with Maximum Likelihood, lme4
-
-Adding the random intercept on group. Note that the variances are not correctly estimated. 
-
-```{r, fig.width=5, fig.height=5}
-library(lme4)
-fit <- lmer(y ~ x + (1|group))
-summary(fit)
-plot(x,y, col = group,  pch = 3)
-for(i in 1:11){
-  abline(coef(fit)$group[i,1], coef(fit)$group[i,2], col = i)
-}
-
-```
