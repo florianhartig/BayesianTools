@@ -11,6 +11,7 @@ createPriorDensity(
   lower = NULL,
   upper = NULL,
   best = NULL,
+  scaling = 1,
   ...
 )
 }
@@ -26,6 +27,8 @@ createPriorDensity(
 \item{upper}{vector with upper bounds of parameter for the new prior, independent of the input sample}
 
 \item{best}{vector with "best" values of parameter for the new prior, independent of the input sample}
+
+\item{scaling}{optional scaling factor for the covariance. If scaling > 1 will create a prior wider than the posterior, < 1 a prior more narrow than the posterior. Scaling is linear to the posterior width, i.e. scaling = 2 will create a prior that with 2x the sd of the original posterior.}
 
 \item{...}{parameters to pass on to the getSample function}
 }
@@ -61,9 +64,24 @@ newPrior = createPriorDensity(out, method = "multivariate",
 bayesianSetup <- createBayesianSetup(likelihood = ll, prior = newPrior)
 
 \dontrun{
+  # first prior / posterior
+  marginalPlot(out)
+  
+  # second prior / posterior
   settings = list(iterations = 1000)
-  out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+  out2 <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+  marginalPlot(out2)
+  
+  # change scaling of the prior with the scaling option
+  newPrior = createPriorDensity(out, method = "multivariate",
+                                eps = 1e-10, lower = rep(-10, 3),
+                                upper =  rep(10, 3), best = NULL, scaling = 0.5)
+  
+  apply(newPrior$sampler(1000),2,sd)
 }
+
+
+
 
 
 
