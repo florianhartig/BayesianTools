@@ -70,5 +70,5 @@ marginalPlot(out, type = 'v', singlePanel = TRUE,
 marginalPlot(out, type = 'v', singlePanel = TRUE, numSamples = 500)
 }
 \author{
-Tankred Ott
+Tankred Ott, Florian Hartig
 }
