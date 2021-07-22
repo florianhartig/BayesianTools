@@ -53,16 +53,19 @@ for(i in 1:11){
 
 ```{r}
 likelihood <- function(par){
+  # c("a", "b", "err-sd", "RE-sd", 1:11)
   llObservation = sum(dnorm(par[1] * x +  par[2] + par[group+4] - y , sd = par[3], log = T))
   llRandom = sum(dnorm(par[5:15], sd = par[4], log = T))
   return(llRandom + llObservation)
 }
+
+likelihood(c(4,10,6,20,rep(0,11)))
 ```
+
 
 
 ```{r, message=F}
 library(BayesianTools)
-
 setup <- createBayesianSetup(likelihood = likelihood, 
                              lower = c(-20,-50,0,0,rep(-100,11)), 
                              upper = c(20,50,50,100,rep(100,11)),
