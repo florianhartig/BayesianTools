@@ -11,6 +11,9 @@
 #' BH = Bhattacharyya distance
 #' D =  normalized Euclidean distance between mean and standard deviation of sample and target. Not symmetric. Target is sample 1. This was described in eq. 10 in Laloy, E., and J. A. Vrugt. 2012. High-dimensional posterior exploration of hydrologic models using multiple-try DREAM(ZS) and high-performance computing. Water Resour. Res. 48(1)
 #' 
+#' @example /inst/examples/getSampleDistanceHelp.R
+#' @export
+#' 
 getSampleDistance <- function(sample1, sample2, type = "KL"){
   
   if(type == "KL"){
@@ -18,7 +21,7 @@ getSampleDistance <- function(sample1, sample2, type = "KL"){
     x = FNN::KL.dist(sample1, sample2, k=10)
     out = mean(x) # FH: no idea if the mean is a good idea. KL.dist returns one value per cluster size, I don't know which value is best chosen
     
-  } else if(type == "BH" ){
+  } else if(type == "BH" | type == "BHs" ){
     Sigma1 = cov(sample1)
     Sigma2 = cov(sample2)
     mu1 = colMeans(sample1)
@@ -27,10 +30,14 @@ getSampleDistance <- function(sample1, sample2, type = "KL"){
     # The following code is copied from package fpc
     
     aggregatesigma <- (Sigma1+Sigma2)/2
-    d1 <- mahalanobis(mu1,mu2,aggregatesigma)/8
-    d2 <- log(det(as.matrix(aggregatesigma))/sqrt(det(as.matrix(Sigma1))*
-                                                    det(as.matrix(Sigma2))))/2
+    #d1 <- mahalanobis(mu1,mu2,aggregatesigma,tol=1e-20)/8 # tol (tolerance) argument gets passed to solve(). Avoids crashes if there are very small values in the covariance matrices
+    d1 <- mahalanobis(mu1,mu2,aggregatesigma,tol=.Machine$double.xmin)/8 # tol (tolerance) argument gets passed to solve(). Avoids crashes if there are very small values in the covariance matrices
+    d2 <- log(det(as.matrix(aggregatesigma))/sqrt(det(as.matrix(Sigma1))*det(as.matrix(Sigma2))))/2
+    if(type == "BH"){
     out <- d1+d2
+    } else if (type == "BHs"){
+      out <- c(d1, d2)
+    }
     
     # end fpc
     
@@ -42,7 +49,7 @@ getSampleDistance <- function(sample1, sample2, type = "KL"){
     sd2 = apply(sample2, 2, sd)
     mu1 = colMeans(sample1)
     mu2 = colMeans(sample2)
-    dev = sum( ((mu1 - mu2)/sd1)^2 + ((mu1 - mu2)/sd1)^2  )
+    dev = sum( ((mu1 - mu2)/sd1)^2 + ((sd1 - sd2)/sd1)^2  )
     
     out = sqrt( 1/(2*length(mu1)) * dev )
     
@@ -72,23 +79,7 @@ getSampleDistance <- function(sample1, sample2, type = "KL"){
 #' 
 
 
-library(mvtnorm)
 
-sigma <- matrix(c(4,2,2,3), ncol=2)
-X <- rmvnorm(n=2500, mean=c(1,2), sigma=sigma)
-X = rbind(X,X)
-Y <- rmvnorm(n=2500, mean=c(5,2), sigma=sigma)
-Y = rbind(Y,X)
-
-FNN::KL.dist(X, Y, k=10)
-
-X = getSample(out, start = 1000, end = 2000)
-Y = getSample(out, start = 2000, end = 3000)
-
-
-getSampleDistance(X,Y, type = "KL")
-getSampleDistance(X,Y, type = "BH")
-getSampleDistance(X,Y, type = "D")
 
 
 

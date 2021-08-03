@@ -10,9 +10,23 @@ smcSampler(
   iterations = 10,
   resampling = T,
   resamplingSteps = 2,
+  lastMutateSteps = 5,
   proposal = NULL,
+  exponents = NULL,
   adaptive = T,
-  proposalScale = 0.5
+  proposalScale = 0.5,
+  x = 3.11,
+  m = 7e-08,
+  sampling = "multinomial",
+  ess.limit = NULL,
+  ess.factor = 0.95,
+  lastResample = 1,
+  pars.lower = NULL,
+  pars.upper = NULL,
+  mutate.method = "Metropolis",
+  b = 1e-04,
+  diagnostics = NULL,
+  reference = NULL
 )
 }
 \arguments{
@@ -24,13 +38,39 @@ smcSampler(
 
 \item{resampling}{if new particles should be created at each iteration}
 
-\item{resamplingSteps}{how many resampling (MCMC) steps between the iterations}
+\item{resamplingSteps}{how many resampling (MCMC) steps between the SMC iterations}
+
+\item{lastMutateSteps}{how many resampling (MCMC) steps after the SMC iterations}
 
 \item{proposal}{optional proposal class}
+
+\item{exponents}{series of exponents to build the intermediate distributions}
 
 \item{adaptive}{should the covariance of the proposal be adapted during sampling}
 
 \item{proposalScale}{scaling factor for the proposal generation. Can be adapted if there is too much / too little rejection}
+
+\item{x}{Parameter to generate the exponential sequence for building intermediary distributions. Default value from Jeremiah et al. (2012)}
+
+\item{m}{Parameter to generate the exponential sequence for building intermediary distributions. Default value from Jeremiah et al. (2012)}
+
+\item{sampling}{Which algorithm to use for particle (re)sampling. Options are "multinomial" (default), "residual" and "systematic"}
+
+\item{ess.limit}{Threshold value of effective sample size below which resampling is done. By default, the value is set to half the number of particles. To resample at each step, use a value >= the number of particles.}
+
+\item{ess.factor}{}
+
+\item{lastResample}{Iteration (starting from the end) at which particle resampling is forced. To deactivate this, set to a value < 0}
+
+\item{pars.lower}{Optional: vector contaiing the mimimum values of calibration parameters. Used to initialize the proposal function}
+
+\item{pars.upper}{Optional: vector contaiing the maximum values of calibration parameters. Used to initialize the proposal function}
+
+\item{mutate.method}{MCMC method for the resampling. Either "Metropolis" or "DE"}
+
+\item{b}{parameter for snooker update in DE}
+
+\item{diagnostics}{an optional function with diagnostics that are calculated on the particles during each SMC iteration}
 }
 \description{
 Sequential Monte Carlo Sampler
@@ -42,101 +82,26 @@ The sampler can be used for rejection sampling as well as for sequential Monte C
 The SMC currently assumes that the initial particle is sampled from the prior. If a better initial estimate of the posterior distribution is available, this the sampler should be modified to include this. Currently, however, this is not included in the code, so the appropriate adjustments have to be done by hand.
 }
 \examples{
-## Example for the use of SMC 
-# First we need a bayesianSetup - SMC makes most sense if we can  for demonstration,
-# we'll write a function that puts out the number of model calls
-
-MultiNomialNoCor <- generateTestDensityMultiNormal(sigma = "no correlation")
-
-parallelLL <- function(parMatrix){
-  print(paste("Calling likelihood with", nrow(parMatrix), "parameter combinations"))
-  out = apply(parMatrix, 1, MultiNomialNoCor)
-  return(out)
-}
-
-bayesianSetup <- createBayesianSetup(likelihood = parallelLL, lower = rep(-10, 3),
+# creating a simple test BayesianSetup
+bayesianSetup <- createBayesianSetup(likelihood = generateTestDensityMultiNormal(), 
+                                     lower = rep(-10, 3),
                                      upper = rep(10, 3), parallel = "external")
 
-# Defining settings for the sampler
-# First we use the sampler for rejection sampling
-settings <- list(initialParticles = 1000, iterations = 1, resampling = FALSE)  
-   
-# Running the sampler
-out1 <- runMCMC(bayesianSetup = bayesianSetup, sampler = "SMC", settings = settings)
-#plot(out1)
+# to directly call the smcSampler, use 
+SMCout <- smcSampler(bayesianSetup, initialParticles = 100, iterations = 3)
 
+# plotting results
+marginalPlot(SMCout, type = "d", singlePanel = T)
 
-# Now for sequential Monte Carlo
-settings <- list(initialParticles = 100, iterations = 5, resamplingSteps = 1)
-out2 <- runMCMC(bayesianSetup = bayesianSetup, sampler = "SMC", settings = settings)
-#plot(out2)
+# for options, see 
+?smcSampler
 
-\dontrun{
-
-## Example for starting a new SMC run with results from a previous SMC run
-
-# Generate example data (time series)
-# x1 and x2 are predictory, yObs is the response
-t <- seq(1, 365)
-x1 <- (sin( 1 / 160 * 2 * pi * t) + pi) * 5
-x2 <- cos( 1 / 182.5 * 1.25 * pi * t) * 12
-
-# the model
-mod <- function(par, t1 = 1, tn = 365) {
-  par[1] * x1[t1:tn] + par[2] * x2[t1:tn]
-}
-
-# the true parameters
-par1 <- 1.65
-par2 <- 0.75
-yObs <- mod(c(par1, par2)) + rnorm(length(x1), 0, 2)
-
-# split the time series in half
-plot(yObs ~ t)
-abline(v = 182, col = "red", lty = 2)
-
-# First half of the data
-ll_1 <- function(x, sum = TRUE) {
-  out <- dnorm(mod(x, 1, 182) - yObs[1:182], 0, 2, log = TRUE)
-  if (sum == TRUE) sum(out) else out
-}
-
-# Fit the first half of the time series
-# (e.g. fit the model to the data soon as you collect the data)
-setup_1 <- createBayesianSetup(ll_1, lower = c(-10, -10), upper = c(10, 10))
-settings_1 <- list(initialParticles = 1000)
-out_1 <- runMCMC(setup_1, "SMC", settings_1)
-summary(out_1)
-
-
-# Second half of the data
-ll_2 <- function(x, sum = TRUE) {
-  out <- dnorm(mod(x, 183, 365) - yObs[183:365], 0, 2, log = TRUE)
-  if (sum == TRUE) sum(out) else out
-}
-
-# Fit the second half of the time series
-# (e.g. fit the model to the data soon as you collect the data)
-setup_2 <- createBayesianSetup(ll_2, lower = c(-10, -10), upper = c(10, 10))
-
-# This is the important step, we use the final particles from the
-# previous SMC run to initialize the new SMC run
-settings_2 <- list(initialParticles = out_1$particles)
-out_2 <- runMCMC(setup_2, "SMC", settings_2)
-summary(out_2)
-
-par_pred <- apply(out_2$particles, 2, median)
-pred <- mod(par_pred)
-plotTimeSeries(yObs, pred)
-
-}
-
-
-
-
-
+# as for all MCMCs, you can also run the SMC via the general runMCMC function
+SMCout<-runMCMC(bayesianSetup, sampler = "SMC", 
+                settings = list(nrChains =2, initialParticles = 100, iterations = 3))
+plot(SMCout)
 
 }
 \author{
-Florian Hartig
+Florian Hartig, Matthias Speich
 }

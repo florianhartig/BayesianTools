@@ -236,9 +236,11 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
       mcmcSampler$settings = settings
     }
 
-    mcmcSampler$settings$runtime = mcmcSampler$settings$runtime + proc.time() - ptm
+    mcmcSampler$info$sessionInfo = utils::sessionInfo()
+    
+    mcmcSampler$info$runtime = mcmcSampler$info$runtime + proc.time() - ptm
     if(is.null(settings$message) || settings$message == TRUE){
-    message("runMCMC terminated after ", mcmcSampler$settings$runtime[3], "seconds")
+      message("runMCMC terminated after ", mcmcSampler$info$runtime[3], "seconds")
     }
     return(mcmcSampler)
   }
@@ -276,17 +278,17 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   if(!settings$sampler %in% getPossibleSamplerTypes()$BTname) stop("trying to set values for a sampler that does not exist")
   
   if (settings$sampler == "AM") {
-    defaultSettings <- getMetropolisDefaultSettings()
+    defaultSettings <- applySettingsDefault(sampler = "Metropolis")
     defaultSettings$adapt <- TRUE
   }
   
   if (settings$sampler == "DR") {
-    defaultSettings <- getMetropolisDefaultSettings()
+    defaultSettings <- applySettingsDefault(sampler = "Metropolis")
     defaultSettings$DRlevels <- 2
   }
   
   if (settings$sampler == "DRAM") {
-    defaultSettings <- getMetropolisDefaultSettings()
+    defaultSettings <- applySettingsDefault(sampler = "Metropolis")
     defaultSettings$adapt <- TRUE
     defaultSettings$DRlevels <- 2
   }
@@ -312,8 +314,6 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
                            currentChain = 1,
                            message = TRUE)
   }
-  
-
   
   if (settings$sampler == "DE"){
     defaultSettings = list(startValue = NULL,
@@ -404,13 +404,27 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   }
   
   if (settings$sampler == "SMC"){
-    defaultSettings = list(iterations = 10, 
-                           resampling = T, 
-                           resamplingSteps = 2, 
-                           proposal = NULL, 
-                           adaptive = T, 
-                           proposalScale = 0.5, 
-                           initialParticles = 1000
+    defaultSettings = list(  initialParticles = 1000,
+                             iterations = 10, 
+                             resampling = T, 
+                             resamplingSteps = 2, 
+                             lastMutateSteps = 5,         
+                             proposal = NULL, 
+                             exponents = NULL, 
+                             adaptive = T, 
+                             proposalScale = 0.5, 
+                             x=3.11, 
+                             m=7E-08, 
+                             sampling="multinomial",
+                             ess.limit=NULL,
+                             ess.factor = 0.95,           
+                             lastResample = 1,
+                             pars.lower=NULL, 
+                             pars.upper=NULL, 
+                             mutate.method ="Metropolis", 
+                             b=1e-04,                     
+                             diagnostics = NULL,
+                             reference=NULL
                            )
   }
   
@@ -448,9 +462,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   }
   
   defaultSettings$nrChains = 1
-  defaultSettings$runtime = 0
-  defaultSettings$sessionInfo = utils::sessionInfo()
-  
+
   nam = names(defaultSettings)
   
   for (i in 1:length(defaultSettings)){
@@ -555,32 +567,3 @@ getPossibleSamplerTypes <- function(){
 
   return(out)
 } 
-
-#' Returns Metropolis default settings
-#' @author Tankred Ott
-#' @keywords internal
-getMetropolisDefaultSettings <- function () {
-  defaultSettings = list(
-    startValue = NULL,
-    iterations = 10000,
-    optimize = T,
-    proposalGenerator = NULL,
-    consoleUpdates = 100,
-    burnin = 0,
-    thin = 1,
-    parallel = NULL,
-    adapt = T,
-    adaptationInterval = 500,
-    adaptationNotBefore = 3000,
-    DRlevels = 1 ,
-    proposalScaling = NULL,
-    adaptationDepth = NULL,
-    temperingFunction = NULL,
-    proposalGenerator = NULL,
-    gibbsProbabilities = NULL,
-    currentChain = 1,
-    message = TRUE
-  )
-  return(defaultSettings)
-}
-
