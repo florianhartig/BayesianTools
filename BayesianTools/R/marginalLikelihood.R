@@ -65,7 +65,7 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     
     if(class(sampler)[1] %in% c("mcmcSamplerList", "smcSamplerList")) sampler <- sampler[[1]]
     
-    x <- chain[,1:sampler$setup$numPars]
+    x <- chain[,1:sampler$setup$numPars,drop=F] #  RB: drop=F
     
     lik <- chain[,sampler$setup$numPars + 2]
     MAPindex <- which.max(chain[,sampler$setup$numPars + 1])
@@ -76,13 +76,13 @@ marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...)
     
     # calculate reference parameter 
     
-    theta.star <- x[MAPindex,]
+    theta.star <- x[MAPindex,,drop=F]
     lik.star <- lik[MAPindex]
     
     # get samples from posterior
     
     g <- sample.int(nrow(x), numSamples, replace=TRUE) # should replace really be true?
-    q.g <- mvtnorm::dmvnorm(x[g,], mean = theta.star, sigma = V, log = FALSE)
+    q.g <- mvtnorm::dmvnorm(x[g,,drop=F], mean = theta.star, sigma = V, log = FALSE) # RB: drop=F
     lik.g <- lik[g]
     alpha.g <- sapply(lik.g, function(l) min(1, exp(lik.star - l))) # Metropolis Ratio
     

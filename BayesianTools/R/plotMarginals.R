@@ -50,7 +50,7 @@ marginalPlot <- function(x, prior = NULL, xrange = NULL, type = 'd', singlePanel
   }
 
   if (!is.null(priorMat)) {
-    priorMat = priorMat[,which]
+    priorMat = priorMat[,which,drop=F] # RB: drop=F
     if (ncol(posteriorMat) != ncol(priorMat)) stop("wrong dimensions of prior")
     colnames(priorMat) <- colnames(posteriorMat)    
   }
