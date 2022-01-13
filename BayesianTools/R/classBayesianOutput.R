@@ -30,17 +30,17 @@ getSample.matrix <- function(sampler, parametersOnly = T, coda = F, start = 1, e
   
     if(is.null(end)) end = nrow(sampler)
 
-    if(includesProbabilities) nPars = ncol(sampler) - 3 else nPars = ncol(sampler)
+    if(includesProbabilities) nPars = ncol(sampler) - 3 else nPars = ncol(sampler) # RB: shouldn't it be the other way?
     
-    if(parametersOnly == T | includesProbabilities == F) {
-      out = sampler[start:end,1:nPars] 
-      if(class(out)[1] == "numeric") out = as.matrix(sampler) # case 1 parameter
+    if(parametersOnly == T | includesProbabilities == F) { # RB: parametersOnly & includesProbabilities redudant?
+      out = sampler[start:end,1:nPars, drop=F] # RB: with drop=F following if statement can be deleted
+      #if(class(out)[1] == "numeric") out = as.matrix(sampler) # case 1 parameter
     } else {
-      out = out[start:end,]
+      out = out[start:end,, drop=F] # RB: out doesnt exist here!
       #if(!is.null(sampler$setup$names)) colnames(out) = c(sampler$setup$names, "Lposterior", "Llikelihood", "Lprior")
     }
 
-    if (!is.matrix(out)) {
+    if (!is.matrix(out)) { # RB: shouldnt be necessary after fixing previous
       out <- matrix(out, ncol = nPars)
     }
     
@@ -53,8 +53,8 @@ getSample.matrix <- function(sampler, parametersOnly = T, coda = F, start = 1, e
       out <- sampleEquallySpaced(out, numSamples)
     } else {
       sel = seq(1, nTotalSamples, by = thin)
-      out = out[sel,]
-      if (!is.matrix(out)) out <- matrix(out, ncol = nPars)
+      out = out[sel,, drop=F] # RB: drop=F del next line
+      #if (!is.matrix(out)) out <- matrix(out, ncol = nPars)
     }
     
     # if (thin == "auto"){
@@ -136,7 +136,7 @@ getSample.data.frame <- function(sampler, parametersOnly = T, coda = F, start = 
 #' @export
 getSample.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics = F, ...){
   
-  if(!is.null(numSamples)) numSamples = ceiling(numSamples/length(sampler))
+  if(!is.null(numSamples)) numSamples = ceiling(numSamples/length(sampler)) # RB: why ceiling?
   
   if(coda == F){
     # out = NULL
@@ -157,7 +157,7 @@ getSample.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end
       out[[i]] = getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F)
     }
     
-    if(class(out[[1]]) == "mcmc.list") out = unlist(out, recursive = F)
+    if(class(out[[1]]) == "mcmc.list") out = unlist(out, recursive = F) # RB: why unlist??
     class(out) = "mcmc.list"
     out = out
   }
@@ -191,6 +191,7 @@ getSample.mcmc <- function(sampler, parametersOnly = T, coda = F, start = 1, end
     
   } else if(coda == F){
     # mcmc objects can contain matrices or vectors
+    # RB:  do vector case as 1-d matrix?
     if (is.matrix(sampler)) {
       out <- getSample(as.matrix(sampler), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics = reportDiagnostics)
     } else {

@@ -117,13 +117,13 @@ sampleEquallySpaced <- function(x, numSamples) {
     warning("numSamples is less than 1! Only the first sample was selected.")
   }
   
-  sel <- seq(1, len, len = numSamples)
+  sel <- seq(1, len, len = numSamples) # RB: what does len = numSample do? pass as argument to seq? -> seq doesnt use it
   if (is.matrix(x)) {
-    out <- x[sel,]
-    # if x has only a single col, x[sel,] is a vector and needs to be converted
-    if(!is.matrix(out)) {
-      out <- matrix(out, ncol = ncol(x))
-    }
+    out <- x[sel, , drop=F]
+    # if x has only a single col, x[sel,] is a vector and needs to be converted ## RB: add drop=F before and remove if statement to avoid loss of colnames
+#    if(!is.matrix(out)) {
+#      out <- matrix(out, ncol = ncol(x))
+#    }
   } else {
     out <- x[sel]
   }

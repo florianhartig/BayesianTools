@@ -87,7 +87,8 @@ plotDiagnostic <- function(out, start = 50, numSamples = 100, window = 0.2, plot
   }
   
   
-  
+  # RB: missing: check if sampler with multiple chains
+  # should user call method with plotPSFR=F for one-chain-sampler?
   
   # calc mPSRF, first checking which low values we could calculate
   if(plotPSRF){

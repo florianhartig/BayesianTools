@@ -238,7 +238,7 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
 
     mcmcSampler$settings$runtime = mcmcSampler$settings$runtime + proc.time() - ptm
     if(is.null(settings$message) || settings$message == TRUE){
-    message("runMCMC terminated after ", mcmcSampler$settings$runtime[3], "seconds")
+      message("runMCMC terminated after ", mcmcSampler$settings$runtime[3], "seconds")
     }
     return(mcmcSampler)
   }
@@ -277,7 +277,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   
   if (settings$sampler == "AM") {
     defaultSettings <- getMetropolisDefaultSettings()
-    defaultSettings$adapt <- TRUE
+    defaultSettings$adapt <- TRUE # RB: is already T
   }
   
   if (settings$sampler == "DR") {
@@ -287,120 +287,46 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   
   if (settings$sampler == "DRAM") {
     defaultSettings <- getMetropolisDefaultSettings()
-    defaultSettings$adapt <- TRUE
+    defaultSettings$adapt <- TRUE # RB: is already T
     defaultSettings$DRlevels <- 2
   }
   
   if (settings$sampler == "Metropolis"){
-    defaultSettings = list(startValue = NULL, 
-                           iterations = 10000, 
-                           optimize = T, 
-                           proposalGenerator = NULL, 
-                           consoleUpdates=100, 
-                           burnin = 0,
-                           thin = 1, 
-                           parallel = NULL, 
-                           adapt = T, 
-                           adaptationInterval= 500, 
-                           adaptationNotBefore = 3000,
-                           DRlevels = 1 , 
-                           proposalScaling = NULL, 
-                           adaptationDepth = NULL, 
-                           temperingFunction = NULL, 
-                           proposalGenerator = NULL, 
-                           gibbsProbabilities = NULL, 
-                           currentChain = 1,
-                           message = TRUE)
+    defaultSettings <- getMetropolisDefaultSettings()
   }
   
-
-  
   if (settings$sampler == "DE"){
-    defaultSettings = list(startValue = NULL,
-                           iterations = 10000, 
-                           burnin = 0, 
-                           thin = 1,
-                           eps = 0,
-                           consoleUpdates = 100, 
-                           currentChain = 1,
-                           parallel = F,
-                           f = -2.38, 
-                           burnin = 0, 
-                           eps = 0, 
-                           consoleUpdates = 100, 
-                           blockUpdate = list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
-                                              groupStart = 1000, groupIntervall = 1000),
-                           message = TRUE)
+    defaultSettings <- getDEDefaultSettings()
+    defaultSettings$f <- -2.38
+    defaultSettings$blockUpdate <- list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
+                                       groupStart = 1000, groupIntervall = 1000)
   }
   
   if (settings$sampler == "DEzs"){
-    defaultSettings = list(startValue = NULL,
-                           iterations = 10000, 
-                           Z = NULL,
-                           pSnooker = 0.1, 
-                           burnin = 0, 
-                           thin = 1,
-                           f = 2.38,
-                           eps = 0,
-                           pGamma1 = 0.1,
-                           eps.mult =0.2,
-                           eps.add = 0,
-                           consoleUpdates = 100, 
-                           currentChain = 1,
-                           parallel = NULL,
-                           zUpdateFrequency = 1,
-                           blockUpdate = list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
-                                              groupStart = 1000, groupIntervall = 1000),
-                           message = TRUE)
+    defaultSettings <- getDEDefaultSettings()
+    defaultSettings$f <- 2.38
+    defaultSettings$blockUpdate <- list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
+                                        groupStart = 1000, groupIntervall = 1000)
+    defaultSettings <- c(defaultSettings, list(Z = NULL,
+                                               zUpdateFrequency = 1,
+                                               pSnooker = 0.1,
+                                               pGamma1 = 0.1,
+                                               eps.mult =0.2,
+                                               eps.add = 0))
   }
   
 
   if (settings$sampler == "DREAM"){
-    
-    defaultSettings = list(
-      iterations = 10000,
-      nCR = 3,
-      gamma = NULL, 
-      eps = 0,
-      e = 5e-2, # TODO check
-      pCRupdate = TRUE, 
-      updateInterval = 10,
-      currentChain = 1,
-      burnin = 0,
-      thin = 1,
-      adaptation = 0.2,
-      DEpairs = 2, 
-      consoleUpdates = 10, 
-      startValue = NULL,
-      message = TRUE)
-    
+    defaultSettings <- getDREAMDefaultSettings()
+    defaultSettings$pCRupdate <- TRUE
   }
     
   if (settings$sampler == "DREAMzs"){
-    
-    defaultSettings = list(
-      iterations = 10000,
-      nCR = 3,
-      gamma = NULL, 
-      eps = 0,
-      e = 5e-2,
-      pCRupdate = FALSE, 
-      updateInterval = 10,
-      burnin = 0,
-      thin = 1,
-      adaptation = 0.2,
-      parallel = NULL,
-      
-      Z = NULL,
-      ZupdateFrequency = 10,
-      pSnooker = 0.1,
-      
-      
-      DEpairs = 2, 
-      consoleUpdates = 10, 
-      startValue = NULL,
-      currentChain = 1,
-      message = TRUE)
+    defaultSettings <- getDREAMDefaultSettings()
+    defaultSettings$pCRupdate <- FALSE
+    defaultSettings$Z = NULL
+    defaultSettings$ZupdateFrequency = 10
+    defaultSettings$pSnooker = 0.1
   }
   
   if (settings$sampler == "SMC"){
@@ -560,27 +486,61 @@ getPossibleSamplerTypes <- function(){
 #' @author Tankred Ott
 #' @keywords internal
 getMetropolisDefaultSettings <- function () {
-  defaultSettings = list(
-    startValue = NULL,
-    iterations = 10000,
-    optimize = T,
-    proposalGenerator = NULL,
-    consoleUpdates = 100,
-    burnin = 0,
-    thin = 1,
-    parallel = NULL,
-    adapt = T,
-    adaptationInterval = 500,
-    adaptationNotBefore = 3000,
-    DRlevels = 1 ,
-    proposalScaling = NULL,
-    adaptationDepth = NULL,
-    temperingFunction = NULL,
-    proposalGenerator = NULL,
-    gibbsProbabilities = NULL,
-    currentChain = 1,
-    message = TRUE
-  )
+  defaultSettings <- getDefaultSettings()
+  defaultSettings <- c(defaultSettings, list(optimize = T,
+                                             proposalGenerator = NULL,
+                                             adapt = T,
+                                             adaptationInterval = 500,
+                                             adaptationNotBefore = 3000,
+                                             DRlevels = 1 ,
+                                             proposalScaling = NULL,
+                                             adaptationDepth = NULL,
+                                             temperingFunction = NULL,
+                                             proposalGenerator = NULL,
+                                             gibbsProbabilities = NULL))
   return(defaultSettings)
 }
+
+#' Returns DREAM default settings
+#' @author Robert Bosek
+#' @keywords internal
+getDREAMDefaultSettings <- function () {
+  defaultSettings <- getDefaultSettings()
+  defaultSettings$consoleUpdates <- 10
+  defaultSettings$eps <- 0
+  defaultSettings <- c(defaultSettings, list(nCR = 3,
+                                             gamma = NULL,
+                                             e = 5e-2,  # TODO check
+                                             updateInterval = 10,
+                                             adaptation = 0.2,
+                                             DEpairs = 2))
+  
+  return(defaultSettings)
+}
+
+
+#' Returns Differential-Evolution default settings
+#' @author Robert Bosek
+#' @keywords internal
+getDEDefaultSettings <- function () {
+  defaultSettings <- getDefaultSettings()
+  defaultSettings$eps <- 0
+  return(defaultSettings)
+}
+
+#' Returns basic default settings
+#' @author Robert Bosek
+#' @keywords internal
+getDefaultSettings <- function () {
+  defaultSettings <- list(startValue = NULL,
+                         iterations = 10000,
+                         burnin = 0,
+                         thin = 1,
+                         consoleUpdates = 100,
+                         currentChain = 1,
+                         parallel = NULL,
+                         message = TRUE)
+  return(defaultSettings)
+}
+
 
