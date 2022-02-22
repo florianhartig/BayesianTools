@@ -124,6 +124,7 @@ getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, sta
   
   if(!is.null(numSamples)) nS = ceiling(numSamples/length(sampler))
   
+  # changed due to issue 154
   
   # check here if due to number of chains numSamples has to be adjustet, print warning and mute internal warnings
   muteInternalGetSample = TRUE
