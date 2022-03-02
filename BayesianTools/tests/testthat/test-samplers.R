@@ -8,15 +8,15 @@ test_that("Samplers work in principle", {
   ll = function(x) sum(dnorm(x, log = T))
   setup = createBayesianSetup(ll, lower = c(-10,-10), upper = c(10,10))
   
-  iter = 500
-  iterSMC = 400
+  iter = 200
+  iterSMC = 1
   
   samp = getPossibleSamplerTypes()
   
   for(i in 1:(length(samp$BTname))){
     
-     if(samp$BTname[i] == "SMC") settings = list(iterations = iterSMC, initialParticles = 10000, consoleUpdates = 1e+8) else settings = list(iterations = iter, consoleUpdates = 1e+8)
-     invisible(capture.output(suppressMessages(out <- runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings))))
+     if(samp$BTname[i] == "SMC") settings = list(iterations = iterSMC, initialParticles = 100, consoleUpdates = 1e+8) else settings = list(iterations = iter, consoleUpdates = 1e+8)
+     invisible(capture.output(suppressMessages(suppressWarnings(out <- runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings)))))
 
       expect_true("bayesianOutput" %in% class(out))
       print(paste("checking" , samp$BTname[i]))
