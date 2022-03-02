@@ -297,7 +297,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   
   if (settings$sampler == "DE"){
     defaultSettings <- getDEDefaultSettings()
-    defaultSettings$f <- -2.38
+    defaultSettings$f <- 2.38
     defaultSettings$blockUpdate <- list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
                                        groupStart = 1000, groupIntervall = 1000)
   }
