@@ -275,59 +275,105 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   
   if(!settings$sampler %in% getPossibleSamplerTypes()$BTname) stop("trying to set values for a sampler that does not exist")
   
-  if (settings$sampler == "AM") {
-    defaultSettings <- getMetropolisDefaultSettings()
-    defaultSettings$adapt <- TRUE # RB: is already T
-  }
   
-  if (settings$sampler == "DR") {
-    defaultSettings <- getMetropolisDefaultSettings()
-    defaultSettings$DRlevels <- 2
-  }
-  
-  if (settings$sampler == "DRAM") {
-    defaultSettings <- getMetropolisDefaultSettings()
-    defaultSettings$adapt <- TRUE # RB: is already T
-    defaultSettings$DRlevels <- 2
-  }
-  
-  if (settings$sampler == "Metropolis"){
-    defaultSettings <- getMetropolisDefaultSettings()
-  }
-  
-  if (settings$sampler == "DE"){
-    defaultSettings <- getDEDefaultSettings()
-    defaultSettings$f <- 2.38
-    defaultSettings$blockUpdate <- list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
-                                       groupStart = 1000, groupIntervall = 1000)
-  }
-  
-  if (settings$sampler == "DEzs"){
-    defaultSettings <- getDEDefaultSettings()
-    defaultSettings$f <- 2.38
-    defaultSettings$blockUpdate <- list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
-                                        groupStart = 1000, groupIntervall = 1000)
-    defaultSettings <- c(defaultSettings, list(Z = NULL,
-                                               zUpdateFrequency = 1,
-                                               pSnooker = 0.1,
-                                               pGamma1 = 0.1,
-                                               eps.mult =0.2,
-                                               eps.add = 0))
+  # IF MCMC except T-walk
+  if(settings$sampler %in% c("AM", "DR", "DRAM", "Metropolis", "DE", "DEzs", "DREAM", "DREAMzs")){
+    
+    defaultSettings <- list(startValue = NULL,
+                            iterations = 10000,
+                            burnin = 0,
+                            thin = 1,
+                            consoleUpdates = 100,
+                            currentChain = 1,
+                            parallel = NULL,
+                            message = TRUE)
+    
+    if(settings$sampler %in% c("AM", "DR", "DRAM", "Metropolis")){
+
+      defaultSettings <- c(defaultSettings, list(optimize = T,
+                                                 proposalGenerator = NULL,
+                                                 adapt = F,
+                                                 adaptationInterval = 500,
+                                                 adaptationNotBefore = 3000,
+                                                 DRlevels = 1 ,
+                                                 proposalScaling = NULL,
+                                                 adaptationDepth = NULL,
+                                                 temperingFunction = NULL,
+                                                 proposalGenerator = NULL,
+                                                 gibbsProbabilities = NULL))   
+
+      if (settings$sampler %in% c("AM", "DRAM")) defaultSettings$adapt <- TRUE 
+      if (settings$sampler %in% c("DR", "DRAM")) defaultSettings$DRlevels <- 2
+    }
+    
+    
+    if(settings$sampler %in% c("DE", "DEzs")){
+      defaultSettings <- c(defaultSettings, list(optimize = T,
+                                                 proposalGenerator = NULL,
+                                                 adapt = T,
+                                                 adaptationInterval = 500,
+                                                 adaptationNotBefore = 3000,
+                                                 DRlevels = 1 ,
+                                                 proposalScaling = NULL,
+                                                 adaptationDepth = NULL,
+                                                 temperingFunction = NULL,
+                                                 proposalGenerator = NULL,
+                                                 gibbsProbabilities = NULL))
+      
+
+      if (settings$sampler == "DE"){
+        defaultSettings$f <- -2.38 # CHECK
+        defaultSettings$blockUpdate <- list("none", 
+                                            k = NULL, 
+                                            h = NULL, 
+                                            pSel = NULL, 
+                                            pGroup = NULL, 
+                                            groupStart = 1000, 
+                                            groupIntervall = 1000)
+      }
+      
+
+      if (settings$sampler == "DEzs"){
+        defaultSettings$f <- 2.38
+        defaultSettings$blockUpdate <- list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
+                                            groupStart = 1000, groupIntervall = 1000)
+        defaultSettings <- c(defaultSettings, list(Z = NULL,
+                                                   zUpdateFrequency = 1,
+                                                   pSnooker = 0.1,
+                                                   pGamma1 = 0.1,
+                                                   eps.mult =0.2,
+                                                   eps.add = 0))
+      }
+            
+    }
+
+    if(settings$sampler %in% c("DREAM", "DREAMzs")){  
+      defaultSettings <- c(defaultSettings, list(optimize = T,
+                                                 proposalGenerator = NULL,
+                                                 adapt = T,
+                                                 adaptationInterval = 500,
+                                                 adaptationNotBefore = 3000,
+                                                 DRlevels = 1 ,
+                                                 proposalScaling = NULL,
+                                                 adaptationDepth = NULL,
+                                                 temperingFunction = NULL,
+                                                 proposalGenerator = NULL,
+                                                 gibbsProbabilities = NULL))
+ 
+      if (settings$sampler == "DREAM"){
+        defaultSettings$pCRupdate <- TRUE
+      }
+      
+      if (settings$sampler == "DREAMzs"){
+        defaultSettings$pCRupdate <- FALSE
+        defaultSettings$Z = NULL
+        defaultSettings$ZupdateFrequency = 10
+        defaultSettings$pSnooker = 0.1
+      }  
+    }
   }
   
 
-  if (settings$sampler == "DREAM"){
-    defaultSettings <- getDREAMDefaultSettings()
-    defaultSettings$pCRupdate <- TRUE
-  }
-    
-  if (settings$sampler == "DREAMzs"){
-    defaultSettings <- getDREAMDefaultSettings()
-    defaultSettings$pCRupdate <- FALSE
-    defaultSettings$Z = NULL
-    defaultSettings$ZupdateFrequency = 10
-    defaultSettings$pSnooker = 0.1
-  }
   
   if (settings$sampler == "SMC"){
     defaultSettings = list(iterations = 10, 
@@ -481,66 +527,3 @@ getPossibleSamplerTypes <- function(){
 
   return(out)
 } 
-
-#' Returns Metropolis default settings
-#' @author Tankred Ott
-#' @keywords internal
-getMetropolisDefaultSettings <- function () {
-  defaultSettings <- getDefaultSettings()
-  defaultSettings <- c(defaultSettings, list(optimize = T,
-                                             proposalGenerator = NULL,
-                                             adapt = T,
-                                             adaptationInterval = 500,
-                                             adaptationNotBefore = 3000,
-                                             DRlevels = 1 ,
-                                             proposalScaling = NULL,
-                                             adaptationDepth = NULL,
-                                             temperingFunction = NULL,
-                                             proposalGenerator = NULL,
-                                             gibbsProbabilities = NULL))
-  return(defaultSettings)
-}
-
-#' Returns DREAM default settings
-#' @author Robert Bosek
-#' @keywords internal
-getDREAMDefaultSettings <- function () {
-  defaultSettings <- getDefaultSettings()
-  defaultSettings$consoleUpdates <- 10
-  defaultSettings$eps <- 0
-  defaultSettings <- c(defaultSettings, list(nCR = 3,
-                                             gamma = NULL,
-                                             e = 5e-2,  # TODO check
-                                             updateInterval = 10,
-                                             adaptation = 0.2,
-                                             DEpairs = 2))
-  
-  return(defaultSettings)
-}
-
-
-#' Returns Differential-Evolution default settings
-#' @author Robert Bosek
-#' @keywords internal
-getDEDefaultSettings <- function () {
-  defaultSettings <- getDefaultSettings()
-  defaultSettings$eps <- 0
-  return(defaultSettings)
-}
-
-#' Returns basic default settings
-#' @author Robert Bosek
-#' @keywords internal
-getDefaultSettings <- function () {
-  defaultSettings <- list(startValue = NULL,
-                         iterations = 10000,
-                         burnin = 0,
-                         thin = 1,
-                         consoleUpdates = 100,
-                         currentChain = 1,
-                         parallel = NULL,
-                         message = TRUE)
-  return(defaultSettings)
-}
-
-
