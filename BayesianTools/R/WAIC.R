@@ -12,20 +12,21 @@
 #'
 #'
 #' The WAIC is constructed as
-#' \ifelse{html}{\out{<center><em>WAIC = -2 * (lppd - p<sub>WAIC</sub>)</em></center><br>}}{\deqn{WAIC = -2 * (lppd - p_{WAIC})}}
+#' \deqn{WAIC = -2 * (lppd - p_{WAIC})}
 #'
 #' The lppd (log pointwise predictive density), defined in Gelman et al., 2013, eq. 4 as
-#' \ifelse{html}{\out{<center><em>lpdd = &Sigma;<sub>i=1</sub><sup>n</sup> log 1/S &Sigma;<sub>s=1</sub><sup>S</sup> p(y<sub>i</sub> | &Theta;<sup>s</sup>)</em></center><br>}}{\deqn{lppd = \sum_{i=1}^n \log \left(\frac{1}{S} \sum_{s=1}^S p(y_i | \theta^s)\right)}}
+#' 
+#' \deqn{lppd = \sum_{i=1}^n \log \left(\frac{1}{S} \sum_{s=1}^S p(y_i | \theta^s)\right)}
 #' 
 #'
-#' The value of \ifelse{html}{\out{<em>p<sub>WAIC</sub></em>}}{\eqn{p_WAIC}} can be calculated in two ways, the method used is determined by the
+#' The value of \eqn{p_WAIC} can be calculated in two ways, the method used is determined by the
 #' \code{method} argument.
 #'
 #' Method 1 is defined as,
-#' \ifelse{html}{\out{<center><em>p<sub>WAIC1</sub> = 2 &Sigma;<sub>i=1</sub><sup>n</sup> \{log[1/S &Sigma;<sub>s=1</sub><sup>S</sup> p(y<sub>i</sub> | &Theta;<sup>s</sup>)] - 1/S &Sigma;<sub>s=1</sub><sup>S</sup> log p(y<sub>i</sub> | &Theta;<sup>s</sup>)\}</em></center><br>}}{\deqn{p_{WAIC1} = 2 \sum_{i=1}^{n} (\log (\frac{1}{S} \sum_{s=1}^{S} p(y_i \ \theta^s)) - \frac{1}{S} \sum_{s = 1}^{S} \log p(y_i | \theta^s))}}
+#' \deqn{p_{WAIC1} = 2 \sum_{i=1}^{n} (\log (\frac{1}{S} \sum_{s=1}^{S} p(y_i \ \theta^s)) - \frac{1}{S} \sum_{s = 1}^{S} \log p(y_i | \theta^s))}
 #' Method 2 is defined as,
-#' \ifelse{html}{\out{<center><em>p<sub>WAIC2</sub> = 2 &Sigma;<sub>i=1</sub><sup>n</sup> V<sub>s=1</sub><sup>S</sup>[log p(y<sub>i</sub> | &Theta;<sup>s</sup>)]</em></center><br>}}{\deqn{p_{WAIC2} = 2 \sum_{i=1}^{n} V_{s=1}^{S} (\log p(y_i | \theta^s))}}
-#' where  \ifelse{html}{\out{<em>V<sub>s=1</sub><sup>S</sup></em>}}{\eqn{V_{s=1}^{S}}} is the sample variance.
+#' \deqn{p_{WAIC2} = 2 \sum_{i=1}^{n} V_{s=1}^{S} (\log p(y_i | \theta^s))}
+#' where  \eqn{V_{s=1}^{S}} is the sample variance.
 #' 
 #' @references
 #' 
