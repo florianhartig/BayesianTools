@@ -30,13 +30,14 @@ test_that("Samplers work in principle", {
 skip_on_cran()
 skip_on_ci()
 
+testExact = F
 
 if(testExact){
   iter = 500000
   start = 500
   iterSMC = 400
   library(msm) 
-  library(Matching) # Because this is only needed for manual testing I removed it from
+  # library(Matching) # Because this is only needed for manual testing I removed it from
   # the package dependencies. If you are running the manual tests please install
   # the package yourself.
   
@@ -63,7 +64,7 @@ if(testExact){
           invisible(capture.output(suppressMessages(out <- runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings))))
         } 
         
-        ks <- ks.boot(getSample(out, numSamples = 10000), rnorm(10000))$ks.boot.pvalue  
+        ks <- Matching::ks.boot(getSample(out, numSamples = 10000), rnorm(10000))$ks.boot.pvalue  
         
         # Test that distribution is not significally different from gaussian
         expect_true(ks>0.05)
@@ -107,7 +108,7 @@ if(testExact){
         
         #  ks <- ks.test(x[,z], pnorm)$p.value
         
-        ks <- ks.boot(x[,z], y)$ks.boot.pvalue 
+        ks <- Matching::ks.boot(x[,z], y)$ks.boot.pvalue 
         
         # Test that distribution is not significally different from gaussian
         expect_true(ks>0.05)
@@ -143,7 +144,7 @@ if(testExact){
       for(z in 1:ncol(x)){
         
         #ks <- ks.test(x[,z],pnorm)$p.value  
-        ks <- ks.boot(x[,z], y)$ks.boot.pvalue 
+        ks <- Matching::ks.boot(x[,z], y)$ks.boot.pvalue 
         # Test that distribution is not significally different from gaussian
         expect_true(ks>0.05)
         
@@ -182,7 +183,7 @@ if(testExact){
         
         # ks <- ks.test(x[,z], pnorm)$p.value
         
-        ks <- ks.boot(x[,z], y)$ks.boot.pvalue 
+        ks <- Matching::ks.boot(x[,z], y)$ks.boot.pvalue 
         
         # Test that distribution is not significally different from gaussian
         expect_true(ks>0.05)
@@ -240,7 +241,7 @@ if(testExact){
         
         # ks <- ks.test(x[,z], pnorm)$p.value
         
-        ks <- ks.boot(x[,z], y)$ks.boot.pvalue 
+        ks <- Matching::ks.boot(x[,z], y)$ks.boot.pvalue 
         
         # Test that distribution is not significally different from gaussian
         expect_true(ks>0.05)
