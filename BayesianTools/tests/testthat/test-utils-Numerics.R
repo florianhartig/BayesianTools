@@ -13,10 +13,7 @@ test_that("logSumExp", {
   expect_equal(exp(BayesianTools:::logSumExp(x, mean = T)), 9/10)
 
   x = rep(-100, 100) 
-  expect_equal(log(sum(exp(x))),   logSumExp(x))
+  expect_equal(log(sum(exp(x))),   BayesianTools:::logSumExp(x))
 
-  x = rep(-10000, 100) 
-  expect(logSumExp(x))
-  
 })
 
