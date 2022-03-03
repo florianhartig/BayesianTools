@@ -64,7 +64,7 @@ if(testExact){
           invisible(capture.output(suppressMessages(out <- runMCMC(bayesianSetup = setup, sampler = samp$BTname[i], settings = settings))))
         } 
         
-        ks <- Matching::ks.boot(getSample(out, numSamples = 10000), rnorm(10000))$ks.boot.pvalue  
+        ks <- ks.boot(getSample(out, numSamples = 10000), rnorm(10000))$ks.boot.pvalue  
         
         # Test that distribution is not significally different from gaussian
         expect_true(ks>0.05)
@@ -108,7 +108,7 @@ if(testExact){
         
         #  ks <- ks.test(x[,z], pnorm)$p.value
         
-        ks <- Matching::ks.boot(x[,z], y)$ks.boot.pvalue 
+        ks <- ks.boot(x[,z], y)$ks.boot.pvalue 
         
         # Test that distribution is not significally different from gaussian
         expect_true(ks>0.05)
@@ -144,7 +144,7 @@ if(testExact){
       for(z in 1:ncol(x)){
         
         #ks <- ks.test(x[,z],pnorm)$p.value  
-        ks <- Matching::ks.boot(x[,z], y)$ks.boot.pvalue 
+        ks <- ks.boot(x[,z], y)$ks.boot.pvalue 
         # Test that distribution is not significally different from gaussian
         expect_true(ks>0.05)
         
@@ -183,7 +183,7 @@ if(testExact){
         
         # ks <- ks.test(x[,z], pnorm)$p.value
         
-        ks <- Matching::ks.boot(x[,z], y)$ks.boot.pvalue 
+        ks <- ks.boot(x[,z], y)$ks.boot.pvalue 
         
         # Test that distribution is not significally different from gaussian
         expect_true(ks>0.05)
@@ -241,7 +241,7 @@ if(testExact){
         
         # ks <- ks.test(x[,z], pnorm)$p.value
         
-        ks <- Matching::ks.boot(x[,z], y)$ks.boot.pvalue 
+        ks <- ks.boot(x[,z], y)$ks.boot.pvalue 
         
         # Test that distribution is not significally different from gaussian
         expect_true(ks>0.05)
