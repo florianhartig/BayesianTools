@@ -36,7 +36,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
         if(i == 1 && nSamplesPerChain*length(sampler$chain) > numSamples){
           ## if getSample.mcmcSampler was called from getSample.mcmcSamplerList this warning is muted
           if (!hasArg(muteInternalGetSample)) {
-            warning("Due to internal chains, numSamples was rounded to the next number divisble by the number of chains.", call. = FALSE)
+            message("Due to internal chains, numSamples was rounded to the next number divisble by the number of chains.", call. = FALSE)
           }
         }
 
