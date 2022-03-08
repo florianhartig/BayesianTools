@@ -82,7 +82,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
         nSamplesPerChain <- ceiling(numSamples/length(sampler$chain))
         
         if(i == 1){
-         if(nSamplesPerChain*length(sampler$chain) > numSamples) warning("Due to internal chains, numSamples was rounded to the next number divisble by the number of chains.", call. = FALSE)
+         if(nSamplesPerChain*length(sampler$chain) > numSamples) message("Due to internal chains, numSamples was rounded to the next number divisble by the number of chains.", call. = FALSE)
         }
         
         temp <- sampleEquallySpaced(temp, nSamplesPerChain)
