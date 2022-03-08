@@ -5,10 +5,12 @@ output:
     toc: true
 vignette: >
   %\VignetteIndexEntry{Interfacing your model with R}
-  %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
 abstract: "This tutorial discusses how to interface models written in other programming languages with R, so that they can be fit with BayesianTools" 
 author: Florian Hartig
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r global_options, include=FALSE}
