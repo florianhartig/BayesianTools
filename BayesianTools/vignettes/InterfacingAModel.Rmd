@@ -5,10 +5,12 @@ output:
     toc: true
 vignette: >
   %\VignetteIndexEntry{Interfacing your model with R}
-  %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
 abstract: "This tutorial discusses how to interface models written in other programming languages with R, so that they can be fit with BayesianTools" 
 author: Florian Hartig
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r global_options, include=FALSE}
@@ -289,7 +291,6 @@ plot(res)
 Thread safety quite generally means that you can execute multiple instances of your code on your hardware. There are various things that can limit Thread safety, for example 
 
 * writing outputs to file (several threads might write to the same file at the same time)
-
 
 
 

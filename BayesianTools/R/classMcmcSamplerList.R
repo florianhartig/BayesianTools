@@ -142,7 +142,7 @@ getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, sta
       out[[i]] = getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F)
     }
 
-    if(class(out[[1]]) == "mcmc.list") out = unlist(out, recursive = F)
+    if(inherits(out[[1]], "mcmc.list")) out = unlist(out, recursive = F)
     class(out) = "mcmc.list"
     out = out
   }

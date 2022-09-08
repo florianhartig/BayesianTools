@@ -14,7 +14,7 @@ The package contains 2 central functions, \code{\link{createBayesianSetup}}, whi
 
 The package can of course also be used for general (non-Bayesian) target functions.
 
-To use the package, a first step to use \code{\link{createBayesianSetup}} to create a BayesianSetup, which usually contains prior and likelihood densities, or in general a target function.
+To use the package, a first step is to use \code{\link{createBayesianSetup}} to create a BayesianSetup, which usually contains prior and likelihood densities, or in general a target function.
 
 Those can be sampled with \code{\link{runMCMC}}, which can call a number of general purpose Metropolis sampler, including the \code{\link{Metropolis}} that allows to specify various popular Metropolis variants such as adaptive and/or delayed rejection Metropolis; two variants of differential evolution MCMC \code{\link{DE}}, \code{\link{DEzs}}, two variants of DREAM  \code{\link{DREAM}} and \code{\link{DREAMzs}}, the \code{\link{Twalk}} MCMC, and a Sequential Monte Carlo sampler \code{\link{smcSampler}}.
 
