@@ -117,13 +117,9 @@ sampleEquallySpaced <- function(x, numSamples) {
     warning("numSamples is less than 1! Only the first sample was selected.")
   }
   
-  sel <- seq(1, len, len = numSamples) # RB: what does len = numSample do? pass as argument to seq? -> seq doesnt use it
+  sel <- seq(1, len, len = numSamples) 
   if (is.matrix(x)) {
     out <- x[sel, , drop=F]
-    # if x has only a single col, x[sel,] is a vector and needs to be converted ## RB: add drop=F before and remove if statement to avoid loss of colnames
-#    if(!is.matrix(out)) {
-#      out <- matrix(out, ncol = ncol(x))
-#    }
   } else {
     out <- x[sel]
   }
@@ -131,7 +127,7 @@ sampleEquallySpaced <- function(x, numSamples) {
   return(out)
 }
 
-#' Checks if thin is conistent with nTotalSamples samples and if not corrects it.
+#' Checks if thin is consistent with nTotalSamples samples and if not corrects it.
 #' @author Tankred Ott
 #' @param nTotalSamples total number of rows/samples 
 #' @param thin thinning

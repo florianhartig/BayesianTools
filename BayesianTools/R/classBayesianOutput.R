@@ -110,7 +110,7 @@ getSample.data.frame <- function(sampler, parametersOnly = T, coda = F, start = 
 #' @export
 getSample.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, reportDiagnostics = F, ...){
   
-  if(!is.null(numSamples)) numSamples = ceiling(numSamples/length(sampler)) # RB: why ceiling?
+  if(!is.null(numSamples)) numSamples = ceiling(numSamples/length(sampler))
   
   if(coda == F){
     # out = NULL
@@ -131,7 +131,7 @@ getSample.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end
       out[[i]] = getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F)
     }
     
-    if(class(out[[1]]) == "mcmc.list") out = unlist(out, recursive = F) # RB: why unlist??
+    if(class(out[[1]]) == "mcmc.list") out = unlist(out, recursive = F)
     class(out) = "mcmc.list"
     out = out
   }
@@ -165,7 +165,7 @@ getSample.mcmc <- function(sampler, parametersOnly = T, coda = F, start = 1, end
     
   } else if(coda == F){
     # mcmc objects can contain matrices or vectors
-    # RB:  do vector case as 1-d matrix?
+    # TODO:  do vector case as 1-d matrix?
     if (is.matrix(sampler)) {
       out <- getSample(as.matrix(sampler), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics = reportDiagnostics)
     } else {

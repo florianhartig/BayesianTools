@@ -10,7 +10,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
 
     # Sample size
     if(thin == 1 && !is.null(numSamples)){
-      out <- sampleEquallySpaced(out, numSamples) # RB: here colnames get lost
+      out <- sampleEquallySpaced(out, numSamples) # TODO: here colnames get lost
     }
 
     # TODO - see matrix, need to check if both thing and numSamples is set
@@ -69,8 +69,7 @@ getmcmcSamplerSampleHelper <- function(sampler, parametersOnly = T, coda = F, st
   if(is.null(end)) end = nrow(sampler$chain)
 
   if(parametersOnly == T) {
-    out = sampler$chain[start:end,1:sampler$setup$numPars,drop=F] # RB: drop=F delete next lines
-    #if(class(out)[1] == "numeric") out = as.matrix(out) # case 1 parameter
+    out = sampler$chain[start:end,1:sampler$setup$numPars,drop=F]
     if(!is.null(sampler$setup$names)) colnames(out) = sampler$setup$names
   }
   else {
