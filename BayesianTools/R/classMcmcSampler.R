@@ -4,13 +4,13 @@
 #' @export
 getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics= F, ...){
   
-  if (class(sampler$chain)[1] == "matrix"){
+  if (inherits(sampler$chain, "matrix")){
     
     if(is.null(end)) end = nrow(sampler$chain)
     
     if(parametersOnly == T) {
       out = sampler$chain[start:end,1:sampler$setup$numPars] 
-      if(class(out)[1] == "numeric") out = as.matrix(out) # case 1 parameter
+      if(inherits(out, "numeric")) out = as.matrix(out) # case 1 parameter
       if(!is.null(sampler$setup$names)) colnames(out) = sampler$setup$names
     }
     else {
@@ -43,7 +43,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     if (!is.null(whichParameters)) out = out[,whichParameters, drop = F]
     if(coda == T) out = makeObjectClassCodaMCMC(out, start = start, end = end, thin = thin)
   } 
-  else if (class(sampler$chain) == "mcmc.list"){
+  else if (inherits(sampler$chain, "mcmc.list")){
     
     out = list()
     
@@ -56,7 +56,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       
       if(parametersOnly == T) {
         temp = temp[,1:sampler$setup$numPars] 
-        if(class(temp)[1] == "numeric") temp = as.matrix(temp) # case 1 parameter
+        if(inherits(temp, "numeric")) temp = as.matrix(temp) # case 1 parameter
         if(!is.null(sampler$setup$names)) colnames(temp) = sampler$setup$names
       }
       else {

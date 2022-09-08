@@ -17,7 +17,7 @@ convertCoda <- function(sampler, names = NULL, info = NULL, likelihood = NULL){
 
   likelihood <- list(density = likelihood)
   
-  if(class(sampler) == "mcmc"){
+  if(inherits(sampler, "mcmc")){
     
     if(is.null(names)){
       names <- paste("Par",1:ncol(sampler))
@@ -29,7 +29,7 @@ convertCoda <- function(sampler, names = NULL, info = NULL, likelihood = NULL){
     class(out) = c("mcmcSampler", "bayesianOutput")
     
     
-  }else{ if(class(sampler) == "mcmc.list"){
+  }else{ if(inherits(sampler, "mcmc.list")){
     
     if(is.null(names)){
       names <- paste("Par",1:ncol(sampler[[1]]))

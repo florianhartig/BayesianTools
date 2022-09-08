@@ -25,7 +25,7 @@ smcSampler <- function(bayesianSetup, initialParticles = 1000, iterations = 10, 
   info$survivingParticles = rep(NA, iterations)
   
   
-  if(class(initialParticles)[1] == "numeric"){
+  if(inherits(initialParticles, "numeric")){
     initialParticles = bayesianSetup$prior$sampler(initialParticles)
   }
   

@@ -34,7 +34,7 @@ getSample.matrix <- function(sampler, parametersOnly = T, coda = F, start = 1, e
     
     if(parametersOnly == T | includesProbabilities == F) {
       out = sampler[start:end,1:nPars] 
-      if(class(out)[1] == "numeric") out = as.matrix(sampler) # case 1 parameter
+      if(inherits(out,"numeric")) out = as.matrix(sampler) # case 1 parameter
     } else {
       out = out[start:end,]
       #if(!is.null(sampler$setup$names)) colnames(out) = c(sampler$setup$names, "Lposterior", "Llikelihood", "Lprior")
@@ -157,7 +157,7 @@ getSample.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end
       out[[i]] = getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F)
     }
     
-    if(class(out[[1]]) == "mcmc.list") out = unlist(out, recursive = F)
+    if(inherits(out[[1]], "mcmc.list")) out = unlist(out, recursive = F)
     class(out) = "mcmc.list"
     out = out
   }
