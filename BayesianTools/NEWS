@@ -1,13 +1,13 @@
 NOTE: for more news about the package, see https://github.com/florianhartig/BayesianTools/releases
 
-
 # BayesianTools 0.1.7
 
 The release was neccessary because of a change to CRAN, see https://github.com/florianhartig/BayesianTools/issues/191
 
 Bugfixes 
 
-- various small bugfixes, see 
+- fixed HTML validation problems due to the recent switch to HTML5 for documentation pages in R 4.2.0, see also https://github.com/florianhartig/BayesianTools/issues/240
+- some other small bugfixes
 
 # BayesianTools 0.1.6
 
@@ -27,7 +27,7 @@ Bugfixes
 
 - Bugfix AR1 likelihood https://github.com/florianhartig/BayesianTools/issues/169
 - Bugfix restart MCMC https://github.com/florianhartig/BayesianTools/issues/158
-
+- bugfix for new behavior of class(matrix) in CRAN devel, see https://github.com/florianhartig/BayesianTools/issues/191
 
 # BayesianTools 0.1.5
 

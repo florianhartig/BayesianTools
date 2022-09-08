@@ -4,7 +4,21 @@ This file contains CRAN submission info / communication
 
 ### Submission 1
 
-This is minor update that was neccesary because of a change to behavior of class(matrix) in CRAN devel, see https://github.com/florianhartig/BayesianTools/issues/191. See NEWS for changes.
+This is minor update that was necessary because of some HTML validation problems due to the recent switch to HTML5 for documentation pages in R 4.2.0, see also https://github.com/florianhartig/BayesianTools/issues/240
+
+See NEWS for other changes.
+
+This release was tested without apparent problems under
+
+* local MAC OS 10.14.6 (Mojave), R 3.6.1
+* http://win-builder.r-project.org/ - oldrelease / devel / release
+* Linux (Travis CI) - oldrel / release / devel
+
+## Version 0.1.7
+
+### Submission 1
+
+This is minor update that was necessary because of a change to behavior of class(matrix) in CRAN devel, see https://github.com/florianhartig/BayesianTools/issues/191. See NEWS for changes.
 
 This release was tested without apparent problems under
 
