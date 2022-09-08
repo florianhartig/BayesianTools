@@ -22,7 +22,6 @@ getSample(
   thin = 1,
   numSamples = NULL,
   whichParameters = NULL,
-  includesProbabilities = F,
   reportDiagnostics = FALSE,
   ...
 )
@@ -36,7 +35,6 @@ getSample(
   thin = "auto",
   numSamples = NULL,
   whichParameters = NULL,
-  includesProbabilities = F,
   reportDiagnostics = F,
   ...
 )
@@ -50,7 +48,6 @@ getSample(
   thin = "auto",
   numSamples = NULL,
   whichParameters = NULL,
-  includesProbabilities = F,
   reportDiagnostics = F,
   ...
 )
@@ -64,7 +61,6 @@ getSample(
   thin = "auto",
   numSamples = NULL,
   whichParameters = NULL,
-  includesProbabilities = F,
   reportDiagnostics = F,
   ...
 )
@@ -78,7 +74,6 @@ getSample(
   thin = "auto",
   numSamples = NULL,
   whichParameters = NULL,
-  includesProbabilities = F,
   reportDiagnostics = F,
   ...
 )
@@ -92,7 +87,6 @@ getSample(
   thin = "auto",
   numSamples = NULL,
   whichParameters = NULL,
-  includesProbabilities = F,
   reportDiagnostics = F,
   ...
 )
@@ -106,7 +100,6 @@ getSample(
   thin = "auto",
   numSamples = NULL,
   whichParameters = NULL,
-  includesProbabilities = F,
   reportDiagnostics = F,
   ...
 )
@@ -120,7 +113,6 @@ getSample(
   thin = "auto",
   numSamples = NULL,
   whichParameters = NULL,
-  includesProbabilities = F,
   reportDiagnostics = F,
   ...
 )
@@ -134,7 +126,6 @@ getSample(
   thin = "auto",
   numSamples = NULL,
   whichParameters = NULL,
-  includesProbabilities = F,
   reportDiagnostics = F,
   ...
 )
@@ -148,7 +139,6 @@ getSample(
   thin = "auto",
   numSamples = NULL,
   whichParameters = NULL,
-  includesProbabilities = F,
   reportDiagnostics = F,
   ...
 )
@@ -156,7 +146,7 @@ getSample(
 \arguments{
 \item{sampler}{an object of class mcmcSampler, mcmcSamplerList, smcSampler, smcSamplerList, mcmc, mcmc.list, double, numeric}
 
-\item{parametersOnly}{if F, likelihood, posterior and prior values are also provided in the output}
+\item{parametersOnly}{for a BT output, if F, likelihood, posterior and prior values are also provided in the output}
 
 \item{coda}{works only for mcmc classes - provides output as a coda object. Note: if mcmcSamplerList contains mcmc samplers such as DE that have several chains, the internal chains will be collapsed. This may not be the desired behavior for all applications.}
 
@@ -169,8 +159,6 @@ getSample(
 \item{numSamples}{sample size (only used if thin = 1). If you want to use numSamples set thin to 1.}
 
 \item{whichParameters}{possibility to select parameters by index}
-
-\item{includesProbabilities}{applies only to getSample.Matrix. logical, determining whether probabilities should be included in the result.}
 
 \item{reportDiagnostics}{logical, determines whether settings should be included in the output}
 

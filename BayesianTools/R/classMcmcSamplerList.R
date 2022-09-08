@@ -119,7 +119,7 @@ plot.mcmcSamplerList <- function(x, ...){
 
 #' @author Florian Hartig
 #' @export
-getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics, ...){
+getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics, ...){
 
   
   if(!is.null(numSamples)) nS = ceiling(numSamples/length(sampler))

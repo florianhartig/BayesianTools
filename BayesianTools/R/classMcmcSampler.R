@@ -2,11 +2,11 @@
 
 #' @author Florian Hartig
 #' @export
-getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics= F, ...){
+getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics= F, ...){
 
   if (inherits(sampler$chain, "matrix")){
 
-    out <- getmcmcSamplerSampleHelper(sampler, parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics= reportDiagnostics, ...)
+    out <- getmcmcSamplerSampleHelper(sampler, parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= reportDiagnostics, ...)
 
     # Sample size
     if(thin == 1 && !is.null(numSamples)){
@@ -27,7 +27,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       temp$chain = sampler$chain[[i]]
       if(is.null(end)) end = nrow(temp$chain)
 
-      temp <- getmcmcSamplerSampleHelper(temp, parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics= reportDiagnostics, ...)
+      temp <- getmcmcSamplerSampleHelper(temp, parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= reportDiagnostics, ...)
       # Sample size
       if(thin == 1 && !is.null(numSamples)){
         nSamplesPerChain <- ceiling(numSamples/length(sampler$chain))
@@ -63,7 +63,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
 
 #' @author Robert Bosek
 #' @export
-getmcmcSamplerSampleHelper <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics= F, ...){
+getmcmcSamplerSampleHelper <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics= F, ...){
 
   if(is.null(end)) end = nrow(sampler$chain)
 
