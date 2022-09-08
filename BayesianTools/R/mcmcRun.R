@@ -361,6 +361,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
                                                  gibbsProbabilities = NULL))
  
       if (settings$sampler == "DREAM"){
+        defaultSettings$DEpairs = 2
         defaultSettings$pCRupdate <- TRUE
       }
       
