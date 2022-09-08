@@ -32,7 +32,7 @@
 #' 
 #' Gelman, Andrew and Jessica Hwang and Aki Vehtari (2013), "Understanding Predictive Information Criteria for Bayesian Models," \url{http://www.stat.columbia.edu/~gelman/research/unpublished/waic_understand_final.pdf}.
 #'
-#' Watanabe, S. (2010). "Asymptotic Equivalence of Bayes Cross Validation and Widely Applicable Information Criterion in Singular Learning Theory", Journal of Machine Learning Research, \url{http://www.jmlr.org/papers/v11/watanabe10a.html}.
+#' Watanabe, S. (2010). "Asymptotic Equivalence of Bayes Cross Validation and Widely Applicable Information Criterion in Singular Learning Theory", Journal of Machine Learning Research, \url{https://www.jmlr.org/papers/v11/watanabe10a.html}.
 #' @example /inst/examples/WAICHelp.R
 #' @seealso \code{\link{DIC}}, \code{\link{MAP}}, \code{\link{marginalLikelihood}}
 #' @export

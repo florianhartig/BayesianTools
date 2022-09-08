@@ -21,7 +21,5 @@ Checks if the thin argument is consistent with the data consisting of nTotalSamp
 }
 \author{
 Tankred Ott
-
-Tankred Ott
 }
 \keyword{internal}

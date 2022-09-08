@@ -19,7 +19,7 @@
 #' 
 #' To get the suggested citation, run citation("BayesianTools")
 #'
-#' To report bugs or ask for help, post a \href{http://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example}{reproducible example} via the BayesianTools \href{https://github.com/florianhartig/BayesianTools/issues}{issue tracker} on GitHub. 
+#' To report bugs or ask for help, post a \href{https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example}{reproducible example} via the BayesianTools \href{https://github.com/florianhartig/BayesianTools/issues}{issue tracker} on GitHub. 
 #'
 #'Acknowledgements: The creation and maintenance of this package profited from funding and collaboration through Cost Action FP 1304 PROFOUND, DFG	DO 786/12-1 CONECT, EU FP7 ERA-NET Sumforest REFORCE and Bayklif Project BLIZ. 
 NULL

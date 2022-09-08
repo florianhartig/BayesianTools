@@ -15,7 +15,7 @@
 M <- function(startValue = NULL, iterations  = 10000, nBI = 0 , parmin = NULL, parmax= NULL, f = 1, FUN, consoleUpdates=1000) {
   
   
-  if(class(FUN) == "BayesianSetup"){
+  if(inherits(FUN, "BayesianSetup")){
      if(FUN$numPars==1) stop("Sampler cannot be started for 1 parameter")
       
     if(is.null(startValue)){
@@ -100,7 +100,7 @@ M <- function(startValue = NULL, iterations  = 10000, nBI = 0 , parmin = NULL, p
 # #' @export
 AM <- function(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL, parmax = NULL, FUN, f = 1, eps = 0) {
   
-  if(class(FUN) == "BayesianSetup"){
+  if(inherits(FUN, "BayesianSetup")){
     if(FUN$numPars==1) stop("Sampler cannot be started for 1 parameter")
     if(is.null(startValue)){
       startValue <- FUN$prior$sampler()
@@ -181,7 +181,7 @@ AM <- function(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL, pa
 # #' @export
 DR <- function(startValue = NULL, iterations = 10000, nBI=0, parmin = NULL, parmax =NULL, f1 = 1, f2= 0.5, FUN) {
   
-  if(class(FUN) == "BayesianSetup"){
+  if(inherits(FUN, "BayesianSetup")){
     if(FUN$numPars==1) stop("Sampler cannot be started for 1 parameter")
     if(is.null(startValue)){
       startValue <- FUN$prior$sampler()
@@ -267,7 +267,7 @@ DR <- function(startValue = NULL, iterations = 10000, nBI=0, parmin = NULL, parm
 # #' @export
 DRAM <- function(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL, parmax = NULL, FUN, f = 1, eps = 0) {
   
-  if(class(FUN) == "BayesianSetup"){
+  if(inherits(FUN, "BayesianSetup")){
     if(FUN$numPars==1) stop("Sampler cannot be started for 1 parameter")
     if(is.null(startValue)){
       startValue <- FUN$prior$sampler()

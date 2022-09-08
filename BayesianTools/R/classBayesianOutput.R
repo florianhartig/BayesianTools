@@ -5,7 +5,7 @@
 #' @author Florian Hartig
 #' @param sampler an object of class mcmcSampler, mcmcSamplerList, smcSampler, smcSamplerList, mcmc, mcmc.list, double, numeric
 #' @param parametersOnly for a BT output, if F, likelihood, posterior and prior values are also provided in the output
-#' @param coda works only for mcmc classes - provides output as a coda object. Note: if mcmcSamplerList contains mcmc samplers such as DE that have several chains, the internal chains will be collapsed. This may not be the desired behavior for all applications. 
+#' @param coda works only for mcmc classes - provides output as a coda object. Note: if mcmcSamplerList contains mcmc samplers such as DE that have several chains, the internal chains will be collapsed. This may not be the desired behavior for all applications.
 #' @param start for mcmc samplers start value in the chain. For SMC samplers, start particle
 #' @param end for mcmc samplers end value in the chain. For SMC samplers, end particle
 #' @param thin thinning parameter. Either an integer determining the thinning intervall (default is 1) or "auto" for automatic thinning.
@@ -25,10 +25,10 @@ getSample <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NU
 #' @author Florian Hartig
 #' @export
 getSample.matrix <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, reportDiagnostics = F, ...){
-  
+
     if(is.null(end)) end = nrow(sampler)
 
-    out = out[start:end,, drop=F] 
+    out = out[start:end,, drop=F]
 
     ########################
     # THINNING
@@ -39,7 +39,7 @@ getSample.matrix <- function(sampler, parametersOnly = T, coda = F, start = 1, e
       out <- sampleEquallySpaced(out, numSamples)
     } else {
       sel = seq(1, nTotalSamples, by = thin)
-      out = out[sel,, drop=F] 
+      out = out[sel,, drop=F]
     }
 
     if (!is.null(whichParameters)) out = out[,whichParameters, drop = FALSE]
@@ -54,23 +54,23 @@ getSample.matrix <- function(sampler, parametersOnly = T, coda = F, start = 1, e
 #' @rdname getSample
 #' @author Tankred Ott
 #' @export
-# TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector istead of a matrix, if 
+# TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector istead of a matrix, if
 #       the mcmc object passed to getSample.mcmc contains a vector.
 getSample.double <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, reportDiagnostics = F, ...){
   if(is.null(end)) end = length(sampler)
   out <- sampler[start:end]
-  
+
   nTotalSamples <- length(out)
-  
+
   thin = correctThin(nTotalSamples, thin)
-  
+
   if (thin == 1 && !is.null(numSamples)) {
     out <- sampleEquallySpaced(out, numSamples)
   } else {
     sel = seq(1, nTotalSamples, by = thin)
-    out = out[sel]  
+    out = out[sel]
   }
-  
+
   return(out)
 }
 
@@ -78,23 +78,23 @@ getSample.double <- function(sampler, parametersOnly = T, coda = F, start = 1, e
 #' @rdname getSample
 #' @author Tankred Ott
 #' @export
-# TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector instead of a matrix, if 
+# TODO: This is right now only a helper function for getSample.mcmc. It is needed to return a vector instead of a matrix, if
 #       the mcmc object passed to getSample.mcmc contains a vector.
 getSample.integer <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, reportDiagnostics = F, ...){
   if(is.null(end)) end = length(sampler)
   out <- sampler[start:end]
-  
+
   nTotalSamples <- length(out)
-  
+
   thin = correctThin(nTotalSamples, thin)
-  
+
   if (thin == 1 && !is.null(numSamples)) {
     out <- sampleEquallySpaced(out, numSamples)
   } else {
     sel = seq(1, nTotalSamples, by = thin)
-    out = out[sel]  
+    out = out[sel]
   }
-  
+
   return(out)
 }
 
@@ -109,9 +109,9 @@ getSample.data.frame <- function(sampler, parametersOnly = T, coda = F, start = 
 #' @author Tankred Ott
 #' @export
 getSample.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, reportDiagnostics = F, ...){
-  
+
   if(!is.null(numSamples)) numSamples = ceiling(numSamples/length(sampler))
-  
+
   if(coda == F){
     # out = NULL
     out <- rep(list(NA), length(sampler))
@@ -121,21 +121,21 @@ getSample.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end
     }
     out <- combineChains(out)
   }
-  
+
   if(coda == T){
-    
+
     out = list()
-    
+
     for (i in 1:length(sampler)){
-      
+
       out[[i]] = getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F)
     }
-    
-    if(class(out[[1]]) == "mcmc.list") out = unlist(out, recursive = F)
+
+    if(inherits(out[[1]], "mcmc.list")) out = unlist(out, recursive = F)
     class(out) = "mcmc.list"
     out = out
   }
-  
+
   return(out)
 }
 
@@ -145,7 +145,7 @@ getSample.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end
 #' @author Tankred Ott
 #' @export
 getSample.mcmc <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, reportDiagnostics = F, ...){
-  
+
   if(coda == T){
     # mcmc objects can contain matrices or vectors
     if (is.matrix(sampler)) {
@@ -153,16 +153,16 @@ getSample.mcmc <- function(sampler, parametersOnly = T, coda = F, start = 1, end
     } else {
       nTotalSamples <- length(sampler)
     }
-    
+
     if (is.null(end)) end = nTotalSamples
-    
+
     # check/correct thin
     thin <- correctThin(nTotalSamples, thin)
-    
+
     # see http://svitsrv25.epfl.ch/R-doc/library/coda/html/window.mcmc.html
     # for coda's window implementation
     return(window(sampler, start = start, end = end, thin = thin))
-    
+
   } else if(coda == F){
     # mcmc objects can contain matrices or vectors
     # TODO:  do vector case as 1-d matrix?
@@ -180,26 +180,26 @@ getSample.mcmc <- function(sampler, parametersOnly = T, coda = F, start = 1, end
 #' @rdname getSample
 #' @export
 getSample.mcmc.list <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = "auto", numSamples = NULL, whichParameters = NULL, reportDiagnostics = F, ...){
-  
+
   # TODO: implement handling of wrong inputs?
-  
+
   if(coda == T){
-    
+
     if (is.matrix(sampler[[1]])) {
       nTotalSamples <- nrow(sampler[[1]])
     } else {
       nTotalSamples <- length(sampler[[1]])
     }
-    
+
     if (is.null(end)) end = nTotalSamples
-    
+
     # check/correct thin
     thin <- correctThin(nTotalSamples, thin)
-    
+
     # see http://svitsrv25.epfl.ch/R-doc/library/coda/html/window.mcmc.html
     # for coda's window implementation
     return(window(sampler, start = start, end = end, thin = thin))
-    
+
   } else if(coda == F){
     if(is.matrix(sampler[[1]])) {
       return(getSample(combineChains(sampler), parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics = reportDiagnostics))
@@ -228,27 +228,25 @@ getSample.MCMC_refClass <- function(sampler, parametersOnly = T, coda = F, start
 
 
 #' Merge Chains
-#' 
+#'
 #' Merge a list of outputs from MCMC / SMC samplers
-#' 
+#'
 #' The function merges a list of outputs from MCMC / SMC samplers into a single matrix. Requirement is that the list contains classes for which the \code{\link{getSample}} function works
-#' 
+#'
 #' @param l a list with objects that can be accessed with \code{\link{getSample}}
 #' @param ... arguments to be passed on to \code{\link{getSample}}
-#' 
+#'
 #' @return a matrix
-#' 
+#'
 #' @author Florian Hartig
-#' 
+#'
 #' @export
 mergeChains <- function(l, ...){
-  
+
   x = getSample(l[[1]], ...)
-  
+
   for(i in 2:length(l)){
     x = rbind(x, getSample(l[[i]], ...))
   }
   return(x)
 }
-
-

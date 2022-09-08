@@ -69,7 +69,7 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
     
   ## NOT RESTART STARTS HERE ###################
     
-  }else if(class(bayesianSetup) == "BayesianSetup"){
+  }else if(inherits(bayesianSetup, "BayesianSetup")){
     restart <- FALSE
 
     if(is.null(settings$parallel)) settings$parallel <- bayesianSetup$parallel
