@@ -4,7 +4,7 @@
 #' @export
 getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics= F, ...){
 
-  if (class(sampler$chain)[1] == "matrix"){
+  if (inherits(sampler$chain, "matrix")){
 
     out <- getmcmcSamplerSampleHelper(sampler, parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, includesProbabilities = includesProbabilities, reportDiagnostics= reportDiagnostics, ...)
 
@@ -18,10 +18,9 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     #############
 
   }
-  else if (class(sampler$chain) == "mcmc.list"){
+  else if (inherits(sampler$chain, "mcmc.list")){
 
     out = list()
-
 
     for (i in 1:length(sampler$chain)){
       temp = sampler

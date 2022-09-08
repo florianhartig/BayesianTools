@@ -151,11 +151,11 @@ createBayesianSetup <- function(likelihood,
 #' @export
 checkBayesianSetup <- function(bayesianSetup, parallel = F){
   
-  if(class(bayesianSetup) == "function"){
+  if(inherits(bayesianSetup, "function")){
     if(is.null(parallel)) parallel = F
     bayesianSetup = createBayesianSetup(bayesianSetup, parallel = parallel)
   } 
-  else if(class(bayesianSetup) == "BayesianSetup"){
+  else if(inherits(bayesianSetup, "BayesianSetup")){
     if(!is.null(parallel)) if(parallel == T & bayesianSetup$parallel == F) stop("parallel = T requested in sampler but BayesianSetup does not support parallelization. See help of BayesianSetup on how to enable parallelization")
   } 
   else stop("bayesianSetup must be class BayesianSetup or a function")
