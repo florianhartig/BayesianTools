@@ -211,21 +211,5 @@ sample_2 <- getSample(out_2, numSamples = 100)
 \author{
 Florian Hartig
 
-Florian Hartig
-
-Tankred Ott
-
-Tankred Ott
-
-Tankred Ott
-
-Tankred Ott
-
-Tankred Ott
-
-Tankred Ott
-
-Tankred Ott
-
 Tankred Ott
 }
