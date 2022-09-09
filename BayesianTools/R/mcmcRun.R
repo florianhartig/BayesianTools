@@ -1,6 +1,7 @@
 #' Main wrapper function to start MCMCs, particle MCMCs and SMCs
 #' @author Florian Hartig
-#' @param bayesianSetup either a BayesianSetup (see \code{\link{createBayesianSetup}}), a function, or a BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for how to restart a sampler. #' @param sampler sampling algorithm to be run. Default is DEzs. Options are "Metropolis", "AM", "DR", "DRAM", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions. 
+#' @param bayesianSetup either a BayesianSetup (see \code{\link{createBayesianSetup}}), a function, or a BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for how to restart a sampler. 
+#' @param sampler sampling algorithm to be run. Default is DEzs. Options are "Metropolis", "AM", "DR", "DRAM", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions. 
 #' @param settings list with settings for each sampler. If a setting is not provided, defaults (see \code{\link{applySettingsDefault}}) will be used.
 #' @details The runMCMC function can be started with either one of 
 #' 

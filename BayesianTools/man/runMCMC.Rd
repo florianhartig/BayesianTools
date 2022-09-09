@@ -7,7 +7,9 @@
 runMCMC(bayesianSetup, sampler = "DEzs", settings = NULL)
 }
 \arguments{
-\item{bayesianSetup}{either a BayesianSetup (see \code{\link{createBayesianSetup}}), a function, or a BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for how to restart a sampler. #' @param sampler sampling algorithm to be run. Default is DEzs. Options are "Metropolis", "AM", "DR", "DRAM", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions.}
+\item{bayesianSetup}{either a BayesianSetup (see \code{\link{createBayesianSetup}}), a function, or a BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for how to restart a sampler.}
+
+\item{sampler}{sampling algorithm to be run. Default is DEzs. Options are "Metropolis", "AM", "DR", "DRAM", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions.}
 
 \item{settings}{list with settings for each sampler. If a setting is not provided, defaults (see \code{\link{applySettingsDefault}}) will be used.}
 }
