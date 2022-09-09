@@ -7,11 +7,9 @@
 runMCMC(bayesianSetup, sampler = "DEzs", settings = NULL)
 }
 \arguments{
-\item{bayesianSetup}{either a BayesianSetup (see \code{\link{createBayesianSetup}}) or a BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for how to restart a sampler.}
+\item{bayesianSetup}{either a BayesianSetup (see \code{\link{createBayesianSetup}}), a function, or a BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for how to restart a sampler. #' @param sampler sampling algorithm to be run. Default is DEzs. Options are "Metropolis", "AM", "DR", "DRAM", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions.}
 
-\item{sampler}{sampling algorithm to be run. Default is DEzs. Options are "Metropolis", "AM", "DR", "DRAM", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions.}
-
-\item{settings}{list with settings for each sampler (see help of sampler for details). If a setting is not provided, defaults (see \code{\link{applySettingsDefault}}) will be used. You can see the default values by running \code{\link{applySettingsDefault}} with the respective sampler name, or in the help of the samplers.}
+\item{settings}{list with settings for each sampler. If a setting is not provided, defaults (see \code{\link{applySettingsDefault}}) will be used.}
 }
 \value{
 The function returns an object of class mcmcSampler (if one chain is run) or mcmcSamplerList. Both have the superclass bayesianOutput. It is possible to extract the samples as a coda object or matrix with \code{\link{getSample}}.
@@ -21,7 +19,25 @@ It is also possible to summarize the posterior as a new prior via \code{\link{cr
 Main wrapper function to start MCMCs, particle MCMCs and SMCs
 }
 \details{
-The runMCMC function can be started with either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. If a bayesianSetup is provided, check if appropriate parallization options are used - many samplers can make use of parallelization if this option is activated when the class is created.
+The runMCMC function can be started with either one of
+\enumerate{
+\item an object of class BayesianSetup with prior and likelihood function (created with \code{\link{createBayesianSetup}}). check if appropriate parallelization options are used - many samplers can make use of parallelization if this option is activated when the class is created.
+2  a log posterior or other target function,
+2  an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run.
+}
+
+Settings for the sampler are provides as a list. You can see the default values by running \code{\link{applySettingsDefault}} with the respective sampler name. The following settings can be used for all MCMCs:
+\itemize{
+\item startValue (no default) start values for the MCMC. Note that DE family samplers require a matrix of start values
+\item iterations (10000) the MCMC iterations
+\item burnin (0) burnin
+\item thin (1) thinning while sampling
+\item consoleUpdates (100) update frequency for console updates
+\item parallel (NULL) whether parallelization is to be used
+\item message (TRUE) if progress messages are to be printed
+}
+
+The MCMC samplers will have a number of additional settings, which are described in the help of the samplers.
 
 For details about the different MCMC samplers, make sure you have read the Vignette (run vignette("BayesianTools", package="BayesianTools"). Also, see \code{\link{Metropolis}} for Metropolis based samplers, \code{\link{DE}} and \code{\link{DEzs}} for standard differential evolution samplers, \code{\link{DREAM}} and \code{\link{DREAMzs}} for DREAM sampler, \code{\link{Twalk}} for the Twalk sampler, and \code{\link{smcSampler}} for rejection and Sequential Monte Carlo sampling.\cr
 
