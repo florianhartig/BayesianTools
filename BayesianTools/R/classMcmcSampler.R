@@ -2,93 +2,113 @@
 
 #' @author Florian Hartig
 #' @export
-getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics= F, ...){
-
+getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics= F, ...){
+  
   if (inherits(sampler$chain, "matrix")){
-
-    out <- getmcmcSamplerSampleHelper(sampler, parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= reportDiagnostics, ...)
-
+    
+    if(is.null(end)) end = nrow(sampler$chain)
+    
+    if(parametersOnly == T) {
+      out = sampler$chain[start:end,1:sampler$setup$numPars, drop = F]
+      if(!is.null(sampler$setup$names)) colnames(out) = sampler$setup$names
+    }
+    else {
+      out = sampler$chain[start:end,, drop = F]
+      if(!is.null(sampler$setup$names)) colnames(out) = c(sampler$setup$names, "Lposterior", "Llikelihood", "Lprior")
+    }
+    
+    ########################
+    # THINNING
+    
+    if (thin == "auto"){
+      thin = max(floor(nrow(out) / 5000),1)
+    }
+    if(is.null(thin) || thin == F || thin < 1 || is.nan(thin)) thin = 1
+    if(thin > nrow(out)) warning("thin is greater than the total number of samples!")
+    if (! thin == 1){
+      sel = seq(1,dim(out)[1], by = thin )
+      out = out[sel,]
+    }
+    
     # Sample size
     if(thin == 1 && !is.null(numSamples)){
-      out <- sampleEquallySpaced(out, numSamples) # TODO: here colnames get lost
+      out <- sampleEquallySpaced(out, numSamples)
     }
-
+    
     # TODO - see matrix, need to check if both thing and numSamples is set
-
+    
     #############
-
+    
+    if (!is.null(whichParameters)) out = out[,whichParameters, drop = F]
+    if(coda == T) out = makeObjectClassCodaMCMC(out, start = start, end = end, thin = thin)
   }
   else if (inherits(sampler$chain, "mcmc.list")){
-
+    
     out = list()
-
+    
+    
     for (i in 1:length(sampler$chain)){
-      temp = sampler
-      temp$chain = sampler$chain[[i]]
-      if(is.null(end)) end = nrow(temp$chain)
-
-      temp <- getmcmcSamplerSampleHelper(temp, parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= reportDiagnostics, ...)
+      
+      if(is.null(end)) end = nrow(sampler$chain[[1]])
+      
+      temp = sampler$chain[[i]][start:end,, drop = F]
+      
+      if(parametersOnly == T) {
+        temp = temp[,1:sampler$setup$numPars, drop = F]
+        if(class(temp)[1] == "numeric") temp = as.matrix(temp) # case 1 parameter
+        if(!is.null(sampler$setup$names)) colnames(temp) = sampler$setup$names
+      }
+      else {
+        if(!is.null(sampler$setup$names)) colnames(temp) = c(sampler$setup$names, "Lposterior", "Llikelihood", "Lprior")
+      }
+      
+      ########################
+      # THINNING
+      if (thin == "auto"){
+        thin = max(floor(nrow(temp) / 5000),1)
+      }
+      if(is.null(thin) || thin == F || thin < 1 || is.nan(thin)) thin = 1
+      
+      if(thin > nrow(temp)) warning("thin is greater than the total number of samples!")
+      
+      if (! thin == 1){
+        sel = seq(1,dim(temp)[1], by = thin )
+        temp = temp[sel,]
+      }
+      
       # Sample size
       if(thin == 1 && !is.null(numSamples)){
         nSamplesPerChain <- ceiling(numSamples/length(sampler$chain))
-
-        if(i == 1 && nSamplesPerChain*length(sampler$chain) > numSamples){
-          ## if getSample.mcmcSampler was called from getSample.mcmcSamplerList this warning is muted
-          if (!hasArg(muteInternalGetSample)) {
-            message("Due to internal chains, numSamples was rounded to the next number divisble by the number of chains.", call. = FALSE)
-          }
+        
+        if(i == 1){
+          if(nSamplesPerChain*length(sampler$chain) > numSamples) message("Due to internal chains, numSamples was rounded to the next number divisble by the number of chains.", call. = FALSE)
         }
-
+        
         temp <- sampleEquallySpaced(temp, nSamplesPerChain)
       }
-
-      out[[i]] = temp
-
+      
+      
+      #############
+      
+      if (!is.null(whichParameters)) temp = temp[,whichParameters, drop = F]
+      out[[i]] = makeObjectClassCodaMCMC(temp, start = start, end = end, thin = thin)
     }
     class(out) = "mcmc.list"
-
+    
     #trueNumSamples <- sum(unlist(lapply(out, FUN = nrow)))
     #if (!is.null(numSamples) && trueNumSamples > numSamples) warning(paste(c("Could not draw ", numSamples, " samples due to rounding errors. Instead ", trueNumSamples," were drawn.")))
-    out = combineChains(out)
+    
+    if(coda == F){
+      out = combineChains(out)
+    }
+    if(coda == T){
+      out = out
+    }
   }else stop("sampler appears not to be of class mcmcSampler")
-
-
-  if (!is.null(whichParameters)) out = out[,whichParameters, drop = F]
-  if(coda == T) out = makeObjectClassCodaMCMC(out, start = start, end = end, thin = thin)
-
+  
   if(reportDiagnostics == T){
     return(list(chain = out, start = start, end = end, thin = thin))
   } else return(out)
-}
-
-#' @author Robert Bosek
-#' @export
-getmcmcSamplerSampleHelper <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics= F, ...){
-
-  if(is.null(end)) end = nrow(sampler$chain)
-
-  if(parametersOnly == T) {
-    out = sampler$chain[start:end,1:sampler$setup$numPars,drop=F]
-    if(!is.null(sampler$setup$names)) colnames(out) = sampler$setup$names
-  }
-  else {
-    out = sampler$chain[start:end,,drop=F]
-    if(!is.null(sampler$setup$names)) colnames(out) = c(sampler$setup$names, "Lposterior", "Llikelihood", "Lprior")
-  }
-
-  ########################
-  # THINNING
-
-  if (thin == "auto"){
-    thin = max(floor(nrow(out) / 5000),1)
-  }
-  if(is.null(thin) || thin == F || thin < 1 || is.nan(thin)) thin = 1
-  if(thin > nrow(out)) warning("thin is greater than the total number of samples!")
-  if (! thin == 1){
-    sel = seq(1,dim(out)[1], by = thin )
-    out = out[sel, ,drop=F]
-  }
-  return(out)
 }
 
 
@@ -104,17 +124,17 @@ summary.mcmcSampler <- function(object, ...){
   #DIC(sampler)
   #max()
   #}
-
+  
   sampler <- object
-
+  
   try(DInf <- DIC(sampler), silent = TRUE)
   MAPvals <- round(MAP(sampler)$parametersMAP,3)
   psf <- FALSE
-
+  
   mcmcsampler <- sampler$settings$sampler
   runtime <- sampler$settings$runtime[3]
   correlations <- round(cor(getSample(sampler)),3)
-
+  
   chain <- getSample(sampler, parametersOnly = T, coda = T, ...)
   # chain <- getSample(sampler, parametersOnly = T, coda = T)
   if("mcmc.list" %in% class(chain)){
@@ -126,13 +146,13 @@ summary.mcmcSampler <- function(object, ...){
     lowerq <- upperq <- numeric(npar)
     medi <- numeric(npar)
     parnames <- colnames(chain[[1]])
-
+    
     # Shorthen parameter names
     for (i in 1:npar) {
       if (nchar(parnames[i]) > 8)
         parnames[i] <- paste(substring(parnames[i], 1, 6), "...", sep = "")
     }
-
+    
     for (i in 1:npar) {
       tmp <- unlist(chain[, i])
       tmp <- quantile(tmp, probs = c(0.025, 0.5, 0.975))
@@ -140,7 +160,7 @@ summary.mcmcSampler <- function(object, ...){
       medi[i] <- round(tmp[2], 3)
       upperq[i] <- round(tmp[3], 3)
     }
-
+    
   } else{
     nrChain <- 1
     nrIter <- nrow(chain)
@@ -155,9 +175,9 @@ summary.mcmcSampler <- function(object, ...){
       medi[i] <- round(tmp[2], 3)
       upperq[i] <- round(tmp[3], 3)
     }
-
+    
   }
-
+  
   parOutDF <- cbind(MAPvals, lowerq, medi, upperq)
   colnames(parOutDF) <- c("MAP", "2.5%", "median", "97.5%")
   if (psf == TRUE) {
@@ -165,7 +185,7 @@ summary.mcmcSampler <- function(object, ...){
     parOutDF <- cbind(psf, parOutDF)
   }
   row.names(parOutDF) <- parnames
-
+  
   cat(rep("#", 25), "\n")
   cat("## MCMC chain summary ##","\n")
   cat(rep("#", 25), "\n", "\n")
@@ -180,7 +200,7 @@ summary.mcmcSampler <- function(object, ...){
   cat("# Parameters\n")
   print(parOutDF)
   cat("\n")
-
+  
   try(cat("## DIC: ", round(DInf$DIC,3), "\n"), silent = TRUE)
   cat("## Convergence" ,"\n", "Gelman Rubin multivariate psrf: ", conv, "\n","\n")
   cat("## Correlations", "\n")

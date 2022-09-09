@@ -22,12 +22,12 @@ summary.mcmcSamplerList <- function(object, ...){
   #effectiveSize(sampler$codaChain)
   #DIC(sampler)
   #max()
-
+  
   sampler <- object
-
+  
   DInf <- DIC(sampler)
   MAPvals <- round(MAP(sampler)$parametersMAP,3)
-
+  
   gelDiag <- gelmanDiagnostics(sampler)
   psf <- round(gelDiag$psrf[,1], 3)
   
@@ -35,9 +35,9 @@ summary.mcmcSamplerList <- function(object, ...){
   
   runtime <- 0
   for(i in 1:length(sampler)) runtime <- runtime+sampler[[i]]$settings$runtime[3]
-
+  
   correlations <- round(cor(getSample(sampler)),3)
-
+  
   
   sampler <- getSample(sampler, parametersOnly = T, coda = T, ...)
   if("mcmc.list" %in% class(sampler)){
@@ -55,7 +55,7 @@ summary.mcmcSamplerList <- function(object, ...){
       medi[i] <- round(tmp[2],3)
       upperq[i] <- round(tmp[3],3)
     }
-
+    
   }else{
     nrChain <- 1
     nrIter <- nrow(sampler)
@@ -70,14 +70,14 @@ summary.mcmcSamplerList <- function(object, ...){
       medi[i] <- round(tmp[2],3)
       upperq[i] <- round(tmp[3],3)
     }
-
+    
   }
   
   # output for parameter metrics
   parOutDF <- cbind(psf, MAPvals, lowerq, medi, upperq)
   colnames(parOutDF) <- c("psf", "MAP", "2.5%", "median", "97.5%")
   row.names(parOutDF) <- parnames
-
+  
   
   cat(rep("#", 25), "\n")
   cat("## MCMC chain summary ##","\n")
@@ -119,42 +119,34 @@ plot.mcmcSamplerList <- function(x, ...){
 
 #' @author Florian Hartig
 #' @export
-getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics, ...){
-
+getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics, ...){
   
-  if(!is.null(numSamples)){
-    
-    nS = ceiling(numSamples/length(sampler))
+  if(!is.null(numSamples)) numSamples = ceiling(numSamples/length(sampler))
   
-    # changed due to issue 154
-    
-    # check here if due to number of chains numSamples has to be adjustet, print warning and mute internal warnings
-    muteInternalGetSample = TRUE
-    if(nS*length(sampler) > numSamples) {
-      
-      internalChains <- sampler[[1]]$chain
-      if (class(internalChains)[1] == "mcmc.list") {
-        nSamplesPerInternalChain <- ceiling(nS/length(internalChains))
-        if (nSamplesPerInternalChain*length(internalChains) > nS) {
-          warning("Due to number of external and internal chains, numSamples was rounded to the next number divisble by the number of chains.", call. = FALSE)
-        }
-      } else {
-        warning("Due to number of external chains, numSamples was rounded to the next number divisble by the number of chains.", call. = FALSE)
-      }
-    }  
-    numSamples = nS
-  } 
-  
+  if(coda == F){
     # out = NULL
-    out <- list()
+    out <- rep(list(NA), length(sampler))
     for (i in 1:length(sampler)){
       # out = rbind(out, getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F))
-      out[[i]] <- getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F, muteInternalGetSample=mutedInternalGetSample)
+      out[[i]] <- getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F)
     }
     out <- combineChains(out)
+  }
   
-  if(coda == T) out = makeObjectClassCodaMCMC(out, start = start, end = end, thin = thin)
-
+  if(coda == T){
+    
+    out = list()
+    
+    for (i in 1:length(sampler)){
+      
+      out[[i]] = getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F)
+    }
+    
+    if(inherits(out[[1]], "mcmc.list")) out = unlist(out, recursive = F)
+    class(out) = "mcmc.list"
+    out = out
+  }
+  
   return(out)
 }
 
