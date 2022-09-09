@@ -28,7 +28,7 @@ getSample.matrix <- function(sampler, parametersOnly = T, coda = F, start = 1, e
 
     if(is.null(end)) end = nrow(sampler)
 
-    out = out[start:end,, drop=F]
+    out = sampler[start:end,, drop=F]
 
     ########################
     # THINNING
