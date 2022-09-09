@@ -284,10 +284,10 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
                             burnin = 0,
                             thin = 1,
                             consoleUpdates = 100,
-                            currentChain = 1,
                             parallel = NULL,
                             message = TRUE)
     
+    #### Metropolis ####
     if(settings$sampler %in% c("AM", "DR", "DRAM", "Metropolis")){
 
       defaultSettings <- c(defaultSettings, list(optimize = T,
@@ -306,37 +306,26 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
       if (settings$sampler %in% c("DR", "DRAM")) defaultSettings$DRlevels <- 2
     }
     
-    
+    #### DE Family ####
     if(settings$sampler %in% c("DE", "DEzs")){
-      defaultSettings <- c(defaultSettings, list(optimize = T,
-                                                 proposalGenerator = NULL,
-                                                 adapt = T,
-                                                 adaptationInterval = 500,
-                                                 adaptationNotBefore = 3000,
-                                                 DRlevels = 1 ,
-                                                 proposalScaling = NULL,
-                                                 adaptationDepth = NULL,
-                                                 temperingFunction = NULL,
-                                                 proposalGenerator = NULL,
-                                                 gibbsProbabilities = NULL))
+      defaultSettings <- c(defaultSettings, list(eps = 0,
+                                                 currentChain = 1,
+                                                 blockUpdate = list("none", 
+                                                                    k = NULL, 
+                                                                    h = NULL, 
+                                                                    pSel = NULL, 
+                                                                    pGroup = NULL, 
+                                                                    groupStart = 1000, 
+                                                                    groupIntervall = 1000)
+                                                 ))
       
-
       if (settings$sampler == "DE"){
-        defaultSettings$f <- -2.38 # CHECK
-        defaultSettings$blockUpdate <- list("none", 
-                                            k = NULL, 
-                                            h = NULL, 
-                                            pSel = NULL, 
-                                            pGroup = NULL, 
-                                            groupStart = 1000, 
-                                            groupIntervall = 1000)
+        defaultSettings$f <- -2.38 # TODO CHECK
+
       }
-      
 
       if (settings$sampler == "DEzs"){
         defaultSettings$f <- 2.38
-        defaultSettings$blockUpdate <- list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
-                                            groupStart = 1000, groupIntervall = 1000)
         defaultSettings <- c(defaultSettings, list(Z = NULL,
                                                    zUpdateFrequency = 1,
                                                    pSnooker = 0.1,
@@ -346,22 +335,19 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
       }
             
     }
-
+    
+    #### DREAM Family ####
+    
     if(settings$sampler %in% c("DREAM", "DREAMzs")){  
-      defaultSettings <- c(defaultSettings, list(optimize = T,
-                                                 proposalGenerator = NULL,
-                                                 adapt = T,
-                                                 adaptationInterval = 500,
-                                                 adaptationNotBefore = 3000,
-                                                 DRlevels = 1 ,
-                                                 proposalScaling = NULL,
-                                                 adaptationDepth = NULL,
-                                                 temperingFunction = NULL,
-                                                 proposalGenerator = NULL,
-                                                 gibbsProbabilities = NULL))
+      defaultSettings <- c(defaultSettings, list(nCR = 3,
+                                                 currentChain = 1,
+                                                 gamma = NULL, 
+                                                 eps = 0,
+                                                 e = 5e-2,
+                                                 DEpairs = 2,
+                                                 adaptation = 0.2))
  
       if (settings$sampler == "DREAM"){
-        defaultSettings$DEpairs = 2
         defaultSettings$pCRupdate <- TRUE
       }
       
@@ -374,7 +360,27 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
     }
   }
   
+  #### Twalk ####
+  
+  if (settings$sampler == "Twalk"){
+    defaultSettings = c(defaltSettings, 
+                        list(at = 6, 
+                           aw = 1.5, 
+                           pn1 = NULL, 
+                           Ptrav = 0.4918, 
+                           Pwalk = NULL, 
+                           Pblow = NULL))
+  }
+  
+  
+  
 
+
+
+
+  
+
+  #### SMC ####
   
   if (settings$sampler == "SMC"){
     defaultSettings = list(iterations = 10, 
@@ -387,22 +393,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
                            )
   }
   
-  
-  if (settings$sampler == "Twalk"){
-    defaultSettings = list(iterations = 10000, 
-                           consoleUpdates=100, 
-                           at = 6, 
-                           aw = 1.5, 
-                           pn1 = NULL, 
-                           Ptrav = 0.4918, 
-                           Pwalk = NULL, 
-                           Pblow = NULL, 
-                           startValue = NULL,
-                           burnin = 0,
-                           thin = 1,
-                           message = TRUE)
-  }
-  
+
   
   ## CHECK DEFAULTS
 
