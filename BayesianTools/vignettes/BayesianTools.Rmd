@@ -766,4 +766,3 @@ out3 <- runMCMC(bayesianSetup = setUp3, sampler = "Metropolis", settings = setti
 
 WAIC(out3)
 ```
-
