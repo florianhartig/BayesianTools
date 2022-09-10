@@ -55,6 +55,7 @@ DREAM <- function(bayesianSetup,   settings = list(
   burnin = 0,
   thin = 1,
   adaptation = 0.2,
+  parallel = NULL,
   DEpairs = 2, 
   consoleUpdates = 10, 
   startValue = NULL,

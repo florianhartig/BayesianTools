@@ -117,13 +117,9 @@ sampleEquallySpaced <- function(x, numSamples) {
     warning("numSamples is less than 1! Only the first sample was selected.")
   }
   
-  sel <- seq(1, len, len = numSamples)
+  sel <- seq(1, len, len = numSamples) 
   if (is.matrix(x)) {
-    out <- x[sel,]
-    # if x has only a single col, x[sel,] is a vector and needs to be converted
-    if(!is.matrix(out)) {
-      out <- matrix(out, ncol = ncol(x))
-    }
+    out <- x[sel, , drop=F]
   } else {
     out <- x[sel]
   }
@@ -131,7 +127,7 @@ sampleEquallySpaced <- function(x, numSamples) {
   return(out)
 }
 
-#' Checks if thin is conistent with nTotalSamples samples and if not corrects it.
+#' Checks if thin is consistent with nTotalSamples samples and if not corrects it.
 #' @author Tankred Ott
 #' @param nTotalSamples total number of rows/samples 
 #' @param thin thinning

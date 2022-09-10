@@ -45,7 +45,7 @@ gelmanDiagnostics <- function(sampler, thin = "auto", plot = F, ...){
   if(pars == 1) diag$mpsrf = NA  # fixes #221
   if(plot == T & ! is.na(diag$mpsrf)){
     # Wrapper around the gelman.plot to filter out getSample arguments from ...
-    gP <- function(...,start, end, parametersOnly, coda, numSamples, whichParameters, includesProbabilities, reportDiagnostics, thin, plot, sampler) coda::gelman.plot(sample, ...)
+    gP <- function(...,start, end, parametersOnly, coda, numSamples, whichParameters, reportDiagnostics, thin, plot, sampler) coda::gelman.plot(sample, ...)
     do.call(gP, as.list(match.call()))
   } 
   return(diag)

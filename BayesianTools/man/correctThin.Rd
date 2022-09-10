@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{correctThin}
 \alias{correctThin}
-\title{Checks if thin is conistent with nTotalSamples samples and if not corrects it.}
+\title{Checks if thin is consistent with nTotalSamples samples and if not corrects it.}
 \usage{
 correctThin(nTotalSamples, thin, autoThinFraction = 0.001)
 }
@@ -14,7 +14,7 @@ correctThin(nTotalSamples, thin, autoThinFraction = 0.001)
 \item{autoThinFraction}{fraction of the data that will be sampled when thin is set to "auto". E.g. 0.5 means thin will be nTotalSamples * 0.5. The resulting thin value is rounded down to the next integer.}
 }
 \description{
-Checks if thin is conistent with nTotalSamples samples and if not corrects it.
+Checks if thin is consistent with nTotalSamples samples and if not corrects it.
 }
 \details{
 Checks if the thin argument is consistent with the data consisting of nTotalSamples samples/rows and corrects thin if not.

@@ -1,18 +1,28 @@
 #' Main wrapper function to start MCMCs, particle MCMCs and SMCs
 #' @author Florian Hartig
-#' @param bayesianSetup either a BayesianSetup (see \code{\link{createBayesianSetup}}) or a BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for how to restart a sampler. 
+#' @param bayesianSetup either a BayesianSetup (see \code{\link{createBayesianSetup}}), a function, or a BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for how to restart a sampler. 
 #' @param sampler sampling algorithm to be run. Default is DEzs. Options are "Metropolis", "AM", "DR", "DRAM", "DE", "DEzs", "DREAM", "DREAMzs", "SMC". For details see the help of the individual functions. 
-#' @param settings list with settings for each sampler (see help of sampler for details). If a setting is not provided, defaults (see \code{\link{applySettingsDefault}}) will be used. You can see the default values by running \code{\link{applySettingsDefault}} with the respective sampler name, or in the help of the samplers. 
-#' @details The runMCMC function can be started with either one of a) an object of class BayesianSetup with prior and likelihood function (recommended, see \code{\link{createBayesianSetup}}), b) a log posterior or other target function, or c) an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. If a bayesianSetup is provided, check if appropriate parallization options are used - many samplers can make use of parallelization if this option is activated when the class is created.
+#' @param settings list with settings for each sampler. If a setting is not provided, defaults (see \code{\link{applySettingsDefault}}) will be used.
+#' @details The runMCMC function can be started with either one of 
 #' 
-#' For details about the different MCMC samplers, make sure you have read the Vignette (run vignette("BayesianTools", package="BayesianTools"). Also, see \code{\link{Metropolis}} for Metropolis based samplers, \code{\link{DE}} and \code{\link{DEzs}} for standard differential evolution samplers, \code{\link{DREAM}} and \code{\link{DREAMzs}} for DREAM sampler, \code{\link{Twalk}} for the Twalk sampler, and \code{\link{smcSampler}} for rejection and Sequential Monte Carlo sampling.\cr
+#' 1. an object of class BayesianSetup with prior and likelihood function (created with \code{\link{createBayesianSetup}}). check if appropriate parallelization options are used - many samplers can make use of parallelization if this option is activated when the class is created.
+#' 2.  a log posterior or other target function, 
+#' 3.  an object of class BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. 
 #' 
-#' The samplers "AM", "DR", and "DRAM" are special cases of the "Metropolis" sampler and are shortcuts for predefined settings ("AM": adapt=TRUE; "DR": DRlevels=2; "DRAM": adapt=True, DRlevels=2).
+#' Settings for the sampler are provides as a list. You can see the default values by running \code{\link{applySettingsDefault}} with the respective sampler name. The following settings can be used for all MCMCs:
 #' 
-#' The settings list allows to change the settings for the MCMC samplers and some other options. For the MCMC sampler settings, see their help files. Global options that apply for all MCMC samplers are: iterations (number of MCMC iterations), and nrChains (number of chains to run). Note that running several chains is not done in parallel, so if time is an issue it will be better to run the MCMCs individually and then combine them via \code{\link{createMcmcSamplerList}} into one joint object. 
+#' * startValue (no default) start values for the MCMC. Note that DE family samplers require a matrix of start values. If startvalues are not provided, they are sampled from the prior. 
+#' * iterations (10000) the MCMC iterations
+#' * burnin (0) burnin
+#' * thin (1) thinning while sampling 
+#' * consoleUpdates (100) update frequency for console updates 
+#' * parallel (NULL) whether parallelization is to be used
+#' * message (TRUE) if progress messages are to be printed
+#' * nrChains (1) the number of independent MCMC chains to be run. Note that this is not controlling the internal number of chains in population MCMCs such as DE, so if you run nrChains = 3 with a DEzs startValue that is a 4xparameter matrix (= 4 internal chains), you will run independent DEzs runs with 4 internal chains each. 
 #' 
+#' The MCMC samplers will have a number of additional settings, which are described in the Vignette (run vignette("BayesianTools", package="BayesianTools") and in the help of the samplers. See \code{\link{Metropolis}} for Metropolis based samplers, \code{\link{DE}} and \code{\link{DEzs}} for standard differential evolution samplers, \code{\link{DREAM}} and \code{\link{DREAMzs}} for DREAM sampler, \code{\link{Twalk}} for the Twalk sampler, and \code{\link{smcSampler}} for rejection and Sequential Monte Carlo sampling. Note that the samplers "AM", "DR", and "DRAM" are special cases of the "Metropolis" sampler and are shortcuts for predefined settings ("AM": adapt=TRUE; "DR": DRlevels=2; "DRAM": adapt=True, DRlevels=2).
 #' 
-#' Startvalues: all samplers allow to provide explicit startvalues. If startvalues are not provided, they are sampled from the prior. Usually, this is a good choice, so don't feel compelled to provide startvalues. 
+#' Note that even if you specify parallel = T, this will only turn on internal parallelization of the samplers. The independent samplers controlled by nrChains are not evaluated in parallel, so if time is an issue it will be better to run the MCMCs individually and then combine them via \code{\link{createMcmcSamplerList}} into one joint object. 
 #' 
 #' Note that DE and DREAM variants as well as SMC and T-walk require a population to start, which should be provided as a matrix. Default (NULL) sets the population size for DE to 3 x dimensions of parameters, for DREAM to 2 x dimensions of parameters and for DEzs and DREAMzs to three, sampled from the prior. Note also that the zs variants of DE and DREAM require two populations, the current population and the z matrix (a kind of memory) - if you want to set both, provide a list with startvalue$X and startvalue$Z. 
 #' 
@@ -238,7 +248,7 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
 
     mcmcSampler$settings$runtime = mcmcSampler$settings$runtime + proc.time() - ptm
     if(is.null(settings$message) || settings$message == TRUE){
-    message("runMCMC terminated after ", mcmcSampler$settings$runtime[3], "seconds")
+      message("runMCMC terminated after ", mcmcSampler$settings$runtime[3], "seconds")
     }
     return(mcmcSampler)
   }
@@ -275,133 +285,104 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   
   if(!settings$sampler %in% getPossibleSamplerTypes()$BTname) stop("trying to set values for a sampler that does not exist")
   
-  if (settings$sampler == "AM") {
-    defaultSettings <- getMetropolisDefaultSettings()
-    defaultSettings$adapt <- TRUE
-  }
-  
-  if (settings$sampler == "DR") {
-    defaultSettings <- getMetropolisDefaultSettings()
-    defaultSettings$DRlevels <- 2
-  }
-  
-  if (settings$sampler == "DRAM") {
-    defaultSettings <- getMetropolisDefaultSettings()
-    defaultSettings$adapt <- TRUE
-    defaultSettings$DRlevels <- 2
-  }
-  
-  if (settings$sampler == "Metropolis"){
-    defaultSettings = list(startValue = NULL, 
-                           iterations = 10000, 
-                           optimize = T, 
-                           proposalGenerator = NULL, 
-                           consoleUpdates=100, 
-                           burnin = 0,
-                           thin = 1, 
-                           parallel = NULL, 
-                           adapt = T, 
-                           adaptationInterval= 500, 
-                           adaptationNotBefore = 3000,
-                           DRlevels = 1 , 
-                           proposalScaling = NULL, 
-                           adaptationDepth = NULL, 
-                           temperingFunction = NULL, 
-                           proposalGenerator = NULL, 
-                           gibbsProbabilities = NULL, 
-                           currentChain = 1,
-                           message = TRUE)
-  }
-  
 
+  mcmcDefaults <- list(startValue = NULL,
+                          iterations = 10000,
+                          burnin = 0,
+                          thin = 1,
+                          consoleUpdates = 100,
+                          parallel = NULL,
+                          message = TRUE)
   
-  if (settings$sampler == "DE"){
-    defaultSettings = list(startValue = NULL,
-                           iterations = 10000, 
-                           burnin = 0, 
-                           thin = 1,
-                           eps = 0,
-                           consoleUpdates = 100, 
-                           currentChain = 1,
-                           parallel = F,
-                           f = -2.38, 
-                           burnin = 0, 
-                           eps = 0, 
-                           consoleUpdates = 100, 
-                           blockUpdate = list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
-                                              groupStart = 1000, groupIntervall = 1000),
-                           message = TRUE)
-  }
-  
-  if (settings$sampler == "DEzs"){
-    defaultSettings = list(startValue = NULL,
-                           iterations = 10000, 
-                           Z = NULL,
-                           pSnooker = 0.1, 
-                           burnin = 0, 
-                           thin = 1,
-                           f = 2.38,
-                           eps = 0,
-                           pGamma1 = 0.1,
-                           eps.mult =0.2,
-                           eps.add = 0,
-                           consoleUpdates = 100, 
-                           currentChain = 1,
-                           parallel = NULL,
-                           zUpdateFrequency = 1,
-                           blockUpdate = list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
-                                              groupStart = 1000, groupIntervall = 1000),
-                           message = TRUE)
-  }
-  
+  #### Metropolis ####
+  if(settings$sampler %in% c("AM", "DR", "DRAM", "Metropolis")){
 
-  if (settings$sampler == "DREAM"){
-    
-    defaultSettings = list(
-      iterations = 10000,
-      nCR = 3,
-      gamma = NULL, 
-      eps = 0,
-      e = 5e-2, # TODO check
-      pCRupdate = TRUE, 
-      updateInterval = 10,
-      currentChain = 1,
-      burnin = 0,
-      thin = 1,
-      adaptation = 0.2,
-      DEpairs = 2, 
-      consoleUpdates = 10, 
-      startValue = NULL,
-      message = TRUE)
-    
+    defaultSettings <- c(mcmcDefaults, list(optimize = T,
+                                               proposalGenerator = NULL,
+                                               adapt = F,
+                                               adaptationInterval = 500,
+                                               adaptationNotBefore = 3000,
+                                               DRlevels = 1 ,
+                                               proposalScaling = NULL,
+                                               adaptationDepth = NULL,
+                                               temperingFunction = NULL,
+                                               proposalGenerator = NULL,
+                                               gibbsProbabilities = NULL))   
+
+    if (settings$sampler %in% c("AM", "DRAM")) defaultSettings$adapt <- TRUE 
+    if (settings$sampler %in% c("DR", "DRAM")) defaultSettings$DRlevels <- 2
   }
+  
+  #### DE Family ####
+  if(settings$sampler %in% c("DE", "DEzs")){
+    defaultSettings <- c(mcmcDefaults, list(eps = 0,
+                                               currentChain = 1,
+                                               blockUpdate = list("none", 
+                                                                  k = NULL, 
+                                                                  h = NULL, 
+                                                                  pSel = NULL, 
+                                                                  pGroup = NULL, 
+                                                                  groupStart = 1000, 
+                                                                  groupIntervall = 1000)
+                                               ))
     
-  if (settings$sampler == "DREAMzs"){
-    
-    defaultSettings = list(
-      iterations = 10000,
-      nCR = 3,
-      gamma = NULL, 
-      eps = 0,
-      e = 5e-2,
-      pCRupdate = FALSE, 
-      updateInterval = 10,
-      burnin = 0,
-      thin = 1,
-      adaptation = 0.2,
-      parallel = NULL,
-      
-      Z = NULL,
-      ZupdateFrequency = 10,
-      pSnooker = 0.1,
-      
-      
-      DEpairs = 2, 
-      consoleUpdates = 10, 
-      startValue = NULL,
-      currentChain = 1,
-      message = TRUE)
+    if (settings$sampler == "DE"){
+      defaultSettings$f <- -2.38 # TODO CHECK
+
+    }
+
+    if (settings$sampler == "DEzs"){
+      defaultSettings$f <- 2.38
+      defaultSettings <- c(defaultSettings, list(Z = NULL,
+                                                 zUpdateFrequency = 1,
+                                                 pSnooker = 0.1,
+                                                 pGamma1 = 0.1,
+                                                 eps.mult =0.2,
+                                                 eps.add = 0))
+    }
+          
   }
+  
+  #### DREAM Family ####
+  
+  if(settings$sampler %in% c("DREAM", "DREAMzs")){  
+    defaultSettings <- c(mcmcDefaults, list(nCR = 3,
+                                               currentChain = 1,
+                                               gamma = NULL, 
+                                               eps = 0,
+                                               e = 5e-2,
+                                               DEpairs = 2,
+                                               adaptation = 0.2,
+                                               updateInterval = 10))
+
+    if (settings$sampler == "DREAM"){
+      defaultSettings$pCRupdate <- TRUE
+    }
+    
+    if (settings$sampler == "DREAMzs"){
+      defaultSettings = c(defaultSettings, list(
+        pCRupdate = FALSE,
+        Z = NULL,
+        ZupdateFrequency = 10,
+        pSnooker = 0.1
+      ))
+    }  
+  }
+  
+  #### Twalk ####
+  
+  if (settings$sampler == "Twalk"){
+    defaultSettings = c(mcmcDefaults, 
+                        list(at = 6, 
+                           aw = 1.5, 
+                           pn1 = NULL, 
+                           Ptrav = 0.4918, 
+                           Pwalk = NULL, 
+                           Pblow = NULL))
+    defaultSettings$parallel = NULL
+  }
+  
+  #### SMC ####
   
   if (settings$sampler == "SMC"){
     defaultSettings = list(iterations = 10, 
@@ -414,22 +395,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
                            )
   }
   
-  
-  if (settings$sampler == "Twalk"){
-    defaultSettings = list(iterations = 10000, 
-                           consoleUpdates=100, 
-                           at = 6, 
-                           aw = 1.5, 
-                           pn1 = NULL, 
-                           Ptrav = 0.4918, 
-                           Pwalk = NULL, 
-                           Pblow = NULL, 
-                           startValue = NULL,
-                           burnin = 0,
-                           thin = 1,
-                           message = TRUE)
-  }
-  
+
   
   ## CHECK DEFAULTS
 
@@ -555,32 +521,3 @@ getPossibleSamplerTypes <- function(){
 
   return(out)
 } 
-
-#' Returns Metropolis default settings
-#' @author Tankred Ott
-#' @keywords internal
-getMetropolisDefaultSettings <- function () {
-  defaultSettings = list(
-    startValue = NULL,
-    iterations = 10000,
-    optimize = T,
-    proposalGenerator = NULL,
-    consoleUpdates = 100,
-    burnin = 0,
-    thin = 1,
-    parallel = NULL,
-    adapt = T,
-    adaptationInterval = 500,
-    adaptationNotBefore = 3000,
-    DRlevels = 1 ,
-    proposalScaling = NULL,
-    adaptationDepth = NULL,
-    temperingFunction = NULL,
-    proposalGenerator = NULL,
-    gibbsProbabilities = NULL,
-    currentChain = 1,
-    message = TRUE
-  )
-  return(defaultSettings)
-}
-

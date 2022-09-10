@@ -7,8 +7,9 @@
 DREAM(
   bayesianSetup,
   settings = list(iterations = 10000, nCR = 3, gamma = NULL, eps = 0, e = 0.05, pCRupdate
-    = TRUE, updateInterval = 10, burnin = 0, thin = 1, adaptation = 0.2, DEpairs = 2,
-    consoleUpdates = 10, startValue = NULL, currentChain = 1, message = TRUE)
+    = TRUE, updateInterval = 10, burnin = 0, thin = 1, adaptation = 0.2, parallel = NULL,
+    DEpairs = 2, consoleUpdates = 10, startValue = NULL, currentChain = 1, message =
+    TRUE)
 )
 }
 \arguments{
