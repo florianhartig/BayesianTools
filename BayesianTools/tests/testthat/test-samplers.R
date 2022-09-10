@@ -67,7 +67,7 @@ if(testExact){
         ks <- ks.boot(getSample(out, numSamples = 10000), rnorm(10000))$ks.boot.pvalue  
         
         # Test that distribution is not significally different from gaussian
-        expect_true(ks>0.05)
+        expect_true(ks>0.005)
         
         
       }
@@ -111,7 +111,7 @@ if(testExact){
         ks <- ks.boot(x[,z], y)$ks.boot.pvalue 
         
         # Test that distribution is not significally different from gaussian
-        expect_true(ks>0.05)
+        expect_true(ks>0.005)
         
       }
       
@@ -146,7 +146,7 @@ if(testExact){
         #ks <- ks.test(x[,z],pnorm)$p.value  
         ks <- ks.boot(x[,z], y)$ks.boot.pvalue 
         # Test that distribution is not significally different from gaussian
-        expect_true(ks>0.05)
+        expect_true(ks>0.005)
         
       }
       
@@ -186,7 +186,7 @@ if(testExact){
         ks <- ks.boot(x[,z], y)$ks.boot.pvalue 
         
         # Test that distribution is not significally different from gaussian
-        expect_true(ks>0.05)
+        expect_true(ks>0.005)
         
       }
       
@@ -244,7 +244,7 @@ if(testExact){
         ks <- ks.boot(x[,z], y)$ks.boot.pvalue 
         
         # Test that distribution is not significally different from gaussian
-        expect_true(ks>0.05)
+        expect_true(ks>0.005)
         
       }
       
