@@ -167,7 +167,7 @@ getDharmaResiduals <- function(model, parMatrix, numSamples, observed, error, pl
                             observedResponse = observed,
                             fittedPredictedResponse = fittedPredictedResponse)
   if (plot == TRUE) {
-    DHARMa::plotSimulatedResiduals(dh)
+    DHARMa::plotResiduals(dh)
   }
 
   return(dh)
