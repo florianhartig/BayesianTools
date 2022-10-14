@@ -4,13 +4,13 @@ This file contains CRAN submission info / communication
 
 ### Submission 1
 
-This is minor update that was necessary because of some HTML validation problems due to the recent switch to HTML5 for documentation pages in R 4.2.0, see also https://github.com/florianhartig/BayesianTools/issues/240
+This is minor update that was necessary because of some HTML validation problems due to the recent switch to HTML5 for documentation pages in R 4.2.0, see also https://github.com/florianhartig/BayesianTools/issues/240. I'm sorry for the delay in fixing this. 
 
 See NEWS for other changes.
 
 This release was tested without apparent problems under
 
-* local MAC OS 10.14.6 (Mojave), R 3.6.1
+* local MAC OS 12.5.1 (Montery), R 4.2.1 intel
 * http://win-builder.r-project.org/ - oldrelease / devel / release
 * Linux (Travis CI) - oldrel / release / devel
 
