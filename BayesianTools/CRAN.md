@@ -1,6 +1,6 @@
 This file contains CRAN submission info / communication
 
-## Version 0.1.7
+## Version 0.1.8
 
 ### Submission 1
 
