@@ -48,7 +48,7 @@ Pro-tip: if you are running a stochastic algorithms such as an MCMC, you should 
 set.seed(123)
 ```
 
-In a real application, to ensure reproducibility, it would also be useful to record the session
+In a real application, to ensure reproducibility, it would also be useful to record the session info,
 
 ```{r, eval = F}
 sessionInfo()
