@@ -114,13 +114,10 @@ likelihood <- function(par, sum = TRUE){
 # Prior
 prior <- createUniformPrior(lower = refPars$lower[parSel], upper = refPars$upper[parSel])
 
-
-####
 ## Definition of the packages and objects that are exported to the cluster.
 # These are the objects that are used in the likelihood function.
 opts <- list(packages = list("BayesianTools"), variables = list("refPars", "obs", "PAR" ), 
              dlls = NULL)
-
 
 # Create Bayesian Setup
 BSVSEM <- createBayesianSetup(likelihood, prior, best = refPars$best[parSel], 
