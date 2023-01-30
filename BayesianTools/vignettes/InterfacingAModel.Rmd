@@ -243,7 +243,7 @@ mymodel<-function(x){
 
 To start a parallel computation, we will first need to create a cluster object. Here we will initiate a cluster with 2 CPU's.
 
-```{r}
+```{r, eval = F}
 
 library(parallel)
 cl <- makeCluster(2)
@@ -257,7 +257,7 @@ runParallel(c(1,2))
 
 You could use this principle to build your own parallelized likelihood. However, something very similar to the previous loop is automatized in BayesianTools. You can directly create a parallel model evaluation function with the function generateParallelExecuter, or alternatively directly in the createBayesianSetup
 
-```{r}
+```{r, eval = F}
 library(BayesianTools)
 parModel <- generateParallelExecuter(mymodel)
 ```
