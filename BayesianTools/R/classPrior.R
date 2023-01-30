@@ -111,7 +111,7 @@ createPrior <- function(density = NULL, sampler = NULL, lower = NULL, upper = NU
 #' @param best vector with "best" values for all parameters
 #' @note for details see \code{\link{createPrior}}
 #' @seealso \code{\link{createPriorDensity}}, \code{\link{createPrior}}, \code{\link{createBetaPrior}}, \code{\link{createTruncatedNormalPrior}}, \code{\link{createBayesianSetup}} 
-#' @example /inst/examples/createUniformPriorHelp.R
+#' @example /inst/examples/createPrior.R
 #' @export
 createUniformPrior<- function(lower, upper, best = NULL){
   len = length(lower)
@@ -139,8 +139,7 @@ createUniformPrior<- function(lower, upper, best = NULL){
 #'          \code{\link{createUniformPrior}} \cr
 #'          \code{\link{createBayesianSetup}} \cr
 #' @export
-#' @example /inst/examples/createTruncatedNormalPrior.R
-
+#' @example /inst/examples/createPrior.R
 createTruncatedNormalPrior<- function(mean, sd, lower, upper){
   len = length(mean)
   density <- function(x){
@@ -168,6 +167,7 @@ createTruncatedNormalPrior<- function(mean, sd, lower, upper){
 #'          \code{\link{createTruncatedNormalPrior}} \cr
 #'          \code{\link{createUniformPrior}} \cr
 #'          \code{\link{createBayesianSetup}} \cr
+#' @example /inst/examples/createPrior.R
 #' @export
 createBetaPrior<- function(a, b, lower=0, upper=1){
   len = length(lower)
@@ -216,7 +216,7 @@ createBetaPrior<- function(a, b, lower=0, upper=1){
 #'          \code{\link{createTruncatedNormalPrior}} \cr
 #'          \code{\link{createUniformPrior}} \cr
 #'          \code{\link{createBayesianSetup}} \cr
-#' @example /inst/examples/createPriorDensity.R
+#' @example /inst/examples/createPrior.R
 createPriorDensity <- function(sampler, method = "multivariate", eps = 1e-10, lower = NULL, upper = NULL, best = NULL, scaling = 1, ...){
   
   x = getSample(sampler, ...)

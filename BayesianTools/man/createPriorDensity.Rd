@@ -47,43 +47,57 @@ For that reason, it is usually recommended to not update the posterior with this
 }
 }
 \examples{
-# Create a BayesianSetup
-ll <- generateTestDensityMultiNormal(sigma = "no correlation")
-bayesianSetup = createBayesianSetup(likelihood = ll, 
-                                    lower = rep(-10, 3), 
-                                    upper = rep(10, 3))
+# the BT package includes a number of convenience functions to specify
+# prior distributions, including createUniformPrior, createTruncatedNormalPrior
+# etc. If you want to specify a prior that corresponds to one of these
+# distributions, you should use these functions, e.g.:
 
-settings = list(iterations = 1000)
-out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+prior <- createUniformPrior(lower = c(0,0), upper = c(0.4,5))
 
+prior$density(c(2, 3)) # outside of limits -> -Inf
+prior$density(c(0.2, 2)) # within limits, -0.6931472
 
-newPrior = createPriorDensity(out, method = "multivariate",
-                              eps = 1e-10, lower = rep(-10, 3),
-                              upper =  rep(10, 3), best = NULL)
+# All default priors include a sampling function, i.e. you can create
+# samples from the prior via
+prior$sampler()
+# [1] 0.2291413 4.5410389
 
-bayesianSetup <- createBayesianSetup(likelihood = ll, prior = newPrior)
+# if you want to specify a prior that does not have a default function, 
+# you should use the createPrior function, which expects a density and 
+# optionally a sampler function:
 
-\dontrun{
-  # first prior / posterior
-  marginalPlot(out)
-  
-  # second prior / posterior
-  settings = list(iterations = 1000)
-  out2 <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
-  marginalPlot(out2)
-  
-  # change scaling of the prior with the scaling option
-  newPrior = createPriorDensity(out, method = "multivariate",
-                                eps = 1e-10, lower = rep(-10, 3),
-                                upper =  rep(10, 3), best = NULL, scaling = 0.5)
-  
-  apply(newPrior$sampler(1000),2,sd)
+density = function(par){
+  d1 = dunif(par[1], -2,6, log =TRUE)
+  d2 = dnorm(par[2], mean= 2, sd = 3, log =TRUE)
+  return(d1 + d2)
 }
 
+sampler = function(n=1){
+  d1 = runif(n, -2,6)
+  d2 = rnorm(n, mean= 2, sd = 3)
+  return(cbind(d1,d2))
+}
+
+prior <- createPrior(density = density, sampler = sampler, 
+                     lower = c(-10,-20), upper = c(10,20), best = NULL)
+
+# note that the createPrior supports additional truncation
 
 
+# To use a prior in an MCMC, include it in a BayesianSetup 
 
+set.seed(123)
+ll <- function(x) sum(dnorm(x, log = TRUE)) # multivariate normal ll
+bayesianSetup <- createBayesianSetup(likelihood = ll, prior = prior)
 
+settings = list(iterations = 100)
+out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+
+# use createPriorDensity to create a new (estimated) prior from MCMC output
+
+newPrior = createPriorDensity(out, method = "multivariate",
+                              eps = 1e-10, lower = c(-10,-20), 
+                              upper = c(10,20), best = NULL, scaling = 0.5)
 
 }
 \seealso{

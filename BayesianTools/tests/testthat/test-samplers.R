@@ -152,6 +152,8 @@ if(testExact){
       
       
     }
+    stopParallel(setup)
+    
   })
   
   
@@ -191,6 +193,7 @@ if(testExact){
       }
       
     }
+    stopParallel(setup)
     
   }
   )

@@ -1,13 +1,28 @@
-# Create a general prior distribution by specifying an arbitrary density function and a
-# corresponding sampling function
+# the BT package includes a number of convenience functions to specify
+# prior distributions, including createUniformPrior, createTruncatedNormalPrior
+# etc. If you want to specify a prior that corresponds to one of these
+# distributions, you should use these functions, e.g.:
+
+prior <- createUniformPrior(lower = c(0,0), upper = c(0.4,5))
+
+prior$density(c(2, 3)) # outside of limits -> -Inf
+prior$density(c(0.2, 2)) # within limits, -0.6931472
+
+# All default priors include a sampling function, i.e. you can create
+# samples from the prior via
+prior$sampler()
+# [1] 0.2291413 4.5410389
+
+# if you want to specify a prior that does not have a default function, 
+# you should use the createPrior function, which expects a density and 
+# optionally a sampler function:
+
 density = function(par){
   d1 = dunif(par[1], -2,6, log =TRUE)
   d2 = dnorm(par[2], mean= 2, sd = 3, log =TRUE)
   return(d1 + d2)
 }
 
-# The sampling is optional but recommended because the MCMCs can generate automatic starting
-# conditions if this is provided
 sampler = function(n=1){
   d1 = runif(n, -2,6)
   d2 = rnorm(n, mean= 2, sd = 3)
@@ -15,16 +30,23 @@ sampler = function(n=1){
 }
 
 prior <- createPrior(density = density, sampler = sampler, 
-                     lower = c(-3,-3), upper = c(3,3), best = NULL)
+                     lower = c(-10,-20), upper = c(10,20), best = NULL)
+
+# note that the createPrior supports additional truncation
 
 
-# Use this prior in an MCMC 
+# To use a prior in an MCMC, include it in a BayesianSetup 
 
+set.seed(123)
 ll <- function(x) sum(dnorm(x, log = TRUE)) # multivariate normal ll
 bayesianSetup <- createBayesianSetup(likelihood = ll, prior = prior)
 
-settings = list(iterations = 1000)
+settings = list(iterations = 100)
 out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 
-# see ?createPriorDensity for how to create a new prior from this output
+# use createPriorDensity to create a new (estimated) prior from MCMC output
+
+newPrior = createPriorDensity(out, method = "multivariate",
+                              eps = 1e-10, lower = c(-10,-20), 
+                              upper = c(10,20), best = NULL, scaling = 0.5)
 
