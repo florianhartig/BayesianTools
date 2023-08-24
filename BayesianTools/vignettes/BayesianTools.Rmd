@@ -154,29 +154,33 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings =
 
 ```
 
-The result is an object of `mcmcSamplerList`, which should allow you to
-do everything you can do with an `mcmcSampler` object (sometimes with
+The result is an object of `mcmcSamplerList`, which should allow you to do everything you can do with an `mcmcSampler` object (sometimes with
 slightly different output).
 
-Basic convergence is checked via so-called trace plots, which show the 3 MCMC chains in different colors. 
+Basic convergence is checked via so-called trace plots, which show the 3
+MCMC chains in different colors.
 
 ```{r}
 plot(out)
 ```
 
-The trace plot is inspected for major problems (chains look different, drift), and to decide for the burn-in, i.e. the point where the MCMC has reached the area of sampling (i.e. the chains are not systematically goin into one direction any more). Here, they are have basically immediately reached this point, so we could also set the burn-in to 0, but I choose 100, i.e. discarding the first 100 samples in all further plots. 
+The trace plot is examined for major problems (chains look different, systematic trends) and to decide on the burn-in, i.e. the point at which the MCMC has reached the sampling range (i.e. the chains no longer systematically go in one direction). Here, they have basically reached this point immediately, so we could set the burn-in to 0, but I choose 100, i.e. discard the first 100 samples in all further plots.
 
-If the trace plots look good, we can look at the Gelman-Rubin convergence diagnostics. Note that you have to discard the burn-in.
+If the trace plots look good, we can look at the Gelman-Rubin
+convergence diagnostics. Note that you have to discard the burn-in.
 
 ```{r}
 gelmanDiagnostics(out, plot = F, start = 100)
 ```
-Usually, a value < 1.05 for each parameter and a msrf < 1.1 of 1.2 are considered sufficient for convergence. 
+
+Usually, a value \< 1.05 for each parameter and a msrf \< 1.1 of 1.2 are
+considered sufficient for convergence.
 
 ### Summarize the outputs
 
-If we are happy with the convergence, we can plot and summarize all `sampler`s from the console with the
-standard `print` and `summary` commands.
+If we are happy with the convergence, we can plot and summarize all
+`sampler`s from the console with the standard `print` and `summary`
+commands.
 
 ```{r}
 print(out, start = 100)
