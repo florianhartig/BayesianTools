@@ -3,7 +3,7 @@
 #' @description Function to support plotting and diagnostic functions for coda::mcmc objects.
 #' @param sampler an object of class mcmc or mcmc.list 
 #' @param names a vector with parameter names (optional)
-#' @param info a matrix (or list with matrices for mcmc.list objects) with three coloumns containing log posterior, log likelihood and log prior of the sampler for each time step (optional; but see Details)
+#' @param info a matrix (or list with matrices for mcmc.list objects) with three columns containing log posterior, log likelihood and log prior of the sampler for each time step (optional; but see Details)
 #' @param likelihood likelihood function used for sampling (see Details)
 #' @details The parameter 'likelihood' is optional for most functions but can be needed e.g for  \code{\link{DIC}} function.
 #' 
