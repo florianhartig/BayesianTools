@@ -1,14 +1,14 @@
 #' The Metropolis Algorithm
 #' @author Francesco Minunno
 #' @description The Metropolis Algorithm (Metropolis et al. 1953)
-#' @param startValue vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.
-#' @param iterations iterations to run
-#' @param nBI number of burnin
+#' @param startValue vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case, startValues are sampled from the prior.
+#' @param iterations number of iterations to run
+#' @param nBI number of burn-in
 #' @param parmin minimum values for the parameter vector or NULL if FUN is of class BayesianSetup
 #' @param parmax maximum values for the parameter vector or NULL if FUN is of class BayesianSetup
 #' @param f scaling factor
 #' @param FUN function to be sampled from or object of class bayesianSetup
-#' @param consoleUpdates interger, determines the frequency with which sampler progress is printed to the console
+#' @param consoleUpdates integer, determines the frequency with which sampler progress is printed to the console
 #' @references Metropolis, Nicholas, et al. "Equation of state calculations by fast computing machines." The journal of chemical physics 21.6 (1953): 1087-1092.
 #' @keywords internal
 # #' @export

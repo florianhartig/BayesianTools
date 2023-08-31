@@ -3,8 +3,8 @@
 ######
 
 #' Wrapper for step function
-#' @param Npar Number of parameters
-#' @param FUN Log posterior density
+#' @param Npar number of parameters
+#' @param FUN log posterior density
 #' @param x parameter vector of chain 1
 #' @param Eval last evaluation of x
 #' @param x2 parameter vector of chain 2
