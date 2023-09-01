@@ -4,10 +4,10 @@
 #' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function 
 #' @param initialParticles initial particles - either a draw from the prior, provided as a matrix with the single parameters as columns and each row being one particle (parameter vector), or a numeric value with the number of desired particles. In this case, the sampling option must be provided in the prior of the BayesianSetup. 
 #' @param iterations number of iterations
-#' @param resampling if new particles should be created at each iteration
+#' @param resampling logical, specifies whether new particles should be created at each iteration
 #' @param resamplingSteps how many resampling (MCMC) steps between the iterations
-#' @param proposal optional proposal class
-#' @param adaptive should the covariance of the proposal be adapted during sampling
+#' @param proposal optional, proposal class
+#' @param adaptive logical, should the covariance of the proposal be adapted during sampling?
 #' @param proposalScale scaling factor for the proposal generation. Can be adapted if there is too much / too little rejection
 #' @details The sampler can be used for rejection sampling as well as for sequential Monte Carlo. For the former case set the iterations to one.
 #' 
