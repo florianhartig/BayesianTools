@@ -5,10 +5,10 @@
 #' @param start start value for calculating DIC, WAIC, mPSRF and PSRF, default = 50
 #' @param numSamples for calculating WAIC, default = 10 because of high computational costs
 #' @param window plot range to show, vector of percents or only one value as start value for the window
-#' @param plotWAIC whether to calculate WAIC or not, default = T
-#' @param plotPSRF calculate and plot mPSRF/PSRF or not, default = T 
-#' @param plotDIC calculate and plot DICor not, default = T 
-#' @param plotTrace show trace plots or not, default = T
+#' @param plotWAIC logical, whether to calculate WAIC or not, default = T
+#' @param plotPSRF logical, whether to calculate and plot mPSRF/PSRF or not, default = T 
+#' @param plotDIC logical, whether to calculate and plot DIC or not, default = T 
+#' @param plotTrace logical, whether to show trace plots or not, default = T
 #' @param graphicParameters graphic parameters as list for plot function
 #' @param ... parameters to give to getSample
 #' @example /inst/examples/plotDiagnosticHelp.R

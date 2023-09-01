@@ -5,8 +5,8 @@
 #' @param thin thinning of the matrix to make things faster. Default is to thin to 5000 
 #' @param method method for calculating correlations. Possible choices are "pearson" (default), "kendall" and "spearman"
 #' @param whichParameters indices of parameters that should be plotted
-#' @param scaleCorText should the text to display correlation be scaled to the strength of the correlation
-#' @param ... additional parameters to pass on to the \code{\link{getSample}}, for example parametersOnly =F, or start = 1000
+#' @param scaleCorText should the text to display correlation be scaled to the strength of the correlation?
+#' @param ... additional parameters to pass on to the \code{\link{getSample}}, for example parametersOnly = F, or start = 1000
 #' @references The code for the correlation density plot originates from Hartig, F.; Dislich, C.; Wiegand, T. & Huth, A. (2014) Technical Note: Approximate Bayesian parameterization of a process-based tropical forest model. Biogeosciences, 11, 1261-1272.
 #' @export
 #' @seealso \code{\link{marginalPlot}} \cr

@@ -1,8 +1,8 @@
 #' Performs a one-factor-at-a-time sensitivity analysis for the posterior of a given bayesianSetup within the prior range.
 #' @author Florian Hartig
-#' @param bayesianSetup An object of class BayesianSetup
+#' @param bayesianSetup an object of class BayesianSetup
 #' @param selection indices of selected parameters
-#' @param equalScale if T, y axis of all plots will have the same scale
+#' @param equalScale if T, y-axis of all plots will have the same scale
 #' @note This function can also be used for sensitivity analysis of an arbitrary output - just create a BayesianSetup with this output. 
 #' @example /inst/examples/plotSensitivityHelp.R
 #' @export
