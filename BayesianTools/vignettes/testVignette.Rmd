@@ -1,0 +1,67 @@
+---
+title: "Test"
+output: html_document
+date: "2023-09-14"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Linear regression with the BT package
+
+
+
+```{r}
+fit = lm(Ozone ~ Wind, data = airquality)
+summary(fit)
+```
+
+```{r}
+
+dat = airquality[complete.cases(airquality), ]
+
+# Fitting the random effects model with BayesianTools 
+
+```{r}
+likelihood <- function(par){
+  # c("a", "b", "err-sd")
+  llObservation = sum(dnorm(par[1] * dat$Wind +  par[2] - dat$Ozone, sd = par[3], log = T))
+  return(llObservation)
+}
+
+likelihood(c(4,10,6))
+```
+
+
+
+```{r, message=F}
+library(BayesianTools)
+setup <- createBayesianSetup(likelihood = likelihood, 
+                             lower = c(-100,-100,0), 
+                             upper = c(100,200,50),
+                             names = c("a", "b", "err-sd"))
+settings <- list(iterations = 10000, nrChains = 2)
+
+res <- runMCMC(bayesianSetup = setup, settings = settings)
+plot(res)
+marginalPlot(res, start = 1000, prior = T)
+summary(res, start=1000)
+gelmanDiagnostics(res)
+```
+
+
+# Linear mixed model with the BT package
+
+
+
+
+
+# Fitting a ecosystem model with the BT package 
+
+
+?VSEM   
+How do I know lower and upper?
+
+
