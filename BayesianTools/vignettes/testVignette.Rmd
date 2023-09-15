@@ -8,9 +8,11 @@ date: "2023-09-14"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+In this vignette, we want to illustrate how BayesianTools can be implemented on a real data.
 
-# Linear regression with the BT package
+In this case, we are using airquality data.
 
+For the illustration purpose, we are fitting a linear regression model on the data - so that we can compare it with our result.
 
 
 ```{r}
@@ -22,7 +24,9 @@ summary(fit)
 
 dat = airquality[complete.cases(airquality), ]
 
-# Fitting the random effects model with BayesianTools 
+```
+
+Creating a likelihood function from the data.
 
 ```{r}
 likelihood <- function(par){
@@ -34,7 +38,7 @@ likelihood <- function(par){
 likelihood(c(4,10,6))
 ```
 
-
+Creating a standardized collection of prior, likelihood and posterior function.
 
 ```{r, message=F}
 library(BayesianTools)
@@ -42,15 +46,32 @@ setup <- createBayesianSetup(likelihood = likelihood,
                              lower = c(-100,-100,0), 
                              upper = c(100,200,50),
                              names = c("a", "b", "err-sd"))
-settings <- list(iterations = 10000, nrChains = 2)
-
-res <- runMCMC(bayesianSetup = setup, settings = settings)
-plot(res)
-marginalPlot(res, start = 1000, prior = T)
-summary(res, start=1000)
-gelmanDiagnostics(res)
 ```
 
+Creating required setup for wrapper function runMCMC to start MCMCs
+
+```{r}
+settings <- list(iterations = 10000, nrChains = 2)
+res <- runMCMC(bayesianSetup = setup, settings = settings)
+
+summary(res, start=1000)
+```
+
+
+```{r}
+plot(res)
+```
+
+```{r}
+marginalPlot(res, start = 1000, prior = T)
+```
+
+```{r}
+gelmanDiagnostics(res)
+```
+```{r}
+correlationPlot(res)
+```
 
 # Linear mixed model with the BT package
 

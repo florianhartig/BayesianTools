@@ -1,7 +1,7 @@
 # NOTE: The functions in this class are just templates that are to be implemented for all subclasses of BayesianOutput. They are not functional. 
 
 
-#' Extracts the sample from a bayesianOutput
+#' Extracts samples from a bayesianOutput
 #' @author Florian Hartig
 #' @param sampler an object of class mcmcSampler, mcmcSamplerList, smcSampler, smcSamplerList, mcmc, mcmc.list, double, numeric
 #' @param parametersOnly for a BT output, if F, likelihood, posterior and prior values are also provided in the output

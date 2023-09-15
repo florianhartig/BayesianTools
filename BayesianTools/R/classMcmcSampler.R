@@ -1,5 +1,7 @@
 # Functions for class mcmcSamper
 
+
+#' @rdname getSample
 #' @author Florian Hartig
 #' @export
 getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics= F, ...){
@@ -113,8 +115,15 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
 
 
 
+#' Summmary of MCMC output
+#' 
+#' @description
+#' Creates a summary table of a MCMC output
+#'  
 #' @method summary mcmcSampler
+#' @rdname mcmcSampler
 #' @author Stefan Paul
+#' @param ... not implemented 
 #' @export
 summary.mcmcSampler <- function(object, ...){
   #codaChain = getSample(sampler, parametersOnly = parametersOnly, coda = T, ...)
@@ -207,6 +216,7 @@ summary.mcmcSampler <- function(object, ...){
   print(correlations)
 }
 
+#' @rdname mcmcSampler
 #' @author Florian Hartig
 #' @method print mcmcSampler
 #' @export
@@ -218,6 +228,10 @@ print.mcmcSampler <- function(x, ...){
   #effectiveSize(sampler$codaChain)
 }
 
+#' @description
+#' Plots MCMC output
+#' 
+#' @rdname mcmcSampler
 #' @author Florian Hartig
 #' @method plot mcmcSampler
 #' @export

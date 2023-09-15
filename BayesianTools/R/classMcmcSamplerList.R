@@ -100,6 +100,7 @@ summary.mcmcSamplerList <- function(object, ...){
 
 }
 
+
 #' @author Florian Hartig
 #' @method print mcmcSamplerList
 #' @export

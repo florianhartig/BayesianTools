@@ -361,8 +361,6 @@ out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 ```
 
 
-
-
 # MCMC sampler reference
 
 ## The runMCMC() function
