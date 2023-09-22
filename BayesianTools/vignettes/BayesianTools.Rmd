@@ -23,16 +23,11 @@ set.seed(123)
 
 # Abstract
 
-The BayesianTools (BT) package supports model analysis (including
-sensitivity analysis and uncertainty analysis), Bayesian model
-calibration, as well as model selection and multi-model inference
-techniques for system models.
+The BayesianTools (BT) package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques for system models.
 
 # Quick start
 
-The purpose of this first section is to give you a quick overview of the
-most important functions of the BayesianTools (BT) package. For a more
-detailed description, see the following sections.
+The purpose of this first section is to give you a quick overview of the most important functions of the BayesianTools (BT) package. For a more detailed description, see the following sections.
 
 ### Install, load and cite the package
 
@@ -42,9 +37,7 @@ If you haven't installed the package yet, either run
 install.packages("BayesianTools")
 ```
 
-or follow the instructions at
-<https://github.com/florianhartig/BayesianTools> to install a
-development version or an older version.
+or follow the instructions at <https://github.com/florianhartig/BayesianTools> to install a development version or an older version.
 
 Loading and citation
 
@@ -53,15 +46,9 @@ library(BayesianTools)
 citation("BayesianTools")
 ```
 
-Note: BayesianTools calls a number of secondary packages. Of particular
-importance is `coda`, which is used in a number of plots and summary
-statistics. If you use a lot of summary statistics and diagnostic plots,
-it would be nice to cite coda as well!
+Note: BayesianTools calls a number of secondary packages. Of particular importance is `coda`, which is used in a number of plots and summarystatistics. If you use a lot of summary statistics and diagnostic plots, it would be nice to cite coda as well!
 
-Pro Tip: If you are running a stochastic algorithm such as MCMC, you
-should always set or record your random seed to make your results
-reproducible (otherwise the results will change slightly each time you
-run the code).
+Pro Tip: If you are running a stochastic algorithm such as MCMC, you should always set or record your random seed to make your results reproducible (otherwise the results will change slightly each time you run the code).
 
 ```{r}
 set.seed(123)
