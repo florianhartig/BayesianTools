@@ -141,6 +141,7 @@ rm(BSVSEM)
 \code{\link{checkBayesianSetup}} \cr
 \code{\link{createLikelihood}} \cr
 \code{\link{createPrior}} \cr
+\code{\link{print.BayesianSetup}} \cr
 }
 \author{
 Florian Hartig, Tankred Ott

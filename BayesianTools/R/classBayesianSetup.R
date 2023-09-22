@@ -14,7 +14,7 @@
 #' @param plotUpper vector with upper limits for plotting
 #' @param plotBest vector with best values for plotting
 #' 
-#' @returns An object of class BayesianSetup. Implemented S3 generics include \code{\link{print.BayesianSetup}}. BayesianSetup
+#' @returns An object of class BayesianSetup. Implemented S3 generics include \code{\link{print.BayesianSetup}}.
 #' 
 #' @details If prior is of class prior (e.g. create with \code{\link{createPrior}}), priorSampler, lower, upper and best will be ignored.\cr If prior is a function (log prior density), priorSampler (custom sampler), or lower/upper (uniform sampler) is required.\cr If prior is NULL, and lower and upper are passed, a uniform prior (see \code{\link{createUniformPrior}}) will be created with boundaries lower and upper.
 #' 
@@ -30,6 +30,7 @@
 #' @seealso \code{\link{checkBayesianSetup}} \cr
 #'          \code{\link{createLikelihood}} \cr
 #'          \code{\link{createPrior}} \cr
+#'        
 #' @example /inst/examples/classBayesianSetup.R
 #' 
 #' 
@@ -198,7 +199,8 @@ stopParallel <- function(bayesianSetup){
 #' @author Maximilian Pichler
 #' 
 #' @export
-#' @seealso \code{\link{checkBayesianSetup}}
+#' @seealso \code{\link{checkBayesianSetup}} \cr
+#'          \code{\link{createBayesianSetup}} \cr
 print.BayesianSetup <- function(x, ...){
   cat('BayesianSetup: \n\n')
   

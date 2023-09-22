@@ -14,17 +14,17 @@ createLikelihood(
 )
 }
 \arguments{
-\item{likelihood}{Log likelihood density}
+\item{likelihood}{log likelihood density}
 
-\item{names}{Parameter names (optional)}
+\item{names}{parameter names (optional)}
 
 \item{parallel}{parallelization , either i) no parallelization --> F, ii) native R parallelization --> T / "auto" will select n-1 of your available cores, or provide a number for how many cores to use, or iii) external parallelization --> "external". External means that the likelihood is already able to execute parallel runs in form of a matrix with}
 
-\item{catchDuplicates}{Logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns.}
+\item{catchDuplicates}{logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns.}
 
 \item{sampler}{sampler}
 
-\item{parallelOptions}{list containing two lists. First "packages" determines the R packages necessary to run the likelihood function. Second "objects" the objects in the global envirnment needed to run the likelihood function (for details see \code{\link{createBayesianSetup}}).}
+\item{parallelOptions}{list containing two lists. First "packages" determines the R packages necessary to run the likelihood function. Second "objects" the objects in the global environment needed to run the likelihood function (for details see \code{\link{createBayesianSetup}}).}
 }
 \description{
 Creates a standardized likelihood class

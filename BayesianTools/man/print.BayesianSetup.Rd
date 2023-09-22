@@ -15,7 +15,8 @@
 print function for objects of class BayesianSetup
 }
 \seealso{
-\code{\link{checkBayesianSetup}}
+\code{\link{checkBayesianSetup}} \cr
+\code{\link{createBayesianSetup}} \cr
 }
 \author{
 Maximilian Pichler

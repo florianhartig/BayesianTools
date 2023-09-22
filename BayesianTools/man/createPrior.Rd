@@ -92,6 +92,7 @@ newPrior = createPriorDensity(out, method = "multivariate",
 \code{\link{createUniformPrior}} \cr
 \code{\link{createTruncatedNormalPrior}}\cr
 \code{\link{createBayesianSetup}}\cr
+\code{\link{print.prior}}\cr
 }
 \author{
 Florian Hartig

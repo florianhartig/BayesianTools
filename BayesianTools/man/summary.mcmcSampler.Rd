@@ -2,26 +2,19 @@
 % Please edit documentation in R/classMcmcSampler.R
 \name{summary.mcmcSampler}
 \alias{summary.mcmcSampler}
-\alias{print.mcmcSampler}
-\alias{plot.mcmcSampler}
 \title{Summmary of MCMC output}
 \usage{
 \method{summary}{mcmcSampler}(object, ...)
-
-\method{print}{mcmcSampler}(x, ...)
-
-\method{plot}{mcmcSampler}(x, ...)
 }
 \arguments{
 \item{...}{not implemented}
 }
 \description{
 Creates a summary table of a MCMC output
-
-Plots MCMC output
+}
+\seealso{
+\code{\link{getSample.mcmcSampler}}
 }
 \author{
 Stefan Paul
-
-Florian Hartig
 }

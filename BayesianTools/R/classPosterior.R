@@ -1,7 +1,7 @@
 #' Creates a standardized posterior class
 #' @author Florian Hartig
 #' @param prior prior class
-#' @param likelihood Log likelihood density
+#' @param likelihood log likelihood density
 #' @details Function is internally used in \code{\link{createBayesianSetup}} to create a standarized posterior class.
 #' @export
 createPosterior <- function(prior, likelihood){

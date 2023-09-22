@@ -9,7 +9,7 @@ createPosterior(prior, likelihood)
 \arguments{
 \item{prior}{prior class}
 
-\item{likelihood}{Log likelihood density}
+\item{likelihood}{log likelihood density}
 }
 \description{
 Creates a standardized posterior class

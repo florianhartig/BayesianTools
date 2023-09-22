@@ -1,6 +1,4 @@
-# Functions for class mcmcSamper
-
-
+# Functions for class mcmcSampler
 #' @rdname getSample
 #' @author Florian Hartig
 #' @export
@@ -116,15 +114,14 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
 
 
 #' Summmary of MCMC output
-#' 
 #' @description
 #' Creates a summary table of a MCMC output
-#'  
 #' @method summary mcmcSampler
-#' @rdname mcmcSampler
 #' @author Stefan Paul
 #' @param ... not implemented 
 #' @export
+#' @seealso \code{\link{getSample.mcmcSampler}}
+
 summary.mcmcSampler <- function(object, ...){
   #codaChain = getSample(sampler, parametersOnly = parametersOnly, coda = T, ...)
   #summary(codaChain)
@@ -216,10 +213,14 @@ summary.mcmcSampler <- function(object, ...){
   print(correlations)
 }
 
-#' @rdname mcmcSampler
+#' Print of MCMC output
+#' @description
+#' Print MCMC output
 #' @author Florian Hartig
 #' @method print mcmcSampler
 #' @export
+#' @seealso \code{\link{getSample.mcmcSampler}}
+
 print.mcmcSampler <- function(x, ...){
   print("mcmcSampler - you can use the following methods to summarize, plot or reduce this class:")
   print(methods(class ="mcmcSampler"))
@@ -228,13 +229,16 @@ print.mcmcSampler <- function(x, ...){
   #effectiveSize(sampler$codaChain)
 }
 
+
+
+#' Plots of MCMC output
 #' @description
 #' Plots MCMC output
-#' 
-#' @rdname mcmcSampler
 #' @author Florian Hartig
 #' @method plot mcmcSampler
 #' @export
+#' @seealso \code{\link{getSample.mcmcSampler}}
+ 
 plot.mcmcSampler <- function(x, ...){
   tracePlot(x, ...)
 }
