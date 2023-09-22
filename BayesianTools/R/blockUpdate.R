@@ -87,4 +87,5 @@ getBlockSettings <- function(blockUpdate){
   return(list(blockUpdateType = blockUpdateType, h = h, k = k, pSel = pSel,
               pGroup = pGroup, groups = groups))
   }
-  
+
+
