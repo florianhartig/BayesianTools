@@ -9,7 +9,7 @@
 #' @param f scaling factor gamma
 #' @param eps small number to avoid singularity
 #' @param blockUpdate list determining whether parameters should be updated in blocks. For possible settings see Details.
-#' @param message logical, Specifies whether to print the progress of the sampler.
+#' @param message logical, specifies whether to print the progress of the sampler.
 #' @references Braak, Cajo JF Ter. "A Markov Chain Monte Carlo version of the genetic algorithm Differential Evolution: easy Bayesian computing for real parameter spaces." Statistics and Computing 16.3 (2006): 239-249.
 #' @export
 #' @example /inst/examples/DEfamilyHelp.R
