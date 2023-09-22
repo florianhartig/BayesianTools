@@ -22,19 +22,7 @@
 #'  \item{"random"} { random blocking. Using k (see below)}
 #'  \item{"user"} { user defined groups. Using groups (see below)}
 #'  }
-#'  Further, seven parameters can be specified. "k" defines the number of groups, "h" the strength
-#'  of the correlation used to group the parameters and "groups" is used for user defined groups.
-#'  "groups" is a vector containing the group number for each parameter. E.g. for three parameters 
-#'  with the first two in one group, "groups" would be c(1,1,2).
-#'  Moreover, pSel and pGroup can be used to influence the choice of groups. In the sampling process
-#'  a number of groups are drawn at random and updated. pSel is a vector containing relative probabilities
-#'  for updating the respective number of groups. E.g. To update one group at a time pSel = 1.
-#'  For updating one or two groups with the same probability pSel = c(1,1). By default all numbers
-#'  have the same probability.
-#'  The same principle is used for pGroup. Here the user can influence the probability of each group
-#'  to be updated. By default all groups have the same probability.
-#'  Finally, "groupStart" defines the starting point of the groupUpdate and "groupIntervall" - the interval
-#'  in which the groups are evaluated.
+#'  Further, seven parameters can be specified. "k" defines the number of groups, "h" the strength of the correlation used to group the parameters and "groups" is used for user defined groups. "groups" is a vector containing the group number for each parameter. E.g. for three parameters with the first two in one group, "groups" would be c(1,1,2). Moreover, pSel and pGroup can be used to influence the choice of groups. In the sampling process a number of groups are drawn at random and updated. pSel is a vector containing relative probabilities for updating the respective number of groups. E.g. To update one group at a time pSel = 1. For updating one or two groups with the same probability pSel = c(1,1). By default all numbers have the same probability. The same principle is used for pGroup. Here the user can influence the probability of each group to be updated. By default all groups have the same probability. Finally, "groupStart" defines the starting point of the groupUpdate and "groupIntervall" - the interval in which the groups are evaluated.
 
 DE <- function(bayesianSetup, 
                   settings = list(
