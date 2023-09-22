@@ -7,7 +7,7 @@
 #' @param iterations number of model evaluations
 #' @param nCR parameter determining the number of cross-over proposals. If nCR = 1 all parameters are updated jointly.
 #' @param updateInterval determines the interval for the pCR (crossover probabilities) update
-#' @param gamma kurtosis parameter Bayesian Inference Scheme.
+#' @param gamma kurtosis parameter for Bayesian Inference Scheme.
 #' @param eps Ergodicity term
 #' @param e Ergodicity term
 #' @param pCRupdate update of crossover probabilities

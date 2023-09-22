@@ -21,8 +21,7 @@
 #' @return mcmc.object containing the following elements: chains, X, pCR
 #' @references Vrugt, Jasper A., et al. "Accelerating Markov chain Monte Carlo simulation by differential evolution with self-adaptive randomized subspace sampling." International Journal of Nonlinear Sciences and Numerical Simulation 10.3 (2009): 273-290.
 #' @details Instead of a bayesianSetup, the function can take the output of a previous run to restart the sampler
-#' from the last iteration. Due to the sampler's internal structure you can only use the output
-#' of DREAM.
+#' from the last iteration. Due to the sampler's internal structure you can only use the output of DREAM.
 #' If you provide a matrix with start values, the number of rows determines the number of chains that will be run.
 #' The number of coloumns must be equivalent to the number of parameters in your bayesianSetup. \cr\cr
 #' There are several small differences in the algorithm presented here compared to the original paper by Vrugt et al. (2009). Mainly

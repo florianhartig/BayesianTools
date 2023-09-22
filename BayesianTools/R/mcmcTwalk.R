@@ -1,6 +1,6 @@
 #' T-walk MCMC
 #' @author Stefan Paul
-#' @param bayesianSetup object of class 'bayesianSetup' or 'bayesianOuput'.
+#' @param bayesianSetup object of class 'BayesianSetup' or 'BayesianOuput'.
 #' @param settings  list with parameter values. 
 #' @param iterations number of model evaluations
 #' @param at "traverse" move proposal parameter. Default to 6

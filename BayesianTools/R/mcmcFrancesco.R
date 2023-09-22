@@ -7,7 +7,7 @@
 #' @param parmin minimum values for the parameter vector or NULL if FUN is of class BayesianSetup
 #' @param parmax maximum values for the parameter vector or NULL if FUN is of class BayesianSetup
 #' @param f scaling factor
-#' @param FUN function to be sampled from or object of class bayesianSetup
+#' @param FUN function to be sampled from or object of class BayesianSetup
 #' @param consoleUpdates integer, determines the frequency with which sampler progress is printed to the console
 #' @references Metropolis, Nicholas, et al. "Equation of state calculations by fast computing machines." The journal of chemical physics 21.6 (1953): 1087-1092.
 #' @keywords internal

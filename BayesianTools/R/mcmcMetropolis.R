@@ -1,4 +1,4 @@
-#' Creates a Metropolis-type MCMC with options for covariance adaptatin, delayed rejection, Metropolis-within-Gibbs, and tempering
+#' Creates a Metropolis-type MCMC with options for covariance adaptation, delayed rejection, Metropolis-within-Gibbs, and tempering
 #' @author Florian Hartig
 #' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function 
 #' @param settings a list of settings - possible options follow 

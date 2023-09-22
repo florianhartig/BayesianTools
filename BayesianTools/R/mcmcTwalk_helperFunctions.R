@@ -1,5 +1,5 @@
 ######
-# Twalk helper functions
+# T-walk helper functions
 ######
 
 #' Wrapper for step function

@@ -39,7 +39,7 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
   
   ptm <- proc.time()  
  
-  ####### RESTART ########## 
+  ######## RESTART ########## 
   
   if("bayesianOutput" %in% class(bayesianSetup)){
     
