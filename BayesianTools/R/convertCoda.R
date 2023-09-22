@@ -6,7 +6,6 @@
 #' @param info a matrix (or list with matrices for mcmc.list objects) with three columns containing log posterior, log likelihood and log prior of the sampler for each time step (optional; but see Details)
 #' @param likelihood likelihood function used for sampling (see Details)
 #' @details The parameter 'likelihood' is optional for most functions but can be needed e.g for  \code{\link{DIC}} function.
-#' 
 #' Also, the parameter information is typically optional for most uses. However, for certain functions (e.g. \code{\link{MAP}}), the matrix or single columns (e.g. log posterior) are necessary for diagnostics.
 #' @export
 

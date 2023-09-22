@@ -1,11 +1,8 @@
 #' Function to combine chains
-#' 
 #' @param x a list of MCMC chains
-#' @param merge should chains be merged? (T or F)
+#' @param merge logical, should chains be merged? (T or F)
 #' @return combined chains
-#' 
 #' @note to combine several chains to a single McmcSamplerList, see \code{\link{createMcmcSamplerList}}
-#' 
 #' @keywords internal
 combineChains <- function(x, merge = T){
   
@@ -40,12 +37,11 @@ combineChains <- function(x, merge = T){
 }
 
 
-
 #' Helper function to change an object to a coda mcmc class,
 #'
 #' @param chain mcmc Chain
-#' @param start For MCMC samplers, the initial value in the chain. For SMC samplers, initial particle
-#' @param end For MCMC samplers, the end value in the chain. For SMC samplers, end particle.
+#' @param start for MCMC samplers, the initial value in the chain. For SMC samplers, start particle
+#' @param end for MCMC samplers, the end value in the chain. For SMC samplers, end particle.
 #' @param thin thinning parameter
 #' @return object an object of class coda::mcmc
 #' @details   Very similar to coda::mcmc but with less overhead
