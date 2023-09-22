@@ -167,7 +167,7 @@ checkBayesianSetup <- function(bayesianSetup, parallel = F){
 #' Function to close cluster in BayesianSetup
 #' @author Stefan Paul
 #' @description Function closes 
-#' the parallel executer (if available)
+#' the parallel executor (if available)
 #' @param  bayesianSetup object of class BayesianSetup
 #' @export
 stopParallel <- function(bayesianSetup){

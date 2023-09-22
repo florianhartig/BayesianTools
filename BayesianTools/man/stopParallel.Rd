@@ -11,7 +11,7 @@ stopParallel(bayesianSetup)
 }
 \description{
 Function closes
-the parallel executer (if available)
+the parallel executor (if available)
 }
 \author{
 Stefan Paul
