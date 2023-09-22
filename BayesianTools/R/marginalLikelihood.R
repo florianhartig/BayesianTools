@@ -1,8 +1,6 @@
-
 # Motivation for this functions from 
 # https://radfordneal.wordpress.com/2008/08/17/the-harmonic-mean-of-the-likelihood-worst-monte-carlo-method-ever/
 # https://gist.github.com/gaberoo/4619102
-
 
 #  ' @export
 #marginalLikelihood <- function(x,lik,V,sampler$setup$likelihood$density,sampler$setup$prior$density,..., num.samples=1000,log=TRUE) UseMethod("marginalLikelihood")

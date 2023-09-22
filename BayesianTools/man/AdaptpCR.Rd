@@ -7,13 +7,13 @@
 AdaptpCR(CR, delta, lCR, settings, Npop)
 }
 \arguments{
-\item{CR}{Vector of crossover probabilities. Needs to be of length nCR.}
+\item{CR}{vector of crossover probabilities. Needs to be of length nCR.}
 
 \item{delta}{vector with differences}
 
 \item{lCR}{values to weight delta}
 
-\item{settings}{settings list}
+\item{settings}{list of settings}
 
 \item{Npop}{number of chains.}
 }

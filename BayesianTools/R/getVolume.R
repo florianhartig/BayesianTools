@@ -31,5 +31,3 @@ getVolume <- function(sampler, prior = F, method = "MVN", ...){
       return(list(priorVol = priorVol, postVol = postVol))
     }else return(postVol)
 }
-  
-

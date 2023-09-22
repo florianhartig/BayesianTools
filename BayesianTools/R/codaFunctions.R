@@ -1,7 +1,7 @@
 #' Function to combine chains
 #' 
 #' @param x a list of MCMC chains
-#' @param merge should chains be merged? (T or F)
+#' @param merge logical, should chains be merged? (T or F)
 #' @return combined chains
 #' 
 #' @note to combine several chains to a single McmcSamplerList, see \code{\link{createMcmcSamplerList}}
