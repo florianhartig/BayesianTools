@@ -65,8 +65,7 @@ packages.
 
 ## The Bayesian Setup
 
-The central object in the `BT` package is the `BayesianSetup`. This
-class contains the information about the model to be fit (likelihood),
+The central object in the `BT` package is the `BayesianSetup`. This class contains the information about the model to be fit (likelihood),
 and the priors for the model parameters.
 
 The `createBayesianSetup` function generates a `BayesianSetup` object.
