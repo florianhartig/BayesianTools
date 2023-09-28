@@ -8,7 +8,7 @@
 #' @details For parallelization, if option T is selected, an automatic parallelization is tried via R. Alternatively, "external" can be selected on the assumption that the likelihood has already been parallelized. In the latter case, a matrix with parameters as columns must be accepted. You can also specify which packages, objects and DLLs are exported to the cluster. By default, a copy of your workspace is exported, but depending on your workspace, this can be inefficient. As an alternative, you can specify the environments and packages in the likelihood function (e.g. BayesianTools::VSEM() instead of VSEM()).
 #' @export
 #' @example /inst/examples/generateParallelExecuter.R
-
+#' 
 generateParallelExecuter <- function(fun, parallel = F, parallelOptions = list(variables = "all", packages = "all", dlls = NULL)){
   
   if (parallel == F){
