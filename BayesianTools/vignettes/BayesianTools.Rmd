@@ -7,6 +7,7 @@ vignette: >
   %\VignetteIndexEntry{Manual for the BayesianTools R package}
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown}
+abstract: "The BayesianTools (BT) package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques for system models." 
 editor_options: 
   markdown: 
     wrap: 72
@@ -21,13 +22,11 @@ knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
 set.seed(123)
 ```
 
-# Abstract
-
-The BayesianTools (BT) package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques for system models.
-
 # Quick start
 
-The purpose of this first section is to give you a quick overview of the most important functions of the BayesianTools (BT) package. For a more detailed description, see the following sections.
+The purpose of this first section is to give you a quick overview of the
+most important functions of the BayesianTools (BT) package. For a more
+detailed description, see the following sections.
 
 ### Install, load and cite the package
 
@@ -37,7 +36,9 @@ If you haven't installed the package yet, either run
 install.packages("BayesianTools")
 ```
 
-or follow the instructions at <https://github.com/florianhartig/BayesianTools> to install a development version or an older version.
+or follow the instructions at
+<https://github.com/florianhartig/BayesianTools> to install a
+development version or an older version.
 
 Loading and citation
 
@@ -46,15 +47,22 @@ library(BayesianTools)
 citation("BayesianTools")
 ```
 
-Note: BayesianTools calls a number of secondary packages. Of particular importance is `coda`, which is used in a number of plots and summarystatistics. If you use a lot of summary statistics and diagnostic plots, it would be nice to cite coda as well!
+Note: BayesianTools calls a number of secondary packages. Of particular
+importance is `coda`, which is used in a number of plots and
+summarystatistics. If you use a lot of summary statistics and diagnostic
+plots, it would be nice to cite coda as well!
 
-Pro Tip: If you are running a stochastic algorithm such as MCMC, you should always set or record your random seed to make your results reproducible (otherwise the results will change slightly each time you run the code).
+Pro Tip: If you are running a stochastic algorithm such as MCMC, you
+should always set or record your random seed to make your results
+reproducible (otherwise the results will change slightly each time you
+run the code).
 
 ```{r}
 set.seed(123)
 ```
 
-In a real application, recording the session info would be helpful in ensuring reproducibility.
+In a real application, recording the session info would be helpful in
+ensuring reproducibility.
 
 ```{r, eval = F}
 sessionInfo()
@@ -65,7 +73,8 @@ packages.
 
 ## The Bayesian Setup
 
-The central object in the `BT` package is the `BayesianSetup`. This class contains the information about the model to be fit (likelihood),
+The central object in the `BT` package is the `BayesianSetup`. This
+class contains the information about the model to be fit (likelihood),
 and the priors for the model parameters.
 
 The `createBayesianSetup` function generates a `BayesianSetup` object.
@@ -139,7 +148,8 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings =
 
 ```
 
-The result is an object of `mcmcSamplerList`, which should allow you to do everything you can do with an `mcmcSampler` object (sometimes with
+The result is an object of `mcmcSamplerList`, which should allow you to
+do everything you can do with an `mcmcSampler` object (sometimes with
 slightly different output).
 
 Basic convergence is checked via so-called trace plots, which show the 3
@@ -149,7 +159,12 @@ MCMC chains in different colors.
 plot(out)
 ```
 
-The trace plot is examined for major problems (chains look different, systematic trends) and to decide on the burn-in, i.e. the point at which the MCMC has reached the sampling range (i.e. the chains no longer systematically go in one direction). Here, they have basically reached this point immediately, so we could set the burn-in to 0, but I choose 100, i.e. discard the first 100 samples in all further plots.
+The trace plot is examined for major problems (chains look different,
+systematic trends) and to decide on the burn-in, i.e. the point at which
+the MCMC has reached the sampling range (i.e. the chains no longer
+systematically go in one direction). Here, they have basically reached
+this point immediately, so we could set the burn-in to 0, but I choose
+100, i.e. discard the first 100 samples in all further plots.
 
 If the trace plots look good, we can look at the Gelman-Rubin
 convergence diagnostics. Note that you have to discard the burn-in.
