@@ -76,7 +76,7 @@ exp(M1$ln.ML - M2$ln.ML)
 
 # it has therefore been suggested that ML should not be calculated on uninformative priors. But
 # what to do if there are no informative priors?
-# one option is to calculate the fractional BF, which means that one splites the data in half,
+# one option is to calculate the fractional BF, which means that one splits the data in half,
 # uses the first half to fit the model, and then use the posterior as a new (now informative)
 # prior for the ML - let's do this for the previous case
 
@@ -145,7 +145,7 @@ exp(M1$ln.ML - M2$ln.ML)
 # Low dimensional case with narrow priors - all methods have low error
 
 # we use a truncated normal for the likelihood to make sure that the density 
-# integrates to 1 - makes it easier to calcuate the theoretical ML
+# integrates to 1 - makes it easier to calculate the theoretical ML
 likelihood <- function(x) sum(msm::dtnorm(x, log = TRUE, lower = -1, upper = 1))
 prior = createUniformPrior(lower = rep(-1,2), upper = rep(1,2))
 bayesianSetup <- createBayesianSetup(likelihood = likelihood, prior = prior)

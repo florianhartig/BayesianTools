@@ -82,7 +82,7 @@ Once you have your setup, you may want to run a calibration. The runMCMC functio
 -   The sampler name
 -   A list with settings - if a parameter is not provided, the default will be used
 
-As an example, choosing the sampler name "Metropolis" calls a versatile Metropolis-type MCMC with options for covariance adaptation, delayed rejection, tempering and Metropolis-within-Gibbs sampling. For details, see the the later reference on MCMC samplers. This is how we would call this sampler with default settings
+As an example, choosing the sampler name "Metropolis" calls a versatile Metropolis-type MCMC with options for covariance adaptation, delayed rejection, tempering and Metropolis-within-Gibbs sampling. For details, see the later reference on MCMC samplers. This is how we would call this sampler with default settings
 
 ```{r}
 iter = 10000
@@ -99,7 +99,7 @@ print(out)
 summary(out)
 ```
 
-and plottted with several plot functions. The marginalPlot can either be plotted as histograms with density overlay, which is also the default, or as a violin plot (see "?marginalPlot").
+and plotted with several plot functions. The marginalPlot can either be plotted as histograms with density overlay, which is also the default, or as a violin plot (see "?marginalPlot").
 
 ```{r}
 plot(out) # plot internally calls tracePlot(out)
