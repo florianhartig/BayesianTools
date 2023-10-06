@@ -86,7 +86,7 @@ NEE   Net Ecosystem Exchange kg C /m2 /day
 }
 \examples{
 
-  
+
 ## This example shows how to run and calibrate the VSEM model 
 
 library(BayesianTools)

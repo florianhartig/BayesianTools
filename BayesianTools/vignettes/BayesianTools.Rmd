@@ -307,7 +307,7 @@ The prior in the BayesianSetup consists of four parts
 -   lower / upper boundaries
 -   Additional info - best values, names of the parameters, ...
 
-These information can be passed by first creating an a extra object, via createPrior, or through the the createBayesianSetup function.
+These information can be passed by first creating an extra object, via createPrior, or through the the createBayesianSetup function.
 
 #### Creating priors
 
@@ -316,7 +316,7 @@ You have 5 options to create a prior
 -   Do not set a prior - in this case, an infinite prior will be created
 -   Set min/max values - a bounded flat prior and the corresponding sampling function will be created
 -   Use one of the pre-definded priors, see ?createPrior for a list. One of the options here is to use a previous MCMC output as new prior. Pre-defined priors will usually come with a sampling function
--   Use a user-define prior, see ?createPrior
+-   Use a user-defined prior, see ?createPrior
 -   Create a prior from a previous MCMC sample
 
 #### Creating user-defined priors
@@ -568,7 +568,7 @@ MCMCs sample the posterior space by creating a chain in parameter space. While t
 
 An alternative to MCMCs are particle filters, aka Sequential Monte-Carlo (SMC) algorithms. See Hartig, F.; Calabrese, J. M.; Reineking, B.; Wiegand, T. & Huth, A. Statistical inference for stochastic simulation models - theory and application Ecol. Lett., 2011, 14, 816-827
 
-### Rejection samling
+### Rejection sampling
 
 The easiest option is to simply sample a large number of parameters and accept them according to their posterior value. This option can be emulated with the implemented SMC, setting iterations to 1.
 

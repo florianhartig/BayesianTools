@@ -180,4 +180,3 @@ marginalLikelihood(out, method = "HM", numSamples =  500)$ln.ML - theory
 marginalLikelihood(out, method = "Bridge", numSamples =  500)$ln.ML - theory
 
 
-
