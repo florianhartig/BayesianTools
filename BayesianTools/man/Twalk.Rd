@@ -12,33 +12,33 @@ Twalk(
 )
 }
 \arguments{
-\item{bayesianSetup}{Object of class 'bayesianSetup' or 'bayesianOuput'.}
+\item{bayesianSetup}{object of class 'bayesianSetup' or 'bayesianOuput'.}
 
 \item{settings}{list with parameter values.}
 
-\item{iterations}{Number of model evaluations}
+\item{iterations}{number of model evaluations}
 
 \item{at}{"traverse" move proposal parameter. Default to 6}
 
 \item{aw}{"walk" move proposal parameter. Default to 1.5}
 
-\item{pn1}{Probability determining the number of parameters that are changed}
+\item{pn1}{probability determining the number of parameters that are changed}
 
-\item{Ptrav}{Move probability of "traverse" moves, default to 0.4918}
+\item{Ptrav}{move probability of "traverse" moves, default to 0.4918}
 
-\item{Pwalk}{Move probability of "walk" moves, default to 0.4918}
+\item{Pwalk}{move probability of "walk" moves, default to 0.4918}
 
-\item{Pblow}{Move probability of "traverse" moves, default to 0.0082}
+\item{Pblow}{move probability of "traverse" moves, default to 0.0082}
 
 \item{burnin}{number of iterations treated as burn-in. These iterations are not recorded in the chain.}
 
 \item{thin}{thinning parameter. Determines the interval in which values are recorded.}
 
-\item{startValue}{Matrix with start values}
+\item{startValue}{matrix with start values}
 
-\item{consoleUpdates}{Intervall in which the sampling progress is printed to the console}
+\item{consoleUpdates}{intervall in which the sampling progress is printed to the console}
 
-\item{message}{logical determines whether the sampler's progress should be printed}
+\item{message}{logical, determines whether the sampler's progress should be printed}
 }
 \value{
 Object of class bayesianOutput.

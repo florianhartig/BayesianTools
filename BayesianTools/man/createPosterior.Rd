@@ -9,13 +9,13 @@ createPosterior(prior, likelihood)
 \arguments{
 \item{prior}{prior class}
 
-\item{likelihood}{Log likelihood density}
+\item{likelihood}{log likelihood density}
 }
 \description{
 Creates a standardized posterior class
 }
 \details{
-Function is internally used in \code{\link{createBayesianSetup}} to create a standarized posterior class.
+Function is internally used in \code{\link{createBayesianSetup}} to create a standardized posterior class.
 }
 \author{
 Florian Hartig
