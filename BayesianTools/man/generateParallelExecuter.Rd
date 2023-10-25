@@ -15,7 +15,7 @@ generateParallelExecuter(
 
 \item{parallel}{should a parallel R cluster be used? If set to T, the operating system will automatically detect the available cores and n-1 of the available n cores will be used. Alternatively, you can manually set the number of cores to be used}
 
-\item{parallelOptions}{a list containing three lists. \n First, "packages": determines the R packages required to run the likelihood function. \n Second, "variables": the objects in the global environment needed to run the likelihood function \n Third, "dlls": the DLLs needed to run the likelihood function (see Details).}
+\item{parallelOptions}{a list containing three lists. \itemize{\item First, "packages": determines the R packages required to run the likelihood function. \item Second, "variables": the objects in the global environment needed to run the likelihood function. \item Third, "dlls": the DLLs needed to run the likelihood function (see Details).}}
 }
 \description{
 Factory to generate a parallel executor of an existing function
