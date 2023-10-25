@@ -106,7 +106,7 @@ summary.mcmcSamplerList <- function(object, ...){
 
 #' @author Florian Hartig
 #' @method print mcmcSamplerList
-#' @describeIn print.mcmcSampler 
+#' @describeIn print.mcmcSampler
 #' @export
 print.mcmcSamplerList <- function(x, ...){
   print("mcmcSamplerList - you can use the following methods to summarize, plot or reduce this class:")

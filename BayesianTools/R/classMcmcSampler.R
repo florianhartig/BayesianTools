@@ -213,7 +213,9 @@ summary.mcmcSampler <- function(object, ...){
   print(correlations)
 }
 
-
+#' Prints MCMC output
+#' @description
+#' Prints MCMC output
 #' @method print mcmcSampler
 #' @param x object of class mcmcSampler or mcmcSamplerList
 #' @param ... additional options 
