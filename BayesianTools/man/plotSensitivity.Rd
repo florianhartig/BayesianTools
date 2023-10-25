@@ -4,14 +4,14 @@
 \alias{plotSensitivity}
 \title{Performs a one-factor-at-a-time sensitivity analysis for the posterior of a given bayesianSetup within the prior range.}
 \usage{
-plotSensitivity(bayesianSetup, selection = NULL, equalScale = T)
+plotSensitivity(bayesianSetup, selection = NULL, equalScale = TRUE)
 }
 \arguments{
 \item{bayesianSetup}{An object of class BayesianSetup}
 
 \item{selection}{indices of selected parameters}
 
-\item{equalScale}{if T, y axis of all plots will have the same scale}
+\item{equalScale}{logical, if TRUE - y axis of all plots will have the same scale}
 }
 \description{
 Performs a one-factor-at-a-time sensitivity analysis for the posterior of a given bayesianSetup within the prior range.
@@ -46,7 +46,7 @@ plotSensitivity(setup, selection = 2)
 
 plotSensitivity(setup)
 # when parameters are not on the same scale, we can use
-plotSensitivity(setup, equalScale = F)
+plotSensitivity(setup, equalScale = FALSE)
 
 
 }

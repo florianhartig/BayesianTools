@@ -17,6 +17,6 @@ plotSensitivity(setup, selection = 2)
 
 plotSensitivity(setup)
 # when parameters are not on the same scale, we can use
-plotSensitivity(setup, equalScale = F)
+plotSensitivity(setup, equalScale = FALSE)
 
 
