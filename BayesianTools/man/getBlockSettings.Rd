@@ -13,6 +13,6 @@ getBlockSettings(blockUpdate)
 list with block settings
 }
 \description{
-Transforms the original settings in settings used in the model runs
+Transforms the original settings to settings used in the model runs
 }
 \keyword{internal}

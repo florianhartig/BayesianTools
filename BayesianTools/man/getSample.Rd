@@ -148,15 +148,15 @@ getSample(
 
 \item{parametersOnly}{for a BT output, if F, likelihood, posterior and prior values are also provided in the output}
 
-\item{coda}{works only for mcmc classes - provides output as a coda object. Note: if mcmcSamplerList contains mcmc samplers such as DE that have several chains, the internal chains will be collapsed. This may not be the desired behavior for all applications.}
+\item{coda}{works only for mcmc classes - returns output as a coda object. Note: if mcmcSamplerList contains mcmc samplers such as DE that have several chains, the internal chains will be collapsed. This may not be desired for all applications.}
 
-\item{start}{for mcmc samplers start value in the chain. For SMC samplers, start particle}
+\item{start}{for mcmc samplers, start value in the chain. For SMC samplers, start particle}
 
 \item{end}{for mcmc samplers end value in the chain. For SMC samplers, end particle}
 
-\item{thin}{thinning parameter. Either an integer determining the thinning intervall (default is 1) or "auto" for automatic thinning.}
+\item{thin}{thinning parameter. Either an integer determining the thinning interval (default is 1) or "auto" for automatic thinning.}
 
-\item{numSamples}{sample size (only used if thin = 1). If you want to use numSamples set thin to 1.}
+\item{numSamples}{sample size (only used if thin = 1). If you want to use numSamples, set thin to 1.}
 
 \item{whichParameters}{possibility to select parameters by index}
 
@@ -168,9 +168,9 @@ getSample(
 Extracts the sample from a bayesianOutput
 }
 \details{
-If thin is greater than the total number of samples in the sampler object the first and the last element (of each chain if a sampler with multiples chains is used) are sampled. If numSamples is greater than the total number of samples all samples are selected. In both cases a warning is displayed.
+If thin is greater than the total number of samples in the sampler object, the first and the last element (of each chain if a sampler with multiples chains is used) are sampled. If numSamples is greater than the total number of samples all samples are selected. A warning will be displayed in both cases.
 
-If thin and numSamples is passed, the function will use the thin argument if it is valid and greater than 1, else numSamples will be used.
+If both thin and numSamples are provided, the function will use thin only if it is valid and greater than 1; otherwise, numSamples will be used.
 }
 \examples{
 ll = function(x) sum(dnorm(x, log = TRUE))
