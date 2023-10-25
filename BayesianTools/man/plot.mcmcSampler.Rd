@@ -6,6 +6,11 @@
 \usage{
 \method{plot}{mcmcSampler}(x, ...)
 }
+\arguments{
+\item{x}{description}
+
+\item{...}{additional options passed to tracePlot}
+}
 \description{
 Plots MCMC output
 }

@@ -1,11 +1,24 @@
 ---
-title: "Test"
-output: html_document
-date: "2023-09-14"
+title: "Implementing BayesianTools on real data"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Implementing BayesianTools on real data}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+abstract: "This tutorial discusses how to implement BayesianTools on real data" 
+author: Florian Hartig
+editor_options: 
+  chunk_output_type: console
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
+```
+
+```{r, echo = F, message = F}
+set.seed(123)
 ```
 
 In this vignette, we want to illustrate how BayesianTools can be implemented on a real data.

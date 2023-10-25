@@ -54,6 +54,7 @@ getSample.smcSampler <- function(sampler, parametersOnly = T, coda = F, start = 
 #' 
 #' @author Florian Hartig
 #' @method summary smcSampler
+#' @describeIn summary.mcmcSampler Summary for smcSampler objects
 #' @export
 summary.smcSampler<- function(object, ...){
   sampler <- object

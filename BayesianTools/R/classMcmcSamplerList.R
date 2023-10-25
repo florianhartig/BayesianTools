@@ -15,6 +15,7 @@ createMcmcSamplerList <- function(mcmcList){
 
 #' @author Stefan Paul
 #' @method summary mcmcSamplerList
+#' @describeIn summary.mcmcSampler Method for mcmcSamplerList
 #' @export
 
 summary.mcmcSamplerList <- function(object, ...){

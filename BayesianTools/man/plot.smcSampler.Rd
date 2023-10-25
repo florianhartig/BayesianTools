@@ -9,6 +9,3 @@
 \description{
 Plots smcSampler output
 }
-\seealso{
-\link{\code{getSample.smcSampler}}
-}

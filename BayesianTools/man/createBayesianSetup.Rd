@@ -48,7 +48,7 @@ createBayesianSetup(
 \item{plotBest}{vector with best values for plotting}
 }
 \value{
-An object of class BayesianSetup. Implemented S3 generics include \code{\link{print.BayesianSetup}}. BayesianSetup
+An object of class BayesianSetup. Implemented S3 generics include \code{\link{print.BayesianSetup}}.
 }
 \description{
 Creates a standardized collection of prior, likelihood and posterior functions, including error checks etc.
@@ -141,7 +141,6 @@ rm(BSVSEM)
 \code{\link{checkBayesianSetup}} \cr
 \code{\link{createLikelihood}} \cr
 \code{\link{createPrior}} \cr
-\code{\link{print.BayesianSetup}} \cr
 }
 \author{
 Florian Hartig, Tankred Ott

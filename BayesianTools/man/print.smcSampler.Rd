@@ -9,9 +9,6 @@
 \description{
 Print smcSampler output
 }
-\seealso{
-\code{\link{getSample.smcSampler}}
-}
 \author{
 Florian Hartig
 }

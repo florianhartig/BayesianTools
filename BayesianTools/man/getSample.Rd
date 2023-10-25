@@ -209,8 +209,6 @@ getSample(
 }
 \value{
 a matrix or a coda object, depending on option
-
-A matrix or array
 }
 \description{
 This function extracts samples from a BT MCMC or SMC sampler after they have been run. It can also work on objects, for example coda::mcmc, matrix,
