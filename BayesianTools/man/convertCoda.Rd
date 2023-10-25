@@ -7,22 +7,19 @@
 convertCoda(sampler, names = NULL, info = NULL, likelihood = NULL)
 }
 \arguments{
-\item{sampler}{An object of class mcmc or mcmc.list}
+\item{sampler}{an object of class mcmc or mcmc.list}
 
-\item{names}{vector giving the parameter names (optional)}
+\item{names}{a vector with parameter names (optional)}
 
-\item{info}{matrix (or list with matrices for mcmc.list objects) with three coloumns containing log posterior, log likelihood and log prior of the sampler for each time step (optional; but see Details)}
+\item{info}{a matrix (or list with matrices for mcmc.list objects) with three columns containing log posterior, log likelihood and log prior of the sampler for each time step (optional; but see Details)}
 
-\item{likelihood}{likelihood function used in the sampling (see Details)}
+\item{likelihood}{likelihood function used for sampling (see Details)}
 }
 \description{
-Function is used to make the plot and diagnostic functions
-available for coda::mcmc objects
+Function to support plotting and diagnostic functions for coda::mcmc objects.
 }
 \details{
-The parameter 'likelihood' is optional for most functions but can be needed e.g for
-using the \code{\link{DIC}} function.
+The parameter 'likelihood' is optional for most functions but can be needed e.g for  \code{\link{DIC}} function.
 
-Also the parameter info is optional for most uses. However for some functions (e.g. \code{\link{MAP}})
-the matrix or single coloumns (e.g. log posterior) are necessary for the diagnostics.
+Also, the parameter information is typically optional for most uses. However, for certain functions (e.g. \code{\link{MAP}}), the matrix or single columns (e.g. log posterior) are necessary for diagnostics.
 }

@@ -34,7 +34,7 @@ Method 2 is defined as,
 where  \eqn{V_{s=1}^{S}} is the sample variance.
 }
 \note{
-The function requires that the likelihood passed on to BayesianSetup contains the option sum = T/F, with defaul F. If set to true, the likelihood for each data point must be returned.
+The function requires that the likelihood passed on to BayesianSetup contains the option sum = T/F, with default F. If set to true, the likelihood for each data point must be returned.
 }
 \examples{
 bayesianSetup <- createBayesianSetup(likelihood = testDensityNormal, 

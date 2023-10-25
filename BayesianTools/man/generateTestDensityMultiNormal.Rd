@@ -17,7 +17,7 @@ generateTestDensityMultiNormal(
 
 \item{sigma}{either a correlation matrix, or "strongcorrelation", or "no correlation"}
 
-\item{sample}{should the function create samples}
+\item{sample}{logical, should the function create samples?}
 
 \item{n}{number of samples to create}
 
