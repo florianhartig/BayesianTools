@@ -4,6 +4,13 @@
 #' @param selection indices of selected parameters
 #' @param equalScale if T, y axis of all plots will have the same scale
 #' @note This function can also be used for sensitivity analysis of an arbitrary output - just create a BayesianSetup with this output. 
+#' @details
+#' When the scale of the parameter do not match then the plot looks like this :
+#' ![](plotSensitivity-ScaleDontMatch.png "Sensitivity Plot")
+#' 
+#' In that case, we should put 'equalScale = F'. Then the plot looks like this:
+#' ![](plotSensitivity-ScaleFalse.png "Sensitivity Plot")
+#' 
 #' @example /inst/examples/plotSensitivityHelp.R
 #' @export
 plotSensitivity <- function(bayesianSetup, selection = NULL, equalScale = T){

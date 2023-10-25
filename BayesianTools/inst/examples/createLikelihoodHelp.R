@@ -1,7 +1,5 @@
 
 
-# likelihood function can be created with or without createBayesianSetup. ??createBayesianSetup provides additional properties.
-
 data = rnorm(20)
 
 # create standardized likelihood density for Gaussian likelihood function
@@ -22,7 +20,9 @@ likelihood(x = c(1,1))
 # for example to catch exceptions that are raised by the call to likelihood
 likelihoodClass <- createLikelihood(likelihood)
 
-bayesianSetup <- createBayesianSetup(likelihood = likelihoodClass, lower = c(-10,0.001), upper = c(10, 5))
+bayesianSetup <- createBayesianSetup(likelihood = likelihoodClass, 
+                                     lower = c(-10,0.001), 
+                                     upper = c(10, 5))
 
 settings = list(iterations = 1000)
 out <- runMCMC(bayesianSetup, sampler = "DEzs", settings)
@@ -53,7 +53,8 @@ likelihood <- function(x) {
 }
 
 bayesianSetup <- createBayesianSetup(likelihood = likelihood, 
-                                lower = c(-10,0.001, 0), upper = c(10, 5, 0.99))
+                                     lower = c(-10,0.001, 0), 
+                                     upper = c(10, 5, 0.99))
 
 settings = list(iterations = 1000)
 out <- runMCMC(bayesianSetup, sampler = "DEzs", settings)

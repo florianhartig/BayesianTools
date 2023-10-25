@@ -1,3 +1,5 @@
+##### plotSensitivity #####
+
 data = rnorm(20)
 
 # create standardized likelihood density for Gaussian likelihood function
@@ -10,13 +12,10 @@ likelihood <- function(x) {
 
 setup = createBayesianSetup(likelihood, lower = c(-10, 0.01), upper = c(10,5))
 
-# showing posterior response surface for parameter 1
-# note that this is plotted at 
-setup$prior$best
-plotSensitivity(setup, selection = 2)
-
+png(filename = "BayesianTools/man/figures/plotSensitivity-ScaleDontMatch.png", width = 400, height = 300)
 plotSensitivity(setup)
-# when parameters are not on the same scale, we can use
+dev.off()
+
+png(filename = "BayesianTools/man/figures/plotSensitivity-ScaleFalse.png", width = 400, height = 300)
 plotSensitivity(setup, equalScale = F)
-
-
+dev.off()
