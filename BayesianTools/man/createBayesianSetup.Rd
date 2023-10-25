@@ -37,7 +37,7 @@ createBayesianSetup(
 
 \item{names}{optional vector with parameter names}
 
-\item{parallelOptions}{list containing three lists.\n First, "packages" determines the R packages necessary to run the likelihood function.\n Second, "variables" - the objects in the global environment needed to run the likelihood function and \n third, "dlls" is needed to run the likelihood function (see Details and Examples).}
+\item{parallelOptions}{list containing three lists.\itemize{ \item First, "packages" determines the R packages necessary to run the likelihood function.\item Second, "variables" - the objects in the global environment needed to run the likelihood function and \item Third, "dlls" is needed to run the likelihood function (see Details and Examples). }}
 
 \item{catchDuplicates}{logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns.}
 
