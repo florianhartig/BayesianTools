@@ -249,12 +249,11 @@ createPriorDensity <- function(sampler, method = "multivariate", eps = 1e-10, lo
 
 #' Print object of prior class
 #' @description print function for objects of class prior
+#' @param x object of a prior
+#' @param ... additional parameters
 #' @author Maximilian Pichler
 #' @export
 #' @seealso \code{\link{createPrior}}
-
-
-
 print.prior <- function(x, ...){
   cat('Prior: \n\n')
   

@@ -15,7 +15,7 @@ createSmcSamplerList <- function(...){
 
 #' @method summary smcSamplerList
 #' @author Florian Hartig
-#' @export
+#' @describeIn summary.smcSampler 
 summary.smcSamplerList <- function(object, ...){
   sample = getSample(object, parametersOnly = T, ...)
   summary(sample)
@@ -23,6 +23,7 @@ summary.smcSamplerList <- function(object, ...){
 
 #' @method print smcSamplerList
 #' @author Florian Hartig
+#' @describeIn print.smcSampler 
 #' @export
 print.smcSamplerList <- function(x, ...){
   print("smcSamplerList - you can use the following methods to summarize, plot or reduce this class:")
@@ -30,6 +31,7 @@ print.smcSamplerList <- function(x, ...){
 }
 
 #' @method plot smcSamplerList
+#' @describeIn plot.smcSampler 
 #' @export
 plot.smcSamplerList <- function(x, ...){
   marginalPlot(x, ...)

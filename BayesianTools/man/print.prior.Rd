@@ -6,6 +6,11 @@
 \usage{
 \method{print}{prior}(x, ...)
 }
+\arguments{
+\item{x}{object of a prior}
+
+\item{...}{additional parameters}
+}
 \description{
 print function for objects of class prior
 }

@@ -116,12 +116,12 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
 #' Summmary of MCMC output
 #' @description
 #' Creates a summary table of a MCMC output
+#' @param object object of class mcmcSampler or mcmcSamplerList
 #' @param ... not implemented  
 #' @method summary mcmcSampler
 #' @author Stefan Paul
 #' @export
 #' @seealso \code{\link{getSample.mcmcSampler}}
-
 summary.mcmcSampler <- function(object, ...){
   #codaChain = getSample(sampler, parametersOnly = parametersOnly, coda = T, ...)
   #summary(codaChain)
@@ -215,6 +215,8 @@ summary.mcmcSampler <- function(object, ...){
 
 
 #' @method print mcmcSampler
+#' @param x object of class mcmcSampler or mcmcSamplerList
+#' @param ... additional options 
 #' @export
 #' @seealso \code{\link{getSample.mcmcSampler}}
 
@@ -231,7 +233,7 @@ print.mcmcSampler <- function(x, ...){
 #' Plots of MCMC output
 #' @description
 #' Plots MCMC output
-#' @param x description
+#' @param x object of class mcmcSampler or mcmcSamplerList
 #' @param ... additional options passed to tracePlot
 #' @author Florian Hartig
 #' @method plot mcmcSampler

@@ -51,10 +51,10 @@ getSample.smcSampler <- function(sampler, parametersOnly = T, coda = F, start = 
 #' Summary for class 'smcSampler'
 #' @description
 #' Creates a summary table of a 'smcSampler' output
-#' 
+#' @param object object of class smcSampler or smcSamplerList
+#' @param ... additional parameters
 #' @author Florian Hartig
 #' @method summary smcSampler
-#' @describeIn summary.mcmcSampler Summary for smcSampler objects
 #' @export
 summary.smcSampler<- function(object, ...){
   sampler <- object
@@ -65,7 +65,8 @@ summary.smcSampler<- function(object, ...){
 #' Plots of smcSampler output
 #' @description
 #' Plots smcSampler output
-#' 
+#' @param x object of class mcmcSampler or mcmcSamplerList
+#' @param ... additional options passed to tracePlot
 #' @method plot smcSampler
 #' @export
 plot.smcSampler<- function(x, ...){
@@ -75,6 +76,8 @@ plot.smcSampler<- function(x, ...){
 #' Print of smcSampler output
 #' @description
 #' Print smcSampler output
+#' @param x object of class mcmcSampler or mcmcSamplerList
+#' @param ... additional options 
 #' @author Florian Hartig
 #' @method print smcSampler
 #' @export
