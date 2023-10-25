@@ -3,7 +3,7 @@
 #' @author Florian Hartig
 #' @param fun function to be changed to parallel execution
 #' @param parallel should a parallel R cluster be used? If set to T, the operating system will automatically detect the available cores and n-1 of the available n cores will be used. Alternatively, you can manually set the number of cores to be used
-#' @param parallelOptions a list containing three lists. \n First, "packages": determines the R packages required to run the likelihood function. \n Second, "variables": the objects in the global environment needed to run the likelihood function \n Third, "dlls": the DLLs needed to run the likelihood function (see Details).
+#' @param parallelOptions a list containing three lists. \n First, "packages": determines the R packages required to run the likelihood function. \n Second, "variables": the objects in the global environment needed to run the likelihood function - Third, "dlls": the DLLs needed to run the likelihood function (see Details).
 #' @note can be used to make functions compatible with library sensitivity
 #' @details For parallelization, if option T is selected, an automatic parallelization is tried via R. Alternatively, "external" can be selected on the assumption that the likelihood has already been parallelized. In the latter case, a matrix with parameters as columns must be accepted. You can also specify which packages, objects and DLLs are exported to the cluster. By default, a copy of your workspace is exported, but depending on your workspace, this can be inefficient. As an alternative, you can specify the environments and packages in the likelihood function (e.g. BayesianTools::VSEM() instead of VSEM()).
 #' @export
