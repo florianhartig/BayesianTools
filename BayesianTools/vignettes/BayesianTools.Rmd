@@ -63,6 +63,7 @@ The central object in the BT package is the BayesianSetup. This class contains t
 A BayesianSetup is created by the createBayesianSetup function. The function expects a log-likelihood and (optional) a log-prior. It then automatically creates the posterior and various convenience functions for the samplers. 
 
 Advantages of the BayesianSetup include
+
 1. support for automatic parallelization
 2. functions are wrapped in try-catch statements to avoid crashes during long MCMC evaluations
 3. and the posterior checks if the parameter is outside the prior first, in which case the likelihood is not evaluated (makes the algorithms faster for slow likelihoods).
