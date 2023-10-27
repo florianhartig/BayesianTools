@@ -12,7 +12,6 @@ createSmcSamplerList <- function(...){
   return(smcList)
 }
 
-
 #' @method summary smcSamplerList
 #' @author Florian Hartig
 #' @export
