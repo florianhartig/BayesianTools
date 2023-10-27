@@ -122,7 +122,8 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
 #' @author Stefan Paul
 #' @export
 #' @seealso \code{\link{getSample.mcmcSampler}}
-summary.mcmcSampler <- function(object, ...){
+summary.mcmcSampler <- function(object, printCorrelation = "auto", ...){
+
   #codaChain = getSample(sampler, parametersOnly = parametersOnly, coda = T, ...)
   #summary(codaChain)
   #rejectionRate(sampler$codaChain)
@@ -139,8 +140,7 @@ summary.mcmcSampler <- function(object, ...){
   
   mcmcsampler <- sampler$settings$sampler
   runtime <- sampler$settings$runtime[3]
-  correlations <- round(cor(getSample(sampler)),3)
-  
+
   chain <- getSample(sampler, parametersOnly = T, coda = T, ...)
   # chain <- getSample(sampler, parametersOnly = T, coda = T)
   if("mcmc.list" %in% class(chain)){
@@ -209,8 +209,11 @@ summary.mcmcSampler <- function(object, ...){
   
   try(cat("## DIC: ", round(DInf$DIC,3), "\n"), silent = TRUE)
   cat("## Convergence" ,"\n", "Gelman Rubin multivariate psrf: ", conv, "\n","\n")
-  cat("## Correlations", "\n")
-  print(correlations)
+  if(printCorrelation == TRUE){
+    correlations <- round(cor(getSample(sampler)),3)
+    cat("## Correlations", "\n")
+    print(correlations)    
+  }
 }
 
 #' Prints MCMC output
