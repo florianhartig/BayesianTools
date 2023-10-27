@@ -35,7 +35,6 @@
 #'  to be updated. By default all groups have the same probability.
 #'  Finally, "groupStart" defines the starting point of the groupUpdate and "groupIntervall" - the interval
 #'  in which the groups are evaluated.
-
 DE <- function(bayesianSetup, 
                   settings = list(
                     startValue = NULL, 

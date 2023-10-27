@@ -1,3 +1,4 @@
+
 #' Main wrapper function to start MCMCs, particle MCMCs and SMCs
 #' @author Florian Hartig
 #' @param bayesianSetup either a BayesianSetup (see \code{\link{createBayesianSetup}}), a function, or a BayesianOutput created by runMCMC. The latter allows to continue a previous MCMC run. See details for how to restart a sampler. 

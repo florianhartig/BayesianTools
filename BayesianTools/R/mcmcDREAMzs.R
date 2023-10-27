@@ -45,6 +45,7 @@
 #' @example /inst/examples/DEfamilyHelp.R
 #' @seealso \code{\link{DREAM}}
 #' @export
+#' 
 DREAMzs <- function(bayesianSetup,
                     settings = list(iterations = 10000,
                                     nCR = 3,

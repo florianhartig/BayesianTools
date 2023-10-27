@@ -40,7 +40,6 @@
 #' sampling process (i.e. burn-in > adaptation) or subsequently by the user. We chose to distinguish between
 #' the burn-in and adaptation phase to allow the user more flexibility in the sampler's settings.
 #'
-#'
 #' @example /inst/examples/DEfamilyHelp.R
 #' @seealso \code{\link{DREAMzs}}
 #' @export

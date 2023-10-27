@@ -1,3 +1,4 @@
+
 #' Calculate posterior volume
 #' @author Florian Hartig
 #' @param sampler an object of superclass bayesianOutput or any other class that has implemented the getSample function (e.g. Matrix)

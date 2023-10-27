@@ -1,3 +1,4 @@
+
 #' T-walk MCMC
 #' @author Stefan Paul
 #' @param bayesianSetup object of class 'bayesianSetup' or 'bayesianOuput'.

@@ -2,6 +2,7 @@
 # Twalk helper functions
 ######
 
+
 #' Wrapper for step function
 #' @param Npar number of parameters
 #' @param FUN log posterior density

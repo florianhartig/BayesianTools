@@ -1,6 +1,7 @@
 #' @export
 marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 
+
 #' Plot MCMC marginals
 #' @param x bayesianOutput, or matrix or data.frame with samples as rows and parameters as columns
 #' @param prior if x is a bayesianOutput, T/F will determines whether the prior is drawn (default = T). If x is matrix or data.frame, a prior can be drawn if a matrix of prior draws with values as rows and parameters as columns can be provided here. 
