@@ -216,12 +216,11 @@ summary.mcmcSampler <- function(object, ...){
 #' Prints MCMC output
 #' @description
 #' Prints MCMC output
-#' @method print mcmcSampler
 #' @param x object of class mcmcSampler or mcmcSamplerList
 #' @param ... additional options 
+#' @method print mcmcSampler
 #' @export
 #' @seealso \code{\link{getSample.mcmcSampler}}
-
 print.mcmcSampler <- function(x, ...){
   print("mcmcSampler - you can use the following methods to summarize, plot or reduce this class:")
   print(methods(class ="mcmcSampler"))
@@ -237,11 +236,10 @@ print.mcmcSampler <- function(x, ...){
 #' Plots MCMC output
 #' @param x object of class mcmcSampler or mcmcSamplerList
 #' @param ... additional options passed to tracePlot
-#' @author Florian Hartig
 #' @method plot mcmcSampler
+#' @author Florian Hartig
 #' @export
 #' @seealso \code{\link{getSample.mcmcSampler}}
- 
 plot.mcmcSampler <- function(x, ...){
   tracePlot(x, ...)
 }

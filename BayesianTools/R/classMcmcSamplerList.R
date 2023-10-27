@@ -106,7 +106,7 @@ summary.mcmcSamplerList <- function(object, ...){
 
 #' @author Florian Hartig
 #' @method print mcmcSamplerList
-#' @describeIn print.mcmcSampler
+#' @describeIn print.mcmcSampler 
 #' @export
 print.mcmcSamplerList <- function(x, ...){
   print("mcmcSamplerList - you can use the following methods to summarize, plot or reduce this class:")
@@ -126,8 +126,6 @@ plot.mcmcSamplerList <- function(x, ...){
 #' @author Florian Hartig
 #' @export
 #' @rdname getSample
-
-
 getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics, ...){
 
   if(!is.null(numSamples)) numSamples = ceiling(numSamples/length(sampler))
