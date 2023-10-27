@@ -1,3 +1,4 @@
+
 #' Convert coda::mcmc objects to BayesianTools::mcmcSampler
 #' @description Function to support plotting and diagnostic functions for coda::mcmc objects.
 #' @param sampler an object of class mcmc or mcmc.list 
