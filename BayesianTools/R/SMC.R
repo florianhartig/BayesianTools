@@ -1,3 +1,4 @@
+
 #' SMC sampler
 #' @author Florian Hartig
 #' @description Sequential Monte Carlo Sampler

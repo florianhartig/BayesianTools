@@ -1,3 +1,4 @@
+
 #' Very simple ecosystem model
 #' @description A very simple ecosystem model, based on three carbon pools and a basic LUE model 
 #' @param pars a parameter vector with parameters and initial states
