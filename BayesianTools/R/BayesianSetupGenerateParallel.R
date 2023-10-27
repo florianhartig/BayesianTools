@@ -1,5 +1,4 @@
 #' Factory to generate a parallel executor of an existing function
-#' 
 #' @author Florian Hartig
 #' @param fun function to be changed to parallel execution
 #' @param parallel should a parallel R cluster be used? If set to T, the operating system will automatically detect the available cores and n-1 of the available n cores will be used. Alternatively, you can manually set the number of cores to be used
