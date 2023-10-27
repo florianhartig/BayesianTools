@@ -1,3 +1,4 @@
+
 #' @title BayesianTools
 #' @name BayesianTools
 #' @docType package
