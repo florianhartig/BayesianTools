@@ -1,6 +1,5 @@
 # NOTE: The functions in this class are just templates that are to be implemented for all subclasses of BayesianOutput. They are not functional. 
 
-
 #' Extracts the sample from a bayesianOutput
 #' @author Florian Hartig
 #' @param sampler an object of class mcmcSampler, mcmcSamplerList, smcSampler, smcSamplerList, mcmc, mcmc.list, double, numeric
@@ -235,11 +234,8 @@ getSample.MCMC_refClass <- function(sampler, parametersOnly = T, coda = F, start
 #'
 #' @param l a list with objects that can be accessed with \code{\link{getSample}}
 #' @param ... arguments to be passed on to \code{\link{getSample}}
-#'
 #' @return a matrix
-#'
 #' @author Florian Hartig
-#'
 #' @export
 mergeChains <- function(l, ...){
 
