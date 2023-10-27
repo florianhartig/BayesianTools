@@ -1,5 +1,6 @@
 ### DREAM algorithm
 
+
 #' DREAM
 #' @author Stefan Paul
 #' @param bayesianSetup object of class 'bayesianSetup' or 'bayesianOuput'.

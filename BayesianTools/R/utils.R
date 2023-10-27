@@ -10,6 +10,7 @@ getSetup <- function(x) {
   else stop('Can not get setup from x')
 }
 
+
 #' Function to thin matrices
 #' @param mat matrix to thin
 #' @param thin thinning parameter

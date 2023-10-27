@@ -1,3 +1,4 @@
+
 #' Factory that creates a proposal generator
 #' @author Florian Hartig
 #' @param covariance covariance matrix. Can also be vector of the sqrt of diagonal elements --> standard deviation

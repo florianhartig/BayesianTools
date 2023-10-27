@@ -1,3 +1,4 @@
+
 #' Flexible function to create correlation density plots
 #' @author Florian Hartig
 #' @param mat object of class "bayesianOutput" or a matrix or data frame of variables 

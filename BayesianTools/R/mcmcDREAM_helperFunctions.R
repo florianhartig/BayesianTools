@@ -33,7 +33,6 @@ generateCRvalues <- function(pCR,settings, Npop){
 
 
 
-
 #' Adapts pCR values
 #' @param CR vector of crossover probabilities. Needs to be of length nCR.
 #' @param settings list of settings

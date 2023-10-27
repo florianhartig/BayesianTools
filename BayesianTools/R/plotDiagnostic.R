@@ -15,7 +15,6 @@
 #' @export
 
 
-
 plotDiagnostic <- function(out, start = 50, numSamples = 100, window = 0.2, plotWAIC = F, plotPSRF = T, plotDIC = T, plotTrace = T, graphicParameters = NULL, ...){
   
   oldpar = NULL

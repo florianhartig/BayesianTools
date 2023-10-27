@@ -1,3 +1,4 @@
+
 #' The Metropolis Algorithm
 #' @author Francesco Minunno
 #' @description The Metropolis Algorithm (Metropolis et al. 1953)

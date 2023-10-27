@@ -1,3 +1,4 @@
+
 #' Trace plot for MCMC class
 #' @param sampler an object of class MCMC sampler
 #' @param thin determines the thinning interval of the chain

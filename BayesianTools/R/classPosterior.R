@@ -45,6 +45,7 @@ createPosterior <- function(prior, likelihood){
   return(out)
 }
 
+
 # likelihood <- function(x)stop("a")
 # prior <- createPrior(function(x) sum(dunif(x, log = T)))
 # 

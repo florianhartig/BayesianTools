@@ -1,3 +1,4 @@
+
 #' Determine the groups of correlated parameters
 #' @author Stefan Paul
 #' @param chain MCMC chain including only the parameters (not logP,ll, logP)

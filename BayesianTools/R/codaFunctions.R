@@ -1,3 +1,4 @@
+
 #' Function to combine chains
 #' 
 #' @param x a list of MCMC chains

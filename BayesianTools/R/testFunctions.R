@@ -1,3 +1,4 @@
+
 #' Multivariate normal likelihood 
 #' @author Florian Hartig
 #' @description Generates a 3 dimensional multivariate normal likelihood function.

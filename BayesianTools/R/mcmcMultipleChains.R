@@ -1,3 +1,4 @@
+
 #' Run multiple chains
 #' @param bayesianSetup object of class "BayesianSetup"
 #' @param settings list with settings for sampler
