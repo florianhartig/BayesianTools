@@ -1,3 +1,4 @@
+
 #' Creates a standardized posterior class
 #' @author Florian Hartig
 #' @param prior prior class

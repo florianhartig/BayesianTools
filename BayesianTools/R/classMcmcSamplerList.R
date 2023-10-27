@@ -1,3 +1,4 @@
+
 #' Convenience function to create an object of class mcmcSamplerList from a list of mcmc samplers
 #' @author Florian Hartig
 #' @param mcmcList list of objects, each of which is an mcmcSampler

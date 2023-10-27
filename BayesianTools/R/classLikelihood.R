@@ -1,3 +1,4 @@
+
 #' Creates a standardized likelihood class#'
 #' @author Florian Hartig
 #' @param likelihood log likelihood density

@@ -1,3 +1,4 @@
+
 #' Creates a standardized prior class
 #' @author Florian Hartig
 #' @param density prior density
