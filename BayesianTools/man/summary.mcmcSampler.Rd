@@ -5,12 +5,14 @@
 \alias{summary.mcmcSamplerList}
 \title{Summmary of MCMC output}
 \usage{
-\method{summary}{mcmcSampler}(object, ...)
+\method{summary}{mcmcSampler}(object, printCorrelation = "auto", ...)
 
 \method{summary}{mcmcSamplerList}(object, ...)
 }
 \arguments{
 \item{object}{object of class mcmcSampler or mcmcSamplerList}
+
+\item{printCorrelation}{if set to TRUE, prints correlation among samples}
 
 \item{...}{not implemented}
 }

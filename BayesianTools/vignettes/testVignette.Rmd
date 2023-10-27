@@ -95,7 +95,4 @@ correlationPlot(res)
 # Fitting a ecosystem model with the BT package 
 
 
-?VSEM   
-How do I know lower and upper?
-
 

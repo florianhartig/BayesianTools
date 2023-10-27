@@ -17,7 +17,6 @@ createMcmcSamplerList <- function(mcmcList){
 #' @method summary mcmcSamplerList
 #' @describeIn summary.mcmcSampler 
 #' @export
-
 summary.mcmcSamplerList <- function(object, ...){
   #codaChain = getSample(sampler, parametersOnly = parametersOnly, coda = T, ...)
   #summary(codaChain)

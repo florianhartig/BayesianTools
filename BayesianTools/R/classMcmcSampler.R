@@ -117,6 +117,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
 #' @description
 #' Creates a summary table of a MCMC output
 #' @param object object of class mcmcSampler or mcmcSamplerList
+#' @param printCorrelation if set to TRUE, prints correlation among samples
 #' @param ... not implemented  
 #' @method summary mcmcSampler
 #' @author Stefan Paul
