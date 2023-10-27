@@ -105,7 +105,6 @@ createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplic
 
 #library(mvtnorm)
 #library(sparseMVN)
-
 #' Normal / Gaussian Likelihood function
 #' @author Florian Hartig
 #' @param predicted vector of predicted values

@@ -1,4 +1,3 @@
-
 # Motivation for this functions from 
 # https://radfordneal.wordpress.com/2008/08/17/the-harmonic-mean-of-the-likelihood-worst-monte-carlo-method-ever/
 # https://gist.github.com/gaberoo/4619102

@@ -1,5 +1,4 @@
 #' Function to combine chains
-#' 
 #' @param x a list of MCMC chains
 #' @param merge should chains be merged? (T or F)
 #' @return combined chains
