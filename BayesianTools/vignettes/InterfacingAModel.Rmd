@@ -21,6 +21,7 @@ knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
 set.seed(123)
 ```
 
+
 # Interfacing a model with BT - step-by-step guide
 
 ## Step 1: Create a runModel(par) function
