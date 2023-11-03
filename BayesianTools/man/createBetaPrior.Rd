@@ -29,6 +29,21 @@ for details see \code{\link{createPrior}}
 # prior distributions, including createUniformPrior, createTruncatedNormalPrior
 # etc. If you want to specify a prior that corresponds to one of these
 # distributions, you should use these functions, e.g.:
+#
+# The prior we choose depends on the prior information we have. For example, if 
+# we have no prior information, we can choose a uniform prior. The normal 
+# distribution is often used to model a wide range of phenomena in statistics, 
+# such as the distribution of heights or weights in a population. Beta 
+# distribution, on the other hand, is defined on the interval [0,1]. 
+# It is often used to model random variables that represent proportions, 
+# probabilities or other values that are constrained to lie within this interval.
+
+# | createPrior | createBetaPrior | createUniformPrior | createTruncatedNormalPrior |
+# | :----------:|:---------------:|:------------------:|:--------------------------:|
+# |Any distribution provided by the user|Beta distribution|Uniform distribution|Normal distribution|
+
+  
+  
 
 prior <- createUniformPrior(lower = c(0,0), upper = c(0.4,5))
 
