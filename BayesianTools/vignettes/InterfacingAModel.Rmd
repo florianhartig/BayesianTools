@@ -21,7 +21,6 @@ knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
 set.seed(123)
 ```
 
-
 # Interfacing a model with BT - step-by-step guide
 
 ## Step 1: Create a runModel(par) function
@@ -30,7 +29,7 @@ To enable calibration in BT, it's essential to run the model with a specified se
 
 What happens next depends on how your model is programmed. The following steps are arranged according to speed and convenience. If your model has not been interfaced with R before, you will most likely have to skip to the last option.
 
-
+```{=tex}
 \begin{enumerate}
 \item Model in R, or R interface existing 
 \item Model can be compiled and linked as a dll
@@ -39,7 +38,7 @@ What happens next depends on how your model is programmed. The following steps a
 \item Model can be compiled as executable reads parameters via parameter file
 \item Model parameters are hard-coded in the executable
 \end{enumerate}
-
+```
 ### Case 1 - model programmed in R
 
 Typically, no action is required. Ensure that you are able to call your model.
