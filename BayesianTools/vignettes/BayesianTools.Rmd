@@ -236,7 +236,7 @@ In the first case, you want to parallelize n internal (not total chains) on n co
 
 ```{r, eval = FALSE}
 ## n = Number of cores
-n=2
+n = 2
 x <- c(1:10)
 likelihood <- function(param) return(sum(dnorm(x, mean = param, log = T)))
 bayesianSetup <- createBayesianSetup(likelihood, parallel = n, lower = -5, upper = 5)
