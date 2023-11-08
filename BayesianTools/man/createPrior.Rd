@@ -39,10 +39,14 @@ distribution, on the other hand, is defined on the interval 0, 1.
 It is often used to model random variables that represent proportions,
 probabilities or other values that are constrained to lie within this interval.\tabular{cccc}{
     \tab  \tab  \tab  \cr
-   createPrior \tab createBetaPrior \tab createUniformPrior \tab createTruncatedNormalPrior \cr
+   \strong{createPrior} \tab \strong{createBetaPrior} \tab \strong{createUniformPrior} \tab \strong{createTruncatedNormalPrior} \cr
+   --------------------------------------------------- \tab --------------------------------------------------------- \tab ------------------------------------------------------------- \tab --------------------------------------------------------------- \cr
    Any density provided by the user \tab Beta density \tab Uniform density \tab Normal density \cr
+   --------------------------------------------------- \tab --------------------------------------------------------- \tab ------------------------------------------------------------- \tab --------------------------------------------------------------- \cr
     \tab \figure{betaDensity.png}{Density plot for Beta distribution} \tab \figure{normalDensity.png}{Density plot for Normal distribution} \tab \figure{uniformDensity.png}{Density plot for Uniform distribution} \cr
+   --------------------------------------------------- \tab --------------------------------------------------------- \tab ------------------------------------------------------------- \tab --------------------------------------------------------------- \cr
    createPrior(density, sampler, lower, upper, best) \tab createBetaPrior(a, b, lower, upper) \tab createUniformPrior(lower, upper, best) \tab createTruncatedNormalPrior(mean, sd, lower, upper). \cr
+   --------------------------------------------------- \tab --------------------------------------------------------- \tab ------------------------------------------------------------- \tab --------------------------------------------------------------- \cr
 }
 }
 \note{

@@ -19,11 +19,14 @@
 #' probabilities or other values that are constrained to lie within this interval.
 #' |                                                   |                                                         |                                                             |                                                               |
 #' |:-------------------------------------------------:|:-------------------------------------------------------:|:-----------------------------------------------------------:|:-------------------------------------------------------------:|
-#' | createPrior                                       | createBetaPrior                                         | createUniformPrior                                          | createTruncatedNormalPrior                                    |
+#' | \strong{createPrior}                              | \strong{createBetaPrior}                                | \strong{createUniformPrior}                                 | \strong{createTruncatedNormalPrior}                           |
+#' |---------------------------------------------------|---------------------------------------------------------|-------------------------------------------------------------|---------------------------------------------------------------|
 #' | Any density provided by the user                  | Beta density                                            | Uniform density                                             | Normal density                                                |
+#' |---------------------------------------------------|---------------------------------------------------------|-------------------------------------------------------------|---------------------------------------------------------------|
 #' |                                                   |![](betaDensity.png "Density plot for Beta distribution")|![](normalDensity.png "Density plot for Normal distribution")|![](uniformDensity.png "Density plot for Uniform distribution")|
+#' |---------------------------------------------------|---------------------------------------------------------|-------------------------------------------------------------|---------------------------------------------------------------|
 #' | createPrior(density, sampler, lower, upper, best) | createBetaPrior(a, b, lower, upper)                     | createUniformPrior(lower, upper, best)                      | createTruncatedNormalPrior(mean, sd, lower, upper).           |
-
+#' |---------------------------------------------------|---------------------------------------------------------|-------------------------------------------------------------|---------------------------------------------------------------|
 
 #' @note min and max truncate, but not re-normalize the prior density (so, if a pdf that integrated to one is truncated, the integral will in general be smaller than one). For MCMC sampling, this doesn't make a difference, but if absolute values of the prior density are a concern, one should provide a truncated density function for the prior. 
 #' @export

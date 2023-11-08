@@ -323,7 +323,7 @@ The prior we choose depends on the prior information we have. For example, if we
 
 |                                                   |                                                           |                                                               |                                                                 |
 |:----------------:|:----------------:|:----------------:|:----------------:|
-|$\color{darkgreen}{\text{createPrior}}$            |$\color{darkgreen}{\text{createBetaPrior}}$                |$\color{darkgreen}{\text{createUniformPrior}}$                 |$\color{darkgreen}{\text{createTruncatedNormalPrior}}$           |
+|                    createPrior                    |                      createBetaPrior                      |                      createUniformPrior                       |                   createTruncatedNormalPrior                    |
 |         Any density provided by the user          |                       Beta density                        |                        Uniform density                        |                         Normal density                          |
 |                                                   | ![](betaDensity.png "Density plot for Beta distribution") | ![](normalDensity.png "Density plot for Normal distribution") | ![](uniformDensity.png "Density plot for Uniform distribution") |
 | createPrior(density, sampler, lower, upper, best) |            createBetaPrior(a, b, lower, upper)            |            createUniformPrior(lower, upper, best)             |       createTruncatedNormalPrior(mean, sd, lower, upper).       |

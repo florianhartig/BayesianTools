@@ -7,3 +7,15 @@ dev.off()
 png(filename = "man/figures/uniformDensity.png", width = 290, height = 200)
 plot(density(runif(10000000)), main = "Uniform Density")
 dev.off()
+
+
+
+png(filename = "vignettes/betaDensity.png", width = 200, height = 180)
+plot(density(rbeta(10000000,10,3)), main = "Beta Density with \n a = 10, b = 3", xlab = "n = 10000000")
+dev.off()
+png(filename = "vignettes/normalDensity.png", width = 200, height = 180)
+plot(density(rnorm(10000000,0,1)), main = "Normal Density with \n mean = 0, sd = 1", xlab = "n = 10000000")
+dev.off()
+png(filename = "vignettes/uniformDensity.png", width = 200, height = 180)
+plot(density(runif(10000000)), main = "Uniform Density", xlab = "n = 10000000")
+dev.off()
