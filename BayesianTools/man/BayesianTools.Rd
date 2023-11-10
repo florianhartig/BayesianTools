@@ -3,6 +3,7 @@
 \docType{package}
 \name{BayesianTools}
 \alias{BayesianTools}
+\alias{BayesianTools-package}
 \title{BayesianTools}
 \description{
 A package with general-purpose MCMC and SMC samplers,  as well as plots and diagnostic functions for Bayesian statistics
