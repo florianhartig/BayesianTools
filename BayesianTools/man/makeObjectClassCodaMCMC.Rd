@@ -9,14 +9,14 @@ makeObjectClassCodaMCMC(chain, start = 1, end = numeric(0), thin = 1)
 \arguments{
 \item{chain}{mcmc Chain}
 
-\item{start}{for mcmc samplers start value in the chain. For SMC samplers, start particle}
+\item{start}{for MCMC samplers, the initial value in the chain. For SMC samplers, start particle}
 
-\item{end}{for mcmc samplers end value in the chain. For SMC samplers, end particle}
+\item{end}{for MCMC samplers, the end value in the chain. For SMC samplers, end particle.}
 
 \item{thin}{thinning parameter}
 }
 \value{
-object of class coda::mcmc
+object an object of class coda::mcmc
 }
 \description{
 Helper function to change an object to a coda mcmc class,
