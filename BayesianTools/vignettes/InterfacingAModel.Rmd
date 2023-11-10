@@ -7,7 +7,7 @@ vignette: >
   %\VignetteIndexEntry{Interfacing your model with R}
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown}
-abstract: "This tutorial discusses how to interface models written in other programming languages with R, so that they can be fit with BayesianTools" 
+abstract: "This tutorial discusses how to interface models written in other programming languages with R, so that they can be fit with BayesianTools"  
 author: Florian Hartig
 editor_options: 
   chunk_output_type: console
@@ -25,10 +25,11 @@ set.seed(123)
 
 ## Step 1: Create a runModel(par) function
 
-A basic requirement to allow calibration in BT is that we need to be able to execute the model with a given set of parameters. Strictly speaking, BT will not see the model as such, but requires a likelihood function with interface likelihood(par), where par is a vector, but in this function, you will then probably run the model with parameters par, where par could stay a vector, or be transformed to another format, e.g. data.frame, matrix or list. 
+To enable calibration in BT, it's essential to run the model with a specified set of parameters. In fact, BT does not see the model as such, but requires a likelihood function with the interface likelihood(par), where par is a vector, but in this function you will probably then run the model with the parameters par, where par could remain a vector or be transformed into some other format, e.g. data.frame, matrix or list.
 
-What happens now depends on how your model is programmed - I have listed the steps in order of convenience / speed. If your model has never been interfaced with R you will likely have to move down to the last option. 
+What happens next depends on how your model is programmed. The following steps are arranged according to speed and convenience. If your model has not been interfaced with R before, you will most likely have to skip to the last option.
 
+```{=tex}
 \begin{enumerate}
 \item Model in R, or R interface existing 
 \item Model can be compiled and linked as a dll
@@ -37,20 +38,20 @@ What happens now depends on how your model is programmed - I have listed the ste
 \item Model can be compiled as executable reads parameters via parameter file
 \item Model parameters are hard-coded in the executable
 \end{enumerate}
-
+```
 ### Case 1 - model programmed in R
 
-Usually, you will have to do nothing. Just make sure you can call your model a in
+Typically, no action is required. Ensure that you are able to call your model.
 
 ```{r, eval = F}
 runMyModel(par)
 ```
 
-Typically this function will directly return the model outputs, so step 2 can be skipped.  
+Usually, this function returns model outputs directly, thus step 2 is unnecessary.
 
 ### Case 2 - compiled dll, parameters are set via dll interface
 
-If you have your model prepared as a dll, or you can prepare it that way, you can use the \ref{https://stat.ethz.ch/R-manual/R-devel/library/base/html/dynload.html}{dyn.load()} function to link R to your model
+If your model is already in the form of a DLL, or if you can prepare it as such, use the function \ref{https://stat.ethz.ch/R-manual/R-devel/library/base/html/dynload.html}{dyn.load()} to link R to your model.
 
 ```{r, eval = F}
 dyn.load(model)
@@ -62,22 +63,21 @@ runMyModel(par){
 }
 ```
 
-Again, if you implement this, you will also typically return the output directly via the dll and not write to file, which means that step 2 can be skipped.  
+If you implement this process, you will also usually return the output directly via the `dll` and not write to a file, which means that step 2 can be skipped.
 
-The tricky thing in this approach is that you have to code the interface to your dll, which technically means in most programming languages to set your variables as external or something similar, so that they can be accessed from the outside. How this works will depend on the programming language. 
-
+The problem with this approach is that you have to code the interface to your `dll`, which in most programming languages technically means setting your variables as external or something like that, so that they can be accessed from outside. The specifics of how this works will vary depending on the programming language being used.
 
 ### Case 3 - model programmed in C / C++, interfaced with RCPP
 
-RCPP is a highly flexible environment to interface between R and C/C++. If your model is coded in C / C++, RCPP offers the most save and powerful way to connect with R (much more flexible than with command line or dll).  
+RCPP provides a highly flexible platform to interface between R and C/C++. RCPP provides a secure and powerful way to connect to R if your model is coded in C/C++ (much more flexible than using the command line or a `dll`).
 
-However, doing the interface may need some adjustments to the code, and there can be technical problems that are difficult to solve for beginners. I do not recommend to attempt interfacing an existing C/C++ model unless you have RCPP experience, or at least very food C/C++ experience. 
+Nevertheless, code adjustments may be necessary for the interface, and beginners may find it challenging to resolve any technical issues. Attempting to interface an existing C/C++ model without prior experience using RCPP or at least substantial experience with C/C++ is not advisable.
 
-Again, if you implement this, you will also typically return the output directly via the dll and not write to file, which means that step 2 can be skipped.  
+In addition, step 2 can be skipped if you are implementing this, as you will usually return the output directly via the `dll`, rather than writing to a file.
 
 ### Case 4 - compiled executable, parameters set via command line (std I/O)
 
-If your model is written in a compiled or interpreted language, and accepts parameters via std I/O, wrapping is usually nothing more than writing the system call in an R function. An example would be 
+If your model is written in a compiled or interpreted language and accepts parameters via std I/O, wrapping is usually nothing more than writing the system call in an R function. For example
 
 ```{r, eval = F}
 runMyModel(par){
@@ -92,11 +92,11 @@ runMyModel(par){
 }
 ```
 
-Note: If you have problems with the system command, try system2. If the model returns the output via std.out, you can catch this and convert it and skip step 2. If your model writes to file, go to step 2. 
+Note: If you encounter difficulties with the system command, try system2. If the model provides the output via std.out, you can catch and convert it and skip step 2. If your model writes the output to a file, proceed to step 2.
 
 ### Case 5 - compiled model, parameters set via parameter file or in any other method
 
-Many models read parameters with a parameter file. In this case you want to do something like this
+Many models use parameter files to read parameters. For this case, you want to do something like the following example
 
 ```{r, eval = F}
 runMyModel(par, returnData = NULL){
@@ -118,7 +118,7 @@ writeParameters(par){
 }
 ```
 
-Depending on your problem, it can also make sense to define a setup function such as
+For some problems, it may be useful to create a setup function, as in the example below.
 
 ```{r, eval = F}
 setUpModel <- function(parameterTemplate, site, localConditions){
@@ -130,31 +130,31 @@ setUpModel <- function(parameterTemplate, site, localConditions){
 }
 ```
 
-How you do the write parameter function depends on the file format you use for the parameters. In general, you probably want to create a template parameter file that you use as a base and from which you change parameters 
+The way you write a parameter function depends on the file format you are using for the parameters. Usually, creating a template parameter file is recommended as a starting point, and then the parameters can be changed as required.
 
-* If your parameter file is in an *.xml format*, check out the xml functions in R
-* If your parameter file is in a *general text format*, the best option may be to create a template parameter file, place a unique string at the locations of the parameters that you want to replace, and then use string replace functions in R, e.g. [grep](https://stat.ethz.ch/R-manual/R-devel/library/base/html/grep.html) to replace this string. 
+-   If your parameter file is in an *.xml format*, check out the xml functions in R.
+-   If your parameter file is in a *general text format*, the best option may be to create a template parameter file, place a unique string at the locations of the parameters that you want to replace, and then use string replace functions in R, e.g. [grep](https://stat.ethz.ch/R-manual/R-devel/library/base/html/grep.html) to replace this string.
 
 ### Case 6 - compiled model, parameters cannot be changed
 
-You have to change your model code to achieve one of the former options. If the model is in C/C++, going directly to RCPP seems the best alternative.   
+To achieve one of the previous options, you must change your model code. If the model is in C/C++, the best alternative is to go directly to RCPP.
 
-## Step 2: Reading back data
+## Step 2: Read back data
 
-If your model returns the output directly (which is highly preferable, ), you can skip this step. 
+If your model returns the output directly (which is highly preferable, ), you can skip this step.
 
-For simple models, you might consider returning the model output directly with the runMyModel function. This is probably so for cases a) and b) above, i.e. model is already in R, or accepts parameters via command line. 
+You can skip this process if your model directly returns the output (which is highly recommended).
 
-More complicated models, however, produce a large number of outputs and you typically don't need all of them. It is therefore more useful to make on or several separate readData or getDate function. The only two different cases I will consider here is 
+If you have a simple model, you might consider using the `runMyModel` function to return the model's output directly. This is suitable for cases in a) and b) namely, models that are already in R, or receive parameters via the command line.
 
-* via dll / RCPP
-* via file ouputs 
+In contrast, more complex models generate a large number of outputs. However, usually you do not need all of them. Therefore, it is more useful to create one or multiple separate `readData` or `getDate` functions. The only two cases I will consider here are
 
-*Model is a dll* If the model is a dll file, the best thing would probably be to implement appropriate getData functions in the source code that can then be called from R. If your model is in C and in a dll, interfacing this via RCPP would probably be easier, because you can directly return R dataframes and other data structures. 
+-   via dll / RCPP
+-   via file ouputs
 
+*Model is a dll* If the model is a `dll` file, it would probably be best to implement appropriate `getData` functions in the source code that can then be called from R. If your model is in C and in a `dll`, interfacing it via RCPP would probably be easier because you can return R dataframes and other data structures directly.
 
-*Model writes file output* If the model writes file output, write a getData function that reads in the model outputs and returns the data in the desired format, typically the same that you would use to represent your field data. 
-
+*Model writes file output* If the model generates file output, create a `getData` function that reads the model outputs and returns the data in the desired format, typically the same format you would use to represent your field data.
 
 ```{r, eval = F}
 getData(type = X){
@@ -167,12 +167,9 @@ getData(type = X){
 }
 ```
 
+\subsection{Testing the approach}
 
-\subsection{Testing the approach} 
-
-
-From R, you should now be able to do something like that
-
+You should now see an example from R that looks like this
 
 ```{r, eval = F}
 par = c(1,2,3,4 ..)
@@ -184,55 +181,51 @@ output <- getData(type = DesiredType)
 plot(output)
 ```
 
-
-
-
 ## Step 3 (optional) - creating an R package from your code
 
-The last step is optional, but we recommend that you take it from the start, because there is really no downside to it. You work with R code in several files that you run by hand, or diretly put all code into an R package. Creating and managing R packages is very easy, and it's easier to pass on your code because everything, including help, is in on package. To create an R package, follow the tutorial \href{http://biometry.github.io/APES/R/R70-PackageDevelopment.html}{here}. Remember to create a good documentation using Roxygen. 
-
+Although the final step is optional, we recommend doing it from the beginning because there is really no downside. You can work with R code in multiple files that can be run manually or incorporated into an R package directly. Creating and managing R packages is a straightforward process and makes it simpler to share your code, as everything, including help guides, is in one package. To create an R package, please refer to the tutorial \href{http://biometry.github.io/APES/R/R70-PackageDevelopment.html}{here}. Please remember to write good documentation using Roxygen.
 
 # Speed optimization and parallelization
 
-For running sensitivity analyses or calibrations, runtime is often an issue. Before you parallelize, make sure your model is as fast as possible. 
+Runtime is often a concern when performing sensitivity analyses or calibrations. Ensure that your model has been optimized for maximum speed before parallelization.
 
 ## Easy things
 
-* Are you compiling with maximum optimization (e.g. -o3 in cpp)
-* If you have a spin-up phase, could you increase the time-step during this phase?
-* Could you increase the time step generally
-* Do you write unnecessary outputs that you could turn off (harddisk I/O is often slow)?
+-   Are you compiling with maximum optimization (e.g. -o3 in cpp)
+-   If there is a spin-up phase, consider increasing the time step during that phase.
+-   Consider increasing the time step in general.
+-   Are you producing unnecessary outputs that could be turned off to reduce hard disk I/O, which is often slow?
 
 ## Difficult things
 
-* Make the model directly callable (RCPPor dll) to avoid harddisk I/O
-* Is it possible to reduce initialization time (not only spin-up, but also for reading in the forcings / drivers) by avoid ending the model executable after each run, but rather keep it "waiting" for a new run.
-* Code optimization: did you use a profiler? Read up on code optimization
-* Check for unnecessary calculations in your code / introduce compiler flags where appropriate
+-   Make the model directly callable (RCPP or dll) to avoid harddisk I/O
+-   Is it possible to reduce the initialization time (not only for spin-up, but also for reading the forcings / drivers) by not terminating the model executable after each run, but keeping it "waiting" for a new run?
+-   Code optimization: did you use a profiler? Read up on code optimization
+-   Check for unnecessary calculations in your code / introduce compiler flags where appropriate
 
 ## Parallelization
 
-A possibility to speed up the run time of your model is to run it on multiple cores (CPU's). To do so, you have two choices:
+One way to speed up the runtime of your model is to run it on multiple cores (CPUs). To do so, you have two choices:
 
-1. Parallelize the model itself
-2. Parallelize the model call, so that BT can do several model evaluations in parallel
+1.  Parallelize the model itself
+2.  Parallelize the model call so that BT can perform multiple model evaluations in parallel.
 
-Which of the two makes more sense depends a lot on your problem. To parallelize the model itself will be interesting in particular for very large models, which could otherwise not be calibrated with MCMCs. However, this approach will typically require to write parallel C/C++ code and require advanced programming skills, which is the reason why we will not further discuss it here. 
+Which of the two makes more sense depends a lot on your problem. Parallelizing the model itself will be especially interesting for very large models that could not otherwise be calibrated with MCMCs. However, this approach typically requires writing parallel C/C++ code and advanced programming skills, which is why we will not discuss it further here.
 
-The usual advice in parallel computing is anyway to parallelize the outer loops first, to minimize communication overhead, which would suggest to start with parallelizing model evaluations. This is also much easier to program. Even within this, there are two levels of parallelization possible: 
+The usual advice in parallel computing anyway is to parallelize the outer loops first to minimize the communication overhead, which would suggest starting with parallelizing the model evaluations. This is also much easier to program. Even within that, there are two levels of parallelization possible:
 
-1. Parallelize the call of several MCMC / SMC samplers
-2. Parallelize within the MCMC / SMC samplers
+1.  Parallelize the call of multiple MCMC / SMC samplers.
+2.  Parallelize within the MCMC / SMC samplers
 
-Currently, BT only supports parallelization within MCMCs / SMCs, but it easy to also implement between sampler parallelization by hand. Both approaches are describe below. 
+Currently, BT only supports parallelization within MCMCs / SMCs, but it easy to also implement between sampler parallelization by hand. Both approaches are describe below.
 
-### Within sampler parallelization 
+### Within sampler parallelization
 
-Within-sampler parallelization is particular useful for algorithms that can use a large number of cores in parallel, e.g. sensitivity analyses or SMC sampling. For the MCMCs, it depends on the settings and the algorithm how much parallelization they can make use of. In general, MCMCs are Markovian, as the name says, i.e. the set up a chain of sequential model evaluations, and those calls can therefore not be fully parallelized. However, a number of MCMCs in the BT package uses MCMC algorithms that can be partly parallelized, in particular the population MCMC algorithms DE/DEzs/DREAM/DREAMzs. For all these cases, BT will automatically use parallelization of the BT setup indicates that this is implemented. 
+Within-sampler parallelization is particularly useful for algorithms that can use a large number of cores in parallel, such as sensitivity analysis or SMC sampling. For MCMCs, the amount of parallelization that can be used depends on the settings and the algorithm. In general, MCMCs are, as the name implies, Markovian, i.e., they set up a chain of sequential model evaluations, and these calls cannot be fully parallelized. However, a number of MCMCs in the BT package uses MCMC algorithms that can be partly parallelized, in particular the population MCMC algorithms DE/DEzs/DREAM/DREAMzs. In all these cases, BT will automatically use parallelization of the BT setup to indicate that it is implemented.
 
-How to do this? A first requirement to do so is to to have your model wrapped into an R function (see PREVIOUS SECTION). If that is the case, R offers a number of options to run functions in parallel. The easiest is to use the parallel package that comes with the R core. For other packages, see the internet and the CRAN task view on [High Performance Computing](https://CRAN.R-project.org/view=HighPerformanceComputing)
+How to do this? A first requirement is that your model is wrapped in an R function (see PREVIOUS SECTION). Once that is the case, R provides a number of ways to run functions in parallel. The easiest is to use the parallel package that comes with the R core. Other packages can be found on the Internet and in the CRAN task view at [High Performance Computing](https://CRAN.R-project.org/view=HighPerformanceComputing)
 
-As an example, assume we have the following, very simple model:
+As an example, suppose we have the following very simple model:
 
 ```{r}
 mymodel<-function(x){
@@ -241,7 +234,7 @@ mymodel<-function(x){
 }
 ```
 
-To start a parallel computation, we will first need to create a cluster object. Here we will initiate a cluster with 2 CPU's.
+To start a parallel computation, we must first create a cluster object. Here we start a cluster with 2 CPUs.
 
 ```{r, eval = F}
 
@@ -255,18 +248,18 @@ runParallel<- function(parList){
 runParallel(c(1,2))
 ```
 
-You could use this principle to build your own parallelized likelihood. However, something very similar to the previous loop is automatized in BayesianTools. You can directly create a parallel model evaluation function with the function generateParallelExecuter, or alternatively directly in the createBayesianSetup
+You could use this principle to build your own parallelized likelihood. However, something very similar to the previous loop is automated in `BayesianTools`. You can create a parallel model evaluation function directly with the `generateParallelExecuter` function, or alternatively directly in the `createBayesianSetup` function.
 
 ```{r, eval = F}
 library(BayesianTools)
 parModel <- generateParallelExecuter(mymodel)
 ```
 
-If your model is tread-safe, you should be able to run this out of the box. I therefore recommend using the hand-coded paraellelization only of the model is not thread-safe. 
+If your model is thread-safe, you should be able to run it out of the box. Therefore, I recommend using the hand-coded parallelization only if your model is not thread-safe.
 
 ### Running several MCMCs in parallel
 
-Additionally to the within-chain parallelization, you can also run several MCMCs in parallel, and combine them later to a single McmcSamplerList
+In addition to within-chain parallelization, you can also run multiple MCMCs in parallel and later combine them into a single `McmcSamplerList`.
 
 ```{r}
 library(BayesianTools)
@@ -284,17 +277,8 @@ res <- createMcmcSamplerList(list(out1, out2))
 plot(res)
 ```
 
-
-
 ### Thread safety
 
-Thread safety quite generally means that you can execute multiple instances of your code on your hardware. There are various things that can limit Thread safety, for example 
+Thread safety generally means that you can run multiple instances of your code on your hardware. There are several things that can limit thread safety, such as
 
-* writing outputs to file (several threads might write to the same file at the same time)
-
-
-
-
-
-
-
+-   Writing output to a file (multiple threads can write to the same file at the same time)
