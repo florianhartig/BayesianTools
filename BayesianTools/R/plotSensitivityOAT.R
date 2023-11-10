@@ -2,11 +2,18 @@
 #' @author Florian Hartig
 #' @param bayesianSetup An object of class BayesianSetup
 #' @param selection indices of selected parameters
-#' @param equalScale if T, y axis of all plots will have the same scale
+#' @param equalScale logical, if TRUE - y axis of all plots will have the same scale
 #' @note This function can also be used for sensitivity analysis of an arbitrary output - just create a BayesianSetup with this output. 
+#' @details
+#' When the scale of the parameter do not match then the plot looks like this :
+#' ![](plotSensitivity-ScaleDontMatch.png "Sensitivity Plot")
+#' 
+#' In that case, we should put 'equalScale = F'. Then the plot looks like this:
+#' ![](plotSensitivity-ScaleFalse.png "Sensitivity Plot")
+#' 
 #' @example /inst/examples/plotSensitivityHelp.R
 #' @export
-plotSensitivity <- function(bayesianSetup, selection = NULL, equalScale = T){
+plotSensitivity <- function(bayesianSetup, selection = NULL, equalScale = TRUE){
   
   if (is.null(selection)) selection = 1:bayesianSetup$numPars
   n = length(selection)
@@ -39,7 +46,7 @@ plotSensitivity <- function(bayesianSetup, selection = NULL, equalScale = T){
   
   
   for (i in 1:n){
-    if(equalScale == T) plot(resp~par, xlab = names[i], type = "l", col = "red", data = post[[i]], ylim = c(minR, maxR), ylab = "Response")
+    if(equalScale == TRUE) plot(resp~par, xlab = names[i], type = "l", col = "red", data = post[[i]], ylim = c(minR, maxR), ylab = "Response")
     else plot(resp~par, xlab = names[i], type = "l", col = "red", data = post[[i]], ylab = "Response")
     
     abline(v = refPar[i])

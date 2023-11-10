@@ -4,27 +4,51 @@
 \alias{plotSensitivity}
 \title{Performs a one-factor-at-a-time sensitivity analysis for the posterior of a given bayesianSetup within the prior range.}
 \usage{
-plotSensitivity(bayesianSetup, selection = NULL, equalScale = T)
+plotSensitivity(bayesianSetup, selection = NULL, equalScale = TRUE)
 }
 \arguments{
 \item{bayesianSetup}{An object of class BayesianSetup}
 
 \item{selection}{indices of selected parameters}
 
-\item{equalScale}{if T, y axis of all plots will have the same scale}
+\item{equalScale}{logical, if TRUE - y axis of all plots will have the same scale}
 }
 \description{
 Performs a one-factor-at-a-time sensitivity analysis for the posterior of a given bayesianSetup within the prior range.
+}
+\details{
+When the scale of the parameter do not match then the plot looks like this :
+\figure{plotSensitivity-ScaleDontMatch.png}{Sensitivity Plot}
+
+In that case, we should put 'equalScale = F'. Then the plot looks like this:
+\figure{plotSensitivity-ScaleFalse.png}{Sensitivity Plot}
 }
 \note{
 This function can also be used for sensitivity analysis of an arbitrary output - just create a BayesianSetup with this output.
 }
 \examples{
+data = rnorm(20)
 
-ll <- testDensityBanana
-bayesianSetup <- createBayesianSetup(likelihood = ll, lower = rep(-10, 2), upper = rep(10, 2))
+# create standardized likelihood density for Gaussian likelihood function
+# fitting parameters mean and standard deviation
+likelihood <- function(x) {
+  predicted <- rep(x[1], length(data))
+  LL = likelihoodIidNormal(predicted, data, x[2])
+  return(LL)
+}
 
-plotSensitivity(bayesianSetup)
+setup = createBayesianSetup(likelihood, lower = c(-10, 0.01), upper = c(10,5))
+
+# showing posterior response surface for parameter 1
+# note that this is plotted at 
+setup$prior$best
+plotSensitivity(setup, selection = 2)
+
+plotSensitivity(setup)
+# when parameters are not on the same scale, we can use
+plotSensitivity(setup, equalScale = FALSE)
+
+
 }
 \author{
 Florian Hartig
