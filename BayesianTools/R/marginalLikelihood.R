@@ -1,14 +1,12 @@
-
 # Motivation for this functions from 
 # https://radfordneal.wordpress.com/2008/08/17/the-harmonic-mean-of-the-likelihood-worst-monte-carlo-method-ever/
 # https://gist.github.com/gaberoo/4619102
 
 
-#  ' @export
-#marginalLikelihood <- function(x,lik,V,sampler$setup$likelihood$density,sampler$setup$prior$density,..., num.samples=1000,log=TRUE) UseMethod("marginalLikelihood")
+# @export
+# marginalLikelihood <- function(x,lik,V,sampler$setup$likelihood$density,sampler$setup$prior$density,..., num.samples=1000,log=TRUE) UseMethod("marginalLikelihood")
 
-#' Calcluated the marginal likelihood from a set of MCMC samples
-#' @export
+#' Calculated the marginal likelihood from a set of MCMC samples
 #' @author Florian Hartig
 #' @param sampler an MCMC or SMC sampler or list, or for method "Prior" also a BayesianSetup
 #' @param numSamples number of samples to use. How this works, and if it requires recalculating the likelihood, depends on the method
@@ -44,6 +42,7 @@
 #' Dormann et al. 2018. Model averaging in ecology: a review of Bayesian, information-theoretic, and tactical approaches for predictive inference. Ecological Monographs
 #' 
 #' @seealso \code{\link{WAIC}}, \code{\link{DIC}}, \code{\link{MAP}}
+#' @export
 marginalLikelihood <- function(sampler, numSamples = 1000, method = "Chib", ...){
   
 

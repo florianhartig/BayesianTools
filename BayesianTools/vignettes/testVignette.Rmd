@@ -1,0 +1,98 @@
+---
+title: "Implementing BayesianTools on real data"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Implementing BayesianTools on real data}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+abstract: "This tutorial discusses how to implement BayesianTools on real data" 
+author: Florian Hartig
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
+```
+
+```{r, echo = F, message = F}
+set.seed(123)
+```
+
+In this vignette, we want to illustrate how BayesianTools can be implemented on a real data.
+
+In this case, we are using airquality data.
+
+For the illustration purpose, we are fitting a linear regression model on the data - so that we can compare it with our result.
+
+
+```{r}
+fit = lm(Ozone ~ Wind, data = airquality)
+summary(fit)
+```
+
+```{r}
+
+dat = airquality[complete.cases(airquality), ]
+
+```
+
+Creating a likelihood function from the data.
+
+```{r}
+likelihood <- function(par){
+  # c("a", "b", "err-sd")
+  llObservation = sum(dnorm(par[1] * dat$Wind +  par[2] - dat$Ozone, sd = par[3], log = T))
+  return(llObservation)
+}
+
+likelihood(c(4,10,6))
+```
+
+Creating a standardized collection of prior, likelihood and posterior function.
+
+```{r, message=F}
+library(BayesianTools)
+setup <- createBayesianSetup(likelihood = likelihood, 
+                             lower = c(-100,-100,0), 
+                             upper = c(100,200,50),
+                             names = c("a", "b", "err-sd"))
+```
+
+Creating required setup for wrapper function runMCMC to start MCMCs
+
+```{r}
+settings <- list(iterations = 10000, nrChains = 2)
+res <- runMCMC(bayesianSetup = setup, settings = settings)
+
+summary(res, start=1000)
+```
+
+
+```{r}
+plot(res)
+```
+
+```{r}
+marginalPlot(res, start = 1000, prior = T)
+```
+
+```{r}
+gelmanDiagnostics(res)
+```
+```{r}
+correlationPlot(res)
+```
+
+# Linear mixed model with the BT package
+
+
+
+
+
+# Fitting a ecosystem model with the BT package 
+
+
+

@@ -21,9 +21,9 @@ createBayesianSetup(
 )
 }
 \arguments{
-\item{likelihood}{log likelihood density function}
+\item{likelihood}{either an object of class likelihood created by \code{\link{createLikelihood}} or a specialized likelihood function, or a log likelihood density function. If you provide a function, parallel, paralleOptions and catchDuplicates will be internally used to create the likelihood object}
 
-\item{prior}{either a prior class (see \code{\link{createPrior}}) or a log prior density function}
+\item{prior}{either an object of a prior created by \code{\link{createPrior}} or a log prior density function}
 
 \item{priorSampler}{if a prior density (and not a prior class) is provided to prior, the optional prior sampling function can be provided here}
 
@@ -46,6 +46,9 @@ createBayesianSetup(
 \item{plotUpper}{vector with upper limits for plotting}
 
 \item{plotBest}{vector with best values for plotting}
+}
+\value{
+An object of class BayesianSetup. Implemented S3 generics include \code{\link{print.BayesianSetup}}.
 }
 \description{
 Creates a standardized collection of prior, likelihood and posterior functions, including error checks etc.

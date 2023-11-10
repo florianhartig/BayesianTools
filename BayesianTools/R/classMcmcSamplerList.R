@@ -1,8 +1,9 @@
 #' Convenience function to create an object of class mcmcSamplerList from a list of mcmc samplers
 #' @author Florian Hartig
-#' @param mcmcList a list with each object being an mcmcSampler
+#' @param mcmcList a list of objects of class mcmcSampler 
 #' @return Object of class "mcmcSamplerList"
 #' @export
+#' 
 createMcmcSamplerList <- function(mcmcList){
   # mcmcList <- list(mcmcList) -> This line didn't make any sense at all. Better would be to allow the user to simply provide several inputs without a list, but I guess the list option should be maintained, as this is convenient when scripting.
   for (i in 1:length(mcmcList)){
@@ -14,6 +15,7 @@ createMcmcSamplerList <- function(mcmcList){
 
 #' @author Stefan Paul
 #' @method summary mcmcSamplerList
+#' @describeIn summary.mcmcSampler 
 #' @export
 summary.mcmcSamplerList <- function(object, ...){
   #codaChain = getSample(sampler, parametersOnly = parametersOnly, coda = T, ...)
@@ -100,8 +102,10 @@ summary.mcmcSamplerList <- function(object, ...){
 
 }
 
+
 #' @author Florian Hartig
 #' @method print mcmcSamplerList
+#' @describeIn print.mcmcSampler 
 #' @export
 print.mcmcSamplerList <- function(x, ...){
   print("mcmcSamplerList - you can use the following methods to summarize, plot or reduce this class:")
@@ -112,6 +116,7 @@ print.mcmcSamplerList <- function(x, ...){
 }
 
 #' @method plot mcmcSamplerList
+#' @describeIn plot.mcmcSampler 
 #' @export
 plot.mcmcSamplerList <- function(x, ...){
   tracePlot(x, ...)
@@ -119,6 +124,7 @@ plot.mcmcSamplerList <- function(x, ...){
 
 #' @author Florian Hartig
 #' @export
+#' @rdname getSample
 getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics, ...){
 
   if(!is.null(numSamples)) numSamples = ceiling(numSamples/length(sampler))

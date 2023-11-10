@@ -2,7 +2,7 @@
 % Please edit documentation in R/marginalLikelihood.R
 \name{marginalLikelihood}
 \alias{marginalLikelihood}
-\title{Calcluated the marginal likelihood from a set of MCMC samples}
+\title{Calculated the marginal likelihood from a set of MCMC samples}
 \usage{
 marginalLikelihood(sampler, numSamples = 1000, method = "Chib", ...)
 }
@@ -19,7 +19,7 @@ marginalLikelihood(sampler, numSamples = 1000, method = "Chib", ...)
 A list with log of the marginal likelihood, as well as other diagnostics depending on the chose method
 }
 \description{
-Calcluated the marginal likelihood from a set of MCMC samples
+Calculated the marginal likelihood from a set of MCMC samples
 }
 \details{
 The marginal likelihood is the average likelihood across the prior space. It is used, for example, for Bayesian model selection and model averaging.

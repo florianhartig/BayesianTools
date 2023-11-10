@@ -1,3 +1,8 @@
+# S3 Functions for class 'smcSampler'
+
+
+
+#' @rdname getSample
 #' @author Florian Hartig
 #' @export
 getSample.smcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...){
@@ -43,6 +48,11 @@ getSample.smcSampler <- function(sampler, parametersOnly = T, coda = F, start = 
   } else return(out)
 }
 
+#' Summary for class 'smcSampler'
+#' @description
+#' Creates a summary table of a 'smcSampler' output
+#' @param object object of class smcSampler or smcSamplerList
+#' @param ... additional parameters
 #' @author Florian Hartig
 #' @method summary smcSampler
 #' @export
@@ -52,12 +62,22 @@ summary.smcSampler<- function(object, ...){
   summary(getSample(sampler, ...))
 }
 
+#' Plots of smcSampler output
+#' @description
+#' Plots smcSampler output
+#' @param x object of class mcmcSampler or mcmcSamplerList
+#' @param ... additional options passed to tracePlot
 #' @method plot smcSampler
 #' @export
 plot.smcSampler<- function(x, ...){
   marginalPlot(x, ...)
 }
 
+#' Print of smcSampler output
+#' @description
+#' Print smcSampler output
+#' @param x object of class mcmcSampler or mcmcSamplerList
+#' @param ... additional options 
 #' @author Florian Hartig
 #' @method print smcSampler
 #' @export
