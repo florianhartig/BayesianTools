@@ -113,6 +113,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
 
 
 
+
 #' @method summary mcmcSampler
 #' @author Stefan Paul
 #' @export

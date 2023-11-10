@@ -1,7 +1,7 @@
 #' Convenience function to create an object of class SMCSamplerList from a list of mcmc samplers
 #' @author Florian Hartig
 #' @param ... a list of MCMC samplers
-#' @return a list of class smcSamplerList with each object being an smcSampler
+#' @return a list of class smcSamplerList with objects of smcSampler
 #' @export
 createSmcSamplerList <- function(...){
   smcList <- list(...)
@@ -11,7 +11,6 @@ createSmcSamplerList <- function(...){
   class(smcList) = c("smcSamplerList", "bayesianOutput")
   return(smcList)
 }
-
 
 #' @method summary smcSamplerList
 #' @author Florian Hartig
