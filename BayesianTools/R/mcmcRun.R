@@ -264,7 +264,30 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
 #' @param settings optional list with parameters that will be used instead of the defaults
 #' @param sampler one of the samplers in \code{\link{runMCMC}} 
 #' @param check logical determines whether parameters should be checked for consistency
-#' @details see \code{\link{runMCMC}} 
+#' @details 
+#' 
+#' The following settings can be used for all MCMCs:
+#' 
+#' startValue (no default) start values for the MCMC. Note that DE family samplers require a matrix of #' start values. If startvalues are not provided, they are sampled from the prior.
+#' 
+#' iterations (10000) the MCMC iterations
+#' 
+#' burnin (0) burnin
+#' 
+#' thin (1) thinning while sampling
+#' 
+#' consoleUpdates (100) update frequency for console updates
+#' 
+#' parallel (NULL) whether parallelization is to be used
+#' 
+#' message (TRUE) if progress messages are to be printed
+#' 
+#' nrChains (1) the number of independent MCMC chains to be run. Note that this is not controlling the #' internal number of chains in population MCMCs such as DE, so if you run nrChains = 3 with a DEzs #' #' startValue that is a 4xparameter matrix (= 4 internal chains), you will run independent DEzs runs #' #' with 4 internal chains each.
+#' 
+#' For more details, see \code{\link{runMCMC}} 
+#' 
+#' 
+#' @example inst/examples/mcmcRun.R
 #' @export
 applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   

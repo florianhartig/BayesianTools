@@ -1,3 +1,4 @@
+
 #' Creates a standardized collection of prior, likelihood and posterior functions, including error checks etc.
 #' @author Florian Hartig, Tankred Ott
 #' @param likelihood log likelihood density function
