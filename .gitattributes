@@ -1,0 +1,23 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.Rd    text
+*.Rmd	  text
+*.R  	  text
+*.r  	  text
+*.Rproj text
+*.[Rr]md   linguist-detectable
+*.yml    text
+
+
+# Denote all files that are truly binary and should not be modified.
+*.Rdata binary
+*.RData binary
+*.rda   binary
+*.rdb   binary
+*.rds   binary
+*.png binary
+*.jpg binary
+*.Rdx   binary
