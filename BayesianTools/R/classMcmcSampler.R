@@ -1,5 +1,4 @@
 # Functions for class mcmcSamper
-
 #' @author Florian Hartig
 #' @export
 getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics= F, ...){
@@ -110,7 +109,6 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     return(list(chain = out, start = start, end = end, thin = thin))
   } else return(out)
 }
-
 
 
 #' @method summary mcmcSampler
