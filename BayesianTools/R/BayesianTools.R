@@ -1,6 +1,7 @@
 
 #' @title BayesianTools
 #' @name BayesianTools
+#' @aliases BayesianTools-package
 #' @docType package
 #' @useDynLib BayesianTools, .registration = TRUE
 #' @description This package contains general-purpose Markov Chain Monte Carlo 

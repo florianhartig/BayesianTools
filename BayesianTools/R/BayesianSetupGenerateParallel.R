@@ -1,18 +1,13 @@
 #' Factory to generate a parallel executor of an existing function
-#' 
 #' @author Florian Hartig
 #' @param fun function to be changed to parallel execution
-#' @param parallel should a parallel R cluster be used or not. If set to T, cores will be detected automatically and n-1 of the available n cores of the machine will be used. Alternatively, you can set the number of cores used by hand
-#' @param parallelOptions list containing three lists. First "packages" determines the R packages necessary to run the likelihood function. Second "variables" the objects in the global environment needed to run the likelihood function and third "dlls" the DLLs needed to run the likelihood function (see Details).
-#' @note Can also be used to make functions compatible with library sensitivity
-#' @details For parallelization, option T means that an automatic parallelization via R is attempted, or "external", in which case it is assumed that the likelihood is already parallelized. In this case it needs to accept a matrix with parameters as columns.
-#' Further you can specify the packages, objects and DLLs that are exported to the cluster. 
-#' By default a copy of your workspace is exported. However, depending on your workspace this can be very inefficient. 
-#'
-#' Alternatively you can specify the environments and packages in the likelihood function (e.g. BayesianTools::VSEM() instead of VSEM()).
+#' @param parallel should a parallel R cluster be used? If set to T, the operating system will automatically detect the available cores and n-1 of the available n cores will be used. Alternatively, you can manually set the number of cores to be used
+#' @param parallelOptions a list containing three lists. \itemize{\item First, "packages": determines the R packages required to run the likelihood function. \item Second, "variables": the objects in the global environment needed to run the likelihood function. \item Third, "dlls": the DLLs needed to run the likelihood function (see Details).}
+#' @note can be used to make functions compatible with library sensitivity
+#' @details For parallelization, if option T is selected, an automatic parallelization is tried via R. Alternatively, "external" can be selected on the assumption that the likelihood has already been parallelized. In the latter case, a matrix with parameters as columns must be accepted. You can also specify which packages, objects and DLLs are exported to the cluster. By default, a copy of your workspace is exported, but depending on your workspace, this can be inefficient. As an alternative, you can specify the environments and packages in the likelihood function (e.g. BayesianTools::VSEM() instead of VSEM()).
 #' @export
 #' @example /inst/examples/generateParallelExecuter.R
-
+#' 
 generateParallelExecuter <- function(fun, parallel = F, parallelOptions = list(variables = "all", packages = "all", dlls = NULL)){
   
   if (parallel == F){
@@ -27,7 +22,6 @@ generateParallelExecuter <- function(fun, parallel = F, parallelOptions = list(v
     #library(foreach)
     #library(iterators)
    # library(parallel)
-    
     if (parallel == T | parallel == "auto"){
       cores <- parallel::detectCores() - 1
     } else if (is.numeric(parallel)){

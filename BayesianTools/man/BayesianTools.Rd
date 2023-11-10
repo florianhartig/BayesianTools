@@ -3,6 +3,7 @@
 \docType{package}
 \name{BayesianTools}
 \alias{BayesianTools}
+\alias{BayesianTools-package}
 \title{BayesianTools}
 \description{
 This package contains general-purpose Markov Chain Monte Carlo
