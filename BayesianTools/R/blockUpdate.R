@@ -2,7 +2,7 @@
 #' Determine the groups of correlated parameters
 #' @author Stefan Paul
 #' @param chain MCMC chain including only the parameters (not logP,ll, logP)
-#' @param blockSettings list with settings
+#' @param blockSettings a list with settings
 #' @return groups
 #' @keywords internal
 updateGroups <- function(chain,blockSettings){
@@ -60,7 +60,7 @@ getBlock <- function(blockSettings){
 
 
 #' getblockSettings
-#' @description Transforms the original settings in settings used in the model runs
+#' @description Transforms the original settings to settings used in the model runs
 #' @param blockUpdate input settings
 #' @return list with block settings
 #' @keywords internal
