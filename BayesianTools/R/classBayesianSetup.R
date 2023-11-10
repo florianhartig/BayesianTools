@@ -1,3 +1,4 @@
+
 #' Creates a standardized collection of prior, likelihood and posterior functions, including error checks etc.
 #' @author Florian Hartig, Tankred Ott
 #' @param likelihood either an object of class likelihood created by \code{\link{createLikelihood}} or a specialized likelihood function, or a log likelihood density function. If you provide a function, parallel, paralleOptions and catchDuplicates will be internally used to create the likelihood object
