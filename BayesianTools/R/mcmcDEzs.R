@@ -4,9 +4,9 @@
 #' @author Francesco Minunno and Stefan Paul
 #' @param bayesianSetup a BayesianSetup with the posterior density function to be sampled from
 #' @param settings list with parameter settings
-#' @param startValue (optional) eiter a matrix with start population, a number to define the number of chains that are run or a function that samples a starting population.
+#' @param startValue (optional) either a matrix with start population, a number to define the number of chains that are run or a function that samples a starting population.
 #' @param Z starting Z population
-#' @param iterations iterations to run
+#' @param iterations number of iterations to run
 #' @param pSnooker probability of Snooker update
 #' @param burnin number of iterations treated as burn-in. These iterations are not recorded in the chain.
 #' @param thin thinning parameter. Determines the interval in which values are recorded.
@@ -17,12 +17,12 @@
 #' @param eps.mult random term (multiplicative error)
 #' @param eps.add random term
 #' @param blockUpdate list determining whether parameters should be updated in blocks. For possible settings see Details.
-#' @param message logical determines whether the sampler's progress should be printed
+#' @param message logical, specifies whether to print the progress of the sampler.
 #' @references ter  Braak C. J. F., and Vrugt J. A. (2008). Differential Evolution Markov Chain with snooker updater and fewer chains. Statistics and Computing http://dx.doi.org/10.1007/s11222-008-9104-9 
 #' @export
 #' @example /inst/examples/DEfamilyHelp.R
 #' @seealso \code{\link{DE}}
-#' @details For parallel computing, the likelihood density in the bayesianSetup needs to be parallelized, i.e. needs to be able to operate on a matrix of proposals
+#' @details For parallel computing, the likelihood density in the bayesianSetup needs to be parallelized, i.e., it needs to be able to operate on a matrix of proposals
 #' 
 #' For blockUpdate the first element in the list determines the type of blocking.
 #' Possible choices are
@@ -32,19 +32,20 @@
 #'  \item{"random"} { random blocking. Using k (see below)}
 #'  \item{"user"} { user defined groups. Using groups (see below)}
 #'  }
-#'  Further seven parameters can be specified. "k" determnined the number of groups, "h" the strength
+#'  Further, seven parameters can be specified. "k" defines the number of groups, "h" the strength
 #'  of the correlation used to group parameter and "groups" is used for user defined groups.
 #'  "groups" is a vector containing the group number for each parameter. E.g. for three parameters 
 #'  with the first two in one group, "groups" would be c(1,1,2).
-#'  Further pSel and pGroup can be used to influence the choice of groups. In the sampling process
-#'  a number of groups is randomly drawn and updated. pSel is a vector containing relative probabilities
-#'  for an update of the respective number of groups. E.g. for always updating only one group pSel = 1.
+#'  Moreover, pSel and pGroup can be used to influence the choice of groups. In the sampling process
+#'  a number of groups is drawn at random and updated. pSel is a vector containing relative probabilities
+#'  for updating the respective number of groups. E.g. To update one group at a time pSel = 1.
 #'  For updating one or two groups with the same probability pSel = c(1,1). By default all numbers
 #'  have the same probability.
-#'  The same principle is used in pGroup. Here the user can influence the probability of each group
+#'  The same principle is used in pGroup. Here, the user can influence the probability of each group
 #'  to be updated. By default all groups have the same probability.
-#'  Finally "groupStart" defines the starting point of the groupUpdate and "groupIntervall" the intervall
+#'  Finally, "groupStart" defines the starting point of the groupUpdate and "groupIntervall" - the interval
 #'  in which the groups are evaluated.
+#'  
 DEzs <- function(bayesianSetup, 
                     settings = list(iterations=10000, 
                                     Z = NULL, 

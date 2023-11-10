@@ -10,7 +10,7 @@ createSmcSamplerList(...)
 \item{...}{a list of MCMC samplers}
 }
 \value{
-a list of class smcSamplerList with each object being an smcSampler
+a list of class smcSamplerList with objects of smcSampler
 }
 \description{
 Convenience function to create an object of class SMCSamplerList from a list of mcmc samplers

@@ -10,6 +10,7 @@ getSetup <- function(x) {
   else stop('Can not get setup from x')
 }
 
+
 #' Function to thin matrices
 #' @param mat matrix to thin
 #' @param thin thinning parameter
@@ -32,7 +33,7 @@ thinMatrix <- function(mat, thin = "auto"){
 #' @param mat matrix to scale
 #' @param min minimum value
 #' @param max maximum value
-#' @return sclaed matrix
+#' @return scaled matrix
 #' @keywords internal
 scaleMatrix <- function(mat, min, max){
   if(class(mat)[1] %in% c("matrix", "data.frame")){
@@ -130,7 +131,7 @@ sampleEquallySpaced <- function(x, numSamples) {
 #' Checks if thin is consistent with nTotalSamples samples and if not corrects it.
 #' @author Tankred Ott
 #' @param nTotalSamples total number of rows/samples 
-#' @param thin thinning
+#' @param thin thinning parameter
 #' @param autoThinFraction fraction of the data that will be sampled when thin is set to "auto". E.g. 0.5 means thin will be nTotalSamples * 0.5. The resulting thin value is rounded down to the next integer.
 #' @details Checks if the thin argument is consistent with the data consisting of nTotalSamples samples/rows and corrects thin if not.
 #' @author Tankred Ott
@@ -155,7 +156,7 @@ correctThin <- function(nTotalSamples, thin, autoThinFraction = 0.001) {
 
 #' @title Rescale
 #' @description Rescales values in the interval "from" (lower, upper) to the new interval "to" (lower, upper).
-#' @param x vector of values tp be scaled
+#' @param x vector of values to be scaled
 #' @param from vector of length 2, original interval (lower, upper)
 #' @param to vector of length 2, target interval (lower, upper)
 #' 

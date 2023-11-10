@@ -1,9 +1,10 @@
+
 #' Very simple ecosystem model
 #' @description A very simple ecosystem model, based on three carbon pools and a basic LUE model 
 #' @param pars a parameter vector with parameters and initial states
 #' @param PAR Forcing, photosynthetically active radiation (PAR) MJ /m2 /day
 #' @param C switch to choose whether to use the C or R version of the model. C is much faster. 
-#' @return a matrix with colums NEE, CV, CR and CS units and explanations see details
+#' @return a matrix with columns NEE, CV, CR and CS units and explanations see details
 #' @import Rcpp
 #' @useDynLib BayesianTools, .registration = TRUE
 #' @details This Very Simple Ecosystem Model (VSEM) is a 'toy' model designed to be very simple but yet bear some resemblance to deterministic processed based ecosystem models (PBMs) that are commonly used in forest modelling.
@@ -12,7 +13,7 @@
 #' 
 #' The model calculates Gross Primary Productivity (GPP) using a very simple light-use efficiency (LUE) formulation multiplied by light interception. Light interception is calculated via Beer's law with a constant light extinction coefficient operating on Leaf Area Index (LAI).
 #' 
-#' A parameter (GAMMA) determines the fraction of GPP that is autotrophic respiration. The Net Primary Productivity (NPP) is then allocated to above and below-ground vegetation via a fixed allocation fraction. Carbon is lost from the plant pools to a single soil pool via fixed turnover rates. Heterotropic respiration in the soil is determined via a soil turnover rate.
+#' A parameter (GAMMA) determines the fraction of GPP that is autotrophic respiration. The Net Primary Productivity (NPP) is then allocated to above and below-ground vegetation via a fixed allocation fraction. Carbon is lost from the plant pools to a single soil pool via fixed turnover rates. Heterotrophic respiration in the soil is determined via a soil turnover rate.
 #' 
 #' The model equations are 
 #' 
@@ -166,8 +167,8 @@ VSEMcreatePAR <- function(days = 1:(3*365)){
 
 #' Create an example dataset, and from that a likelihood or posterior for the VSEM model
 #' @author Florian Hartig
-#' @param likelihoodOnly switch to devide whether to create only a likelihood, or a full bayesianSetup with uniform priors.
-#' @param plot switch to decide whether data should be plotted
+#' @param likelihoodOnly logical, decides whether to create only a likelihood, or a full bayesianSetup with uniform priors.
+#' @param plot logical, decides whether data should be plotted
 #' @param selection vector containing the indices of the selected parameters
 #' @details The purpose of this function is to be able to conveniently create a likelihood for the VSEM model for demonstration purposes. The function creates example data --> likelihood --> BayesianSetup, where the latter is the 
 #' @export

@@ -7,7 +7,7 @@
 rescale(x, from, to)
 }
 \arguments{
-\item{x}{vector of values tp be scaled}
+\item{x}{vector of values to be scaled}
 
 \item{from}{vector of length 2, original interval (lower, upper)}
 

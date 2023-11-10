@@ -13,7 +13,7 @@ createPrior(
 )
 }
 \arguments{
-\item{density}{Prior density}
+\item{density}{prior density}
 
 \item{sampler}{Sampling function for density (optional)}
 
@@ -27,7 +27,7 @@ createPrior(
 Creates a standardized prior class
 }
 \details{
-This is the general prior generator. It is highly recommended to not only implement the density, but also the sampler function. If this is not done, the user will have to provide explicit starting values for many of the MCMC samplers. Note the existing, more specialized prior function. If your prior can be created by those, they are preferred. Note also that priors can be created from an existing MCMC output from BT, or another MCMC sample, via \code{\link{createPriorDensity}}.
+This is the general prior generator. It is highly recommended to implement both the density and sampler function. If not, the user will have to provide explicit starting values for many of the MCMC samplers. Note the existing, more specialized prior functions. It is recommended to use those specialized prior functions, if possible. Also note that priors can be created from an existing MCMC output from BT, or another MCMC sample, via \code{\link{createPriorDensity}}.
 }
 \note{
 min and max truncate, but not re-normalize the prior density (so, if a pdf that integrated to one is truncated, the integral will in general be smaller than one). For MCMC sampling, this doesn't make a difference, but if absolute values of the prior density are a concern, one should provide a truncated density function for the prior.

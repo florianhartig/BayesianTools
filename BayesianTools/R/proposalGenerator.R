@@ -1,11 +1,12 @@
+
 #' Factory that creates a proposal generator
 #' @author Florian Hartig
 #' @param covariance covariance matrix. Can also be vector of the sqrt of diagonal elements --> standard deviation
-#' @param gibbsProbabilities optional probabilities for the number of parameters to vary in a Metropolis within gibbs style - for 4 parameters, c(1,1,0.5,0) means that at most 3 parameters will be varied, and it is double as likely to vary one or two than varying 3 
-#' @param gibbsWeights optional probabilities for parameters to be varied in a Metropolis within gibbs style - default ist equal weight for all parameters - for 4 parameters, c(1,1,1,100) would mean that if 2 parameters would be selected, parameter 4 would be 100 times more likely to be picked than the others. If 4 is selected, the remaining parameters have equal probability.
-#' @param otherDistribution optional additinal distribution to be mixed with the default multivariate normal. The distribution needs to accept a parameter vector (to allow for the option of making the distribution dependend on the parameter values), but it is still assumed that the change from the current values is returned, not the new absolute values. 
+#' @param gibbsProbabilities optional, probabilities for the number of parameters to vary in a Metropolis within Gibbs style - for 4 parameters, c(1,1,0.5,0) means that at most 3 parameters will be varied, and it is twice as likely to vary one or two than to vary 3 
+#' @param gibbsWeights optional, probabilities for parameters to be varied in a Metropolis within Gibbs style - default is equal weight for all parameters - for 4 parameters, c(1,1,1,100) would mean that if 2 parameters were selected, parameter 4 would be 100 times more likely to be picked than the others. If 4 is selected, the remaining parameters have equal probability.
+#' @param otherDistribution optional, additional distribution to be mixed with the default multivariate normal. The distribution needs to accept a parameter vector (to allow the option of making the distribution dependent on the parameter values), but it is still assumed that the change from the current values is returned, not the new absolute values. 
 #' @param otherDistributionLocation a vector with 0 and 1, denoting which parameters are modified by the otherDistribution
-#' @param otherDistributionScaled should the other distribution be scaled if gibbs updates are calculated?
+#' @param otherDistributionScaled logical, should the other distribution be scaled if Gibbs updates are calculated?
 #' @param message print out parameter settings
 #' @param method method for covariance decomposition
 #' @param scalingFactor scaling factor for the proposals

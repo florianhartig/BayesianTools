@@ -22,13 +22,13 @@ smcSampler(
 
 \item{iterations}{number of iterations}
 
-\item{resampling}{if new particles should be created at each iteration}
+\item{resampling}{logical, specifies whether new particles should be created at each iteration}
 
 \item{resamplingSteps}{how many resampling (MCMC) steps between the iterations}
 
-\item{proposal}{optional proposal class}
+\item{proposal}{optional, proposal class}
 
-\item{adaptive}{should the covariance of the proposal be adapted during sampling}
+\item{adaptive}{logical, should the covariance of the proposal be adapted during sampling?}
 
 \item{proposalScale}{scaling factor for the proposal generation. Can be adapted if there is too much / too little rejection}
 }

@@ -7,9 +7,9 @@
 VSEMcreateLikelihood(likelihoodOnly = F, plot = F, selection = c(1:6, 12))
 }
 \arguments{
-\item{likelihoodOnly}{switch to devide whether to create only a likelihood, or a full bayesianSetup with uniform priors.}
+\item{likelihoodOnly}{logical, decides whether to create only a likelihood, or a full bayesianSetup with uniform priors.}
 
-\item{plot}{switch to decide whether data should be plotted}
+\item{plot}{logical, decides whether data should be plotted}
 
 \item{selection}{vector containing the indices of the selected parameters}
 }

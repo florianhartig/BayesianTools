@@ -1,3 +1,4 @@
+
 #' @author Florian Hartig
 #' @export
 getSample.smcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...){

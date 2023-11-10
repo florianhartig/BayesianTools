@@ -1,10 +1,11 @@
+
 #' Calculate posterior volume
 #' @author Florian Hartig
-#' @param sampler an object of superclass bayesianOutput or any other class that has the getSample function implemented (e.g. Matrix)
-#' @param prior schould also prior volume be calculated
+#' @param sampler an object of superclass bayesianOutput or any other class that has implemented the getSample function (e.g. Matrix)
+#' @param prior logical, should prior volume be calculated?
 #' @param method method for volume estimation. Currently, the only option is "MVN"
 #' @param ... additional parameters to pass on to the \code{\link{getSample}}
-#' @details The idea of this function is to provide an estimate of the "posterior volume", i.e. how "broad" the posterior is. One potential application is to the overall reduction of parametric uncertainty between different data types, or between prior and posterior.  
+#' @details The idea of this function is to provide an estimate of the "posterior volume", i.e. how "broad" the posterior is. One potential application is the overall reduction of parametric uncertainty between different data types, or between prior and posterior.  
 #' 
 #' Implemented methods for volume estimation:
 #' 

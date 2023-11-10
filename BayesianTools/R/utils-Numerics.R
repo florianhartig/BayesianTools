@@ -1,3 +1,4 @@
+
 # inspired from https://gist.github.com/doobwa/941125
 # maybe replace with logSumExp {matrixStats} which might be faster?
 
