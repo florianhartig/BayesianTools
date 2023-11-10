@@ -9,7 +9,7 @@ createMixWithDefaults(pars, defaults, locations)
 \arguments{
 \item{pars}{vector with new parameter values}
 
-\item{defaults}{vector with defaukt parameter values}
+\item{defaults}{vector with default parameter values}
 
 \item{locations}{indices of the new parameter values}
 }

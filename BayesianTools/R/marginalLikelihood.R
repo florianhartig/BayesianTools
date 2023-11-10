@@ -1,8 +1,6 @@
-
 # Motivation for this functions from 
 # https://radfordneal.wordpress.com/2008/08/17/the-harmonic-mean-of-the-likelihood-worst-monte-carlo-method-ever/
 # https://gist.github.com/gaberoo/4619102
-
 
 #  ' @export
 #marginalLikelihood <- function(x,lik,V,sampler$setup$likelihood$density,sampler$setup$prior$density,..., num.samples=1000,log=TRUE) UseMethod("marginalLikelihood")
@@ -24,17 +22,17 @@
 #' 
 #' In BT, we return the log ML, so you will have to exp all values for this formula. 
 #' 
-#' It is well-known that the ML is VERY dependent on the prior, and in particular the choice of the width of uninformative priors may have major impacts on the relative weights of the models. It has therefore been suggested to not use the ML for model averaging / selection on uninformative priors. If you have no informative priors, and option is to split the data into two parts, use one part to generate informative priors for the model, and the second part for the model selection. See help for an example. 
+#' It is well-known that the ML is strongly dependent on the prior, and in particular the choice of the width of uninformative priors may have major impacts on the relative weights of the models. It has therefore been suggested to not use the ML for model averaging / selection on uninformative priors. If you have no informative priors, and option is to split the data into two parts, use one part to generate informative priors for the model, and the second part for the model selection. See help for an example. 
 #' 
 #' The marginalLikelihood function currently implements four ways to calculate the marginal likelihood. Be aware that marginal likelihood calculations are notoriously prone to numerical stability issues. Especially in high-dimensional parameter spaces, there is no guarantee that any of the implemented algorithms will converge reasonably fast. The recommended (and default) method is the method "Chib" (Chib and Jeliazkov, 2001), which is based on MCMC samples, with a limited number of additional calculations. Despite being the current recommendation, note there are some numeric issues with this algorithm that may limit reliability for larger dimensions.
 #'   
-#'  The harmonic mean approximation, is implemented only for comparison. Note that the method is numerically unrealiable and usually should not be used. 
+#' The harmonic mean approximation, is implemented only for comparison. Note that the method is numerically unreliable and usually should not be used. 
 #' 
 #' The third method is simply sampling from the prior. While in principle unbiased, it will only converge for a large number of samples, and is therefore numerically inefficient. 
 #' 
 #' The Bridge method uses bridge sampling as implemented in the R package "bridgesampling". It is potentially more exact than the Chib method, but might require more computation time. However, this may be very dependent on the sampler.
 #' 
-#' @return A list with log of the marginal likelihood, as well as other diagnostics depending on the chose method
+#' @return A list with log of the marginal likelihood, as well as other diagnostics depending on the chosen method
 #'    
 #' @example /inst/examples/marginalLikelihoodHelp.R
 #' @references 

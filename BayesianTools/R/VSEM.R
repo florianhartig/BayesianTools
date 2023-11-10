@@ -141,7 +141,7 @@ VSEMgetDefaults <- function(){
 
 #' Allows to mix a given parameter vector with a default parameter vector
 #' @param pars vector with new parameter values
-#' @param defaults vector with defaukt parameter values
+#' @param defaults vector with default parameter values
 #' @param locations indices of the new parameter values
 #' @rdname package-deprecated
 #' @description This function is deprecated and will be removed by v0.2. 
@@ -166,7 +166,7 @@ VSEMcreatePAR <- function(days = 1:(3*365)){
 
 #' Create an example dataset, and from that a likelihood or posterior for the VSEM model
 #' @author Florian Hartig
-#' @param likelihoodOnly switch to devide whether to create only a likelihood, or a full bayesianSetup with uniform priors.
+#' @param likelihoodOnly switch to decide whether to create only a likelihood, or a full bayesianSetup with uniform priors.
 #' @param plot switch to decide whether data should be plotted
 #' @param selection vector containing the indices of the selected parameters
 #' @details The purpose of this function is to be able to conveniently create a likelihood for the VSEM model for demonstration purposes. The function creates example data --> likelihood --> BayesianSetup, where the latter is the 

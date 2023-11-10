@@ -20,11 +20,10 @@ Performs a one-factor-at-a-time sensitivity analysis for the posterior of a give
 This function can also be used for sensitivity analysis of an arbitrary output - just create a BayesianSetup with this output.
 }
 \examples{
-
 ll <- testDensityBanana
 bayesianSetup <- createBayesianSetup(likelihood = ll, lower = rep(-10, 2), upper = rep(10, 2))
-
 plotSensitivity(bayesianSetup)
+
 }
 \author{
 Florian Hartig

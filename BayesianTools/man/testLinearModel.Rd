@@ -15,6 +15,7 @@ testLinearModel(x, env = NULL)
 Fake model, returns a ax + b linear response to 2-param vector
 }
 \examples{
+
 x = c(1,2)
 y = testLinearModel(x)
 plot(y)

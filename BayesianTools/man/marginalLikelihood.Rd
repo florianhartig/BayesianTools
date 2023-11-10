@@ -16,7 +16,7 @@ marginalLikelihood(sampler, numSamples = 1000, method = "Chib", ...)
 \item{...}{further arguments passed to \code{\link{getSample}}}
 }
 \value{
-A list with log of the marginal likelihood, as well as other diagnostics depending on the chose method
+A list with log of the marginal likelihood, as well as other diagnostics depending on the chosen method
 }
 \description{
 Calcluated the marginal likelihood from a set of MCMC samples
@@ -32,11 +32,11 @@ Given that MLs are calculated for each model, you can get posterior weights (for
 
 In BT, we return the log ML, so you will have to exp all values for this formula.
 
-It is well-known that the ML is VERY dependent on the prior, and in particular the choice of the width of uninformative priors may have major impacts on the relative weights of the models. It has therefore been suggested to not use the ML for model averaging / selection on uninformative priors. If you have no informative priors, and option is to split the data into two parts, use one part to generate informative priors for the model, and the second part for the model selection. See help for an example.
+It is well-known that the ML is strongly dependent on the prior, and in particular the choice of the width of uninformative priors may have major impacts on the relative weights of the models. It has therefore been suggested to not use the ML for model averaging / selection on uninformative priors. If you have no informative priors, and option is to split the data into two parts, use one part to generate informative priors for the model, and the second part for the model selection. See help for an example.
 
 The marginalLikelihood function currently implements four ways to calculate the marginal likelihood. Be aware that marginal likelihood calculations are notoriously prone to numerical stability issues. Especially in high-dimensional parameter spaces, there is no guarantee that any of the implemented algorithms will converge reasonably fast. The recommended (and default) method is the method "Chib" (Chib and Jeliazkov, 2001), which is based on MCMC samples, with a limited number of additional calculations. Despite being the current recommendation, note there are some numeric issues with this algorithm that may limit reliability for larger dimensions.
 
-The harmonic mean approximation, is implemented only for comparison. Note that the method is numerically unrealiable and usually should not be used.
+The harmonic mean approximation, is implemented only for comparison. Note that the method is numerically unreliable and usually should not be used.
 
 The third method is simply sampling from the prior. While in principle unbiased, it will only converge for a large number of samples, and is therefore numerically inefficient.
 
@@ -121,7 +121,7 @@ exp(M1$ln.ML - M2$ln.ML)
 
 # it has therefore been suggested that ML should not be calculated on uninformative priors. But
 # what to do if there are no informative priors?
-# one option is to calculate the fractional BF, which means that one splites the data in half,
+# one option is to calculate the fractional BF, which means that one splits the data in half,
 # uses the first half to fit the model, and then use the posterior as a new (now informative)
 # prior for the ML - let's do this for the previous case
 
@@ -190,7 +190,7 @@ exp(M1$ln.ML - M2$ln.ML)
 # Low dimensional case with narrow priors - all methods have low error
 
 # we use a truncated normal for the likelihood to make sure that the density 
-# integrates to 1 - makes it easier to calcuate the theoretical ML
+# integrates to 1 - makes it easier to calculate the theoretical ML
 likelihood <- function(x) sum(msm::dtnorm(x, log = TRUE, lower = -1, upper = 1))
 prior = createUniformPrior(lower = rep(-1,2), upper = rep(1,2))
 bayesianSetup <- createBayesianSetup(likelihood = likelihood, prior = prior)
@@ -223,7 +223,6 @@ marginalLikelihood(out)$ln.ML - theory
 marginalLikelihood(out, method = "Prior", numSamples =  500)$ln.ML - theory
 marginalLikelihood(out, method = "HM", numSamples =  500)$ln.ML - theory
 marginalLikelihood(out, method = "Bridge", numSamples =  500)$ln.ML - theory
-
 
 
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mcmcMetropolis.R
 \name{Metropolis}
 \alias{Metropolis}
-\title{Creates a Metropolis-type MCMC with options for covariance adaptatin, delayed rejection, Metropolis-within-Gibbs, and tempering}
+\title{Creates a Metropolis-type MCMC with options for covariance adaptation, delayed rejection, Metropolis-within-Gibbs, and tempering}
 \usage{
 Metropolis(
   bayesianSetup,
@@ -16,13 +16,13 @@ Metropolis(
 \arguments{
 \item{bayesianSetup}{either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function}
 
-\item{settings}{a list of settings - possible options follow below}
+\item{settings}{a list of settings - possible options follow}
 
 \item{startValue}{startValue for the MCMC and optimization (if optimize = T). If not provided, the sampler will attempt to obtain the startValue from the bayesianSetup}
 
 \item{optimize}{logical, determines whether an optimization for start values and proposal function should be run before starting the sampling}
 
-\item{proposalGenerator}{optional proposalgenerator object (see \code{\link{createProposalGenerator}})}
+\item{proposalGenerator}{optional, proposalgenerator object (see \code{\link{createProposalGenerator}})}
 
 \item{proposalScaling}{additional scaling parameter for the proposals that controls the different scales of the proposals after delayed rejection (typical, after a rejection, one would want to try a smaller scale). Needs to be as long as DRlevels. Defaults to 0.5^(- 0:(mcmcSampler$settings$DRlevels -1)}
 
@@ -32,7 +32,7 @@ Metropolis(
 
 \item{consoleUpdates}{integer, determines the frequency with which sampler progress is printed to the console}
 
-\item{adapt}{logical, determines wheter an adaptive algorithm should be implemented. Default is TRUE.}
+\item{adapt}{logical, determines whether an adaptive algorithm should be implemented. Default is TRUE.}
 
 \item{adaptationInterval}{integer, determines the interval  of the adaption if adapt = TRUE.}
 
@@ -42,12 +42,12 @@ Metropolis(
 
 \item{temperingFunction}{function to implement simulated tempering in the algorithm. The function describes how the acceptance rate will be influenced in the course of the iterations.}
 
-\item{gibbsProbabilities}{vector that defines the relative probabilities of the number of parameters to be changes simultaniously.}
+\item{gibbsProbabilities}{vector that defines the relative probabilities of the number of parameters to be changed simultaneously.}
 
-\item{message}{logical determines whether the sampler's progress should be printed}
+\item{message}{logical, determines whether the sampler's progress should be printed}
 }
 \description{
-Creates a Metropolis-type MCMC with options for covariance adaptatin, delayed rejection, Metropolis-within-Gibbs, and tempering
+Creates a Metropolis-type MCMC with options for covariance adaptation, delayed rejection, Metropolis-within-Gibbs, and tempering
 }
 \details{
 The 'Metropolis' function is the main function for all Metropolis based samplers in this package. To call the derivatives from the basic Metropolis-Hastings MCMC, you can either use the corresponding function (e.g. \code{\link{AM}} for an adaptive Metropolis sampler) or use the parameters to adapt the basic Metropolis-Hastings. The advantage of the latter case is that you can easily combine different properties (e.g. adapive sampling and delayed rejection sampling) without changing the function.

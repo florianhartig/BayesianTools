@@ -1,21 +1,21 @@
-#' Creates a Metropolis-type MCMC with options for covariance adaptatin, delayed rejection, Metropolis-within-Gibbs, and tempering
+#' Creates a Metropolis-type MCMC with options for covariance adaptation, delayed rejection, Metropolis-within-Gibbs, and tempering
 #' @author Florian Hartig
 #' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function 
-#' @param settings a list of settings - possible options follow below
+#' @param settings a list of settings - possible options follow 
 #' @param startValue startValue for the MCMC and optimization (if optimize = T). If not provided, the sampler will attempt to obtain the startValue from the bayesianSetup
 #' @param optimize logical, determines whether an optimization for start values and proposal function should be run before starting the sampling
-#' @param proposalGenerator optional proposalgenerator object (see \code{\link{createProposalGenerator}})
+#' @param proposalGenerator optional, proposalgenerator object (see \code{\link{createProposalGenerator}})
 #' @param proposalScaling additional scaling parameter for the proposals that controls the different scales of the proposals after delayed rejection (typical, after a rejection, one would want to try a smaller scale). Needs to be as long as DRlevels. Defaults to 0.5^(- 0:(mcmcSampler$settings$DRlevels -1)
 #' @param burnin number of iterations treated as burn-in. These iterations are not recorded in the chain.
 #' @param thin thinning parameter. Determines the interval in which values are recorded.
 #' @param consoleUpdates integer, determines the frequency with which sampler progress is printed to the console
-#' @param adapt logical, determines wheter an adaptive algorithm should be implemented. Default is TRUE.
+#' @param adapt logical, determines whether an adaptive algorithm should be implemented. Default is TRUE.
 #' @param adaptationInterval integer, determines the interval  of the adaption if adapt = TRUE.
 #' @param adaptationNotBefore integer, determines the start value for the adaption if adapt = TRUE.
 #' @param DRlevels integer, determines the number of levels for a delayed rejection sampler. Default is 1, which means no delayed rejection is used.
 #' @param temperingFunction function to implement simulated tempering in the algorithm. The function describes how the acceptance rate will be influenced in the course of the iterations.
-#' @param gibbsProbabilities vector that defines the relative probabilities of the number of parameters to be changes simultaniously.
-#' @param message logical determines whether the sampler's progress should be printed
+#' @param gibbsProbabilities vector that defines the relative probabilities of the number of parameters to be changed simultaneously.
+#' @param message logical, determines whether the sampler's progress should be printed
 #' @details The 'Metropolis' function is the main function for all Metropolis based samplers in this package. To call the derivatives from the basic Metropolis-Hastings MCMC, you can either use the corresponding function (e.g. \code{\link{AM}} for an adaptive Metropolis sampler) or use the parameters to adapt the basic Metropolis-Hastings. The advantage of the latter case is that you can easily combine different properties (e.g. adapive sampling and delayed rejection sampling) without changing the function.
 #' @import coda
 #' @example /inst/examples/MetropolisHelp.R
