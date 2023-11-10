@@ -170,7 +170,7 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
     mtext('Marginal parameter uncertainty', outer = TRUE, cex = 1.5)
 
   } else {
-    mfrow <- if (nPar < 16) getPanels(nPar) else c(4,4)
+    mfrow <- getPanels(nPar)
     
     op <- par(mfrow = mfrow, mar = c(4.5, 4, 5, 3), oma=c(3, 1.5, 2, 0), xpd=TRUE)
     on.exit(par(op))
@@ -282,7 +282,7 @@ marginalPlotViolin <- function(posteriorMat, priorMat = NULL, xrange = NULL, col
     mtext('Marginal parameter uncertainty', outer = TRUE, cex = 1.5)
     
   } else {
-    mfrow <- if (nPar < 16) getPanels(nPar) else c(4,4)
+    mfrow <- getPanels(nPar)
     
     op <- par(mfrow = mfrow, mar = c(4.5, 4.5, 5, 3), oma=c(3, 0, 2, 0), xpd=TRUE)
     
