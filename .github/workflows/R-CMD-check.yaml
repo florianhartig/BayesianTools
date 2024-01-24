@@ -45,6 +45,12 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
           working-directory: BayesianTools
+      # second check with different rcmdcheck arguments.
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          working-directory: BayesianTools
+          args: 'c("--no-multiarch", "--no-manual")'
 
       - uses: r-lib/actions/check-r-package@v2
         with:
