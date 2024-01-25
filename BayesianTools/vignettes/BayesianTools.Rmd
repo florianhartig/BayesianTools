@@ -63,7 +63,7 @@ This session information includes the version number of R and all loaded package
 
 The central object in the `BT` package is the `BayesianSetup`. This class contains the information about the model to be fit (likelihood), and the priors for the model parameters.
 
-The `createBayesianSetup` function generates a `BayesianSetup` object. The function requires a log-likelihood and a log-prior (optional) as arguments. It then automatically creates the posterior and variousn convenience functions for the samplers.
+The `createBayesianSetup` function generates a `BayesianSetup` object. The function requires a log-likelihood and a log-prior (optional) as arguments. It then automatically creates the posterior and various convenience functions for the samplers.
 
 Advantages of the `BayesianSetup` include 
 
@@ -84,8 +84,7 @@ A more detailed description of the `BayesianSetup` will follow below.
 
 ## Run MCMC and SMC functions
 
-After setup, you may need to run a calibration. The `runMCMC` function serves as the main wrapper for all other implemented `MCMC`/`SMC`
-functions. It always requires the following arguments:
+After setup, you may need to run a calibration. The `runMCMC` function serves as the main wrapper for all other implemented `MCMC`/`SMC` functions. It always requires the following arguments:
 
 -   `bayesianSetup` (alternatively, the log target function)
 -   `sampler` name
@@ -401,7 +400,7 @@ out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 The `runMCMC` function is the central function for starting MCMC algorithms in the `BayesianTools` package. It takes a `bayesianSetup`, a choice of `sampler` (default is `DEzs`), and optionally changes to the default settings of the chosen `sampler`.
 
 ```{r, message = F}
-runMCMC(bayesianSetup, sampler = "DEzs", settings = NULL)
+runMCMC(bayesianSetup, sampler = "DEzs", settings = list("message" = F))
 ```
 
 You may use an optional argument `nrChains`, which is set to the default value of 1 but can be modified if needed. Increasing its value will lead `runMCMC` to execute multiple runs.
@@ -448,8 +447,7 @@ iter = 10000
 
 ### The Metropolis MCMC class
 
-The `BayesianTools` package is able to run a large number of Metropolis-Hastings (MH) based algorithms. All of these `sampler`s can be accessed by the "Metropolis" `sampler` in the `runMCMC` function by
-specifying the `sampler`'s settings.
+The `BayesianTools` package is able to run a large number of Metropolis-Hastings (MH) based algorithms. All of these `sampler`s can be accessed by the "Metropolis" `sampler` in the `runMCMC` function by specifying the `sampler`'s settings.
 
 The subsequent code provides an overview of the default settings of the MH `sampler`.
 
@@ -577,7 +575,8 @@ There are two versions of the DREAM `sampler`. First, the standard DREAM sampler
 This sampler is largely based on the DE sampler with some significant changes:
 
   1) More than two chains can be used to generate a proposal. 
-  2) Randomized subspace sampling can be used to improve efficiency for high-dimensional posteriors. Each dimension is updated with a crossover probability CR. To speed up the exploration of the posterior, DREAM adjusts the distribution of CR values during burn-in to favor large jumps over small ones. 3) Outlier chains can be removed during burn-in.
+  2) Randomized subspace sampling can be used to improve efficiency for high-dimensional posteriors. Each dimension is updated with a crossover probability CR. To speed up the exploration of the posterior, DREAM adjusts the distribution of CR values during burn-in to favor large jumps over small ones. 
+  3) Outlier chains can be removed during burn-in.
 
 ```{r, results = 'hide', eval = F}
 settings <- list(iterations = iter,  message = FALSE)
@@ -610,18 +609,6 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Twalk", settings = sett
 MCMCs sample the posterior space by creating a chain in parameter space. While this allows for "learning" from past steps, it does not allow for running a large number of posteriors in parallel.
 
 An alternative to MCMCs are particle filters, also known as Sequential Monte-Carlo (SMC) algorithms. See Hartig, F.; Calabrese, J. M.; Reineking, B.; Wiegand, T. & Huth, A. Statistical inference for stochastic simulation models - theory and application Ecol. Lett., 2011, 14, 816-827
-
-### Rejection sampling
-
-#chain = getSample(out, coda = T)
-gelmanDiagnostics(out, plot = F)
-```
-
-## Non-MCMC sampling algorithms
-
-MCMCs sample the posterior space by creating a chain in parameter space. While this allows "learning" from past steps, it does not permit the parallel execution of a large number of posterior values at the same time.
-
-An alternative to MCMCs are particle filters, aka Sequential Monte-Carlo (SMC) algorithms. See Hartig, F.; Calabrese, J. M.; Reineking, B.; Wiegand, T. & Huth, A. Statistical inference for stochastic simulation models - theory and application Ecol. Lett., 2011, 14, 816-827
 
 ### Rejection samling
 
