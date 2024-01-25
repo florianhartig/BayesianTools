@@ -90,7 +90,7 @@ After setup, you may need to run a calibration. The `runMCMC` function serves as
 -   `sampler` name
 -   list with `settings` for each sampler - if `settings` is not specified, the default value will be applied
 
-For example, choosing the `sampler` name "Metropolis" calls a versatile Metropolis-type MCMC with options for covariance adjustment, delayed rejection, tempering and Metropolis-within-Gibbs sampling. For details, see the later reference on MCMC samplers. When in doubt about the choice of MCMC sampler, we recommend using the default "DEzs".
+The BT package provides a large class of different MCMC samplers, and it depends on the particular application which one is most suitable. For example, choosing the `sampler` name "Metropolis" calls a versatile Metropolis-type MCMC with options for covariance adjustment, delayed rejection, tempering and Metropolis-within-Gibbs sampling. For details, see the later reference on MCMC samplers. When in doubt about the choice of MCMC sampler, we recommend using the default "DEzs". This is also the default in the `runMCMC` function.
 
 ```{r}
 iter = 1000
@@ -123,12 +123,12 @@ The trace plot is examined for major problems (chains look different, systematic
 If the trace plots look good, we can look at the Gelman-Rubin convergence diagnostics. Note that you have to discard the burn-in.
 
 ```{r}
-gelmanDiagnostics(out, plot = F, start = 100)
+gelmanDiagnostics(out, plot = T, start = 100)
 ```
 
 Usually, a value \< 1.05 for each parameter and a msrf \< 1.1 of 1.2 are considered sufficient for convergence.
 
-### Summarize the outputs
+## Summarize the outputs
 
 If we are happy with the convergence, we can plot and summarize all `sampler`s from the console with the standard `print` and `summary` commands.
 
@@ -157,38 +157,6 @@ To extract part of the sampled parameter values, you can use the following proce
 ```{r, eval = F}
 getSample(out, start = 100, end = NULL, thin = 5, whichParameters = 1:2)
 ```
-
-### Which sampler to choose?
-
-```{r, echo = T}
-iter = 1000
-settings = list(iterations = iter, nrChains = 3, message = FALSE)
-out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
-
-```
-
-The result is an object of mcmcSamplerList, which should allow to do everything one can do with an mcmcSampler object (with slightly different output sometimes).
-
-```{r}
-print(out)
-summary(out)
-```
-
-For example, in the plot you now see 3 chains.
-
-```{r}
-plot(out)
-```
-
-There are a few additional functions that may only be available for lists, for example convergence checks
-
-```{r}
-#getSample(out, coda = F)
-gelmanDiagnostics(out, plot = T)
-```
-The BT package provides a large class of different MCMC samplers, and it depends on the particular application which one is most suitable.
-
-In the absence of further information, we currently recommend the `DEz`s sampler. This is also the default in the `runMCMC` function.
 
 # BayesianSetup Reference
 
@@ -345,7 +313,7 @@ The prior in the `BayesianSetup` consists of four parts
 
 This information can be passed by first creating an extra object, via `createPrior`, or via the `createBayesianSetup` function.
 
-#### Creating priors
+### Creating priors
 
 You have 5 options to create a prior
 
@@ -364,7 +332,7 @@ The prior we choose depends on the prior information we have. For example, if we
 |                                                   | ![](betaDensity.png "Density plot for Beta distribution") | ![](normalDensity.png "Density plot for Normal distribution") | ![](uniformDensity.png "Density plot for Uniform distribution") |
 | createPrior(density, sampler, lower, upper, best) |            createBetaPrior(a, b, lower, upper)            |            createUniformPrior(lower, upper, best)             |       createTruncatedNormalPrior(mean, sd, lower, upper).       |
 
-#### Creating user-defined priors
+### Creating user-defined priors
 
 When creating a user-defined prior, the following information can/should be passed to `createPrior`
 
@@ -373,7 +341,7 @@ When creating a user-defined prior, the following information can/should be pass
 -   lower / upper boundaries (can be set on top of any prior, to create truncation)
 -   Additional info - best values, names of the parameters, ...
 
-#### Creating a prior from a previous MCMC sample
+### Creating a prior from a previous MCMC sample
 
 The following example from the help file illustrates the process
 
@@ -400,6 +368,8 @@ out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 The `runMCMC` function is the central function for starting MCMC algorithms in the `BayesianTools` package. It takes a `bayesianSetup`, a choice of `sampler` (default is `DEzs`), and optionally changes to the default settings of the chosen `sampler`.
 
 ```{r, message = F}
+ll <- generateTestDensityMultiNormal(sigma = "no correlation")
+bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
 runMCMC(bayesianSetup, sampler = "DEzs", settings = list("message" = F))
 ```
 
