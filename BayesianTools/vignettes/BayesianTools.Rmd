@@ -26,7 +26,7 @@ set.seed(123)
 
 The purpose of this first section is to give you a quick overview of the most important functions of the BayesianTools (BT) package. For a more detailed description, see the following sections.
 
-### Install, load and cite the package
+## Install, load and cite the package
 
 If you haven't installed the package yet, either run
 
@@ -84,7 +84,7 @@ A more detailed description of the `BayesianSetup` will follow below.
 
 ## Run MCMC and SMC functions
 
-After setup, you may need to run a calibration. The `runMCMC` function serves as the main wrapper for all other implemented `MCMC`/`SMC` functions. It always requires the following arguments:
+After setup, you may want to run a calibration. The `runMCMC` function serves as the main wrapper for all other implemented `MCMC`/`SMC` functions. It always requires the following arguments:
 
 -   `bayesianSetup` (alternatively, the log target function)
 -   `sampler` name
@@ -96,6 +96,32 @@ The BT package provides a large class of different MCMC samplers, and it depends
 iter = 1000
 settings = list(iterations = iter, message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
+```
+
+You can also continue the sampling (multiple times) based on a previous run:
+
+```{r}
+# sampling twice another 1000 iterations with the same settings
+out2 <- runMCMC(bayesianSetup = out)
+out3 <- runMCMC(bayesianSetup = out2)
+
+
+# just a helper function to plot the trace of only the first parameter
+plotTracePar1<-function(output, outputName){
+  codaChain = getSample(output, coda = T, whichParameters = 1)
+  class(codaChain)<-"numeric"
+  plot(codaChain, type = "l", xlab = "Iterations", ylab = "", main = paste0("Trace of par 1 of ", outputName))
+}
+
+# as you can see, the length of the chain increases by 1000 steps every plot
+par(mfrow=c(3,1))
+plotTracePar1(out, "run 1")
+plotTracePar1(out2, "run 2")
+plotTracePar1(out3, "run 3")
+```
+
+```{r, include=FALSE}
+par(mfrow=c(1,1))
 ```
 
 ## Convergence checks for MCMCs
@@ -332,7 +358,7 @@ The prior we choose depends on the prior information we have. For example, if we
 |                                                   | ![](betaDensity.png "Density plot for Beta distribution") | ![](normalDensity.png "Density plot for Normal distribution") | ![](uniformDensity.png "Density plot for Uniform distribution") |
 | createPrior(density, sampler, lower, upper, best) |            createBetaPrior(a, b, lower, upper)            |            createUniformPrior(lower, upper, best)             |       createTruncatedNormalPrior(mean, sd, lower, upper).       |
 
-### Creating user-defined priors
+#### Creating user-defined priors
 
 When creating a user-defined prior, the following information can/should be passed to `createPrior`
 
@@ -341,7 +367,7 @@ When creating a user-defined prior, the following information can/should be pass
 -   lower / upper boundaries (can be set on top of any prior, to create truncation)
 -   Additional info - best values, names of the parameters, ...
 
-### Creating a prior from a previous MCMC sample
+#### Creating a prior from a previous MCMC sample
 
 The following example from the help file illustrates the process
 
@@ -363,58 +389,15 @@ out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 
 # MCMC sampler reference
 
-## The runMCMC() function
-
-The `runMCMC` function is the central function for starting MCMC algorithms in the `BayesianTools` package. It takes a `bayesianSetup`, a choice of `sampler` (default is `DEzs`), and optionally changes to the default settings of the chosen `sampler`.
-
-```{r, message = F}
-ll <- generateTestDensityMultiNormal(sigma = "no correlation")
-bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
-runMCMC(bayesianSetup, sampler = "DEzs", settings = list("message" = F))
-```
-
-You may use an optional argument `nrChains`, which is set to the default value of 1 but can be modified if needed. Increasing its value will lead `runMCMC` to execute multiple runs.
-
-```{r, message = F}
-
-ll <- generateTestDensityMultiNormal(sigma = "no correlation")
-
-bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
-
-settings = list(iterations = 10000, nrChains= 3, message = FALSE)
-out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
-
-plot(out)
-marginalPlot(out, prior = T)
-correlationPlot(out)
-gelmanDiagnostics(out, plot=T)
-
-# option to restart the sampler
-
-settings = list(iterations = 1000, nrChains= 1, message = FALSE)
-out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
-
-out2 <- runMCMC(bayesianSetup = out)
-
-out3 <- runMCMC(bayesianSetup = out2)
-
-#plot(out)
-#plot(out3)
-
-# create new prior from posterior sample 
-
-newPriorFromPosterior <- createPriorDensity(out2)
-
-```
-
 ## The different MCMC samplers
+
+Note: Please recall, that every `sampler` can be accessed through the `runMCMC` function. For a general introduction of how to run a MCMC sampling and how to generate the `BayesianSetup`-object, we refer to [The Bayesian Setup] and [Run MCMC and SMC functions]. Also please note, that every result should be checked for convergence before interpretation (see [Convergence checks for MCMCs]).
 
 For simplicity, we will define a fixed number of iterations.
 
 ```{r}
 iter = 10000
 ```
-
 ### The Metropolis MCMC class
 
 The `BayesianTools` package is able to run a large number of Metropolis-Hastings (MH) based algorithms. All of these `sampler`s can be accessed by the "Metropolis" `sampler` in the `runMCMC` function by specifying the `sampler`'s settings.
