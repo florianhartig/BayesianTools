@@ -86,11 +86,11 @@ A more detailed description of the `BayesianSetup` will follow below.
 
 After setup, you may want to run a calibration. The `runMCMC` function serves as the main wrapper for all other implemented `MCMC`/`SMC` functions. It always requires the following arguments:
 
--   `bayesianSetup` (alternatively, the log target function)
--   `sampler` name
--   list with `settings` for each sampler - if `settings` is not specified, the default value will be applied
+-   bayesianSetup (alternatively, the log target function)
+-   sampler name
+-   list with settings for each sampler - if settings is not specified, the default value will be applied
 
-The BT package provides a large class of different MCMC samplers, and it depends on the particular application which one is most suitable. For example, choosing the `sampler` name "Metropolis" calls a versatile Metropolis-type MCMC with options for covariance adjustment, delayed rejection, tempering and Metropolis-within-Gibbs sampling. For details, see the later reference on MCMC samplers. When in doubt about the choice of MCMC sampler, we recommend using the default "DEzs". This is also the default in the `runMCMC` function.
+The BT package provides a large class of different MCMC samplers, and it depends on the particular application which one is most suitable. For example, choosing `sampler = "Metropolis"` calls a versatile Metropolis-type MCMC with options for covariance adjustment, delayed rejection, tempering and Metropolis-within-Gibbs sampling. For details, see the later reference on MCMC samplers. When in doubt about the choice of MCMC sampler, we recommend using the default "DEzs". This is also the default in the `runMCMC()` function.
 
 ```{r}
 iter = 1000
