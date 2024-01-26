@@ -2,7 +2,7 @@
 % Please edit documentation in R/classPrior.R
 \name{createPrior}
 \alias{createPrior}
-\title{Creates a standardized prior class}
+\title{Creates a user-defined prior class}
 \usage{
 createPrior(
   density = NULL,
@@ -24,16 +24,36 @@ createPrior(
 \item{best}{vector with "best" parameter values}
 }
 \description{
-Creates a standardized prior class
+This function creates a general user-defined prior class. Note that there are specialized function available for specific prior classes, see details.
 }
 \details{
-This is the general prior generator. It is highly recommended to not only implement the density, but also the sampler function. If this is not done, the user will have to provide explicit starting values for many of the MCMC samplers. Note the existing, more specialized prior function. If your prior can be created by those, they are preferred. Note also that priors can be created from an existing MCMC output from BT, or another MCMC sample, via \code{\link{createPriorDensity}}.
+This is the general prior generator. It is highly recommended to not only implement the density, but also the sampler function. If this is not done, the user will have to provide explicit starting values for many of the MCMC samplers.
+
+Note the existing, more specialized prior function. If your prior can be created by those functions, they are preferred. Note also that priors can be created from an existing MCMC output from BT, or another MCMC sample, via \code{\link{createPriorDensity}}.
+
+The prior we choose depends on the prior information we have. For example, if
+we have no prior information, we can choose a uniform prior. The normal
+distribution is often used to model a wide range of phenomena in statistics,
+such as the distribution of heights or weights in a population. Beta
+distribution, on the other hand, is defined on the interval 0, 1.
+It is often used to model random variables that represent proportions,
+probabilities or other values that are constrained to lie within this interval.\tabular{cccc}{
+    \tab  \tab  \tab  \cr
+   \strong{createPrior} \tab \strong{createBetaPrior} \tab \strong{createUniformPrior} \tab \strong{createTruncatedNormalPrior} \cr
+   --------------------------------------------------- \tab --------------------------------------------------------- \tab ------------------------------------------------------------- \tab --------------------------------------------------------------- \cr
+   Any density provided by the user \tab Beta density \tab Uniform density \tab Normal density \cr
+   --------------------------------------------------- \tab --------------------------------------------------------- \tab ------------------------------------------------------------- \tab --------------------------------------------------------------- \cr
+    \tab \figure{betaDensity.png}{Density plot for Beta distribution} \tab \figure{normalDensity.png}{Density plot for Normal distribution} \tab \figure{uniformDensity.png}{Density plot for Uniform distribution} \cr
+   --------------------------------------------------- \tab --------------------------------------------------------- \tab ------------------------------------------------------------- \tab --------------------------------------------------------------- \cr
+   createPrior(density, sampler, lower, upper, best) \tab createBetaPrior(a, b, lower, upper) \tab createUniformPrior(lower, upper, best) \tab createTruncatedNormalPrior(mean, sd, lower, upper). \cr
+   --------------------------------------------------- \tab --------------------------------------------------------- \tab ------------------------------------------------------------- \tab --------------------------------------------------------------- \cr
+}
 }
 \note{
 min and max truncate, but not re-normalize the prior density (so, if a pdf that integrated to one is truncated, the integral will in general be smaller than one). For MCMC sampling, this doesn't make a difference, but if absolute values of the prior density are a concern, one should provide a truncated density function for the prior.
 }
 \examples{
-# the BT package includes a number of convenience functions to specify
+# The BT package includes a number of convenience functions to specify
 # prior distributions, including createUniformPrior, createTruncatedNormalPrior
 # etc. If you want to specify a prior that corresponds to one of these
 # distributions, you should use these functions, e.g.:

@@ -1,4 +1,4 @@
-# the BT package includes a number of convenience functions to specify
+# The BT package includes a number of convenience functions to specify
 # prior distributions, including createUniformPrior, createTruncatedNormalPrior
 # etc. If you want to specify a prior that corresponds to one of these
 # distributions, you should use these functions, e.g.:

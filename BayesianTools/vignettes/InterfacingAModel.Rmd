@@ -47,7 +47,7 @@ Typically, no action is required. Ensure that you are able to call your model.
 runMyModel(par)
 ```
 
-Usually, this function returns model outputs directly, thus step 2 is unnecessary.
+Typically this function will directly return the model outputs, so step 2 can be skipped.
 
 ### Case 2 - compiled dll, parameters are set via dll interface
 
