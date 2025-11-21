@@ -17,7 +17,7 @@ DE(
 
 \item{settings}{list with parameter settings}
 
-\item{startValue}{(optional) eiter a matrix with start population, a number to define the number of chains that are run or a function that samples a starting population.}
+\item{startValue}{(optional) either a matrix with start population, a number to define the number of chains that are run or a function that samples a starting population.}
 
 \item{iterations}{number of function evaluations.}
 
@@ -39,13 +39,13 @@ Differential-Evolution MCMC
 \details{
 For blockUpdate the first element in the list determines the type of blocking.
 Possible choices are
-\itemize{
-\item{"none"}{ (default), no blocking of parameters}
-\item{"correlation"} { blocking based on correlation of parameters. Using h or k (see below)}
-\item{"random"} { random blocking. Using k (see below)}
-\item{"user"} { user defined groups. Using groups (see below)}
+\describe{
+\item{none}{ (default), no blocking of parameters}
+\item{correlation}{ blocking based on correlation of parameters. Using h or k (see below)}
+\item{random}{ random blocking. Using k (see below)}
+\item{user}{ user defined groups. Using groups (see below)}
 }
-Further seven parameters can be specified. "k" determnined the number of groups, "h" the strength
+Further seven parameters can be specified. "k" determined the number of groups, "h" the strength
 of the correlation used to group parameter and "groups" is used for user defined groups.
 "groups" is a vector containing the group number for each parameter. E.g. for three parameters
 with the first two in one group, "groups" would be c(1,1,2).
