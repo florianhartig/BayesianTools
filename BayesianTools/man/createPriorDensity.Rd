@@ -47,7 +47,7 @@ For that reason, it is usually recommended to not update the posterior with this
 }
 }
 \examples{
-# the BT package includes a number of convenience functions to specify
+# The BT package includes a number of convenience functions to specify
 # prior distributions, including createUniformPrior, createTruncatedNormalPrior
 # etc. If you want to specify a prior that corresponds to one of these
 # distributions, you should use these functions, e.g.:
@@ -72,9 +72,10 @@ density = function(par){
   return(d1 + d2)
 }
 
-sampler = function(n=1){
-  d1 = runif(n, -2,6)
-  d2 = rnorm(n, mean= 2, sd = 3)
+# Sampler function needs to create a sample from the prior distribution
+sampler = function(){
+  d1 = runif(1, -2,6)
+  d2 = rnorm(1, mean= 2, sd = 3)
   return(cbind(d1,d2))
 }
 

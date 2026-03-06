@@ -26,7 +26,7 @@ set.seed(123)
 
 The purpose of this first section is to give you a quick overview of the most important functions of the BayesianTools (BT) package. For a more detailed description, see the following sections.
 
-### Install, load and cite the package
+## Install, load and cite the package
 
 If you haven't installed the package yet, either run
 
@@ -34,9 +34,7 @@ If you haven't installed the package yet, either run
 install.packages("BayesianTools")
 ```
 
-or follow the instructions at
-<https://github.com/florianhartig/BayesianTools> to install a
-development version or an older version.
+or follow the instructions on <https://github.com/florianhartig/BayesianTools> to install a development or an older version.
 
 Loading and citation
 
@@ -65,7 +63,7 @@ This session information includes the version number of R and all loaded package
 
 The central object in the `BT` package is the `BayesianSetup`. This class contains the information about the model to be fit (likelihood), and the priors for the model parameters.
 
-The `createBayesianSetup` function generates a `BayesianSetup` object. The function requires a log-likelihood and a log-prior (optional) as arguments. It then automatically creates the posterior and variousn convenience functions for the samplers.
+The `createBayesianSetup` function generates a `BayesianSetup` object. The function requires a log-likelihood and a log-prior (optional) as arguments. It then automatically creates the posterior and various convenience functions for the samplers.
 
 Advantages of the `BayesianSetup` include 
 
@@ -80,22 +78,19 @@ ll <- generateTestDensityMultiNormal(sigma = "no correlation")
 bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
 ```
 
-A more detailed description of the `BayesianSetup` will follow.
+A more detailed description of the `BayesianSetup` will follow below.
 
 **Hint:** For an example of how to run these steps for a dynamic ecological model, see `?VSEM`.
 
 ## Run MCMC and SMC functions
 
-After setup, you may need to run a calibration. The `runMCMC` function
-serves as the main wrapper for all other implemented `MCMC`/`SMC`
-functions. It always requires the following arguments:
+After setup, you may want to run a calibration. The `runMCMC` function serves as the main wrapper for all other implemented `MCMC`/`SMC` functions. It always requires the following arguments:
 
--   `bayesianSetup` (alternatively, the log target function)
--   `sampler` name
--   list with `settings` for each sampler - if `settings` is not
-    specified, the default value will be applied
+-   bayesianSetup (alternatively, the log target function)
+-   sampler name
+-   list with settings for each sampler - if settings is not specified, the default value will be applied
 
-For example, choosing the `sampler` name "Metropolis" calls a versatile Metropolis-type MCMC with options for covariance adjustment, delayed rejection, tempering and Metropolis-within-Gibbs sampling. For details, see the later reference on MCMC samplers. When in doubt about the choice of MCMC sampler, we recommend using the default "DEzs".
+The BT package provides a large class of different MCMC samplers, and it depends on the particular application which one is most suitable. For example, choosing `sampler = "Metropolis"` calls a versatile Metropolis-type MCMC with options for covariance adjustment, delayed rejection, tempering and Metropolis-within-Gibbs sampling. For details, see the later reference on MCMC samplers. When in doubt about the choice of MCMC sampler, we recommend using the default "DEzs". This is also the default in the `runMCMC()` function.
 
 ```{r}
 iter = 1000
@@ -103,11 +98,33 @@ settings = list(iterations = iter, message = FALSE)
 out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
 ```
 
+The returned object is of class `mcmcSampler`, superclass  `bayesianOutput` and contains the BayesianSetup, the sampler and the MCMC chain. We can continue sampling from the posterior via
+
+```{r}
+out2 <- runMCMC(bayesianSetup = out)
+```
+
+In this case, the sampling continues with the same parameters as before, which means that we will sample for another 1000 iterations. However, you can change all parameters in settings at this point. 
+
+If you want to extract the MCMC chain from such an output, you can use the `getSample()` function. The `getSample()` function allows to specify which parameters to extract, start and end points (e.g. to discard burn-in), thinning, and can return the chain either as a matrix or as a coda object. Note that the `getSample()` function is also used by most downstream function and its parameters can thus be provided in `...` in those downstream functions.
+
+As an example how to use getSample, we'll extract the first parameter of both the shorter and the longer MCMC chain and plot them
+
+```{r}
+opar = par(mfrow=c(2,1))
+
+plot(getSample(out, whichParameters = 1), type = "l", ylab = "par1", xlab = "iteration")
+plot(getSample(out2, whichParameters = 1) , type = "l", ylab = "par1", xlab = "iteration")
+
+par(opar)
+```
+
+
 ## Convergence checks for MCMCs
 
 Before interpreting the results, MCMCs should be checked for convergence. We recommend the Gelman-Rubin convergence diagnostics,which are the standard used in most publications. The Gelman-Rubin diagnostics requires running multiple MCMCs (we recommend 3-5).
 
-For all samplers, you can conveniently perform multiple runs using the `nrChains` argument. Alternatively, for runtime reasons, you can combine the results of three independent `runMCMC` runs with `nrChains = 1` using `combineChains`
+For all samplers, you can conveniently perform multiple runs using the `nrChains` argument. Alternatively, for runtime reasons, you can combine the results of three independent `runMCMC()` runs with `nrChains = 1` using `combineChains()`
 
 ```{r, echo = T}
 settings = list(iterations = iter, nrChains = 3, message = FALSE)
@@ -120,7 +137,7 @@ The result is an object of `mcmcSamplerList`, which should allow you to do every
 Basic convergence is checked via so-called trace plots, which show the 3 MCMC chains in different colors.
 
 ```{r}
-plot(out)
+tracePlot(out) # identical to plot(out)
 ```
 
 The trace plot is examined for major problems (chains look different, systematic trends) and to decide on the burn-in, i.e. the point at which the MCMC has reached the sampling range (i.e. the chains no longer systematically go in one direction). Here, they have basically reached this point immediately, so we could set the burn-in to 0, but I choose 100, i.e. discard the first 100 samples in all further plots.
@@ -128,28 +145,28 @@ The trace plot is examined for major problems (chains look different, systematic
 If the trace plots look good, we can look at the Gelman-Rubin convergence diagnostics. Note that you have to discard the burn-in.
 
 ```{r}
-gelmanDiagnostics(out, plot = F, start = 100)
+gelmanDiagnostics(out, plot = T, start = 100)
 ```
 
 Usually, a value \< 1.05 for each parameter and a msrf \< 1.1 of 1.2 are considered sufficient for convergence.
 
-### Summarize the outputs
+## Summarize the outputs
 
-If we are happy with the convergence, we can plot and summarize all `sampler`s from the console with the standard `print` and `summary` commands.
+If we are happy with the convergence, we can plot and summarize all sampler from the console with the standard `print()` and `summary()` functions.
 
 ```{r}
 print(out, start = 100)
 summary(out, start = 100)
 ```
 
-You can also use built-in plot functions from the package for visualization. The `marginalPlot` can be either plotted as histograms with density overlay (default setting) or as a violin plot (see "?marginalPlot").
+You can also use built-in `plot())` functions from the package for visualization. The `marginalPlot()` can be either plotted as histograms with density overlay (default setting) or as a violin plot (see "?marginalPlot").
 
 ```{r}
 correlationPlot(out)
 marginalPlot(out, prior = TRUE)
 ```
 
-Additional functions that may be used on all `sampler`s are model selection scores, including the Deviance Information Criterion (DIC) and the marginal likelihood (see later section for details on calculating the Bayes factor), alongside the Maximum A Posteriori (MAP) value. A set of methods are available for calculation of marginal likelihood (refer to "?marginalLikelihood").
+Additional functions that may be used on all samplers are model selection scores, including the Deviance Information Criterion (DIC) and the marginal likelihood (see later section for details on calculating the Bayes factor), alongside the Maximum A Posteriori (MAP) value. A set of methods are available for calculation of marginal likelihood (refer to `?marginalLikelihood`).
 
 ```{r}
 marginalLikelihood(out)
@@ -163,12 +180,6 @@ To extract part of the sampled parameter values, you can use the following proce
 getSample(out, start = 100, end = NULL, thin = 5, whichParameters = 1:2)
 ```
 
-### Which sampler to choose?
-
-The BT package provides a large class of different MCMC samplers, and it depends on the particular application which one is most suitable.
-
-In the absence of further information, we currently recommend the `DEz`s sampler. This is also the default in the `runMCMC` function.
-
 # BayesianSetup Reference
 
 ## Reference on creating likelihoods
@@ -179,7 +190,7 @@ The likelihood should be provided as a log density function.
 ll = logDensity(x)
 ```
 
-See parallelization options below. We will use a simple 3-d multivariate normal density for the demonstration.
+See options for parallelization below. We will use a simple 3-d multivariate normal density for this demonstration.
 
 ```{r}
 ll <- generateTestDensityMultiNormal(sigma = "no correlation")
@@ -191,24 +202,16 @@ bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper 
 Likelihoods are often costly to compute. If this is the case for you, you should think about parallelization possibilities. The 'createBayesianSetup' function has an input variable 'parallel', with the following options
 
 -   F / FALSE means no parallelization should be used
--   T / TRUE means to use R's automatic parallelization options (note:
-    this will not work if your likelihood is writing to file, or using
-    global variables or functions - see R's general help on
-    parallelization)
--   "external", assumes that the likelihood is already parallelized. In
-    this case, the function needs to take a matrix with parameters as
-    columns, and rows as the different model runs you want to evaluate.
-    This is the most likely option to use if you have a complicated
-    setup (file I/O, HPC cluster) that cannot be handled with the
-    standard R parallelization.
+-   T / TRUE means that automatic parallelization options from R are used (careful: this will not work if your likelihood writes to file, or uses global variables or functions - see general R help on parallelization)
+-   "external", assumed that the likelihood is already parallelized. In this case, the function needs to accept a matrix with parameters as columns, and rows as the different model runs you want to evaluate. This is the most likely option to use if you have a complicated setup (file I/O, HPC cluster) that cannot be treated with the standard R parallelization.
 
-Algorithms in the `BayesianTools` package can take advantage of parallelization if this option is specified in the `BayesianSetup`. Note that parallelization is currently used by the following algorithms: `SMC`, `DEzs` and `DREAMzs` sampler. It can also be used through the `BayesianSetup` with the functions of the sensitivity package.
+Algorithms in the BayesianTools package can make use of parallel computing if this option is specified in the BayesianSetup. Note that currently, parallelization is used by the following algorithms: SMC, DEzs and DREAMzs sampler. It can also be used through the BayesianSetup with the functions of the sensitivity package.
 
 Here are some more details about the parallelization.
 
 #### 1. In-build parallelization:
 
-In-built parallelizing is the easiest way to use parallel computing. The "parallel" argument allows you to select the number of cores to use for parallelization. Alternatively, TRUE or "auto" will use all availablecores except one. Now the proposals are evaluated in parallel. Technically, the built-in parallelization uses an R cluster to evaluate the posterior density function. The input to the parallel function is a matrix where each column represents a parameter and each row represents a proposal. This allows the proposals to be evaluated in parallel. For `sampler`s that evaluate only one proposal at a time (namely the Metropolis-based algorithms and DE/DREAM without the `zs` extension), parallelization cannot be used.
+In-built parallelizing is the easiest way to use parallel computing. The "parallel" argument allows you to select the number of cores to use for parallelization. Alternatively, TRUE or "auto" will use all available cores except one. Now the proposals are evaluated in parallel. Technically, the built-in parallelization uses an R cluster to evaluate the posterior density function. The input to the parallel function is a matrix where each column represents a parameter and each row represents a proposal. This allows the proposals to be evaluated in parallel. For samplers that evaluate only one proposal at a time (namely the Metropolis-based algorithms and DE/DREAM without the 'zs' extension), parallelization cannot be used.
 
 #### 2. External parallelization
 
@@ -232,7 +235,7 @@ runMCMC(BS, sampler = "SMC", ...)
 
 If you want to run your calculations on a cluster there are several ways to do it.
 
-In the first case, you want to parallelize n internal (not total chains) on n cores. The argument "parallel = T" in "createBayesianSetup" only allows parallelization on a maximum of 3 cores for the `SMC`, `DEzs` and `DreamsSamplers`. But by setting "parallel = n" in "createBayesianSetup" to `n` cores, the internal chains of `DEzs` and `DREAMzs` will be parallelized on `n` cores. This only works for `DEzs` and `DREAMzs` samplers.
+In the first case, you want to parallelize n internal (not total chains) on n cores. The argument `parallel = T` in `createBayesianSetup()` only allows parallelization on a maximum of 3 cores for the SMC, DEzs and DreamsSamplers. But by setting `parallel = n` in `createBayesianSetup()` to `n` cores, the internal chains of DEzs and DREAMzs will be parallelized on n cores. This only works for DEzs and DREAMzs samplers.
 
 ```{r, eval = FALSE}
 ## n = Number of cores
@@ -245,7 +248,7 @@ bayesianSetup <- createBayesianSetup(likelihood, parallel = n, lower = -5, upper
 out <- runMCMC(bayesianSetup, settings = list(iterations = 1000))
 ```
 
-In the second case, you want to parallelize n internal chains on `n` cores with an external parallelized likelihood function. Unlike the previous case, `DEzs`, `DREAMzs`, and `SMC` samplers can be parallelized this way.
+In the second case, you want to parallelize n internal chains on n cores with an external parallelized likelihood function. Unlike the previous case, DEzs, DREAMzs, and SMC samplers can be parallelized this way.
 
 ```{r, eval = FALSE}
 ### Create cluster with n cores
@@ -271,8 +274,7 @@ settings = list(iterations = 100, nrChains = 1, startValue = bayesianSetup$prior
 out <- runMCMC(bayesianSetup, settings, sampler = "DEzs")
 ```
 
-In another case, your likelihood requires a parallelized model. Start your cluster and export your model, the required libraries, and `dll`s. Now you can start your calculations with the argument "parallel =
-external" in `createBayesianSetup`.
+In another case, your likelihood requires a parallelized model. Start your cluster and export your model, the required libraries, and dlls. Now you can start your calculations with the argument `parallel = external` in `createBayesianSetup()`.
 
 ```{r, eval = FALSE}
 ### Create cluster with n cores
@@ -332,32 +334,33 @@ The prior in the `BayesianSetup` consists of four parts
 
 This information can be passed by first creating an extra object, via `createPrior`, or via the `createBayesianSetup` function.
 
-#### Creating priors
+### Creating priors
 
 You have 5 options to create a prior
 
 -   Do not set a prior - in this case, an infinite prior will be created
--   Set min/max values - a bounded flat prior and the corresponding
-    sampling function will be created
--   Use one of the predefinded priors, see `?createPrior` for a list.
-    One of the options here is to use a previous MCMC output as the new
-    prior. Predefined priors will usually come with a sampling function
--   Use a user-defined prior, see `?createPrior`
+-   Set min/max values - a bounded flat prior and the corresponding sampling function will be created
+-   Use one of the pre-definded priors, see '?createPrior' for a list. One of the options here is to use a previous MCMC output as new prior. Pre-defined priors will usually come with a sampling function
+-   Use a user-define prior, see '?createPrior'
 -   Create a prior from a previous MCMC sample
+
+The prior we choose depends on the prior information we have. For example, if we have no prior information, we can choose a uniform prior. The normal distribution is often used to model a wide range of phenomena in statistics, such as the distribution of heights or weights in a population. Beta distribution, on the other hand, is defined on the interval 0, 1. It is often used to model random variables that represent proportions, probabilities or other values that are constrained to lie within this interval.
+
+|                                                   |                                                           |                                                               |                                                                 |
+|:----------------:|:----------------:|:----------------:|:----------------:|
+|$\color{darkgreen}{\text{createPrior}}$            |$\color{darkgreen}{\text{createBetaPrior}}$                |$\color{darkgreen}{\text{createUniformPrior}}$                 |$\color{darkgreen}{\text{createTruncatedNormalPrior}}$           |
+|         Any density provided by the user          |                       Beta density                        |                        Uniform density                        |                         Normal density                          |
+|                                                   | ![](betaDensity.png "Density plot for Beta distribution") | ![](normalDensity.png "Density plot for Normal distribution") | ![](uniformDensity.png "Density plot for Uniform distribution") |
+| createPrior(density, sampler, lower, upper, best) |            createBetaPrior(a, b, lower, upper)            |            createUniformPrior(lower, upper, best)             |       createTruncatedNormalPrior(mean, sd, lower, upper).       |
 
 #### Creating user-defined priors
 
 When creating a user-defined prior, the following information can/should be passed to `createPrior`
 
--   A log density function, as a function of a parameter vector x, same
-    syntax as the likelihood.
--   In addition, you should consider providing a function that samples
-    from the prior, as many samplers (SMC, DE, DREAM) can use this
-    function for initial conditions. If you use one of the predefined
-    priors, the sampling function is already implemented.
--   Lower / upper bounds (can be set on top of any prior to create
-    truncation)
--   Additional information - best values, parameter names, ...
+-   A log density function, as a function of a parameter vector x, same syntax as the likelihood
+-   Additionally, you should consider providing a function that samples from the prior, because many samplers (SMC, DE, DREAM) can make use of this function for initial conditions. If you use one of the pre-defined priors, the sampling function is already implemented
+-   lower / upper boundaries (can be set on top of any prior, to create truncation)
+-   Additional info - best values, names of the parameters, ...
 
 #### Creating a prior from a previous MCMC sample
 
@@ -381,62 +384,22 @@ out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
 
 # MCMC sampler reference
 
-## The runMCMC() function
-
-The `runMCMC` function is the central function for starting MCMC algorithms in the `BayesianTools` package. It takes a `bayesianSetup`, a choice of `sampler` (default is `DEzs`), and optionally changes to the default settings of the chosen `sampler`.
-
-```{r, message = F}
-runMCMC(bayesianSetup, sampler = "DEzs", settings = NULL)
-```
-
-You may use an optional argument `nrChains`, which is set to the default value of 1 but can be modified if needed. Increasing its value will lead `runMCMC` to execute multiple runs.
-
-```{r, message = F}
-
-ll <- generateTestDensityMultiNormal(sigma = "no correlation")
-
-bayesianSetup = createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
-
-settings = list(iterations = 10000, nrChains= 3, message = FALSE)
-out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
-
-plot(out)
-marginalPlot(out, prior = T)
-correlationPlot(out)
-gelmanDiagnostics(out, plot=T)
-
-# option to restart the sampler
-
-settings = list(iterations = 1000, nrChains= 1, message = FALSE)
-out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
-
-out2 <- runMCMC(bayesianSetup = out)
-
-out3 <- runMCMC(bayesianSetup = out2)
-
-#plot(out)
-#plot(out3)
-
-# create new prior from posterior sample 
-
-newPriorFromPosterior <- createPriorDensity(out2)
-
-```
-
 ## The different MCMC samplers
+
+Note: Please recall, that every sampler can be accessed through the `runMCMC()` function. For a general introduction of how to run a MCMC sampling and how to generate the `BayesianSetup`-object, we refer to [The Bayesian Setup] and [Run MCMC and SMC functions]. Also please note, that every result should be checked for convergence before interpretation (see [Convergence checks for MCMCs]).
 
 For simplicity, we will define a fixed number of iterations.
 
 ```{r}
 iter = 10000
 ```
-
 ### The Metropolis MCMC class
 
-The `BayesianTools` package is able to run a large number of Metropolis-Hastings (MH) based algorithms. All of these `sampler`s can be accessed by the "Metropolis" `sampler` in the `runMCMC` function by
-specifying the `sampler`'s settings.
+The `BayesianTools` package is able to run a large number of Metropolis-Hastings (MH) based algorithms. All of these samplers can be accessed by specifying `sampler = "Metropolis"` in the `runMCMC()`.
 
-The subsequent code provides an overview of the default settings of the MH `sampler`.
+The subsequent code provides an overview of the default settings of the MH sampler.
+
+The following code gives an overview about the default settings of the MH sampler.
 
 ```{r}
 applySettingsDefault(sampler = "Metropolis")
@@ -471,7 +434,7 @@ plot(out)
 
 #### Adaptive MCMC, prior optimization
 
-The adaptive Metropolis sampler (AM) uses the information already obtained during the sampling process to improve (or adapt) the proposal function. The `BayesianTools` package adjusts the covariance of the proposal distribution by utilizing the chain's history.
+The adaptive Metropolis sampler (AM) uses the information already obtained during the sampling process to improve (or adapt) the proposal function. The `BayesianTools` package adjusts the covariance of the proposal distribution by utilizing the history of the chain.
 
 References: Haario, H., E. Saksman, and J. Tamminen (2001). An adaptive metropolis algorithm. Bernoulli , 223-242.
 
@@ -495,7 +458,7 @@ plot(out)
 
 #### Adaptive MCMC, prior optimization, delayed rejection
 
-The Delayed Rejection Adaptive Metropolis (DRAM) `sampler` is simply a combination of the two previous `sampler`s (DR and AM).
+The Delayed Rejection Adaptive Metropolis (DRAM) sampler is simply a combination of the two previous samplers (DR and AM).
 
 References: Haario, Heikki, et al. "DRAM: efficient adaptive MCMC." Statistics and Computing 16.4 (2006): 339-354.
 
@@ -507,7 +470,7 @@ plot(out)
 
 #### Standard MCMC, prior optimization, Gibbs updating
 
-To reduce the dimensions of the target function, a Metropolis-within-Gibbs `sampler` can be run with the can be run with the `BayesianTools` package. This means that only a subset of the parameter vector is updated in each iteration. In the example below, at most two (of the three) parameters are updated at each step, and it is twice as likely to vary one as to vary two.
+To reduce the dimensions of the target function, a Metropolis-within-Gibbs sampler can be run with the `BayesianTools` package. This means that only a subset of the parameter vector is updated in each iteration. In the example below, at most two (of the three) parameters are updated at each step, and it is twice as likely to vary one as to vary two.
 
 \*\* Note that currently adaptive cannot be mixed with Gibbs updating!
 \*\*
@@ -537,7 +500,7 @@ plot(out)
 
 The BT package implements two differential evolution MCMCs. When in doubt, use the DEzs option.
 
-The first is the normal DE MCMC, according to Ter Braak, Cajo JF. "A Markov Chain Monte Carlo version of the genetic algorithm Differential Evolution: easy Bayesian computing for real parameter spaces". Statistics and Computing 16.3 (2006): 239-249. This sampler runs multiple chains in parallel (but not in the sense of parallel computing). The main difference to the Metropolis based algorithms is the generation of the proposal. In general, all `sampler`s use the current position of the chain and add a step in the parameter space to generate a new proposal. While in the Metropolis based `sampler` this step is usually drawn from a multivariate normal distribution (but any distribution is possible), the `DE` `sampler` uses the current position of two other chains to generate the step for each chain. For successful sampling, at least `2*d` chains, where `d` is the number of parameters, must be run in parallel.
+The first is the normal DE MCMC, according to Ter Braak, Cajo JF. "A Markov Chain Monte Carlo version of the genetic algorithm Differential Evolution: easy Bayesian computing for real parameter spaces". Statistics and Computing 16.3 (2006): 239-249. This sampler runs multiple chains in parallel (but not in the sense of parallel computing). The main difference to the Metropolis based algorithms is the generation of the proposal. In general, all samplers use the current position of the chain and add a step in the parameter space to generate a new proposal. While in the Metropolis based sampler this step is usually drawn from a multivariate normal distribution (but any distribution is possible), the DE sampler uses the current position of two other chains to generate the step for each chain. For successful sampling, at least `2*d` chains, where `d` is the number of parameters, must be run in parallel.
 
 ```{r, results = 'hide', eval = F}
 settings <- list(iterations = iter,  message = FALSE)
@@ -545,7 +508,7 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DE", settings = setting
 plot(out) 
 ```
 
-The second is the Differential Evolution MCMC with Snooker update and sampling from past states, according to ter Braak, Cajo JF, and Jasper A. Vrugt. "Differential Evolution Markov Chain with Snooker Updater and Fewer Chains". Statistics and Computing 18.4 (2008): 435-446. This extension covers two differences from the normal `DE` MCMC. First, it uses a snooker update based on a user-defined probability. Second, past states of other chains are taken into account when generating the proposal. These extensions allow fewer chains (i.e., 3 chains are usually sufficient for up to 200 parameters) and parallel computing, since the current position of each chain depends only on the past states of the other chains.
+The second is the Differential Evolution MCMC with snooker update and sampling from past states, according to ter Braak, Cajo JF, and Jasper A. Vrugt. "Differential Evolution Markov Chain with Snooker Updater and Fewer Chains". Statistics and Computing 18.4 (2008): 435-446. This extension covers two differences from the normal DE MCMC. First, it uses a snooker update based on a user-defined probability. Second, past states of other chains are taken into account when generating the proposal. These extensions allow fewer chains (i.e., 3 chains are usually sufficient for up to 200 parameters) and parallel computing, since the current position of each chain depends only on the past states of the other chains.
 
 ```{r, results = 'hide', eval = F}
 settings <- list(iterations = iter,  message = FALSE)
@@ -553,14 +516,15 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DEzs", settings = setti
 plot(out) 
 ```
 
-## DREAM sampler
+### DREAM sampler
 
-There are two versions of the DREAM `sampler`. First, the standard DREAM sampler, see Vrugt, Jasper A., et al. "Accelerating Markov chain Monte Carlo simulation by differential evolution with self-adaptive randomized subspace sampling". International Journal of Nonlinear Sciences and Numerical Simulation 10.3 (2009): 273-290.
+There are two versions of the DREAM sampler. First, the standard DREAM sampler, see Vrugt, Jasper A., et al. "Accelerating Markov chain Monte Carlo simulation by differential evolution with self-adaptive randomized subspace sampling". International Journal of Nonlinear Sciences and Numerical Simulation 10.3 (2009): 273-290.
 
 This sampler is largely based on the DE sampler with some significant changes:
 
   1) More than two chains can be used to generate a proposal. 
-  2) Randomized subspace sampling can be used to improve efficiency for high-dimensional posteriors. Each dimension is updated with a crossover probability CR. To speed up the exploration of the posterior, DREAM adjusts the distribution of CR values during burn-in to favor large jumps over small ones. 3) Outlier chains can be removed during burn-in.
+  2) Randomized subspace sampling can be used to improve efficiency for high-dimensional posteriors. Each dimension is updated with a crossover probability CR. To speed up the exploration of the posterior, DREAM adjusts the distribution of CR values during burn-in to favor large jumps over small ones. 
+  3) Outlier chains can be removed during burn-in.
 
 ```{r, results = 'hide', eval = F}
 settings <- list(iterations = iter,  message = FALSE)
@@ -578,7 +542,7 @@ out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "DREAMzs", settings = se
 plot(out) 
 ```
 
-## T-walk
+### T-walk
 
 The t-walk is an MCMC algorithm developed by Christen, J. Andrés, and Colin Fox. "A general purpose sampling algorithm for continuous distributions (the t-walk)". Bayesian Analysis 5.2 (2010): 263-281. The sampler uses two independent points to explore the posterior space. Based on probabilities, four different moves are used to generate proposals for the two points. As with the DE sampler, this procedure does not require tuning of the proposal distribution for efficient sampling in complex posterior distributions.
 
@@ -594,7 +558,7 @@ MCMCs sample the posterior space by creating a chain in parameter space. While t
 
 An alternative to MCMCs are particle filters, also known as Sequential Monte-Carlo (SMC) algorithms. See Hartig, F.; Calabrese, J. M.; Reineking, B.; Wiegand, T. & Huth, A. Statistical inference for stochastic simulation models - theory and application Ecol. Lett., 2011, 14, 816-827
 
-### Rejection sampling
+### Rejection samling
 
 The simplest option is to sample a large number of parameters and accept them according to their posterior value. This option can be emulated with the implemented SMC by setting iterations to 1.
 
@@ -622,13 +586,13 @@ There are a number of Bayesian methods for model selection and model comparison.
 
 -   On the Bayes factor, see Kass, R. E. & Raftery, A. E. Bayes Factors J. Am. Stat. Assoc., Amer Statist Assn, 1995, 90, 773-795
 
--   For an overview of DIC and WAIC, see Gelman, A.; Hwang, J. & Vehtari, A. (2014) Understanding predictive information criteria for Bayesian models. Statistics and Computing, 24, 997-1016-. On DIC, see also the original reference     by Spiegelhalter, D. J.; Best, N. G.; Carlin, B. P. & van der Linde, A. (2002) Bayesian measures of model complexity and fit. J. Roy. Stat. Soc. B, 64, 583-639.
+-   For an overview of DIC and WAIC, see Gelman, A.; Hwang, J. & Vehtari, A. (2014) Understanding predictive information criteria for Bayesian models. Statistics and Computing, 24, 997-1016-. On DIC, see also the original reference by Spiegelhalter, D. J.; Best, N. G.; Carlin, B. P. & van der Linde, A. (2002) Bayesian measures of model complexity and fit. J. Roy. Stat. Soc. B, 64, 583-639.
 
 The Bayes factor relies on the estimation of marginal likelihoods, which is numerically challenging. The BT package currently implements three methods
 
--   The recommended method is the "Chib" method (Chib and Jeliazkov, 2001), which is based on MCMC samples but performs additional calculation. Although this is the current recommendation, note that there are some numerical issues     with this algorithm that may limit its reliability for larger dimensions.
+-   The recommended method is the "Chib" method (Chib and Jeliazkov, 2001), which is based on MCMC samples but performs additional calculation. Although this is the current recommendation, note that there are some numerical issues with this algorithm that may limit its reliability for larger dimensions.
 
--   The harmonic mean approximation is implemented for comparison purposes only. Note that this method is numerically unreliable and should not normally be used.
+-   The harmonic mean approximation, is implemented only for comparison. Note that the method is numerically unrealiable and usually should not be used.
 
 -   The third method is simply sampling from the prior. While in principle unbiased, it converges only for a large number of samples and is therefore numerically inefficient.
 
@@ -699,9 +663,7 @@ Assuming equal prior weights for all models, we can calculate the posterior weig
 exp(M1$ln.ML) / ( exp(M1$ln.ML) + exp(M2$ln.ML))
 ```
 
-If the models have different model priors, then multiply by the prior probability of each of the models.
-
-### Comparing Models by DIC
+If models have different model priors, multiply with the prior probabilities of each model.
 
 The Deviance Information Criterion is a commonly used method to summarize the fit of an MCMC chain. It can be calculated using
 

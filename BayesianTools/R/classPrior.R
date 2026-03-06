@@ -1,11 +1,33 @@
-#' Creates a standardized prior class
+#' Creates a user-defined prior class
+#' @description This function creates a general user-defined prior class. Note that there are specialized function available for specific prior classes, see details. 
 #' @author Florian Hartig
 #' @param density Prior density
 #' @param sampler Sampling function for density (optional)
 #' @param lower vector with lower bounds of parameters
 #' @param upper vector with upper bounds of parameter
 #' @param best vector with "best" parameter values
-#' @details This is the general prior generator. It is highly recommended to not only implement the density, but also the sampler function. If this is not done, the user will have to provide explicit starting values for many of the MCMC samplers. Note the existing, more specialized prior function. If your prior can be created by those, they are preferred. Note also that priors can be created from an existing MCMC output from BT, or another MCMC sample, via \code{\link{createPriorDensity}}. 
+#' @details This is the general prior generator. It is highly recommended to not only implement the density, but also the sampler function. If this is not done, the user will have to provide explicit starting values for many of the MCMC samplers. 
+#' 
+#' Note the existing, more specialized prior function. If your prior can be created by those functions, they are preferred. Note also that priors can be created from an existing MCMC output from BT, or another MCMC sample, via \code{\link{createPriorDensity}}. 
+#' 
+#' The prior we choose depends on the prior information we have. For example, if 
+#' we have no prior information, we can choose a uniform prior. The normal 
+#' distribution is often used to model a wide range of phenomena in statistics, 
+#' such as the distribution of heights or weights in a population. Beta 
+#' distribution, on the other hand, is defined on the interval 0, 1. 
+#' It is often used to model random variables that represent proportions, 
+#' probabilities or other values that are constrained to lie within this interval.
+#' |                                                   |                                                         |                                                             |                                                               |
+#' |:-------------------------------------------------:|:-------------------------------------------------------:|:-----------------------------------------------------------:|:-------------------------------------------------------------:|
+#' | \strong{createPrior}                              | \strong{createBetaPrior}                                | \strong{createUniformPrior}                                 | \strong{createTruncatedNormalPrior}                           |
+#' |---------------------------------------------------|---------------------------------------------------------|-------------------------------------------------------------|---------------------------------------------------------------|
+#' | Any density provided by the user                  | Beta density                                            | Uniform density                                             | Normal density                                                |
+#' |---------------------------------------------------|---------------------------------------------------------|-------------------------------------------------------------|---------------------------------------------------------------|
+#' |                                                   |![](betaDensity.png "Density plot for Beta distribution")|![](normalDensity.png "Density plot for Normal distribution")|![](uniformDensity.png "Density plot for Uniform distribution")|
+#' |---------------------------------------------------|---------------------------------------------------------|-------------------------------------------------------------|---------------------------------------------------------------|
+#' | createPrior(density, sampler, lower, upper, best) | createBetaPrior(a, b, lower, upper)                     | createUniformPrior(lower, upper, best)                      | createTruncatedNormalPrior(mean, sd, lower, upper).           |
+#' |---------------------------------------------------|---------------------------------------------------------|-------------------------------------------------------------|---------------------------------------------------------------|
+
 #' @note min and max truncate, but not re-normalize the prior density (so, if a pdf that integrated to one is truncated, the integral will in general be smaller than one). For MCMC sampling, this doesn't make a difference, but if absolute values of the prior density are a concern, one should provide a truncated density function for the prior. 
 #' @export
 #' @seealso \code{\link{createPriorDensity}} \cr
