@@ -8,6 +8,7 @@
 #' @param sampler sampler
 #' @seealso \code{\link{likelihoodIidNormal}} \cr
 #'          \code{\link{likelihoodAR1}} \cr
+#' @example /inst/examples/createLikelihoodHelp.R        
 #' @export
 createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplicates=T, 
                              sampler = NULL, parallelOptions = NULL){
