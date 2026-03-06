@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotSensitivityOAT.R
 \name{plotSensitivity}
 \alias{plotSensitivity}
-\title{Performs a one-factor-at-a-time sensitivity analysis for the posterior of a given bayesianSetup within the prior range.}
+\title{One-factor-at-a-time sensitivity plot}
 \usage{
 plotSensitivity(bayesianSetup, selection = NULL, equalScale = TRUE)
 }
@@ -17,10 +17,14 @@ plotSensitivity(bayesianSetup, selection = NULL, equalScale = TRUE)
 Performs a one-factor-at-a-time sensitivity analysis for the posterior of a given bayesianSetup within the prior range.
 }
 \details{
-When the scale of the parameter do not match then the plot looks like this :
+The function performs a one-factor-at-a-time sensitivity analysis on a BayesianSetup object.
+
+Per default, the scale of the y axis is the same for all plots. Often, this creates problems, as one parameter is far more sensitive than another. In this case, we will see a plot like the following:
+
 \figure{plotSensitivity-ScaleDontMatch.png}{Sensitivity Plot}
 
-In that case, we should put 'equalScale = F'. Then the plot looks like this:
+This issue can be resolved by setting 'equalScale = F'. In this case, the y axis will have different scales, resulting in the following plot:
+
 \figure{plotSensitivity-ScaleFalse.png}{Sensitivity Plot}
 }
 \note{

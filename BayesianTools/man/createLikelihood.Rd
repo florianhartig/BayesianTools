@@ -30,68 +30,46 @@ createLikelihood(
 Creates a standardized likelihood class#'
 }
 \examples{
+# data comes from normal distribution 
 
+data = rnorm(100, mean = 1.2, sd = 0.7)
 
-data = rnorm(20)
-
-# create standardized likelihood density for Gaussian likelihood function
-# fitting parameters mean and standard deviation
+# define a density function with unknown mean and sd
+# needs to return LOG! likelihood
 
 likelihood <- function(x) {
-  predicted <- rep(x[1], length(data))
-  LL = likelihoodIidNormal(predicted, data, x[2])
+  LL = sum(dnorm(data, mean = x[1], sd = x[2], log = T))
   return(LL)
 }
 
 likelihood(x = c(1,1))
 
-# The next step is optional, you can provide the likelihood density directly
-# to BayesianSetup and createLikelihood will be called automatically.
-# The purpose of the createLikelihood function is to parallelize the 
-# density function and to add some convenience functions, 
-# for example to catch exceptions that are raised by the call to likelihood
+# To be used in BayesianTools, a standardized likelihood class should be 
+# created via createLikelihood. 
+
 likelihoodClass <- createLikelihood(likelihood)
 
+# This class parallelizes the simple density function and to add
+# some convenience functions, for example 
+# to catch exceptions that are raised by the call to likelihood
+# for example, we can now provide a matrix which will result in
+# several likelihood values
+
+likelihoodClass$density(matrix(c(1,2,1,1), nrow = 2))
+
+# createLikelihood is automatically called when you provide the likelihood
+# to a BayesianSetup, so it is usually sufficient to just provide 
+# the likelihood to createBayesianSetup
+
 bayesianSetup <- createBayesianSetup(likelihood = likelihoodClass, 
-                                     lower = c(-10,0.001), 
-                                     upper = c(10, 5))
+                                     lower = c(-2,0.001), 
+                                     upper = c(5, 5))
 
-settings = list(iterations = 1000)
+settings = list(iterations = 500)
 out <- runMCMC(bayesianSetup, sampler = "DEzs", settings)
-summary(out)
+summary(out, start = 50)
+plot(out) 
 
-
-
-# simulate temporally autocorrelated data
-AR1sim<-function(n, a){
-  x = rep(NA, n)
-  x[1] = 0
-  for(i in 2:n){
-    x[i] = a * x[i-1] + (1-a) * rnorm(1)
-  }
-  return(x)
-}
-
-set.seed(123)
-data = AR1sim(1000, 0.5)
-plot(data, type = "l") 
-
-
-# create likelihood function for AR1 likelihood function
-likelihood <- function(x) {
-  predicted <- rep(x[1], length(data))
-  LL = likelihoodAR1(predicted, data, x[2], x[3])
-  return(LL)
-}
-
-bayesianSetup <- createBayesianSetup(likelihood = likelihood, 
-                                     lower = c(-10,0.001, 0), 
-                                     upper = c(10, 5, 0.99))
-
-settings = list(iterations = 1000)
-out <- runMCMC(bayesianSetup, sampler = "DEzs", settings)
-summary(out, start = 200)
-plot(out, start = 200)
 
 }
 \seealso{
