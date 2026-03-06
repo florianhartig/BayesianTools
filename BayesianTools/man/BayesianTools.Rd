@@ -29,3 +29,28 @@ To report bugs or ask for help, post a \href{https://stackoverflow.com/questions
 
 Acknowledgements: The creation and maintenance of this package profited from funding and collaboration through Cost Action FP 1304 PROFOUND, DFG	DO 786/12-1 CONECT, EU FP7 ERA-NET Sumforest REFORCE and Bayklif Project BLIZ.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/florianhartig/BayesianTools}
+  \item Report bugs at \url{https://github.com/florianhartig/BayesianTools/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Florian Hartig \email{florian.hartig@biologie.uni-regensburg.de} (\href{https://orcid.org/0000-0002-6255-9059}{ORCID})
+
+Authors:
+\itemize{
+  \item Francesco Minunno
+  \item Stefan  Paul
+}
+
+Other contributors:
+\itemize{
+  \item David Cameron [contributor]
+  \item Tankred Ott [contributor]
+  \item Maximilian Pichler [contributor]
+}
+
+}
