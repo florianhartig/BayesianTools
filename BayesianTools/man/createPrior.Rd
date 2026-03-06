@@ -78,9 +78,10 @@ density = function(par){
   return(d1 + d2)
 }
 
-sampler = function(n=1){
-  d1 = runif(n, -2,6)
-  d2 = rnorm(n, mean= 2, sd = 3)
+# Sampler function needs to create a sample from the prior distribution
+sampler = function(){
+  d1 = runif(1, -2,6)
+  d2 = rnorm(1, mean= 2, sd = 3)
   return(cbind(d1,d2))
 }
 
