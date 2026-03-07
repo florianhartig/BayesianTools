@@ -82,6 +82,9 @@ exp(M1$ln.ML - M2$ln.ML)
 
 
 # likelihoods with half the data 
+# note: half of the data is ensured here by summing only seq(1, 30, 2) of the
+# observations in the likelihood
+
 likelihood1 <- function(param){
   pred = param[1] + param[2]*x + param[3] * x^2
   singlelikelihoods = dnorm(y, mean = pred, sd = 1/(param[4]^2), log = TRUE)
