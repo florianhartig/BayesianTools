@@ -52,6 +52,7 @@ summary.smcSampler<- function(object, ...){
   summary(getSample(sampler, ...))
 }
 
+
 #' @method plot smcSampler
 #' @export
 plot.smcSampler<- function(x, ...){
