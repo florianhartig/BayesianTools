@@ -34,7 +34,7 @@ If you haven't installed the package yet, either run
 install.packages("BayesianTools")
 ```
 
-or follow the instructions on <https://github.com/florianhartig/BayesianTools> to install a development or an older version.
+Or follow the instructions on <https://github.com/florianhartig/BayesianTools> to install a development or an older version.
 
 Loading and citation
 
@@ -90,7 +90,9 @@ After setup, you may want to run a calibration. The `runMCMC` function serves as
 -   sampler name
 -   list with settings for each sampler - if settings is not specified, the default value will be applied
 
-The BT package provides a large class of different MCMC samplers, and it depends on the particular application which one is most suitable. For example, choosing `sampler = "Metropolis"` calls a versatile Metropolis-type MCMC with options for covariance adjustment, delayed rejection, tempering and Metropolis-within-Gibbs sampling. For details, see the later reference on MCMC samplers. When in doubt about the choice of MCMC sampler, we recommend using the default "DEzs". This is also the default in the `runMCMC()` function.
+
+**Which sampler to choose?** The BT package provides a large class of different MCMC samplers, and it depends on the particular application which one is most suitable. For example, choosing `sampler = "Metropolis"` calls a versatile Metropolis-type MCMC with options for covariance adjustment, delayed rejection, tempering and Metropolis-within-Gibbs sampling. When in doubt about the choice of MCMC sampler, we recommend using the default "DEzs". This is also the default in the `runMCMC()` function. For more deatils, see the chapter on MCMC samplers below
+
 
 ```{r}
 iter = 1000
@@ -152,14 +154,14 @@ Usually, a value \< 1.05 for each parameter and a msrf \< 1.1 of 1.2 are conside
 
 ## Summarize the outputs
 
-If we are happy with the convergence, we can plot and summarize all sampler from the console with the standard `print()` and `summary()` functions.
+If we are happy with the convergence, we can plot and summarize the generated samples from the console with the standard `print()` and `summary()` functions.
 
 ```{r}
 print(out, start = 100)
 summary(out, start = 100)
 ```
 
-You can also use built-in `plot())` functions from the package for visualization. The `marginalPlot()` can be either plotted as histograms with density overlay (default setting) or as a violin plot (see "?marginalPlot").
+You can also use built-in `plot()` functions from the package for visualization. The `marginalPlot()` can be either plotted as histograms with density overlay (default setting) or as a violin plot (see "?marginalPlot").
 
 ```{r}
 correlationPlot(out)
@@ -179,6 +181,7 @@ To extract part of the sampled parameter values, you can use the following proce
 ```{r, eval = F}
 getSample(out, start = 100, end = NULL, thin = 5, whichParameters = 1:2)
 ```
+
 
 # BayesianSetup Reference
 
@@ -338,20 +341,25 @@ This information can be passed by first creating an extra object, via `createPri
 
 You have 5 options to create a prior
 
--   Do not set a prior - in this case, an infinite prior will be created
--   Set min/max values - a bounded flat prior and the corresponding sampling function will be created
--   Use one of the pre-definded priors, see '?createPrior' for a list. One of the options here is to use a previous MCMC output as new prior. Pre-defined priors will usually come with a sampling function
--   Use a user-define prior, see '?createPrior'
--   Create a prior from a previous MCMC sample
+#### No prior set
 
-The prior we choose depends on the prior information we have. For example, if we have no prior information, we can choose a uniform prior. The normal distribution is often used to model a wide range of phenomena in statistics, such as the distribution of heights or weights in a population. Beta distribution, on the other hand, is defined on the interval 0, 1. It is often used to model random variables that represent proportions, probabilities or other values that are constrained to lie within this interval.
+In this case, an infinitely wide uniform prior will be created
 
-|                                                   |                                                           |                                                               |                                                                 |
-|:----------------:|:----------------:|:----------------:|:----------------:|
-|$\color{darkgreen}{\text{createPrior}}$            |$\color{darkgreen}{\text{createBetaPrior}}$                |$\color{darkgreen}{\text{createUniformPrior}}$                 |$\color{darkgreen}{\text{createTruncatedNormalPrior}}$           |
-|         Any density provided by the user          |                       Beta density                        |                        Uniform density                        |                         Normal density                          |
-|                                                   | ![](betaDensity.png "Density plot for Beta distribution") | ![](normalDensity.png "Density plot for Normal distribution") | ![](uniformDensity.png "Density plot for Uniform distribution") |
-| createPrior(density, sampler, lower, upper, best) |            createBetaPrior(a, b, lower, upper)            |            createUniformPrior(lower, upper, best)             |       createTruncatedNormalPrior(mean, sd, lower, upper).       |
+#### Set min/max values
+
+A bounded flat prior and the corresponding sampling function will be created
+
+#### Pre-defined priors
+
+BT contains three default prior functions 
+
+```{r, eval = F}
+createBetaPrior(a, b, lower, upper)
+createUniformPrior(lower, upper, best)
+createTruncatedNormalPrior(mean, sd, lower, upper)
+```
+
+That cover many cases. Note that the beta is scaled to [0,1], but can easily be used for other parameter ranges by simple re-scaling. 
 
 #### Creating user-defined priors
 
@@ -405,8 +413,7 @@ The following code gives an overview about the default settings of the MH sample
 applySettingsDefault(sampler = "Metropolis")
 ```
 
-Here are some examples of how to apply different settings. Activate
-individual options or combinations as demonstrated.
+Here are some examples of how to apply different settings. Activate individual options or combinations as demonstrated.
 
 ### Standard MH MCMC
 
@@ -559,6 +566,18 @@ MCMCs sample the posterior space by creating a chain in parameter space. While t
 An alternative to MCMCs are particle filters, also known as Sequential Monte-Carlo (SMC) algorithms. See Hartig, F.; Calabrese, J. M.; Reineking, B.; Wiegand, T. & Huth, A. Statistical inference for stochastic simulation models - theory and application Ecol. Lett., 2011, 14, 816-827
 
 ### Rejection samling
+
+#chain = getSample(out, coda = T)
+gelmanDiagnostics(out, plot = F)
+```
+
+## Non-MCMC sampling algorithms
+
+MCMCs sample the posterior space by creating a chain in parameter space. While this allows "learning" from past steps, it does not permit the parallel execution of a large number of posterior values at the same time.
+
+An alternative to MCMCs are particle filters, aka Sequential Monte-Carlo (SMC) algorithms. See Hartig, F.; Calabrese, J. M.; Reineking, B.; Wiegand, T. & Huth, A. Statistical inference for stochastic simulation models - theory and application Ecol. Lett., 2011, 14, 816-827
+
+### Rejection sampling
 
 The simplest option is to sample a large number of parameters and accept them according to their posterior value. This option can be emulated with the implemented SMC by setting iterations to 1.
 

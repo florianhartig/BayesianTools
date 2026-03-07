@@ -1,7 +1,7 @@
 #' Convenience function to create an object of class mcmcSamplerList from a list of mcmc samplers
 #' @author Florian Hartig
-#' @param mcmcList a list with each object being an mcmcSampler
-#' @return Object of class "mcmcSamplerList"
+#' @param mcmcList list of objects, each of which is an mcmcSampler
+#' @return object of class "mcmcSamplerList"
 #' @export
 createMcmcSamplerList <- function(mcmcList){
   # mcmcList <- list(mcmcList) -> This line didn't make any sense at all. Better would be to allow the user to simply provide several inputs without a list, but I guess the list option should be maintained, as this is convenient when scripting.
@@ -11,6 +11,7 @@ createMcmcSamplerList <- function(mcmcList){
   class(mcmcList) = c("mcmcSamplerList", "bayesianOutput")
   return(mcmcList)
 }
+
 
 #' @author Stefan Paul
 #' @method summary mcmcSamplerList

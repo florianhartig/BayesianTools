@@ -31,28 +31,17 @@ This issue can be resolved by setting 'equalScale = F'. In this case, the y axis
 This function can also be used for sensitivity analysis of an arbitrary output - just create a BayesianSetup with this output.
 }
 \examples{
-data = rnorm(20)
 
-# create standardized likelihood density for Gaussian likelihood function
-# fitting parameters mean and standard deviation
-likelihood <- function(x) {
-  predicted <- rep(x[1], length(data))
-  LL = likelihoodIidNormal(predicted, data, x[2])
-  return(LL)
-}
+ll <- testDensityBanana
+bayesianSetup <- createBayesianSetup(likelihood = ll, lower = rep(-10, 2), upper = rep(10, 2))
 
-setup = createBayesianSetup(likelihood, lower = c(-10, 0.01), upper = c(10,5))
+plotSensitivity(bayesianSetup)
 
-# showing posterior response surface for parameter 1
-# note that this is plotted at 
-setup$prior$best
-plotSensitivity(setup, selection = 2)
+# can select parameters
+plotSensitivity(bayesianSetup, selection = c(2,1))
 
-plotSensitivity(setup)
-# when parameters are not on the same scale, we can use
-plotSensitivity(setup, equalScale = FALSE)
-
-
+# scale each parameter independently
+plotSensitivity(bayesianSetup, equalScale = FALSE)
 }
 \author{
 Florian Hartig

@@ -7,7 +7,7 @@
 updateGroups(chain, blockSettings)
 }
 \arguments{
-\item{chain}{MCMC chain including only the parameters (not logP,ll, logP)}
+\item{chain}{MCMC chain including only the parameters (not logP, ll, logP)}
 
 \item{blockSettings}{a list with settings}
 }

@@ -3,7 +3,7 @@
 #' @param x a list of MCMC chains
 #' @param merge logical value (T or F) to determine if chains should be merged 
 #' @return combined chains
-#' @note to combine several chains to a single McmcSamplerList, see \code{\link{createMcmcSamplerList}}
+#' @note to combine several chains to a single McmcSamplerList, see [createMcmcSamplerList]
 #' @keywords internal
 combineChains <- function(x, merge = T){
   
@@ -38,6 +38,7 @@ combineChains <- function(x, merge = T){
 }
 
 
+
 #' Helper function to change an object to a coda mcmc class,
 #'
 #' @param chain mcmc Chain
@@ -47,6 +48,7 @@ combineChains <- function(x, merge = T){
 #' @return an object of class coda::mcmc
 #' @details   Very similar to coda::mcmc but with less overhead
 #' @keywords internal
+
 makeObjectClassCodaMCMC <- function (chain, start = 1, end = numeric(0), thin = 1){
   attr(chain, "mcpar") <- c(start, end, thin)
   attr(chain, "class") <- "mcmc"
@@ -102,6 +104,5 @@ convertCoda <- function(sampler, names = NULL, info = NULL, likelihood = NULL){
   }else stop("sampler must be of class 'coda::mcmc' or 'coda::mcmc.list'")
   }
   return(out)
-  
 }
 

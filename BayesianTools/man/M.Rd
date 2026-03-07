@@ -16,11 +16,11 @@ M(
 )
 }
 \arguments{
-\item{startValue}{vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.}
+\item{startValue}{vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case, startValues are sampled from the prior.}
 
-\item{iterations}{iterations to run}
+\item{iterations}{number of iterations to run}
 
-\item{nBI}{number of burnin}
+\item{nBI}{number of burn-in}
 
 \item{parmin}{minimum values for the parameter vector or NULL if FUN is of class BayesianSetup}
 
@@ -28,9 +28,9 @@ M(
 
 \item{f}{scaling factor}
 
-\item{FUN}{function to be sampled from or object of class bayesianSetup}
+\item{FUN}{function to be sampled from or object of class BayesianSetup}
 
-\item{consoleUpdates}{interger, determines the frequency with which sampler progress is printed to the console}
+\item{consoleUpdates}{integer, determines the frequency with which sampler progress is printed to the console}
 }
 \description{
 The Metropolis Algorithm (Metropolis et al. 1953)

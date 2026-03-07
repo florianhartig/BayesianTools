@@ -1,6 +1,6 @@
 #' Determine the groups of correlated parameters
 #' @author Stefan Paul
-#' @param chain MCMC chain including only the parameters (not logP,ll, logP)
+#' @param chain MCMC chain including only the parameters (not logP, ll, logP)
 #' @param blockSettings a list with settings
 #' @return groups
 #' @keywords internal
@@ -87,5 +87,4 @@ getBlockSettings <- function(blockUpdate){
   return(list(blockUpdateType = blockUpdateType, h = h, k = k, pSel = pSel,
               pGroup = pGroup, groups = groups))
   }
-
 

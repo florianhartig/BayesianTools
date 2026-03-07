@@ -1,19 +1,19 @@
 #' T-walk MCMC
 #' @author Stefan Paul
-#' @param bayesianSetup Object of class 'bayesianSetup' or 'bayesianOuput'.
+#' @param bayesianSetup object of class 'BayesianSetup' or 'BayesianOuput'.
 #' @param settings  list with parameter values. 
-#' @param iterations Number of model evaluations
+#' @param iterations number of model evaluations
 #' @param at "traverse" move proposal parameter. Default to 6
 #' @param aw "walk" move proposal parameter. Default to 1.5
-#' @param pn1 Probability determining the number of parameters that are changed
-#' @param Ptrav Move probability of "traverse" moves, default to 0.4918
-#' @param Pwalk Move probability of "walk" moves, default to 0.4918
-#' @param Pblow Move probability of "traverse" moves, default to 0.0082
+#' @param pn1 probability determining the number of parameters that are changed
+#' @param Ptrav move probability of "traverse" moves, default to 0.4918
+#' @param Pwalk move probability of "walk" moves, default to 0.4918
+#' @param Pblow move probability of "traverse" moves, default to 0.0082
 #' @param burnin number of iterations treated as burn-in. These iterations are not recorded in the chain.
 #' @param thin thinning parameter. Determines the interval in which values are recorded.
-#' @param startValue Matrix with start values
-#' @param consoleUpdates Intervall in which the sampling progress is printed to the console
-#' @param message logical determines whether the sampler's progress should be printed
+#' @param startValue matrix with start values
+#' @param consoleUpdates intervall in which the sampling progress is printed to the console
+#' @param message logical, determines whether the sampler's progress should be printed
 #' @details  
 ##' The probability of "hop" moves is 1 minus the sum of all other probabilities.
 #' @return Object of class bayesianOutput.
