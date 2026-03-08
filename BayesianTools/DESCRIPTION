@@ -32,7 +32,6 @@ Imports:
     bridgesampling
 Suggests:
     DEoptim,
-    lhs,
     sensitivity,
     knitr,
     rmarkdown,

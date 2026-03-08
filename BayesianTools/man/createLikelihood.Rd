@@ -38,7 +38,7 @@ data = rnorm(100, mean = 1.2, sd = 0.7)
 # needs to return LOG! likelihood
 
 likelihood <- function(x) {
-  LL = sum(dnorm(data, mean = x[1], sd = x[2], log = T))
+  LL = sum(dnorm(data, mean = x[1], sd = x[2], log = TRUE))
   return(LL)
 }
 
