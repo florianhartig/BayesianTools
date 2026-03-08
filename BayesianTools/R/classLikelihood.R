@@ -9,6 +9,7 @@
 #' @param sampler sampler
 #' @seealso \code{\link{likelihoodIidNormal}} \cr
 #'          \code{\link{likelihoodAR1}} \cr
+#' @example /inst/examples/createLikelihoodHelp.R
 #' @export
 createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplicates=T, 
                              sampler = NULL, parallelOptions = NULL){
@@ -137,9 +138,9 @@ likelihoodAR1 <- function(predicted, observed, sd, a){
   n = length(observed)
   
   res = predicted - observed
-  
-  # this calculates the unconditiona LL for this data, see e.g. http://stat.unicas.it/downloadStatUnicas/seminari/2008/Julliard0708_1.pdf
-  
+
+  # this calculates the unconditional LL for this data, see e.g. http://stat.unicas.it/downloadStatUnicas/seminari/2008/Julliard0708_1.pdf
+
   ll =  0.5 * (  - n * log(2*pi)
                  - n * log(sd^2) 
                  + log( 1- a^2 )

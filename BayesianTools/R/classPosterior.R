@@ -1,4 +1,3 @@
-
 #' Creates a standardized posterior class
 #' @author Florian Hartig
 #' @param prior prior class
@@ -53,6 +52,5 @@ createPosterior <- function(prior, likelihood){
 # 
 # x$density(c(0.2,0.2))
 # prior$density(c(2,2))
-# 
 # 
 # x = c(0.2,0.2)

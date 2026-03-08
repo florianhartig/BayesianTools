@@ -7,9 +7,9 @@
 generateCRvalues(pCR, settings, Npop)
 }
 \arguments{
-\item{pCR}{Vector of crossover probabilities. Needs to be of length nCR.}
+\item{pCR}{vector of crossover probabilities. Needs to be of length nCR.}
 
-\item{settings}{settings list}
+\item{settings}{list of settings}
 
 \item{Npop}{number of chains}
 }

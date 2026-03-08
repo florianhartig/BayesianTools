@@ -7,9 +7,9 @@
 getVolume(sampler, prior = F, method = "MVN", ...)
 }
 \arguments{
-\item{sampler}{an object of superclass bayesianOutput or any other class that has the getSample function implemented (e.g. Matrix)}
+\item{sampler}{an object of superclass bayesianOutput or any other class that has implemented the getSample function (e.g. Matrix)}
 
-\item{prior}{schould also prior volume be calculated}
+\item{prior}{logical, should prior volume be calculated?}
 
 \item{method}{method for volume estimation. Currently, the only option is "MVN"}
 
@@ -19,7 +19,7 @@ getVolume(sampler, prior = F, method = "MVN", ...)
 Calculate posterior volume
 }
 \details{
-The idea of this function is to provide an estimate of the "posterior volume", i.e. how "broad" the posterior is. One potential application is to the overall reduction of parametric uncertainty between different data types, or between prior and posterior.
+The idea of this function is to provide an estimate of the "posterior volume", i.e. how "broad" the posterior is. One potential application is the overall reduction of parametric uncertainty between different data types, or between prior and posterior.
 
 Implemented methods for volume estimation:
 
