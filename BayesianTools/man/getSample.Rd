@@ -199,7 +199,7 @@ getSample(
 
 \item{thin}{thinning parameter. Either an integer determining the thinning interval (default is 1) or "auto" for automatic thinning.}
 
-\item{numSamples}{sample size (only used if thin = 1). If you want to use numSamples, set thin to 1.}
+\item{numSamples}{sample size (only used if thin = 1). If you want to use numSamples set thin to 1.}
 
 \item{whichParameters}{possibility to select parameters by index}
 
@@ -214,9 +214,9 @@ a matrix or a coda object, depending on option
 This function extracts samples from a BT MCMC or SMC sampler after they have been run. It can also work on objects, for example coda::mcmc, matrix, It can return either a matrix or a coda mcmc object.
 }
 \details{
-If thin is greater than the total number of samples in the sampler object, the first and the last element (of each chain if a sampler with multiples chains is used) are sampled. If numSamples is greater than the total number of samples all samples are selected. A warning will be displayed in both cases.
+If thin is greater than the total number of samples in the sampler object the first and the last element (of each chain if a sampler with multiples chains is used) are sampled. If numSamples is greater than the total number of samples all samples are selected. In both cases a warning is displayed.
 
-If both thin and numSamples are provided, the function will use thin only if it is valid and greater than 1; otherwise, numSamples will be used.
+If thin and numSamples is passed, the function will use the thin argument if it is valid and greater than 1, else numSamples will be used.
 }
 \examples{
 ll = function(x) sum(dnorm(x, log = TRUE))
