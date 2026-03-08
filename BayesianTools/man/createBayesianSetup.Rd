@@ -21,13 +21,13 @@ createBayesianSetup(
 )
 }
 \arguments{
-\item{likelihood}{log likelihood density function}
+\item{likelihood}{either an object of class likelihood created by \code{\link{createLikelihood}} or a specialized likelihood function, or a log likelihood density function. If you provide a function, parallel, paralleOptions and catchDuplicates will be internally used to create the likelihood object}
 
-\item{prior}{either a prior class (see \code{\link{createPrior}}) or a log prior density function}
+\item{prior}{either an object of a prior created by \code{\link{createPrior}} or a log prior density function}
 
 \item{priorSampler}{if a prior density (and not a prior class) is provided to prior, the optional prior sampling function can be provided here}
 
-\item{parallel}{parallelization option. Default is F. Other options are T, or "external". See details.}
+\item{parallel}{parallelization option. Default is F. Other options include T, or "external". See details.}
 
 \item{lower}{vector with lower prior limits}
 
@@ -37,9 +37,14 @@ createBayesianSetup(
 
 \item{names}{optional vector with parameter names}
 
-\item{parallelOptions}{list containing three lists. First "packages" determines the R packages necessary to run the likelihood function. Second "variables" the objects in the global envirnment needed to run the likelihood function and third "dlls" the DLLs needed to run the likelihood function (see Details and Examples).}
+\item{parallelOptions}{list containing three lists.
+\itemize{
+\item First, "packages" determines the R packages necessary to run the likelihood function.
+\item Second, "variables" - the objects in the global environment needed to run the likelihood function and
+\item Third, "dlls" is needed to run the likelihood function (see Details and Examples).
+}}
 
-\item{catchDuplicates}{Logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns.}
+\item{catchDuplicates}{logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns.}
 
 \item{plotLower}{vector with lower limits for plotting}
 
@@ -47,19 +52,23 @@ createBayesianSetup(
 
 \item{plotBest}{vector with best values for plotting}
 }
+\value{
+An object of class BayesianSetup. Implemented S3 generics include \code{\link{print.BayesianSetup}}.
+}
 \description{
 Creates a standardized collection of prior, likelihood and posterior functions, including error checks etc.
 }
 \details{
 If prior is of class prior (e.g. create with \code{\link{createPrior}}), priorSampler, lower, upper and best will be ignored.\cr If prior is a function (log prior density), priorSampler (custom sampler), or lower/upper (uniform sampler) is required.\cr If prior is NULL, and lower and upper are passed, a uniform prior (see \code{\link{createUniformPrior}}) will be created with boundaries lower and upper.
 
-For parallelization, option parallel = T means that an automatic parallelization via a standard R socket cluster is attempted. By default, a copy of your workspace, including DLLs and objects are exporte to the cluster workers. Because this can be very inefficient, you can explictly specify the packages, objects and DLLs that are to be exported via parallelOptions.
+For parallelization, Bayesiantools requires that the likelihood can evaluate multiple parameter vectors (supplied as a matrix) in parallel.
+\itemize{
+\item parallel = T attempts to parallelize likelihood via a standard R socket cluster using the \code{\link{generateParallelExecuter}} function. By default, of the N cores detected on the computer, N-1 cores are requested. Alternatively, you can provide a integer number to parallel, specifying the cores reserved for the cluster. When the cluster is created, a copy of your workspace, including DLLs and objects are exported to the cluster workers. As this approach can be highly inefficient, it is recommended to explicitly specify the packages, objects and DLLs to export using parallelOptions. Using parallel = T requires that the function to be parallelized is well encapsulated, i.e. can run in parallel on a shared memory / shared hard disk machine in parallel without interfering with each other.
+}
 
-Using parallel = T requires that the function to be parallelized is well encapsulate, i.e. can run on a shared memory / shared hard disk machine in parallel without interfering with each other. For some functions and programs, this is not the case, so that a custom-programmed parallelization is required. 
+If automatic parallelization is not possible (e.g., because dlls are not thread-safe or write to shared disk), and only in this case, you should specify parallel = "external". In this case, it is assumed that the likelihood is programmed to accept a matrix with parameters as columns and the different model runs as rows. The user can then choose whether and how to parallelize this function. This option provides optimal flexibility for the user, especially regarding complicated parallel architectures or shared memory issues.
 
-In this case, and only in this case, you should specify parallel = "external". In this case, it is assumed that the likelihood is programmed such that it accepts a matrix with parameters as columns and the different model runs as rows. It is then up to the user if and how to parallelize this function. This option gives most flexibility to the user, in particular for complicated parallel architecture or shared memory problems.
-
-For more details on parallelization, make sure to read the vignette (run vignette("BayesianTools", package="BayesianTools"))
+For more details on parallelization, make sure to read both vignettes, especially the section on likelihood in the main vignette and the section on parallelization in the vignette on interfacing models.
 }
 \examples{
 ll <- function(x) sum(dnorm(x, log = TRUE))
@@ -113,13 +122,10 @@ likelihood <- function(par, sum = TRUE){
 # Prior
 prior <- createUniformPrior(lower = refPars$lower[parSel], upper = refPars$upper[parSel])
 
-
-####
 ## Definition of the packages and objects that are exported to the cluster.
 # These are the objects that are used in the likelihood function.
 opts <- list(packages = list("BayesianTools"), variables = list("refPars", "obs", "PAR" ), 
              dlls = NULL)
-
 
 # Create Bayesian Setup
 BSVSEM <- createBayesianSetup(likelihood, prior, best = refPars$best[parSel], 
@@ -138,8 +144,8 @@ rm(BSVSEM)
 }
 \seealso{
 \code{\link{checkBayesianSetup}} \cr
-         \code{\link{createLikelihood}} \cr
-         \code{\link{createPrior}} \cr
+\code{\link{createLikelihood}} \cr
+\code{\link{createPrior}} \cr
 }
 \author{
 Florian Hartig, Tankred Ott

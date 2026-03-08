@@ -2,10 +2,25 @@
 % Please edit documentation in R/testFunctions.R
 \name{testDensityGelmanMeng}
 \alias{testDensityGelmanMeng}
-\title{Normal likelihood}
+\title{GelmanMeng test function}
 \usage{
 testDensityGelmanMeng(x, A = 1, B = 0, C1 = 3, C2 = 3, log = TRUE)
 }
+\arguments{
+\item{x}{parameter vector}
+
+\item{A}{function parameter}
+
+\item{B}{function parameter}
+
+\item{C1}{function parameter}
+
+\item{C2}{function parameter}
+
+\item{log}{log
+
+A non-elliptical, bivariate density function proposed by Gelman and Meng (1991).}
+}
 \description{
-A non-elliptical, bivariate density function proposed by Gelman and Meng (1991).
+GelmanMeng test function
 }

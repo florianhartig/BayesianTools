@@ -1,9 +1,10 @@
+
 #' Multivariate normal likelihood 
 #' @author Florian Hartig
 #' @description Generates a 3 dimensional multivariate normal likelihood function.
 #' @param mean vector with the three mean values of the distribution
 #' @param sigma either a correlation matrix, or "strongcorrelation", or "no correlation"
-#' @param sample should the function create samples
+#' @param sample logical, should the function create samples?
 #' @param n number of samples to create
 #' @param throwErrors parameter for test purpose. Between 0 and 1 for proportion of errors
 #' @details 3-d multivariate normal density function with mean 2,4,0 and either strong correlation (default), or no correlation.  
@@ -49,11 +50,16 @@ testDensityBanana <- function (p){
   return(mvtnorm::dmvnorm(P, mean = rep(0, length(P)), sigma = Cov, log = T))
 }
 
-#' Normal likelihood
+#' GelmanMeng test function
 #' 
+#' @param x parameter vector
+#' @param A function parameter
+#' @param B function parameter
+#' @param C1 function parameter
+#' @param C2 function parameter
+#' @param log log
 #' 
 #' A non-elliptical, bivariate density function proposed by Gelman and Meng (1991). 
-
 testDensityGelmanMeng <- function(x, A = 1, B = 0, C1 = 3, C2 = 3, log = TRUE) {
   if (is.vector(x)) x <- matrix(x, nrow = 1)
   r <- -0.5 * (A * x[,1]^2 * x[,2]^2 + x[,1]^2 + x[,2]^2

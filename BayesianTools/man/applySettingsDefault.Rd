@@ -17,7 +17,53 @@ applySettingsDefault(settings = NULL, sampler = "DEzs", check = FALSE)
 Provides the default settings for the different samplers in runMCMC
 }
 \details{
-see \code{\link{runMCMC}}
+The following settings can be used for all MCMCs:
+
+startValue (no default) start values for the MCMC. Note that DE family samplers require a matrix of #' start values. If startvalues are not provided, they are sampled from the prior.
+
+iterations (10000) the MCMC iterations
+
+burnin (0) burnin
+
+thin (1) thinning while sampling
+
+consoleUpdates (100) update frequency for console updates
+
+parallel (NULL) whether parallelization is to be used
+
+message (TRUE) if progress messages are to be printed
+
+nrChains (1) the number of independent MCMC chains to be run. Note that this is not controlling the #' internal number of chains in population MCMCs such as DE, so if you run nrChains = 3 with a DEzs #' #' startValue that is a 4xparameter matrix (= 4 internal chains), you will run independent DEzs runs #' #' with 4 internal chains each.
+
+For more details, see \code{\link{runMCMC}}
+}
+\examples{
+## Generate a test likelihood function. 
+ll <- generateTestDensityMultiNormal(sigma = "no correlation")
+
+## Create a BayesianSetup object from the likelihood 
+## is the recommended way of using the runMCMC() function.
+bayesianSetup <- createBayesianSetup(likelihood = ll, lower = rep(-10, 3), upper = rep(10, 3))
+
+## Finally we can run the sampler. To get possible settings
+## for a sampler, see help or run applySettingsDefault(sampler = "Metropolis")
+settings = list(iterations = 1000, adapt = FALSE) #
+out <- runMCMC(bayesianSetup = bayesianSetup, sampler = "Metropolis", settings = settings)
+
+## out is of class bayesianOutput. There are various standard functions 
+# implemented for this output
+
+plot(out)
+correlationPlot(out)
+marginalPlot(out)
+summary(out)
+
+## additionally, you can return the sample as a coda object, and make use of the coda functions
+# for plotting and analysis
+
+codaObject = getSample(out, start = 500, coda = TRUE)
+
+
 }
 \author{
 Florian Hartig

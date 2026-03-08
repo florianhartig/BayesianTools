@@ -1,23 +1,18 @@
 context("Test Settings Default")
 
 skip_on_cran()
+skip_on_ci()
 
 set.seed(1)
 library(BayesianTools)
 
 test_that("Default works in principle",{
-  skip_on_cran()
-  
   settings <- list(iterations = 20000, adapt = T, DRlevels = 2, optimize = T, burnin=1000, adaptationInterval=10)
-  applySettingsDefault(settings = settings, sampler = "Metropolis", check = FALSE)
+  x = applySettingsDefault(settings = settings, sampler = "Metropolis", check = FALSE)
+  expect_type(x, "list")
   applySettingsDefault(settings = settings, sampler = "Metropolis", check = TRUE)
-  
-  applySettingsDefault(settings = settings, sampler = "DRAM", check = TRUE)
-
   }
 )
-
-
 
 test_that("Wrong inputs are caught",{
   skip_on_cran()

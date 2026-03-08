@@ -1,17 +1,16 @@
 # The aim of this test is to check whether the diagnostic functions
 # can be applied to the output of all samplers.
-# It throws an error if an output of a diagnostoc is changed
-# or the diagnotic function cannot be applied to an 
+# It throws an error if an output of a diagnostic is changed
+# or the diagnostic function cannot be applied to an 
 # object of class bayesianOutput.
 # However, to shorten the test, only the structures of the 
 # outputs are tested. For the validity of the mcmc sampling
 # algorithms see the respective tests.
 
-skip_on_cran()
+testthat::skip_on_cran()
+testthat::skip_on_ci()
 
 context("Test workflow of package")
-
-
 
 set.seed(1)
 library(BayesianTools)

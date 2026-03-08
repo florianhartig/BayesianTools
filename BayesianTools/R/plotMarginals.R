@@ -1,27 +1,34 @@
 #' @export
 marginalPlot <- function(x, ...) UseMethod("marginalPlot")
 
+
 #' Plot MCMC marginals
-#' @param x bayesianOutput, or matrix or data.frame containing with samples as rows and parameters as columns
-#' @param prior if x is a bayesianOutput, T/F will determine if the prior is drawn (default = T). If x is matrix oder data.frame, a prior can be drawn if a matrix of prior draws with values as rows and parameters as columns can be provided here. 
-#' @param xrange vector or matrix of plotting ranges for the x axis. If matrix, the rows must be parameters and the columns min and max values.
-#' @param type character determining the plot type. Either 'd' for density plot, or 'v' for violin plot
-#' @param singlePanel logical, determining whether the parameter should be plotted in a single panel or each in its own panel
-#' @param settings optional list of additional settings for \code{\link{marginalPlotDensity}}, and \code{\link{marginalPlotViolin}}, respectively
+#' @param x bayesianOutput, or matrix or data.frame with samples as rows and parameters as columns
+#' @param prior if x is a bayesianOutput, T/F will determines whether the prior is drawn (default = T). If x is matrix or data.frame, a prior can be drawn if a matrix of prior draws with values as rows and parameters as columns can be provided here. 
+#' @param xrange vector or matrix of plot ranges for the x-axis. If matrix, the rows must be parameters and the columns must be min and max values.
+#' @param type character, determes the plot type. Either 'd' for density plot, or 'v' for violin plot
+#' @param singlePanel logical, determines whether the parameter should be plotted in a single panel or each in its own panel
+#' @param settings optional, list of additional settings for \code{\link{marginalPlotDensity}}, and \code{\link{marginalPlotViolin}}, respectively
 #' @param nPriorDraws number of draws from the prior, if x is bayesianOutput
 #' @param ... additional arguments passed to \code{\link{getSample}}. If you have a high number of draws from the posterior it is advised to set numSamples (to e.g. 5000) for performance reasons.
 #' @example /inst/examples/marginalPlotHelp.R
-#' @author Tankred Ott
+#' @author Tankred Ott, Florian Hartig
 marginalPlot <- function(x, prior = NULL, xrange = NULL, type = 'd', singlePanel = FALSE, settings = NULL,
                          nPriorDraws = 10000, ...) {
   
   posteriorMat <- getSample(x, parametersOnly = TRUE, ...)
   
-  # check prior
+  # checking for which
+  args <- list(...)   
+  if("which" %in% names(args))
+    which = args$which
+  else
+    which = 1:ncol(posteriorMat)
   
+  # check prior
   if ('bayesianOutput' %in% class(x)) {
     
-    # default T 
+    # default T if NULL and BayesianOutput provide
     if (is.null(prior)) prior = TRUE
     
     if (any(c('data.frame', 'matrix') %in% class(prior))) priorMat = prior
@@ -44,6 +51,7 @@ marginalPlot <- function(x, prior = NULL, xrange = NULL, type = 'd', singlePanel
   }
 
   if (!is.null(priorMat)) {
+    priorMat = priorMat[,which,drop=F]
     if (ncol(posteriorMat) != ncol(priorMat)) stop("wrong dimensions of prior")
     colnames(priorMat) <- colnames(posteriorMat)    
   }
@@ -96,7 +104,7 @@ marginalPlot <- function(x, prior = NULL, xrange = NULL, type = 'd', singlePanel
 #' @author Tankred Ott
 #' @keywords internal
 # TODO: this could be simplified. It is verbose for now to be able to change stuff easily
-marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FC006299','#00BBAA88'), 
+marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, col=c('#FC006299','#00BBAA30'), 
                                 singlePanel = TRUE, ...) {
   
   nPar <- ncol(posteriorMat)
@@ -163,7 +171,7 @@ marginalPlotDensity <- function(posteriorMat, priorMat = NULL, xrange = NULL, co
     mtext('Marginal parameter uncertainty', outer = TRUE, cex = 1.5)
 
   } else {
-    mfrow <- if (nPar < 16) getPanels(nPar) else c(4,4)
+    mfrow <- getPanels(nPar)
     
     op <- par(mfrow = mfrow, mar = c(4.5, 4, 5, 3), oma=c(3, 1.5, 2, 0), xpd=TRUE)
     on.exit(par(op))
@@ -275,7 +283,7 @@ marginalPlotViolin <- function(posteriorMat, priorMat = NULL, xrange = NULL, col
     mtext('Marginal parameter uncertainty', outer = TRUE, cex = 1.5)
     
   } else {
-    mfrow <- if (nPar < 16) getPanels(nPar) else c(4,4)
+    mfrow <- getPanels(nPar)
     
     op <- par(mfrow = mfrow, mar = c(4.5, 4.5, 5, 3), oma=c(3, 0, 2, 0), xpd=TRUE)
     

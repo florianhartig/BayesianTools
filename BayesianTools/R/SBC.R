@@ -1,11 +1,9 @@
 #' Simulation-based calibration tests
 #' 
 #' This function performs simulation-based calibration tests based on the idea that posteriors averaged over the prior should yield the prior. 
-#' 
-#' @param posteriorList a list with posterior samples. List items must be of a class that is supported by \code{\link{getSample}}. This includes BayesianTools objects, but also matrix and data.frame
-#' @param priorDraws a matrix with parameter values, drawn from the prior, that were used to simulate the data underlying the posteriorList. If colnames are provided, these will be used in the plots
+#' @param posteriorList a list of posterior samples. List items must be of a class that is supported by \code{\link{getSample}}. This includes BayesianTools objects, but also matrix and data.frame objects.
+#' @param priorDraws a matrix of parameter values, drawn from the prior, that were used to simulate the data underlying the posteriorList. If colnames are provided, they are used in the plots
 #' @param ... arguments to be passed to \code{\link{getSample}}. Consider in particular the thinning option. 
-#'
 #' @details The purpose of this function is to evaluate the results of a simulation-based calibration of an MCMC analysis. 
 #' 
 #' Briefly, the idea is to repeatedly
@@ -26,7 +24,7 @@
 #' 
 #' @note This function was implemented for the tests in Maliet, Odile, Florian Hartig, and Hélène Morlon. "A model with many small shifts for estimating species-specific diversification rates." Nature ecology & evolution 3.7 (2019): 1086-1092. The code linked with this paper provides a further example of its use. 
 #' 
-#' @author 
+#' @author Florian Hartig
 #' 
 #' @export
 #' 

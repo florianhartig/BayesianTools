@@ -11,6 +11,7 @@ createPriorDensity(
   lower = NULL,
   upper = NULL,
   best = NULL,
+  scaling = 1,
   ...
 )
 }
@@ -27,6 +28,8 @@ createPriorDensity(
 
 \item{best}{vector with "best" values of parameter for the new prior, independent of the input sample}
 
+\item{scaling}{optional scaling factor for the covariance. If scaling > 1 will create a prior wider than the posterior, < 1 a prior more narrow than the posterior. Scaling is linear to the posterior width, i.e. scaling = 2 will create a prior that with 2x the sd of the original posterior.}
+
 \item{...}{parameters to pass on to the getSample function}
 }
 \description{
@@ -35,45 +38,75 @@ Fits a density function to a multivariate sample
 \details{
 This function fits a density estimator to a multivariate (typically a posterior) sample. The main purpose is to summarize a posterior sample as a pdf, in order to include it as a prior in a new analysis, for example when new data becomes available, or to calculate a fractional Bayes factor (see \code{\link{marginalLikelihood}}).
 
-The limitation of this function is that we currently only implement a multivariate normal density estimator, so you will have a loss of information if your posterior is not approximately multivariate normal, which is likely the case if you have weak data. Extending the function to include more flexible density estimators (e.g. gaussian processes) is on our todo list, but it's quite tricky to get this stable, so I'm not sure when we will have this working. In general, creating reliable empirical density estimates in high-dimensional parameter spaces is extremely tricky, regardless of the software you are using. 
- 
+The limitation of this function is that we currently only implement a multivariate normal density estimator, so you will have a loss of information if your posterior is not approximately multivariate normal, which is likely the case if you have weak data. Extending the function to include more flexible density estimators (e.g. gaussian processes) is on our todo list, but it's quite tricky to get this stable, so I'm not sure when we will have this working. In general, creating reliable empirical density estimates in high-dimensional parameter spaces is extremely tricky, regardless of the software you are using.
+
 For that reason, it is usually recommended to not update the posterior with this option, but rather:
-
-1. If the full dataset is available, to make a single, or infrequent updates, recompute the entire model with the full / updated data
-
-2. For frequent updates, consider using SMC instead of MCMC sampling. SMC sampling doesn't require an analytical summary of the posterior.
+\enumerate{
+\item If the full dataset is available, to make a single, or infrequent updates, recompute the entire model with the full / updated data
+\item For frequent updates, consider using SMC instead of MCMC sampling. SMC sampling doesn't require an analytical summary of the posterior.
+}
 }
 \examples{
-# Create a BayesianSetup
-ll <- generateTestDensityMultiNormal(sigma = "no correlation")
-bayesianSetup = createBayesianSetup(likelihood = ll, 
-                                    lower = rep(-10, 3), 
-                                    upper = rep(10, 3))
+# The BT package includes a number of convenience functions to specify
+# prior distributions, including createUniformPrior, createTruncatedNormalPrior
+# etc. If you want to specify a prior that corresponds to one of these
+# distributions, you should use these functions, e.g.:
 
-settings = list(iterations = 1000)
-out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+prior <- createUniformPrior(lower = c(0,0), upper = c(0.4,5))
 
+prior$density(c(2, 3)) # outside of limits -> -Inf
+prior$density(c(0.2, 2)) # within limits, -0.6931472
 
-newPrior = createPriorDensity(out, method = "multivariate",
-                              eps = 1e-10, lower = rep(-10, 3),
-                              upper =  rep(10, 3), best = NULL)
+# All default priors include a sampling function, i.e. you can create
+# samples from the prior via
+prior$sampler()
+# [1] 0.2291413 4.5410389
 
-bayesianSetup <- createBayesianSetup(likelihood = ll, prior = newPrior)
+# if you want to specify a prior that does not have a default function, 
+# you should use the createPrior function, which expects a density and 
+# optionally a sampler function:
 
-\dontrun{
-  settings = list(iterations = 1000)
-  out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+density = function(par){
+  d1 = dunif(par[1], -2,6, log =TRUE)
+  d2 = dnorm(par[2], mean= 2, sd = 3, log =TRUE)
+  return(d1 + d2)
 }
 
+# Sampler function needs to create a sample from the prior distribution
+sampler = function(){
+  d1 = runif(1, -2,6)
+  d2 = rnorm(1, mean= 2, sd = 3)
+  return(cbind(d1,d2))
+}
 
+prior <- createPrior(density = density, sampler = sampler, 
+                     lower = c(-10,-20), upper = c(10,20), best = NULL)
+
+# note that the createPrior supports additional truncation
+
+
+# To use a prior in an MCMC, include it in a BayesianSetup 
+
+set.seed(123)
+ll <- function(x) sum(dnorm(x, log = TRUE)) # multivariate normal ll
+bayesianSetup <- createBayesianSetup(likelihood = ll, prior = prior)
+
+settings = list(iterations = 100)
+out <- runMCMC(bayesianSetup = bayesianSetup, settings = settings)
+
+# use createPriorDensity to create a new (estimated) prior from MCMC output
+
+newPrior = createPriorDensity(out, method = "multivariate",
+                              eps = 1e-10, lower = c(-10,-20), 
+                              upper = c(10,20), best = NULL, scaling = 0.5)
 
 }
 \seealso{
 \code{\link{createPrior}} \cr
-         \code{\link{createBetaPrior}} \cr
-         \code{\link{createTruncatedNormalPrior}} \cr
-         \code{\link{createUniformPrior}} \cr
-         \code{\link{createBayesianSetup}} \cr
+\code{\link{createBetaPrior}} \cr
+\code{\link{createTruncatedNormalPrior}} \cr
+\code{\link{createUniformPrior}} \cr
+\code{\link{createBayesianSetup}} \cr
 }
 \author{
 Florian Hartig

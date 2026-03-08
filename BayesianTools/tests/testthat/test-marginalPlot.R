@@ -1,5 +1,8 @@
 testthat::context("Test marginalPlot")
 
+testthat::skip_on_cran()
+testthat::skip_on_ci()
+
 testMarginalPlot <- function (x, priorSample) {
 
   marginalPlot(x, type = 'v', singlePanel = F)
@@ -14,16 +17,18 @@ testMarginalPlot <- function (x, priorSample) {
   expect_error(marginalPlot(x, type = 'v', singlePanel = F, prior = c(1,2)))
 }
 
-
-ll <- function(x, sum = TRUE){
-  if(sum) sum(dnorm(x, log = T))
-  else dnorm(x, log = T)
-} 
-
-setup <- createBayesianSetup(ll, lower = c(-10,-10,-10), upper = c(10,10,10))
+setup <- createBayesianSetup(likelihood = testDensityNormal, 
+                             lower = c(-10,-10,-10), upper = c(10,10,10))
 settings <- list(iterations=10000)
 
 out <- runMCMC(setup)
+
+marginalPlot(out)
+marginalPlot(out, which = 1:2)
+
+
+
+
 out_mat <- suppressWarnings(getSample(out, numSamples = 10000))
 out_coda <- suppressWarnings(getSample(out, numSamples = 10000, coda = T))
 

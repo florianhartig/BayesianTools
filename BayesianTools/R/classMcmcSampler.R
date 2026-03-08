@@ -1,20 +1,19 @@
-# Functions for class mcmcSamper
-
+# Functions for class mcmcSampler
+#' @rdname getSample
 #' @author Florian Hartig
 #' @export
-getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics= F, ...){
+getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics= F, ...){
   
-  if (class(sampler$chain)[1] == "matrix"){
+  if (inherits(sampler$chain, "matrix")){
     
     if(is.null(end)) end = nrow(sampler$chain)
     
     if(parametersOnly == T) {
-      out = sampler$chain[start:end,1:sampler$setup$numPars] 
-      if(class(out)[1] == "numeric") out = as.matrix(out) # case 1 parameter
+      out = sampler$chain[start:end,1:sampler$setup$numPars, drop = F]
       if(!is.null(sampler$setup$names)) colnames(out) = sampler$setup$names
     }
     else {
-      out = sampler$chain[start:end,] 
+      out = sampler$chain[start:end,, drop = F]
       if(!is.null(sampler$setup$names)) colnames(out) = c(sampler$setup$names, "Lposterior", "Llikelihood", "Lprior")
     }
     
@@ -35,15 +34,15 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
     if(thin == 1 && !is.null(numSamples)){
       out <- sampleEquallySpaced(out, numSamples)
     }
-
-    # TODO - see matrix, need to check if both thing and numSamples is set 
+    
+    # TODO - see matrix, need to check if both thing and numSamples is set
     
     #############
     
-    if (!is.null(whichParameters)) out = out[,whichParameters]
+    if (!is.null(whichParameters)) out = out[,whichParameters, drop = F]
     if(coda == T) out = makeObjectClassCodaMCMC(out, start = start, end = end, thin = thin)
-  } 
-  else if (class(sampler$chain) == "mcmc.list"){
+  }
+  else if (inherits(sampler$chain, "mcmc.list")){
     
     out = list()
     
@@ -52,10 +51,10 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       
       if(is.null(end)) end = nrow(sampler$chain[[1]])
       
-      temp = sampler$chain[[i]][start:end,]
+      temp = sampler$chain[[i]][start:end,, drop = F]
       
       if(parametersOnly == T) {
-        temp = temp[,1:sampler$setup$numPars] 
+        temp = temp[,1:sampler$setup$numPars, drop = F]
         if(class(temp)[1] == "numeric") temp = as.matrix(temp) # case 1 parameter
         if(!is.null(sampler$setup$names)) colnames(temp) = sampler$setup$names
       }
@@ -69,7 +68,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
         thin = max(floor(nrow(temp) / 5000),1)
       }
       if(is.null(thin) || thin == F || thin < 1 || is.nan(thin)) thin = 1
-
+      
       if(thin > nrow(temp)) warning("thin is greater than the total number of samples!")
       
       if (! thin == 1){
@@ -82,7 +81,7 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
         nSamplesPerChain <- ceiling(numSamples/length(sampler$chain))
         
         if(i == 1){
-         if(nSamplesPerChain*length(sampler$chain) > numSamples) warning("Due to internal chains, numSamples was rounded to the next number divisble by the number of chains.", call. = FALSE)
+          if(nSamplesPerChain*length(sampler$chain) > numSamples) message("Due to internal chains, numSamples was rounded to the next number divisble by the number of chains.", call. = FALSE)
         }
         
         temp <- sampleEquallySpaced(temp, nSamplesPerChain)
@@ -91,20 +90,20 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
       
       #############
       
-      if (!is.null(whichParameters)) temp = temp[,whichParameters]
+      if (!is.null(whichParameters)) temp = temp[,whichParameters, drop = F]
       out[[i]] = makeObjectClassCodaMCMC(temp, start = start, end = end, thin = thin)
     }
-    class(out) = "mcmc.list" 
+    class(out) = "mcmc.list"
     
     #trueNumSamples <- sum(unlist(lapply(out, FUN = nrow)))
     #if (!is.null(numSamples) && trueNumSamples > numSamples) warning(paste(c("Could not draw ", numSamples, " samples due to rounding errors. Instead ", trueNumSamples," were drawn.")))
     
     if(coda == F){
       out = combineChains(out)
-    }  
+    }
     if(coda == T){
       out = out
-    } 
+    }
   }else stop("sampler appears not to be of class mcmcSampler")
   
   if(reportDiagnostics == T){
@@ -114,10 +113,18 @@ getSample.mcmcSampler <- function(sampler, parametersOnly = T, coda = F, start =
 
 
 
+#' Summmary of MCMC output
+#' @description
+#' Creates a summary table of a MCMC output
+#' @param object object of class mcmcSampler or mcmcSamplerList
+#' @param printCorrelation if set to TRUE, prints correlation among samples
+#' @param ... not implemented  
 #' @method summary mcmcSampler
 #' @author Stefan Paul
 #' @export
-summary.mcmcSampler <- function(object, ...){
+#' @seealso \code{\link{getSample.mcmcSampler}}
+summary.mcmcSampler <- function(object, printCorrelation = "auto", ...){
+
   #codaChain = getSample(sampler, parametersOnly = parametersOnly, coda = T, ...)
   #summary(codaChain)
   #rejectionRate(sampler$codaChain)
@@ -135,7 +142,7 @@ summary.mcmcSampler <- function(object, ...){
   mcmcsampler <- sampler$settings$sampler
   runtime <- sampler$info$runtime[3]
   correlations <- round(cor(getSample(sampler)),3)
-  
+
   chain <- getSample(sampler, parametersOnly = T, coda = T, ...)
   # chain <- getSample(sampler, parametersOnly = T, coda = T)
   if("mcmc.list" %in% class(chain)){
@@ -193,7 +200,9 @@ summary.mcmcSampler <- function(object, ...){
   cat("# MCMC sampler: ",mcmcsampler, "\n")
   cat("# Nr. Chains: ", nrChain, "\n")
   cat("# Iterations per chain: ", nrIter, "\n")
-  cat("# Rejection rate: ", ifelse(sampler$setup$numPars == 1, round(mean(sapply(chain, coda::rejectionRate)),3), round(mean(coda::rejectionRate(chain)),3) ) , "\n")
+  cat("# Rejection rate: ", ifelse(object$setup$numPars == 1 & class(chain) == "mcmc.list", # this is a hack because coda::rejectionRate does not work for 1-d MCMC lists
+                                   round(mean(sapply(chain, coda::rejectionRate)),3),
+                                   round(mean(coda::rejectionRate(chain)),3) ), "\n")
   cat("# Effective sample size: ", ifelse(sampler$setup$numPars == 1, round(coda::effectiveSize(chain),0), round(mean(coda::effectiveSize(chain)),0) ) , "\n")
   cat("# Runtime: ", runtime, " sec.","\n", "\n")
   cat("# Parameters\n")
@@ -202,13 +211,21 @@ summary.mcmcSampler <- function(object, ...){
   
   try(cat("## DIC: ", round(DInf$DIC,3), "\n"), silent = TRUE)
   cat("## Convergence" ,"\n", "Gelman Rubin multivariate psrf: ", conv, "\n","\n")
-  cat("## Correlations", "\n")
-  print(correlations)
+  if(printCorrelation == TRUE){
+    correlations <- round(cor(getSample(sampler)),3)
+    cat("## Correlations", "\n")
+    print(correlations)    
+  }
 }
 
-#' @author Florian Hartig
+#' Prints MCMC output
+#' @description
+#' Prints MCMC output
+#' @param x object of class mcmcSampler or mcmcSamplerList
+#' @param ... additional options 
 #' @method print mcmcSampler
 #' @export
+#' @seealso \code{\link{getSample.mcmcSampler}}
 print.mcmcSampler <- function(x, ...){
   print("mcmcSampler - you can use the following methods to summarize, plot or reduce this class:")
   print(methods(class ="mcmcSampler"))
@@ -217,13 +234,17 @@ print.mcmcSampler <- function(x, ...){
   #effectiveSize(sampler$codaChain)
 }
 
-#' @author Florian Hartig
+
+
+#' Plots of MCMC output
+#' @description
+#' Plots MCMC output
+#' @param x object of class mcmcSampler or mcmcSamplerList
+#' @param ... additional options passed to tracePlot
 #' @method plot mcmcSampler
+#' @author Florian Hartig
 #' @export
+#' @seealso \code{\link{getSample.mcmcSampler}}
 plot.mcmcSampler <- function(x, ...){
   tracePlot(x, ...)
 }
-
-
-
-

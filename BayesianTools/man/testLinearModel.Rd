@@ -15,13 +15,14 @@ testLinearModel(x, env = NULL)
 Fake model, returns a ax + b linear response to 2-param vector
 }
 \examples{
+
 x = c(1,2)
 y = testLinearModel(x)
 plot(y)
 }
 \seealso{
 \code{\link{generateTestDensityMultiNormal}} \cr
-         \code{\link{testDensityBanana}}
+\code{\link{testDensityBanana}}
 }
 \author{
 Florian Hartig

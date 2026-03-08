@@ -1,15 +1,13 @@
-#' @title BayesianTools
-#' @name BayesianTools
-#' @docType package
-#' @useDynLib BayesianTools, .registration = TRUE
-#' @description A package with general-purpose MCMC and SMC samplers,  as well as plots and diagnostic functions for Bayesian statistics
+#' @keywords internal
+#' @references 
+#' vignette("Manual for the BayesianTools R package", package="BayesianTools")
 #' @details A package with  general-purpose MCMC and SMC samplers, as well as plots and diagnostic functions for Bayesian statistics, particularly for process-based models. 
 #' 
 #' The package contains 2 central functions, \code{\link{createBayesianSetup}}, which creates a standardized Bayesian setup with likelihood and priors, and \code{\link{runMCMC}}, which allows to run various MCMC and SMC samplers.
 #' 
 #' The package can of course also be used for general (non-Bayesian) target functions. 
 #' 
-#' To use the package, a first step to use \code{\link{createBayesianSetup}} to create a BayesianSetup, which usually contains prior and likelihood densities, or in general a target function. 
+#' To use the package, a first step is to use \code{\link{createBayesianSetup}} to create a BayesianSetup, which usually contains prior and likelihood densities, or in general a target function. 
 #'
 #' Those can be sampled with \code{\link{runMCMC}}, which can call a number of general purpose Metropolis sampler, including the \code{\link{Metropolis}} that allows to specify various popular Metropolis variants such as adaptive and/or delayed rejection Metropolis; two variants of differential evolution MCMC \code{\link{DE}}, \code{\link{DEzs}}, two variants of DREAM  \code{\link{DREAM}} and \code{\link{DREAMzs}}, the \code{\link{Twalk}} MCMC, and a Sequential Monte Carlo sampler \code{\link{smcSampler}}. 
 #'
@@ -19,7 +17,10 @@
 #' 
 #' To get the suggested citation, run citation("BayesianTools")
 #'
-#' To report bugs or ask for help, post a \href{http://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example}{reproducible example} via the BayesianTools \href{https://github.com/florianhartig/BayesianTools/issues}{issue tracker} on GitHub. 
+#' To report bugs or ask for help, post a \href{https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example}{reproducible example} via the BayesianTools \href{https://github.com/florianhartig/BayesianTools/issues}{issue tracker} on GitHub. 
 #'
 #'Acknowledgements: The creation and maintenance of this package profited from funding and collaboration through Cost Action FP 1304 PROFOUND, DFG	DO 786/12-1 CONECT, EU FP7 ERA-NET Sumforest REFORCE and Bayklif Project BLIZ. 
-NULL
+#'
+#' @example /inst/examples/mcmcRun.R
+"_PACKAGE"
+

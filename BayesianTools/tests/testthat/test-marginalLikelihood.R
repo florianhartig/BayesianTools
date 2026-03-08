@@ -8,23 +8,24 @@ ll <- function(x, sum = TRUE){
 } 
 
 setup <- createBayesianSetup(ll, lower = c(-10,-10,-10), upper = c(10,10,10))
-settings <- list(iterations=10000)
+settings <- list(iterations=1000)
 
 out <- runMCMC(setup)
 
 testthat::test_that("marginalLikelihood with method 'Chib' runs without error", {
-  marginalLikelihood(sampler = out, method = "Chib")
+  expect_lt(marginalLikelihood(sampler = out, method = "Chib")$ln.ML, 100)
 })
 
 testthat::test_that("marginalLikelihood with method 'HM' runs without error", {
-  marginalLikelihood(sampler = out, method = "HM")
+  expect_lt(suppressWarnings(marginalLikelihood(sampler = out, method = "HM")$ln.ML), 100)
 })
 
 testthat::test_that("marginalLikelihood with method 'Bridge' runs without error", {
-  marginalLikelihood(sampler = out, method = "Bridge")
+  expect_lt(suppressWarnings(marginalLikelihood(sampler = out, method = "Bridge")$ln.ML), 100)
 })
 
 testthat::test_that("marginalLikelihood with method 'Prior' runs without error", {
-  marginalLikelihood(sampler = out, method = "Prior")
-  marginalLikelihood(sampler = setup, method = "Prior")
+  expect_lt(marginalLikelihood(sampler = out, method = "Prior")$ln.ML, 100)
+  expect_lt(marginalLikelihood(sampler = setup, method = "Prior")$ln.ML, 100)
 })
+

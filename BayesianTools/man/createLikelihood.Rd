@@ -2,7 +2,7 @@
 % Please edit documentation in R/classLikelihood.R
 \name{createLikelihood}
 \alias{createLikelihood}
-\title{Creates a standardized likelihood class#'}
+\title{Creates a standardized likelihood class}
 \usage{
 createLikelihood(
   likelihood,
@@ -14,24 +14,67 @@ createLikelihood(
 )
 }
 \arguments{
-\item{likelihood}{Log likelihood density}
+\item{likelihood}{log likelihood density}
 
-\item{names}{Parameter names (optional)}
+\item{names}{parameter names (optional)}
 
-\item{parallel}{parallelization , either i) no parallelization --> F, ii) native R parallelization --> T / "auto" will select n-1 of your available cores, or provide a number for how many cores to use, or iii) external parallelization --> "external". External means that the likelihood is already able to execute parallel runs in form of a matrix with}
+\item{parallel}{parallelization , either i) no parallelization --> F, ii) native R parallelization --> T / "auto" will select n-1 of your available cores, or provide a number for how many cores to use, or iii) external parallelization --> "external". External means that the likelihood is already able to execute parallel runs in the form of a matrix.}
 
-\item{catchDuplicates}{Logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns.}
+\item{catchDuplicates}{logical, determines whether unique parameter combinations should only be evaluated once. This is only applicable when the likelihood accepts a matrix with parameters as columns.}
 
 \item{sampler}{sampler}
 
-\item{parallelOptions}{list containing two lists. First "packages" determines the R packages necessary to run the likelihood function. Second "objects" the objects in the global envirnment needed to run the likelihood function (for details see \code{\link{createBayesianSetup}}).}
+\item{parallelOptions}{a list containing two lists. First, "packages" specifies the R packages necessary to run the likelihood function. Second, "objects" contains the objects in the global environment needed to run the likelihood function (for details see \link{createBayesianSetup}).}
 }
 \description{
-Creates a standardized likelihood class#'
+Creates a standardized likelihood class
+}
+\examples{
+# data comes from normal distribution 
+
+data = rnorm(100, mean = 1.2, sd = 0.7)
+
+# define a density function with unknown mean and sd
+# needs to return LOG! likelihood
+
+likelihood <- function(x) {
+  LL = sum(dnorm(data, mean = x[1], sd = x[2], log = T))
+  return(LL)
+}
+
+likelihood(x = c(1,1))
+
+# To be used in BayesianTools, a standardized likelihood class should be 
+# created via createLikelihood. 
+
+likelihoodClass <- createLikelihood(likelihood)
+
+# This class parallelizes the simple density function and to add
+# some convenience functions, for example 
+# to catch exceptions that are raised by the call to likelihood
+# for example, we can now provide a matrix which will result in
+# several likelihood values
+
+likelihoodClass$density(matrix(c(1,2,1,1), nrow = 2))
+
+# createLikelihood is automatically called when you provide the likelihood
+# to a BayesianSetup, so it is usually sufficient to just provide 
+# the likelihood to createBayesianSetup
+
+bayesianSetup <- createBayesianSetup(likelihood = likelihoodClass, 
+                                     lower = c(-2,0.001), 
+                                     upper = c(5, 5))
+
+settings = list(iterations = 500)
+out <- runMCMC(bayesianSetup, sampler = "DEzs", settings)
+summary(out, start = 50)
+plot(out) 
+
+
 }
 \seealso{
 \code{\link{likelihoodIidNormal}} \cr
-         \code{\link{likelihoodAR1}} \cr
+\code{\link{likelihoodAR1}} \cr
 }
 \author{
 Florian Hartig

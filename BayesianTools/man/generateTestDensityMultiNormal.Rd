@@ -17,7 +17,7 @@ generateTestDensityMultiNormal(
 
 \item{sigma}{either a correlation matrix, or "strongcorrelation", or "no correlation"}
 
-\item{sample}{should the function create samples}
+\item{sample}{logical, should the function create samples?}
 
 \item{n}{number of samples to create}
 
@@ -41,7 +41,7 @@ density(x[1,])
 }
 \seealso{
 \code{\link{testDensityBanana}} \cr
-         \code{\link{testLinearModel}}
+\code{\link{testLinearModel}}
 }
 \author{
 Florian Hartig

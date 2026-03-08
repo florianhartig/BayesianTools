@@ -1,10 +1,28 @@
 This file contains CRAN submission info / communication
 
+## Version 0.1.8
+
+### Submission 1
+
+This is a minor update that should bring BT back to CRAN after it was removed due to HTML validation problems associated with the recent switch to HTML5 for documentation pages in R 4.2.0, see also https://github.com/florianhartig/BayesianTools/issues/240. 
+
+I had tried to upload a fix to CRAN, but it was not accepted due to detritus problems under Windows dev, which after a long search turned out to be caused by some stray parallel notes https://github.com/florianhartig/BayesianTools/issues/244.
+
+In any case, I hope this will get the BT package back into CRAN, sorry for the delay in fixing this. 
+
+See NEWS for other changes.
+
+This release has been tested without apparent problems on
+
+* local MAC OS 13.1, R 4.2.1 Apple
+* http://win-builder.r-project.org/ - oldrelease / devel / release
+* Github Actions https://github.com/florianhartig/BayesianTools/actions Windows: [release / devel], Mac [release], Ubuntu 20.04 [release / devel]
+
 ## Version 0.1.7
 
 ### Submission 1
 
-This is minor update that was neccesary because of a change to behavior of class(matrix) in CRAN devel, see https://github.com/florianhartig/BayesianTools/issues/191. See NEWS for changes.
+This is minor update that was necessary because of a change to behavior of class(matrix) in CRAN devel, see https://github.com/florianhartig/BayesianTools/issues/191. See NEWS for changes.
 
 This release was tested without apparent problems under
 

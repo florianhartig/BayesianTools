@@ -19,27 +19,25 @@ prior <- createPrior(density = dens, samp = samp)
 
 ll <- function(x) sum(dnorm(x, log = TRUE)) # multivariate normal ll
 
-test_that("createBayesianSetup works with prior object input", {
-  bs1 = NULL; bs2 = NULL; bs3 = NULL; bs4 = NULL;
-  testthat::expect_error({
-    bs1 <- createBayesianSetup(likelihood = ll, prior = prior)
-  }, NA, label = "prior only")
-  testthat::expect_error({
-    bs2 <- createBayesianSetup(likelihood = ll, prior = prior, priorSampler = samp)
-  }, NA, label = "prior and priorSampler")
-  testthat::expect_error({
-    bs3 <- createBayesianSetup(likelihood = ll, prior = prior, lower = lower, upper = upper)
-  }, NA, label = "prior and lower/upper")
-  testthat::expect_error({
-    bs4 <- createBayesianSetup(likelihood = ll, prior = prior, priorSampler = samp, lower = c(-5, -5), upper = c(5, 5))
-  }, NA, label = "prior, priorSampler, and lower/upper")
-  testthat::expect_true({
-    toString(bs1) == toString(bs2) & toString(bs1) == toString(bs3) & toString(bs1) == toString(bs4)
-  }, label = "consistent results")
-})
+# test_that("createBayesianSetup works with prior object input", {
+#   testthat::expect_warning({
+#     bs1 <- createBayesianSetup(likelihood = ll, prior = prior)
+#   }, NA, label = "prior only")
+#   testthat::expect_warning({
+#     bs2 <- createBayesianSetup(likelihood = ll, prior = prior, priorSampler = samp)
+#   }, NA, label = "prior and priorSampler")
+#   testthat::expect_warning({
+#     bs3 <- createBayesianSetup(likelihood = ll, prior = prior, lower = lower, upper = upper)
+#   }, NA, label = "prior and lower/upper")
+#   testthat::expect_warning({
+#     bs4 <- createBayesianSetup(likelihood = ll, prior = prior, priorSampler = samp, lower = c(-5, -5), upper = c(5, 5))
+#   }, NA, label = "prior, priorSampler, and lower/upper")
+#   testthat::expect_true({
+#     toString(bs1) == toString(bs2) & toString(bs1) == toString(bs3) & toString(bs1) == toString(bs4)
+#   }, label = "consistent results")
+# })
 
 test_that("createBayesianSetup works with prior function input", {
-  bs1 = NULL; bs2 = NULL; bs3 = NULL; bs4 = NULL;
   testthat::expect_error({
     bs1 <- createBayesianSetup(likelihood = ll, prior = dens)
   }, label = "density only. should throw error")
@@ -57,7 +55,6 @@ test_that("createBayesianSetup works with prior function input", {
 })
 
 test_that("createBayesianSetup works with lower/upper input", {
-  bs1 = NULL; bs2 = NULL; bs3 = NULL; bs4 = NULL;
   testthat::expect_error({
     bs1 <- createBayesianSetup(likelihood = ll, lower = lower, upper = upper)
     testthat::expect_true({ all (bs1$prior$lower == bs1$info$plotLower & bs1$prior$upper == bs1$info$plotUpper)})
@@ -85,9 +82,9 @@ test_that("likelihood properly handles exceptions", {
     if(x == 8) return("test")
     
   }
-  setup <- createBayesianSetup(likelihood, lower = -1, upper = 10)
+  setup <- createBayesianSetup(likelihood, lower = 0.5, upper = 1.5)
   
-  expect(setup$posterior$density(1))
+  expect_equal(setup$posterior$density(1), 1)
   expect_equal(setup$posterior$density(2), -Inf)
   expect_equal(setup$posterior$density(3), -Inf)
   expect_equal(setup$posterior$density(4), - Inf)

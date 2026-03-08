@@ -1,33 +1,40 @@
+
 #' Creates a standardized collection of prior, likelihood and posterior functions, including error checks etc.
 #' @author Florian Hartig, Tankred Ott
-#' @param likelihood log likelihood density function
-#' @param prior either a prior class (see \code{\link{createPrior}}) or a log prior density function
+#' @param likelihood either an object of class likelihood created by \code{\link{createLikelihood}} or a specialized likelihood function, or a log likelihood density function. If you provide a function, parallel, paralleOptions and catchDuplicates will be internally used to create the likelihood object
+#' @param prior either an object of a prior created by \code{\link{createPrior}} or a log prior density function
 #' @param priorSampler if a prior density (and not a prior class) is provided to prior, the optional prior sampling function can be provided here
 #' @param lower vector with lower prior limits
 #' @param upper vector with upper prior limits
 #' @param best vector with best prior values
 #' @param names optional vector with parameter names
-#' @param parallel parallelization option. Default is F. Other options are T, or "external". See details.
-#' @param parallelOptions list containing three lists. First "packages" determines the R packages necessary to run the likelihood function. Second "variables" the objects in the global envirnment needed to run the likelihood function and third "dlls" the DLLs needed to run the likelihood function (see Details and Examples). 
-#' @param catchDuplicates Logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns. 
+#' @param parallel parallelization option. Default is F. Other options include T, or "external". See details.
+#' @param parallelOptions list containing three lists.
+#' * First, "packages" determines the R packages necessary to run the likelihood function.
+#' * Second, "variables" - the objects in the global environment needed to run the likelihood function and 
+#' * Third, "dlls" is needed to run the likelihood function (see Details and Examples). 
+#' @param catchDuplicates logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns. 
 #' @param plotLower vector with lower limits for plotting
 #' @param plotUpper vector with upper limits for plotting
 #' @param plotBest vector with best values for plotting
+#' 
+#' @returns An object of class BayesianSetup. Implemented S3 generics include \code{\link{print.BayesianSetup}}.
+#' 
 #' @details If prior is of class prior (e.g. create with \code{\link{createPrior}}), priorSampler, lower, upper and best will be ignored.\cr If prior is a function (log prior density), priorSampler (custom sampler), or lower/upper (uniform sampler) is required.\cr If prior is NULL, and lower and upper are passed, a uniform prior (see \code{\link{createUniformPrior}}) will be created with boundaries lower and upper.
 #' 
-#' For parallelization, option parallel = T means that an automatic parallelization via a standard R socket cluster is attempted. By default, a copy of your workspace, including DLLs and objects are exporte to the cluster workers. Because this can be very inefficient, you can explictly specify the packages, objects and DLLs that are to be exported via parallelOptions.
+#' For parallelization, Bayesiantools requires that the likelihood can evaluate multiple parameter vectors (supplied as a matrix) in parallel. 
 #' 
-#' Using parallel = T requires that the function to be parallelized is well encapsulate, i.e. can run on a shared memory / shared hard disk machine in parallel without interfering with each other. For some functions and programs, this is not the case, so that a custom-programmed parallelization is required. 
+#' * parallel = T attempts to parallelize likelihood via a standard R socket cluster using the \code{\link{generateParallelExecuter}} function. By default, of the N cores detected on the computer, N-1 cores are requested. Alternatively, you can provide a integer number to parallel, specifying the cores reserved for the cluster. When the cluster is created, a copy of your workspace, including DLLs and objects are exported to the cluster workers. As this approach can be highly inefficient, it is recommended to explicitly specify the packages, objects and DLLs to export using parallelOptions. Using parallel = T requires that the function to be parallelized is well encapsulated, i.e. can run in parallel on a shared memory / shared hard disk machine in parallel without interfering with each other. 
 #' 
-#' In this case, and only in this case, you should specify parallel = "external". In this case, it is assumed that the likelihood is programmed such that it accepts a matrix with parameters as columns and the different model runs as rows. It is then up to the user if and how to parallelize this function. This option gives most flexibility to the user, in particular for complicated parallel architecture or shared memory problems.
+#' If automatic parallelization is not possible (e.g., because dlls are not thread-safe or write to shared disk), and only in this case, you should specify parallel = "external". In this case, it is assumed that the likelihood is programmed to accept a matrix with parameters as columns and the different model runs as rows. The user can then choose whether and how to parallelize this function. This option provides optimal flexibility for the user, especially regarding complicated parallel architectures or shared memory issues.
 #'
-#' For more details on parallelization, make sure to read the vignette (run vignette("BayesianTools", package="BayesianTools"))
-#'
+#' For more details on parallelization, make sure to read both vignettes, especially the section on likelihood in the main vignette and the section on parallelization in the vignette on interfacing models.
 #' 
 #' @export
 #' @seealso \code{\link{checkBayesianSetup}} \cr
 #'          \code{\link{createLikelihood}} \cr
 #'          \code{\link{createPrior}} \cr
+#'        
 #' @example /inst/examples/classBayesianSetup.R
 #' 
 #' 
@@ -152,11 +159,11 @@ createBayesianSetup <- function(likelihood,
 #' @export
 checkBayesianSetup <- function(bayesianSetup, parallel = F){
   
-  if(class(bayesianSetup) == "function"){
+  if(inherits(bayesianSetup, "function")){
     if(is.null(parallel)) parallel = F
     bayesianSetup = createBayesianSetup(bayesianSetup, parallel = parallel)
   } 
-  else if(class(bayesianSetup) == "BayesianSetup"){
+  else if(inherits(bayesianSetup, "BayesianSetup")){
     if(!is.null(parallel)) if(parallel == T & bayesianSetup$parallel == F) stop("parallel = T requested in sampler but BayesianSetup does not support parallelization. See help of BayesianSetup on how to enable parallelization")
   } 
   else stop("bayesianSetup must be class BayesianSetup or a function")
@@ -168,7 +175,7 @@ checkBayesianSetup <- function(bayesianSetup, parallel = F){
 #' Function to close cluster in BayesianSetup
 #' @author Stefan Paul
 #' @description Function closes 
-#' the parallel executer (if available)
+#' the parallel executor (if available)
 #' @param  bayesianSetup object of class BayesianSetup
 #' @export
 stopParallel <- function(bayesianSetup){
@@ -185,9 +192,19 @@ stopParallel <- function(bayesianSetup){
 }
 
 
+#' Print an object of BayesianSetup
+#'
+#' @description print function for objects of class BayesianSetup
+#'
+#' 
+#' @param x an object of class BayesianSetup 
+#' @param ... not implemented
+#' 
 #' @author Maximilian Pichler
+#' 
 #' @export
-
+#' @seealso \code{\link{checkBayesianSetup}} \cr
+#'          \code{\link{createBayesianSetup}} \cr
 print.BayesianSetup <- function(x, ...){
   cat('BayesianSetup: \n\n')
   

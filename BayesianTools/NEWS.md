@@ -1,5 +1,17 @@
 NOTE: for more news about the package, see https://github.com/florianhartig/BayesianTools/releases
 
+# BayesianTools 0.1.8
+
+This release was necceessary to make BT compatible with new CRAN policies, in particular a switch to HTML5 for documentation pages
+
+Bugfixes
+
+- fixes HTML validation problems connected to the recent switch to HTML5 for documentation pages in R 4.2 https://github.com/florianhartig/BayesianTools/issues/240. 
+- fixes detritus problems under Windows dev, which, after a long search, turned up to be caused by some stray parallel notes https://github.com/florianhartig/BayesianTools/issues/244
+
+Minor changes
+
+- Help improvements and clarifications
 
 # BayesianTools 0.1.7
 
@@ -7,7 +19,8 @@ The release was neccessary because of a change to CRAN, see https://github.com/f
 
 Bugfixes 
 
-- various small bugfixes, see 
+- fixed HTML validation problems due to the recent switch to HTML5 for documentation pages in R 4.2.0, see also https://github.com/florianhartig/BayesianTools/issues/240
+- some other small bugfixes
 
 # BayesianTools 0.1.6
 
@@ -27,7 +40,7 @@ Bugfixes
 
 - Bugfix AR1 likelihood https://github.com/florianhartig/BayesianTools/issues/169
 - Bugfix restart MCMC https://github.com/florianhartig/BayesianTools/issues/158
-
+- bugfix for new behavior of class(matrix) in CRAN devel, see https://github.com/florianhartig/BayesianTools/issues/191
 
 # BayesianTools 0.1.5
 

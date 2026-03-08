@@ -1,4 +1,5 @@
 Version: 1.0
+ProjectId: b1c0cb0b-5c21-4bbd-9310-4e7e80ddf62b
 
 RestoreWorkspace: Default
 SaveWorkspace: Default
@@ -17,4 +18,4 @@ PackageUseDevtools: Yes
 PackagePath: BayesianTools
 PackageInstallArgs: --no-multiarch --with-keep.source
 PackageCheckArgs: --as-cran
-PackageRoxygenize: rd,collate,namespace,vignette
+PackageRoxygenize: rd,collate,namespace

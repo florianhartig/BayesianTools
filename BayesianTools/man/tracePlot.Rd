@@ -9,14 +9,16 @@ tracePlot(sampler, thin = "auto", ...)
 \arguments{
 \item{sampler}{an object of class MCMC sampler}
 
-\item{thin}{determines the thinning intervall of the chain}
+\item{thin}{determines the thinning interval of the chain}
 
-\item{...}{additional parameters to pass on to the \code{\link{getSample}}, for example parametersOnly =F, or start = 1000}
+\item{...}{additional parameters to pass on to the \code{\link{getSample}}, for example parametersOnly = F, or start = 1000}
 }
 \description{
 Trace plot for MCMC class
 }
 \examples{
+
+
 # set up and run the MCMC
 ll <- function(x) sum(dnorm(x, log = TRUE))
 setup <- createBayesianSetup(likelihood = ll, lower = c(-10, -10), upper = c(10,10))
@@ -34,6 +36,6 @@ tracePlot(sampler = out, thin = 10, start = 500, whichParameters = 2)
 }
 \seealso{
 \code{\link{marginalPlot}} \cr
-         \code{\link{plotTimeSeries}} \cr
-         \code{\link{correlationPlot}}
+\code{\link{plotTimeSeries}} \cr
+\code{\link{correlationPlot}}
 }

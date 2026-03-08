@@ -4,9 +4,7 @@ before_install:
 
 language: r
 r:
-  - oldrel
   - release
-  - devel
   
 cache: packages
 

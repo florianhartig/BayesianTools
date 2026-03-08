@@ -1,8 +1,11 @@
 #' Convenience function to create an object of class mcmcSamplerList from a list of mcmc samplers
 #' @author Florian Hartig
-#' @param mcmcList a list with each object being an mcmcSampler
+
+#' @param mcmcList a list of objects of class mcmcSampler 
 #' @return Object of class "mcmcSamplerList"
+#' 
 #' @export
+#' 
 createMcmcSamplerList <- function(mcmcList){
   # mcmcList <- list(mcmcList) -> This line didn't make any sense at all. Better would be to allow the user to simply provide several inputs without a list, but I guess the list option should be maintained, as this is convenient when scripting.
   for (i in 1:length(mcmcList)){
@@ -14,6 +17,7 @@ createMcmcSamplerList <- function(mcmcList){
 
 #' @author Stefan Paul
 #' @method summary mcmcSamplerList
+#' @describeIn summary.mcmcSampler 
 #' @export
 summary.mcmcSamplerList <- function(object, ...){
   #codaChain = getSample(sampler, parametersOnly = parametersOnly, coda = T, ...)
@@ -30,16 +34,16 @@ summary.mcmcSamplerList <- function(object, ...){
 
   gelDiag <- gelmanDiagnostics(sampler)
   psf <- round(gelDiag$psrf[,1], 3)
-  
+
   mcmcsampler <- sampler[[1]]$settings$sampler
-  
+
   runtime <- 0
   for(i in 1:length(sampler)) runtime <- runtime+sampler[[i]]$info$runtime[3]
 
   correlations <- round(cor(getSample(sampler)),3)
 
-  
-  sampler <- getSample(sampler, parametersOnly = T, coda = T)
+
+  sampler <- getSample(sampler, parametersOnly = T, coda = T, ...)
   if("mcmc.list" %in% class(sampler)){
     nrChain <- length(sampler)
     nrIter <- nrow(sampler[[1]])
@@ -72,20 +76,22 @@ summary.mcmcSamplerList <- function(object, ...){
     }
 
   }
-  
+
   # output for parameter metrics
   parOutDF <- cbind(psf, MAPvals, lowerq, medi, upperq)
   colnames(parOutDF) <- c("psf", "MAP", "2.5%", "median", "97.5%")
   row.names(parOutDF) <- parnames
 
-  
+
   cat(rep("#", 25), "\n")
   cat("## MCMC chain summary ##","\n")
   cat(rep("#", 25), "\n", "\n")
   cat("# MCMC sampler: ",mcmcsampler, "\n")
   cat("# Nr. Chains: ", nrChain, "\n")
   cat("# Iterations per chain: ", nrIter, "\n")
-  cat("# Rejection rate: ", round(mean(coda::rejectionRate(sampler)),3), "\n")
+  cat("# Rejection rate: ", ifelse(object[[1]]$setup$numPars == 1, # this is a hack because coda::rejectionRate does not work for 1-d MCMC lists
+                                   round(mean(sapply(sampler, coda::rejectionRate)),3),
+                                   round(mean(coda::rejectionRate(sampler)),3) ), "\n")
   cat("# Effective sample size: ", round(mean(coda::effectiveSize(sampler)),0), "\n")
   cat("# Runtime: ", runtime, " sec.","\n", "\n")
   cat("# Parameters\n")
@@ -95,11 +101,13 @@ summary.mcmcSamplerList <- function(object, ...){
   cat("## Convergence" ,"\n", "Gelman Rubin multivariate psrf: ", conv, "\n","\n")
   cat("## Correlations", "\n")
   print(correlations)
-  
+
 }
+
 
 #' @author Florian Hartig
 #' @method print mcmcSamplerList
+#' @describeIn print.mcmcSampler 
 #' @export
 print.mcmcSamplerList <- function(x, ...){
   print("mcmcSamplerList - you can use the following methods to summarize, plot or reduce this class:")
@@ -110,6 +118,7 @@ print.mcmcSamplerList <- function(x, ...){
 }
 
 #' @method plot mcmcSamplerList
+#' @describeIn plot.mcmcSampler 
 #' @export
 plot.mcmcSamplerList <- function(x, ...){
   tracePlot(x, ...)
@@ -117,10 +126,11 @@ plot.mcmcSamplerList <- function(x, ...){
 
 #' @author Florian Hartig
 #' @export
-getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, includesProbabilities = F, reportDiagnostics, ...){
+#' @rdname getSample
+getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics, ...){
 
   if(!is.null(numSamples)) numSamples = ceiling(numSamples/length(sampler))
-  
+
   if(coda == F){
     # out = NULL
     out <- rep(list(NA), length(sampler))
@@ -140,12 +150,10 @@ getSample.mcmcSamplerList <- function(sampler, parametersOnly = T, coda = F, sta
       out[[i]] = getSample(sampler[[i]], parametersOnly = parametersOnly, coda = coda, start = start, end = end, thin = thin, numSamples = numSamples, whichParameters = whichParameters, reportDiagnostics= F)
     }
 
-    if(class(out[[1]]) == "mcmc.list") out = unlist(out, recursive = F)
+    if(inherits(out[[1]], "mcmc.list")) out = unlist(out, recursive = F)
     class(out) = "mcmc.list"
     out = out
   }
 
   return(out)
 }
-
-

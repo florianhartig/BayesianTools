@@ -1,3 +1,4 @@
+
 #' SMC sampler
 #' @author Florian Hartig, Matthias Speich
 #' @description Sequential Monte Carlo Sampler
@@ -63,6 +64,7 @@ smcSampler <- function(bayesianSetup,
   #if(resamplingSteps < 1) stop("SMC error, resamplingSteps can't be < 1")
 
   info = list()
+
   # The number of iterations is not known at the beginning. Therefore, output vectors (with one value for each iteration)
   # are made large enough that they will probably not need to be grown (growing arrays can be slow).
   if(resamplingSteps > 0) info$resamplingAcceptance = as.data.frame(matrix(nrow = 10000, ncol = resamplingSteps)) #Using DF instead of matrix because number of iterations may change due to adaptive algorithm

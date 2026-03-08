@@ -1,21 +1,21 @@
 #' The Metropolis Algorithm
 #' @author Francesco Minunno
 #' @description The Metropolis Algorithm (Metropolis et al. 1953)
-#' @param startValue vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case startValues are sampled from the prior.
-#' @param iterations iterations to run
-#' @param nBI number of burnin
+#' @param startValue vector with the start values for the algorithm. Can be NULL if FUN is of class BayesianSetup. In this case, startValues are sampled from the prior.
+#' @param iterations number of iterations to run
+#' @param nBI number of burn-in
 #' @param parmin minimum values for the parameter vector or NULL if FUN is of class BayesianSetup
 #' @param parmax maximum values for the parameter vector or NULL if FUN is of class BayesianSetup
 #' @param f scaling factor
-#' @param FUN function to be sampled from or object of class bayesianSetup
-#' @param consoleUpdates interger, determines the frequency with which sampler progress is printed to the console
+#' @param FUN function to be sampled from or object of class BayesianSetup
+#' @param consoleUpdates integer, determines the frequency with which sampler progress is printed to the console
 #' @references Metropolis, Nicholas, et al. "Equation of state calculations by fast computing machines." The journal of chemical physics 21.6 (1953): 1087-1092.
 #' @keywords internal
 # #' @export
 M <- function(startValue = NULL, iterations  = 10000, nBI = 0 , parmin = NULL, parmax= NULL, f = 1, FUN, consoleUpdates=1000) {
   
   
-  if(class(FUN) == "BayesianSetup"){
+  if(inherits(FUN, "BayesianSetup")){
      if(FUN$numPars==1) stop("Sampler cannot be started for 1 parameter")
       
     if(is.null(startValue)){
@@ -100,7 +100,7 @@ M <- function(startValue = NULL, iterations  = 10000, nBI = 0 , parmin = NULL, p
 # #' @export
 AM <- function(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL, parmax = NULL, FUN, f = 1, eps = 0) {
   
-  if(class(FUN) == "BayesianSetup"){
+  if(inherits(FUN, "BayesianSetup")){
     if(FUN$numPars==1) stop("Sampler cannot be started for 1 parameter")
     if(is.null(startValue)){
       startValue <- FUN$prior$sampler()
@@ -181,7 +181,7 @@ AM <- function(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL, pa
 # #' @export
 DR <- function(startValue = NULL, iterations = 10000, nBI=0, parmin = NULL, parmax =NULL, f1 = 1, f2= 0.5, FUN) {
   
-  if(class(FUN) == "BayesianSetup"){
+  if(inherits(FUN, "BayesianSetup")){
     if(FUN$numPars==1) stop("Sampler cannot be started for 1 parameter")
     if(is.null(startValue)){
       startValue <- FUN$prior$sampler()
@@ -267,7 +267,7 @@ DR <- function(startValue = NULL, iterations = 10000, nBI=0, parmin = NULL, parm
 # #' @export
 DRAM <- function(startValue = NULL, iterations = 10000, nBI = 0, parmin = NULL, parmax = NULL, FUN, f = 1, eps = 0) {
   
-  if(class(FUN) == "BayesianSetup"){
+  if(inherits(FUN, "BayesianSetup")){
     if(FUN$numPars==1) stop("Sampler cannot be started for 1 parameter")
     if(is.null(startValue)){
       startValue <- FUN$prior$sampler()

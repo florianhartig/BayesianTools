@@ -14,7 +14,7 @@ scaleMatrix(mat, min, max)
 \item{max}{maximum value}
 }
 \value{
-sclaed matrix
+scaled matrix
 }
 \description{
 Function to scale matrices

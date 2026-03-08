@@ -26,13 +26,13 @@ plotDiagnostic(
 
 \item{window}{plot range to show, vector of percents or only one value as start value for the window}
 
-\item{plotWAIC}{whether to calculate WAIC or not, default = T}
+\item{plotWAIC}{logical, whether to calculate WAIC or not, default = T}
 
-\item{plotPSRF}{calculate and plot mPSRF/PSRF or not, default = T}
+\item{plotPSRF}{logical, whether to calculate and plot mPSRF/PSRF or not, default = T}
 
-\item{plotDIC}{calculate and plot DICor not, default = T}
+\item{plotDIC}{logical, whether to calculate and plot DIC or not, default = T}
 
-\item{plotTrace}{show trace plots or not, default = T}
+\item{plotTrace}{logical, whether to show trace plots or not, default = T}
 
 \item{graphicParameters}{graphic parameters as list for plot function}
 
@@ -42,18 +42,17 @@ plotDiagnostic(
 This function plots the DIC, WAIC, mPSRF, PSRF(with upper C.I.) and traces of the parameters in dependence of iterations. DIC, WAIC are plotted separately for the chains and the trace plots also for the internal chains.
 }
 \examples{
-# Create bayesian setup with  
-bayesianSetup <- createBayesianSetup(likelihood = testDensityNormal, 
-                                     prior = createUniformPrior(lower = -10,
-                                                                upper = 10))
-
-# running MCMC
-
-out = runMCMC(bayesianSetup = bayesianSetup)
-
-# diagnostic plots
 \dontrun{
-plotDiagnostic(out)
+  
+  # Create bayesian setup with  
+  bayesianSetup <- createBayesianSetup(likelihood = testDensityNormal, 
+                                       prior = createUniformPrior(lower = -10,
+                                                                  upper = 10))
+  # running MCMC
+  out = runMCMC(bayesianSetup = bayesianSetup)
+  
+  # diagnostic plots
+  plotDiagnostic(out)
 }
 }
 \author{

@@ -1,0 +1,94 @@
+---
+title: "Supplementary material - estimated SMC posterior distributions"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align="center", fig.width = 8, fig.height = 8)
+```
+
+
+```{r, echo = F,  message = F}
+library(BayesianTools)
+set.seed(123)
+filepath = "./data/"
+```
+
+
+# VSEM - Case with strong correlation
+
+```{r smc.VSEMa, echo=FALSE}
+
+pars <- expand.grid(l = c("50", "75", "90"),
+                    s = c("0.01", "0.1", "0.333", "0.5"),
+                    p = c("5000", "20000", "50000", "1e+05"),
+                    r = c("2", "5", "10", "20", "30"))
+
+for(i in 1:nrow(pars)){
+  print(c("Number of particles N: ", as.character(pars[i, "p"])))
+  print(c("Threshold for resample-move step [% of N]: ", as.character(pars[i, "l"])))
+  print(c("Scaling factor for mutation steps: ", as.character(pars[i, "s"])))
+  print(c("Number of mutation steps: ", as.character(pars[i, "r"])))
+  
+  load(paste0(filepath, "VSEMa1/p_", as.character(pars[i, "p"]),
+              "l_", as.character(pars[i, "l"]),
+              "s_", as.character(pars[i, "s"]),
+              "r_", as.character(pars[i, "r"]),
+              ".RData"))
+  marginalPlot(smc.VSEMa, singlePanel = T)
+}
+
+```
+
+# VSEM - Case without strong correlation
+
+```{r smc.VSEMb, echo=FALSE}
+
+pars <- expand.grid(l = c("50", "75", "90"),
+                    s = c("0.01", "0.1", "0.333", "0.5"),
+                    p = c("5000", "20000", "50000", "1e+05"),
+                    r = c("2", "5", "10", "20", "30"))
+
+for(i in 1:nrow(pars)){
+  print(c("Number of particles N: ", as.character(pars[i, "p"])))
+  print(c("Threshold for resample-move step [% of N]: ", as.character(pars[i, "l"])))
+  print(c("Scaling factor for mutation steps: ", as.character(pars[i, "s"])))
+  print(c("Number of mutation steps: ", as.character(pars[i, "r"])))
+  
+  load(paste0(filepath, "VSEMb1\\p_", as.character(pars[i, "p"]),
+              "l_", as.character(pars[i, "l"]),
+              "s_", as.character(pars[i, "s"]),
+              "r_", as.character(pars[i, "r"]),
+              ".RData"))
+  marginalPlot(smc.VSEMb, singlePanel = T)
+}
+
+```
+
+# 3PGN
+
+```{r smc.3PGN, echo=FALSE, fig.height=40}
+
+pars <- expand.grid(l = c("50", "75", "90"),
+                    s = c("0.01", "0.1", "0.333", "0.5"),
+                    p = c("5000", "20000", "50000", "1e+05"),
+                    r = c("2", "5", "10", "20", "30"))
+
+for(i in 1:nrow(pars)){
+  
+  print(c("Number of particles N: ", as.character(pars[i, "p"])))
+  print(c("Threshold for resample-move step [% of N]: ", as.character(pars[i, "l"])))
+  print(c("Scaling factor for mutation steps: ", as.character(pars[i, "s"])))
+  print(c("Number of mutation steps: ", as.character(pars[i, "r"])))
+
+  load(paste0(filepath, "threePGN1\\p_", as.character(pars[i, "p"]),
+              "l_", as.character(pars[i, "l"]),
+              "s_", as.character(pars[i, "s"]),
+              "r_", as.character(pars[i, "r"]),
+              ".RData"))
+  marginalPlot(smc.3pg, singlePanel = T)
+}
+
+```

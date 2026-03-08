@@ -25,9 +25,9 @@ correlationPlot(
 
 \item{whichParameters}{indices of parameters that should be plotted}
 
-\item{scaleCorText}{should the text to display correlation be scaled to the strength of the correlation}
+\item{scaleCorText}{should the text to display correlation be scaled to the strength of the correlation?}
 
-\item{...}{additional parameters to pass on to the \code{\link{getSample}}, for example parametersOnly =F, or start = 1000}
+\item{...}{additional parameters to pass on to the \code{\link{getSample}}, for example parametersOnly = F, or start = 1000}
 }
 \description{
 Flexible function to create correlation density plots
@@ -64,8 +64,8 @@ The code for the correlation density plot originates from Hartig, F.; Dislich, C
 }
 \seealso{
 \code{\link{marginalPlot}} \cr
-         \code{\link{plotTimeSeries}} \cr
-         \code{\link{tracePlot}} \cr
+\code{\link{plotTimeSeries}} \cr
+\code{\link{tracePlot}} \cr
 }
 \author{
 Florian Hartig

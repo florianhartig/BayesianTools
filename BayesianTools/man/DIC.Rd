@@ -16,13 +16,13 @@ Deviance information criterion
 }
 \details{
 Output:
-  list with the following elements: \cr
-    DIC   : Deviance Information Criterion \cr
-    IC    : Bayesian Predictive Information Criterion \cr
-    pD    : Effective number of parameters (pD = Dbar - Dhat) \cr
-    pV    : Effective number of parameters (pV = var(D)/2) \cr
-    Dbar  : Expected value of the deviance over the posterior \cr
-    Dhat  : Deviance at the mean posterior estimate \cr
+list with the following elements: \cr
+DIC   : Deviance Information Criterion \cr
+IC    : Bayesian Predictive Information Criterion \cr
+pD    : Effective number of parameters (pD = Dbar - Dhat) \cr
+pV    : Effective number of parameters (pV = var(D)/2) \cr
+Dbar  : Expected value of the deviance over the posterior \cr
+Dhat  : Deviance at the mean posterior estimate \cr
 }
 \references{
 Spiegelhalter, D. J.; Best, N. G.; Carlin, B. P. & van der Linde, A. (2002) Bayesian measures of model complexity and fit. J. Roy. Stat. Soc. B, 64, 583-639.\cr\cr

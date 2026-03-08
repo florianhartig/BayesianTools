@@ -21,7 +21,7 @@ If numSamples is greater than the number of rows in parMatrix, or NULL, or FALSE
 }
 \seealso{
 \code{\link{getPredictiveIntervals}} \cr
-         \code{\link{getCredibleIntervals}} \cr
+\code{\link{getCredibleIntervals}} \cr
 }
 \author{
 Florian Hartig
