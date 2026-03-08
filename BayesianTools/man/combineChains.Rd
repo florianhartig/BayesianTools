@@ -9,7 +9,7 @@ combineChains(x, merge = T)
 \arguments{
 \item{x}{a list of MCMC chains}
 
-\item{merge}{should chains be merged? (T or F)}
+\item{merge}{logical value (T or F) to determine if chains should be merged}
 }
 \value{
 combined chains
@@ -18,6 +18,6 @@ combined chains
 Function to combine chains
 }
 \note{
-to combine several chains to a single McmcSamplerList, see \code{\link{createMcmcSamplerList}}
+to combine several chains to a single McmcSamplerList, see \link{createMcmcSamplerList}
 }
 \keyword{internal}

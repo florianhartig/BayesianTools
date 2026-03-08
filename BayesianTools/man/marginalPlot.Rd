@@ -16,17 +16,17 @@ marginalPlot(
 )
 }
 \arguments{
-\item{x}{bayesianOutput, or matrix or data.frame containing with samples as rows and parameters as columns}
+\item{x}{bayesianOutput, or matrix or data.frame with samples as rows and parameters as columns}
 
-\item{prior}{if x is a bayesianOutput, T/F will determine if the prior is drawn (default = T). If x is matrix oder data.frame, a prior can be drawn if a matrix of prior draws with values as rows and parameters as columns can be provided here.}
+\item{prior}{if x is a bayesianOutput, T/F will determines whether the prior is drawn (default = T). If x is matrix or data.frame, a prior can be drawn if a matrix of prior draws with values as rows and parameters as columns can be provided here.}
 
-\item{xrange}{vector or matrix of plotting ranges for the x axis. If matrix, the rows must be parameters and the columns min and max values.}
+\item{xrange}{vector or matrix of plot ranges for the x-axis. If matrix, the rows must be parameters and the columns must be min and max values.}
 
-\item{type}{character determining the plot type. Either 'd' for density plot, or 'v' for violin plot}
+\item{type}{character, determes the plot type. Either 'd' for density plot, or 'v' for violin plot}
 
-\item{singlePanel}{logical, determining whether the parameter should be plotted in a single panel or each in its own panel}
+\item{singlePanel}{logical, determines whether the parameter should be plotted in a single panel or each in its own panel}
 
-\item{settings}{optional list of additional settings for \code{\link{marginalPlotDensity}}, and \code{\link{marginalPlotViolin}}, respectively}
+\item{settings}{optional, list of additional settings for \code{\link{marginalPlotDensity}}, and \code{\link{marginalPlotViolin}}, respectively}
 
 \item{nPriorDraws}{number of draws from the prior, if x is bayesianOutput}
 

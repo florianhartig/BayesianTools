@@ -21,9 +21,9 @@ TwalkMove(
 )
 }
 \arguments{
-\item{Npar}{Number of parameters}
+\item{Npar}{number of parameters}
 
-\item{FUN}{Log posterior density}
+\item{FUN}{log posterior density}
 
 \item{x}{parameter vector of chain 1}
 

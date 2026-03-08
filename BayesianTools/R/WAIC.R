@@ -1,4 +1,3 @@
-
 # TODO - implement WAIC as AIC, can look at https://github.com/jrnold/mcmcStats/blob/master/R/waic.R, check against http://finzi.psych.upenn.edu/library/blmeco/html/WAIC.html, https://cran.r-project.org/web/packages/loo/index.html, http://stats.stackexchange.com/questions/173128/watanabe-akaike-widely-applicable-information-criterion-waic-using-pymc
 
 
@@ -7,7 +6,7 @@
 #' @param bayesianOutput an object of class BayesianOutput. Must implement a log-likelihood density function that can return point-wise log-likelihood values ("sum" argument).
 #' @param numSamples the number of samples to calculate the WAIC
 #' @param ... optional values to be passed on the the getSample function 
-#' @note The function requires that the likelihood passed on to BayesianSetup contains the option sum = T/F, with defaul F. If set to true, the likelihood for each data point must be returned. 
+#' @note The function requires that the likelihood passed on to BayesianSetup contains the option sum = T/F, with default F. If set to true, the likelihood for each data point must be returned. 
 #' @details
 #'
 #'

@@ -9,7 +9,7 @@ correctThin(nTotalSamples, thin, autoThinFraction = 0.001)
 \arguments{
 \item{nTotalSamples}{total number of rows/samples}
 
-\item{thin}{thinning}
+\item{thin}{thinning parameter}
 
 \item{autoThinFraction}{fraction of the data that will be sampled when thin is set to "auto". E.g. 0.5 means thin will be nTotalSamples * 0.5. The resulting thin value is rounded down to the next integer.}
 }

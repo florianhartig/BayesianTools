@@ -2,19 +2,30 @@
 % Please edit documentation in R/plotSensitivityOAT.R
 \name{plotSensitivity}
 \alias{plotSensitivity}
-\title{Performs a one-factor-at-a-time sensitivity analysis for the posterior of a given bayesianSetup within the prior range.}
+\title{One-factor-at-a-time sensitivity plot}
 \usage{
-plotSensitivity(bayesianSetup, selection = NULL, equalScale = T)
+plotSensitivity(bayesianSetup, selection = NULL, equalScale = TRUE)
 }
 \arguments{
 \item{bayesianSetup}{An object of class BayesianSetup}
 
 \item{selection}{indices of selected parameters}
 
-\item{equalScale}{if T, y axis of all plots will have the same scale}
+\item{equalScale}{logical, if TRUE - y axis of all plots will have the same scale}
 }
 \description{
 Performs a one-factor-at-a-time sensitivity analysis for the posterior of a given bayesianSetup within the prior range.
+}
+\details{
+The function performs a one-factor-at-a-time sensitivity analysis on a BayesianSetup object.
+
+Per default, the scale of the y axis is the same for all plots. Often, this creates problems, as one parameter is far more sensitive than another. In this case, we will see a plot like the following:
+
+\figure{plotSensitivity-ScaleDontMatch.png}{Sensitivity Plot}
+
+This issue can be resolved by setting 'equalScale = F'. In this case, the y axis will have different scales, resulting in the following plot:
+
+\figure{plotSensitivity-ScaleFalse.png}{Sensitivity Plot}
 }
 \note{
 This function can also be used for sensitivity analysis of an arbitrary output - just create a BayesianSetup with this output.
@@ -25,6 +36,12 @@ ll <- testDensityBanana
 bayesianSetup <- createBayesianSetup(likelihood = ll, lower = rep(-10, 2), upper = rep(10, 2))
 
 plotSensitivity(bayesianSetup)
+
+# can select parameters
+plotSensitivity(bayesianSetup, selection = c(2,1))
+
+# scale each parameter independently
+plotSensitivity(bayesianSetup, equalScale = FALSE)
 }
 \author{
 Florian Hartig

@@ -1,0 +1,106 @@
+---
+title: "Fitting standard statistical models with the BayesianTools Package"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Statistical Models with the BayesianTools Package}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+abstract: "This vignette shows how to fit standard statistical models with the BayesianTools package" 
+author: Florian Hartig
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
+```
+
+```{r, echo = F, message = F}
+set.seed(123)
+```
+
+
+# Linear regression
+
+Consider the following linear regression model
+
+```{r}
+fit = lm(Ozone ~ Wind, data = airquality)
+summary(fit)
+```
+
+How to do the same with the BT package? First, we need to specify the likelihood for a linear regression:
+
+```{r}
+dat = model.frame(fit) # using model.frame makes sure we use the same data
+
+likelihood <- function(par){
+  # c("a", "b", "err-sd")
+  pred = par[1] * dat$Wind +  par[2]
+  ll = sum(dnorm(pred - dat$Ozone, 
+                            sd = par[3], 
+                            log = T))
+  return(ll)
+}
+
+par = c(-5,96,25)
+likelihood(par)
+```
+
+Creating the BayesianSetup by combining likelihood with uniform (flat) priors
+
+```{r, message=F}
+library(BayesianTools)
+setup <- createBayesianSetup(likelihood = likelihood, 
+                             lower = c(-100,-100,0), 
+                             upper = c(100,200,50),
+                             names = c("Wind", "intercept", "err-sd"))
+```
+
+Creating required setup for wrapper function runMCMC to start MCMCs
+
+```{r}
+settings <- list(iterations = 10000, nrChains = 2)
+res <- runMCMC(bayesianSetup = setup, settings = settings)
+```
+
+Traceplots and Gelman diagnostics to check convergence confirm the estimation procedure is fine and the MCMC has converged.
+
+```{r}
+plot(res)
+gelmanDiagnostics(res)
+```
+
+Summary table is virtually identical to the standard regression table using lm 
+
+```{r}
+summary(res, start=1000)
+```
+
+Plots of the marginal prior and posterior distribution
+
+```{r}
+marginalPlot(res, start = 1000, prior = T)
+```
+
+A correlation plot shows a very strong correlction between slope and intercept. This is because the predictor variable wasn't centered. 
+
+```{r}
+correlationPlot(res, start = 1000)
+```
+
+Tip: in a Bayesian analysis, it is useful to scale and center all predictors. Scaling helps to set sensible non-informative priors. Centering removes posterior correlations between variables. 
+
+# Linear mixed model with the BT package
+
+
+
+
+
+# Fitting a ecosystem model with the BT package 
+
+
+
