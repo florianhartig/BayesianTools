@@ -1,19 +1,18 @@
 
 #' SMC sampler
-#' @author Florian Hartig, Matthias Speich
-#' @description Sequential Monte Carlo Sampler
+#' 
+#' @description A Sequential Monte Carlo (SMC) Sampler with differential evolution updating to avoid particle depletion
+#' 
 #' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function
 #' @param initialParticles initial particles - either a draw from the prior, provided as a matrix with the single parameters as columns and each row being one particle (parameter vector), or a numeric value with the number of desired particles. In this case, the sampling option must be provided in the prior of the BayesianSetup.
 #' @param iterations number of iterations
-#'
 #' @param exponents series of exponents to build the intermediate distributions
 #' @param lastMutateSteps how many resampling (MCMC) steps after the SMC iterations to increase sample diversity.
 #' @param proposal optional proposal class
 #' @param x Parameter to generate the exponential sequence for building intermediary distributions. Default value from Jeremiah et al. (2012)
 #' @param m Parameter to generate the exponential sequence for building intermediary distributions. Default value from Jeremiah et al. (2012)
 #' @param sampling Which algorithm to use for particle (re)sampling. Options are "multinomial" (default), "residual" and "systematic"
-#' @param ess.limit Threshold value of effective sample size below which resampling is done (fraction of effective sample size). By default, the value is set to half the number of particles. To resample at each step, use a value >= the number of particles.
-#' @param ess.factor
+#' @param ess.limit Threshold value (as a fraction between 0 and 1) of the effective sample compared to the number of particles at which resampling is done. To resample at each step, use a value > 1.
 #' @param lastResample Iteration (starting from the end) at which particle resampling is forced. To deactivate this, set to a value < 0
 #'
 #' @param resampling deprecated, use resamplingSteps to modify resampling
@@ -28,6 +27,9 @@
 #'
 #' @details The sampler can be used for rejection sampling as well as for sequential Monte Carlo. For the former case set the iterations to one.
 #' @note The SMC currently assumes that the initial particle is sampled from the prior. If a better initial estimate of the posterior distribution is available, this the sampler should be modified to include this. Currently, however, this is not included in the code, so the appropriate adjustments have to be done by hand.
+#' 
+#' @author Florian Hartig, Matthias Speich
+#' 
 #' @export
 #' @example /inst/examples/SMCHelp.R
 smcSampler <- function(bayesianSetup,
@@ -43,7 +45,7 @@ smcSampler <- function(bayesianSetup,
                        x=3.11,
                        m=7E-08,
                        sampling="multinomial",
-                       ess.limit=NULL,
+                       ess.limit=0.5,
                        ess.factor = 0.95,
                        lastResample = 1,
                        pars.lower=NULL,
@@ -72,7 +74,7 @@ smcSampler <- function(bayesianSetup,
   info$ess.vec <-  info$exponents <- vector("numeric", 10000)
   info$diagnostics <- diag.end <- list()
   lastAccept <- vector("numeric", lastMutateSteps)
-
+  if(ess.limit < 0) stop("ess.limit can't be < 0")
 
   setup <- checkBayesianSetup(bayesianSetup)
 
@@ -102,7 +104,7 @@ smcSampler <- function(bayesianSetup,
   particles <- initialParticles
   rejectionRate = 0
   particleSize = nrow(initialParticles)
-  if(is.null(ess.limit)){ess.limit <- round(particleSize) * 0.5}
+  ess.limit.abs = round(particleSize) * ess.limit
 
   weights <- oldweights <- oldInter <- rep(0, particleSize)
 
@@ -237,8 +239,16 @@ smcSampler <- function(bayesianSetup,
     ess <- 1 / sum(exp(2 * weights))
     oldInter <- oldExp * posteriorValues + (1-oldExp) * importanceValues
 
+    # TODO 8.3.26 - what's up with this alternative call using ess.factor, which was also present ? For the moment, I erased this option from the code.
+    # ess.factor was in the main function call 
     #inter.out <- beta.search(ess=ess, target.ess = (ess * ess.factor), posteriorValues = posteriorValues, importanceValues = importanceValues, oldInter = oldInter, curWeights = weights, curExp = curExp)
-    inter.out <- beta.search(ess=ess, target.ess = (ess.limit-1), posteriorValues = posteriorValues, importanceValues = importanceValues, oldInter = oldInter, curWeights = weights, curExp = curExp)
+    inter.out <- beta.search(ess=ess, 
+                             target.ess = (ess.limit.abs-1),  # TODO 8.3.26 why -1? 
+                             posteriorValues = posteriorValues, 
+                             importanceValues = importanceValues, 
+                             oldInter = oldInter, 
+                             curWeights = weights, 
+                             curExp = curExp)
     curExp <- inter.out$newExp
     weights <- inter.out$weights
     interDist <- inter.out$interDist
@@ -258,7 +268,7 @@ smcSampler <- function(bayesianSetup,
     # Resample also on the last iteration, or at the iteration (starting from the end) given by the parameter lastResample (output is based
     # on the location of particles in parameter space, the weights are not considered in the output)
 
-    if(ess < ess.limit | icount == (length(exponents) - lastResample)  | doResample){
+    if(ess < ess.limit.abs | icount == (length(exponents) - lastResample)  | doResample){
 
       oldExp <- curExp
 
