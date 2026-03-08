@@ -19,7 +19,7 @@ VSEM(
 \item{C}{switch to choose whether to use the C or R version of the model. C is much faster.}
 }
 \value{
-a matrix with colums NEE, CV, CR and CS units and explanations see details
+a matrix with columns NEE, CV, CR and CS units and explanations see details
 }
 \description{
 A very simple ecosystem model, based on three carbon pools and a basic LUE model
@@ -31,7 +31,7 @@ The model determines the accumulation of carbon in the plant and soil from the g
 
 The model calculates Gross Primary Productivity (GPP) using a very simple light-use efficiency (LUE) formulation multiplied by light interception. Light interception is calculated via Beer's law with a constant light extinction coefficient operating on Leaf Area Index (LAI).
 
-A parameter (GAMMA) determines the fraction of GPP that is autotrophic respiration. The Net Primary Productivity (NPP) is then allocated to above and below-ground vegetation via a fixed allocation fraction. Carbon is lost from the plant pools to a single soil pool via fixed turnover rates. Heterotropic respiration in the soil is determined via a soil turnover rate.
+A parameter (GAMMA) determines the fraction of GPP that is autotrophic respiration. The Net Primary Productivity (NPP) is then allocated to above and below-ground vegetation via a fixed allocation fraction. Carbon is lost from the plant pools to a single soil pool via fixed turnover rates. Heterotrophic respiration in the soil is determined via a soil turnover rate.
 
 The model equations are
 
