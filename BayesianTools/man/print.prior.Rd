@@ -15,7 +15,7 @@
 print function for objects of class prior
 }
 \seealso{
-\code{\link{createPrior}}
+\link{createPrior}
 }
 \author{
 Maximilian Pichler
