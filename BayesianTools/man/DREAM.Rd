@@ -13,15 +13,15 @@ DREAM(
 )
 }
 \arguments{
-\item{bayesianSetup}{Object of class 'bayesianSetup' or 'bayesianOuput'.}
+\item{bayesianSetup}{object of class 'bayesianSetup' or 'bayesianOuput'.}
 
 \item{settings}{list with parameter values}
 
-\item{iterations}{Number of model evaluations}
+\item{iterations}{number of model evaluations}
 
 \item{nCR}{parameter determining the number of cross-over proposals. If nCR = 1 all parameters are updated jointly.}
 
-\item{updateInterval}{determining the intervall for the pCR update}
+\item{updateInterval}{determines the interval for the pCR update}
 
 \item{gamma}{Kurtosis parameter Bayesian Inference Scheme}
 
@@ -29,21 +29,21 @@ DREAM(
 
 \item{e}{Ergodicity term}
 
-\item{pCRupdate}{If T, crossover probabilities will be updated}
+\item{pCRupdate}{logical, if T, crossover probabilities will be updated}
 
 \item{burnin}{number of iterations treated as burn-in. These iterations are not recorded in the chain.}
 
-\item{thin}{thin thinning parameter. Determines the interval in which values are recorded.}
+\item{thin}{thinning parameter. Determines the interval in which values are recorded.}
 
-\item{adaptation}{Number or percentage of samples that are used for the adaptation in DREAM (see Details).}
+\item{adaptation}{number or percentage of samples that are used for the adaptation in DREAM (see Details).}
 
-\item{DEpairs}{Number of pairs used to generate proposal}
+\item{DEpairs}{number of pairs used to generate proposal}
 
-\item{startValue}{eiter a matrix containing the start values (see details), an integer to define the number of chains that are run, a function to sample the start values or NUll, in which case the values are sampled from the prior.}
+\item{startValue}{either a matrix containing the start values (see details), an integer to define the number of chains to be run, a function to sample the start values or NUll - in which case the values are sampled from the prior.}
 
-\item{consoleUpdates}{Intervall in which the sampling progress is printed to the console}
+\item{consoleUpdates}{interval at which the sampling progress is printed to the console}
 
-\item{message}{logical determines whether the sampler's progress should be printed}
+\item{message}{logical, determines whether the sampler's progress should be printed}
 }
 \value{
 mcmc.object containing the following elements: chains, X, pCR
@@ -52,25 +52,24 @@ mcmc.object containing the following elements: chains, X, pCR
 DREAM
 }
 \details{
-Insted of a bayesianSetup, the function can take the output of a previous run to restart the sampler
-from the last iteration. Due to the sampler's internal structure you can only use the output
-of DREAM.
-If you provide a matrix with start values the number of rows determines the number of chains that are run.
+Instead of a bayesianSetup, the function can take the output of a previous run to restart the sampler
+from the last iteration. Due to the sampler's internal structure you can only use the output of DREAM.
+If you provide a matrix with start values, the number of rows determines the number of chains that will be run.
 The number of coloumns must be equivalent to the number of parameters in your bayesianSetup. \cr\cr
 There are several small differences in the algorithm presented here compared to the original paper by Vrugt et al. (2009). Mainly
-the algorithm implemented here does not have an automatic stopping criterion. Hence, it will
+The algorithm implemented here does not have an automatic stopping criterion. Hence, it will
 always run the number of iterations specified by the user. Also, convergence is not
 monitored and left to the user. This can easily be done with coda::gelman.diag(chain).
-Further the proposed delayed rejectio step in Vrugt et al. (2009) is not implemented here.\cr\cr
+Furthermore, the delayed rejection step proposed in Vrugt et al. (2009) is not implemented here.\cr\cr
 
 During the adaptation phase DREAM is running two mechanisms to enhance the sampler's efficiency.
-First the disribution of crossover values is tuned to favor large jumps in the parameter space.
+First, the disribution of crossover values is tuned to favor large jumps in the parameter space.
 The crossover probabilities determine how many parameters are updated simultaneously.
-Second outlier chains are replanced as they can largely deteriorate the sampler's performance.
+Second, outlier chains are replaced as they can largely deteriorate the sampler's performance.
 However, these steps destroy the detailed balance of the chain. Consequently these parts of the chain
 should be discarded when summarizing posterior moments. This can be done automatically during the
-sampling process (i.e. burnin > adaptation) or subsequently by the user. We chose to distinguish between
-the burnin and adaptation phase to allow the user more flexibility in the sampler's settings.
+sampling process (i.e. burn-in > adaptation) or subsequently by the user. We chose to distinguish between
+the burn-in and adaptation phase to allow the user more flexibility in the sampler's settings.
 }
 \examples{
 library(BayesianTools)

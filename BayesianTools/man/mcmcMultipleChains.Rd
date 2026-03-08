@@ -7,9 +7,9 @@
 mcmcMultipleChains(bayesianSetup, settings, sampler)
 }
 \arguments{
-\item{bayesianSetup}{Object of class "BayesianSetup"}
+\item{bayesianSetup}{object of class "BayesianSetup"}
 
-\item{settings}{list with settings for sampler}
+\item{settings}{list containing settings for sampler}
 
 \item{sampler}{character, either "Metropolis" or "DE"}
 }

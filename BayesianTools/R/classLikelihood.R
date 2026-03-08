@@ -3,12 +3,14 @@
 #' @author Florian Hartig
 #' @param likelihood log likelihood density
 #' @param names parameter names (optional)
-#' @param parallel parallelization , either i) no parallelization --> F, ii) native R parallelization --> T / "auto" will select n-1 of your available cores, or provide a number for how many cores to use, or iii) external parallelization --> "external". External means that the likelihood is already able to execute parallel runs in form of a matrix with 
-#' @param catchDuplicates logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns. 
-#' @param parallelOptions list containing two lists. First "packages" determines the R packages necessary to run the likelihood function. Second "objects" the objects in the global environment needed to run the likelihood function (for details see \code{\link{createBayesianSetup}}).
+#' @param parallel parallelization , either i) no parallelization --> F, ii) native R parallelization --> T / "auto" will select n-1 of your available cores, or provide a number for how many cores to use, or iii) external parallelization --> "external". External means that the likelihood is already able to execute parallel runs in the form of a matrix. 
+#' @param catchDuplicates logical, determines whether unique parameter combinations should only be evaluated once. This is only applicable when the likelihood accepts a matrix with parameters as columns. 
+#' @param parallelOptions a list containing two lists. First, "packages" specifies the R packages necessary to run the likelihood function. Second, "objects" contains the objects in the global environment needed to run the likelihood function (for details see [createBayesianSetup]).
+#' 
 #' @param sampler sampler
 #' @seealso \code{\link{likelihoodIidNormal}} \cr
 #'          \code{\link{likelihoodAR1}} \cr
+#' @example /inst/examples/createLikelihoodHelp.R
 #' @export
 createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplicates=T, 
                              sampler = NULL, parallelOptions = NULL){
@@ -137,9 +139,9 @@ likelihoodAR1 <- function(predicted, observed, sd, a){
   n = length(observed)
   
   res = predicted - observed
-  
-  # this calculates the unconditiona LL for this data, see e.g. http://stat.unicas.it/downloadStatUnicas/seminari/2008/Julliard0708_1.pdf
-  
+
+  # this calculates the unconditional LL for this data, see e.g. http://stat.unicas.it/downloadStatUnicas/seminari/2008/Julliard0708_1.pdf
+
   ll =  0.5 * (  - n * log(2*pi)
                  - n * log(sd^2) 
                  + log( 1- a^2 )

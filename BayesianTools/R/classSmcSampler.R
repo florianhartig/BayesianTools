@@ -63,12 +63,13 @@ summary.smcSampler<- function(object, ...){
 }
 
 #' Plots of smcSampler output
-#' @description
-#' Plots smcSampler output
+#' 
+#' @description Plots smcSampler output
 #' @param x object of class mcmcSampler or mcmcSamplerList
 #' @param ... additional options passed to tracePlot
 #' @method plot smcSampler
 #' @export
+#' 
 plot.smcSampler<- function(x, ...){
   marginalPlot(x, ...)
 }

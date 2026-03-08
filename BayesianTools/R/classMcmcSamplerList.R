@@ -1,7 +1,9 @@
 #' Convenience function to create an object of class mcmcSamplerList from a list of mcmc samplers
 #' @author Florian Hartig
+
 #' @param mcmcList a list of objects of class mcmcSampler 
 #' @return Object of class "mcmcSamplerList"
+#' 
 #' @export
 #' 
 createMcmcSamplerList <- function(mcmcList){

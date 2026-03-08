@@ -2,25 +2,29 @@
 
 
 #' Extracts samples from a bayesianOutput
-#' @description
-#' This function extracts samples from a BT MCMC or SMC sampler after they have been run. It can also work on objects, for example coda::mcmc, matrix, 
 #' 
-#' It can return either a matrix or a coda mcmc object. 
+#' @description
+#' This function extracts samples from a BT MCMC or SMC sampler after they have been run. It can also work on objects, for example coda::mcmc, matrix, It can return either a matrix or a coda mcmc object. 
 #' 
 #' @param sampler an object, typically of class mcmcSampler, mcmcSamplerList (created by \code{\link{runMCMC}}), smcSampler, smcSamplerList, mcmc, mcmc.list, double, numeric
 #' @param parametersOnly for a BT output, if F, likelihood, posterior and prior values are also provided in the output
-#' @param coda works only for mcmc classes - provides output as a coda object. Note: if mcmcSamplerList contains mcmc samplers such as DE that have several chains, the internal chains will be collapsed. This may not be the desired behavior for all applications.
-#' @param start for mcmc samplers start value in the chain. For SMC samplers, start particle
+#' @param coda works only for mcmc classes - returns output as a coda object. Note: if mcmcSamplerList contains mcmc samplers such as DE that have several chains, the internal chains will be collapsed. This may not be desired for all applications.
+#' @param start for mcmc samplers, start value in the chain. For SMC samplers, start particle
 #' @param end for mcmc samplers end value in the chain. For SMC samplers, end particle
 #' @param thin thinning parameter. Either an integer determining the thinning interval (default is 1) or "auto" for automatic thinning.
 #' @param numSamples sample size (only used if thin = 1). If you want to use numSamples set thin to 1.
 #' @param whichParameters possibility to select parameters by index
 #' @param reportDiagnostics logical, determines whether settings should be included in the output
 #' @param ... further arguments
-#' @example /inst/examples/getSampleHelp.R
+#' 
 #' @details If thin is greater than the total number of samples in the sampler object the first and the last element (of each chain if a sampler with multiples chains is used) are sampled. If numSamples is greater than the total number of samples all samples are selected. In both cases a warning is displayed.
-#' @details If thin and numSamples is passed, the function will use the thin argument if it is valid and greater than 1, else numSamples will be used.
+#' 
+#' If thin and numSamples is passed, the function will use the thin argument if it is valid and greater than 1, else numSamples will be used.
+#' 
 #' @return a matrix or a coda object, depending on option
+#' 
+#' @example /inst/examples/getSampleHelp.R
+#' 
 #' @author Florian Hartig
 #' @export
 getSample <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1, numSamples = NULL, whichParameters = NULL, reportDiagnostics = FALSE, ...) UseMethod("getSample")

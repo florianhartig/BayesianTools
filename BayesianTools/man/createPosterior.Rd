@@ -15,7 +15,7 @@ createPosterior(prior, likelihood)
 Creates a standardized posterior class
 }
 \details{
-Function is internally used in \code{\link{createBayesianSetup}} to create a standarized posterior class.
+Function is internally used in \code{\link{createBayesianSetup}} to create a standardized posterior class.
 }
 \author{
 Florian Hartig
