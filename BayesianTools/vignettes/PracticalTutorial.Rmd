@@ -96,11 +96,80 @@ Tip: in a Bayesian analysis, it is useful to scale and center all predictors. Sc
 
 # Linear mixed model with the BT package
 
+To demonstrate how to fit a linera mixed model, I create a test dataset with a linear dependency between x and y, with an additional effect that is applied on a grouping factor - you can think of this as a region or site. The structure conforms to a random intercept model.
+
+```{r, fig.width=5, fig.height=5}
+a <- 5
+b <- 10
+sigma <- 10
+rsigma = 30
+group = rep(1:11, each = 5)
+randomEffect = rnorm(11, sd = rsigma)
+
+x <- -27:27
+y <- a * x + b + rnorm(55,0,sd = sigma) + randomEffect[group]
+plot(x,y, col = group, pch = 3)
+```
+
+With lme4, we would fit the model as 
+
+```{r, eval = F}
+library(lme4)
+fit <- lmer(y ~ x + (1|group))
+```
+
+Fitting the random effects model with BayesianTools 
+
+```{r}
+likelihood <- function(par){
+  # c("a", "b", "err-sd", "RE-sd", 1:11)
+  llObservation = sum(dnorm(par[1] * x +  par[2] + par[group+4] - y , sd = par[3], log = T))
+  llRandom = sum(dnorm(par[5:15], sd = par[4], log = T))
+  return(llRandom + llObservation)
+}
+
+likelihood(c(4,10,6,20,rep(0,11)))
+```
+
+Estimating the model
+
+```{r, message=F}
+library(BayesianTools)
+setup <- createBayesianSetup(likelihood = likelihood, 
+                             lower = c(-20,-50,0,0,rep(-100,11)), 
+                             upper = c(20,50,50,100,rep(100,11)),
+                             names = c("a", "b", "err-sd", "RE-sd", 1:11))
+settings <- list(iterations = 30000, nrChains = 2)
+
+res <- runMCMC(bayesianSetup = setup, settings = settings)
+```
+
+Traceplots for the 4 main parameters
+
+```{r}
+plot(res, which = 1:4)
+```
+
+Looks good, let's look at the summary
+
+```{r}
+summary(res, start=5000)
+```
 
 
+```{r}
+marginalPlot(res, start = 5000, prior = T, which = 1:4)
+```
+
+Comparison with STAN fits via brms 
+
+```{r, eval = F}
+library(brms)
+fit <- brm(y ~ x + (1|group), data = data.frame(x=x, y=y, group = group))
+summary(fit)
+```
 
 
-# Fitting a ecosystem model with the BT package 
 
 
 
