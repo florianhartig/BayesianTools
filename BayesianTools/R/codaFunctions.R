@@ -105,4 +105,3 @@ convertCoda <- function(sampler, names = NULL, info = NULL, likelihood = NULL){
   }
   return(out)
 }
-

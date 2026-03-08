@@ -1,3 +1,4 @@
+
 #' Creates a standardized likelihood class#'
 #' @author Florian Hartig
 #' @param likelihood log likelihood density
@@ -106,6 +107,7 @@ createLikelihood <- function(likelihood, names = NULL, parallel = F, catchDuplic
 
 #library(mvtnorm)
 #library(sparseMVN)
+
 #' Normal / Gaussian Likelihood function
 #' @author Florian Hartig
 #' @param predicted vector of predicted values
@@ -136,9 +138,9 @@ likelihoodAR1 <- function(predicted, observed, sd, a){
   n = length(observed)
   
   res = predicted - observed
-  
+
   # this calculates the unconditional LL for this data, see e.g. http://stat.unicas.it/downloadStatUnicas/seminari/2008/Julliard0708_1.pdf
-  
+
   ll =  0.5 * (  - n * log(2*pi)
                  - n * log(sd^2) 
                  + log( 1- a^2 )

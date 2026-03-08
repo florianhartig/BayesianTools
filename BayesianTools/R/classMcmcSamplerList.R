@@ -12,7 +12,6 @@ createMcmcSamplerList <- function(mcmcList){
   return(mcmcList)
 }
 
-
 #' @author Stefan Paul
 #' @method summary mcmcSamplerList
 #' @export

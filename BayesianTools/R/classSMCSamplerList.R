@@ -1,3 +1,4 @@
+
 #' Convenience function to create an object of class SMCSamplerList from a list of mcmc samplers
 #' @author Florian Hartig
 #' @param ... a list of MCMC samplers
@@ -34,7 +35,6 @@ print.smcSamplerList <- function(x, ...){
 plot.smcSamplerList <- function(x, ...){
   marginalPlot(x, ...)
 }
-
 
 #' @export
 getSample.smcSamplerList <- function(sampler, parametersOnly = T, coda = F, start = 1, end = NULL, thin = 1,
