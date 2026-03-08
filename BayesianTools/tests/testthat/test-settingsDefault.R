@@ -14,8 +14,6 @@ test_that("Default works in principle",{
   }
 )
 
-
-
 test_that("Wrong inputs are caught",{
   skip_on_cran()
 
