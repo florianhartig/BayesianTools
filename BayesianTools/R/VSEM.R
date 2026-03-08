@@ -142,7 +142,7 @@ VSEMgetDefaults <- function(){
 
 #' Allows to mix a given parameter vector with a default parameter vector
 #' @param pars vector with new parameter values
-#' @param defaults vector with defaukt parameter values
+#' @param defaults vector with default parameter values
 #' @param locations indices of the new parameter values
 #' @rdname package-deprecated
 #' @description This function is deprecated and will be removed by v0.2. 
