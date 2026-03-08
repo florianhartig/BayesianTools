@@ -6,6 +6,8 @@ navbar:
     href: index.html
   - text: Get Started
     href: articles/BayesianTools.html
+  - text: Interfacing a model
+    href: articles/InterfacingAModel.html
   - text: Reference
     href: reference/index.html
   right:
@@ -19,6 +21,7 @@ reference:
   - '`applySettingsDefault`'
   - '`BayesianTools`'
   - '`bridgesample`'
+  - '`calibrationTest`'
   - '`checkBayesianSetup`'
   - '`convertCoda`'
   - '`correlationPlot`'
@@ -56,9 +59,11 @@ reference:
   - '`MAP`'
   - '`marginalLikelihood`'
   - '`marginalPlot`'
+  - '`mergeChains`'
   - '`Metropolis`'
   - '`metropolisRatio`'
   - '`createMixWithDefaults`'
+  - '`plotDiagnostic`'
   - '`plotSensitivity`'
   - '`plotTimeSeries`'
   - '`plotTimeSeriesResiduals`'
@@ -68,6 +73,7 @@ reference:
   - '`smcSampler`'
   - '`stopParallel`'
   - '`testDensityBanana`'
+  - '`testDensityGelmanMeng`'
   - '`testDensityInfinity`'
   - '`testDensityMultiNormal`'
   - '`testDensityNormal`'
@@ -85,5 +91,7 @@ reference:
 articles:
 - title: All vignettes
   desc: ~
-  contents: '`BayesianTools`'
+  contents: 
+  - '`BayesianTools`'
+  - '`InterfacingAModel`'
 
