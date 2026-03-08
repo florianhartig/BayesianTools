@@ -9,7 +9,10 @@
 #' @param best vector with best prior values
 #' @param names optional vector with parameter names
 #' @param parallel parallelization option. Default is F. Other options include T, or "external". See details.
-#' @param parallelOptions list containing three lists.\itemize{ \item First, "packages" determines the R packages necessary to run the likelihood function.\item Second, "variables" - the objects in the global environment needed to run the likelihood function and \item Third, "dlls" is needed to run the likelihood function (see Details and Examples). } 
+#' @param parallelOptions list containing three lists.
+#' * First, "packages" determines the R packages necessary to run the likelihood function.
+#' * Second, "variables" - the objects in the global environment needed to run the likelihood function and 
+#' * Third, "dlls" is needed to run the likelihood function (see Details and Examples). 
 #' @param catchDuplicates logical, determines whether unique parameter combinations should only be evaluated once. Only used when the likelihood accepts a matrix with parameter as columns. 
 #' @param plotLower vector with lower limits for plotting
 #' @param plotUpper vector with upper limits for plotting
