@@ -26,6 +26,7 @@
 #'          \code{\link{createUniformPrior}} \cr
 #'          \code{\link{createTruncatedNormalPrior}}\cr
 #'          \code{\link{createBayesianSetup}}\cr
+#'          \code{\link{print.prior}}\cr
 #' @example /inst/examples/createPrior.R
 createPrior <- function(density = NULL, sampler = NULL, lower = NULL, upper = NULL, best = NULL){
   
@@ -259,8 +260,14 @@ createPriorDensity <- function(sampler, method = "multivariate", eps = 1e-10, lo
 
 
 
+#' Print object of prior class
+#' @description print function for objects of class prior
+#' @param x object of a prior
+#' @param ... additional parameters
 #' @author Maximilian Pichler
 #' @export
+#' @seealso [createPrior]
+#' 
 print.prior <- function(x, ...){
   cat('Prior: \n\n')
   
@@ -273,5 +280,4 @@ print.prior <- function(x, ...){
   for(i in 1:3) if(!is.null(prior[[info[i]]])) priorInfo[,i] <- prior[[info[i]]]
   rownames(priorInfo) <- sapply(1:maxPar, FUN = function(x) return(paste("par",x)))
   print(priorInfo)
-  
 }
