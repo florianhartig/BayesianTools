@@ -17,6 +17,8 @@ tracePlot(sampler, thin = "auto", ...)
 Trace plot for MCMC class
 }
 \examples{
+
+
 # set up and run the MCMC
 ll <- function(x) sum(dnorm(x, log = TRUE))
 setup <- createBayesianSetup(likelihood = ll, lower = c(-10, -10), upper = c(10,10))

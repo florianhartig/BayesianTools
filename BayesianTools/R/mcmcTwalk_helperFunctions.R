@@ -1,7 +1,6 @@
 ######
-# Twalk helper functions
+# T-walk helper functions
 ######
-
 
 #' Wrapper for step function
 #' @param Npar number of parameters

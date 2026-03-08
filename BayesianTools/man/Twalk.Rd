@@ -12,7 +12,7 @@ Twalk(
 )
 }
 \arguments{
-\item{bayesianSetup}{object of class 'bayesianSetup' or 'bayesianOuput'.}
+\item{bayesianSetup}{object of class 'BayesianSetup' or 'BayesianOuput'.}
 
 \item{settings}{list with parameter values.}
 

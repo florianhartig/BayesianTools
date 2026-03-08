@@ -23,7 +23,7 @@ DREAMzs(
 
 \item{updateInterval}{determines the interval for the pCR (crossover probabilities) update}
 
-\item{gamma}{kurtosis parameter Bayesian Inference Scheme.}
+\item{gamma}{kurtosis parameter for Bayesian Inference Scheme.}
 
 \item{eps}{Ergodicity term}
 

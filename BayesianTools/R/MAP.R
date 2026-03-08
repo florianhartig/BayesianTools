@@ -1,4 +1,4 @@
-#' calculates the Maxiumum APosteriori value (MAP)
+#' Calculates the Maximum APosteriori value (MAP)
 #' @author Florian Hartig
 #' @param bayesianOutput an object of class BayesianOutput (mcmcSampler, smcSampler, or mcmcList)
 #' @param ... optional values to be passed on the the getSample function 

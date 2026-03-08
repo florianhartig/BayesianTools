@@ -28,7 +28,7 @@ M(
 
 \item{f}{scaling factor}
 
-\item{FUN}{function to be sampled from or object of class bayesianSetup}
+\item{FUN}{function to be sampled from or object of class BayesianSetup}
 
 \item{consoleUpdates}{integer, determines the frequency with which sampler progress is printed to the console}
 }

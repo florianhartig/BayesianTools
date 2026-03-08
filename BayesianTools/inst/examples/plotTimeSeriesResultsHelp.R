@@ -25,7 +25,7 @@ likelihood <- function(par, sum = TRUE){
   x[parSel] = par
   predicted <- VSEM(x[1:11], PAR) # replace here VSEM with your model 
   predicted[,1] = 1000 * predicted[,1] # this is just rescaling
-  diff <- c(predicted[,1:4] - obs[,1:4]) # difference betweeno observed and predicted
+  diff <- c(predicted[,1:4] - obs[,1:4]) # difference between observed and predicted
   # univariate normal likelihood. Note that there is a parameter involved here that is fit
   llValues <- dnorm(diff, sd = x[12], log = TRUE)  
   if (sum == FALSE) return(llValues)
@@ -67,3 +67,4 @@ plotTimeSeriesResults(sampler = out, model = createPredictions, observed = obs[,
                       error = createError, prior = TRUE, main = "Prior predictive")
   
 }
+

@@ -1,3 +1,4 @@
+
 #' Determine the groups of correlated parameters
 #' @author Stefan Paul
 #' @param chain MCMC chain including only the parameters (not logP, ll, logP)
@@ -87,4 +88,4 @@ getBlockSettings <- function(blockUpdate){
   return(list(blockUpdateType = blockUpdateType, h = h, k = k, pSel = pSel,
               pGroup = pGroup, groups = groups))
   }
-  
+

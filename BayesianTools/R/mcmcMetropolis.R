@@ -1,4 +1,4 @@
-#' Creates a Metropolis-type MCMC with options for covariance adaptatin, delayed rejection, Metropolis-within-Gibbs, and tempering
+#' Creates a Metropolis-type MCMC with options for covariance adaptation, delayed rejection, Metropolis-within-Gibbs, and tempering
 #' @author Florian Hartig
 #' @param bayesianSetup either an object of class bayesianSetup created by \code{\link{createBayesianSetup}} (recommended), or a log target function 
 #' @param settings a list of settings - possible options follow 
@@ -25,7 +25,6 @@
 #' @references Hastings, W. K. (1970). Monte carlo sampling methods using markov chains and their applications. Biometrika 57 (1), 97-109.
 #' @references Green, Peter J., and Antonietta Mira. "Delayed rejection in reversible jump Metropolis-Hastings." Biometrika (2001): 1035-1053.
 #' @references Metropolis, N., A. W. Rosenbluth, M. N. Rosenbluth, A. H. Teller, and E. Teller (1953). Equation of state calculations by fast computing machines. The journal of chemical physics 21 (6), 1087 - 1092.
-
 Metropolis <- function(bayesianSetup, 
                        settings = list(startValue = NULL, 
                                        optimize = T, 

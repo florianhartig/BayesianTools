@@ -59,3 +59,4 @@ testGenerator$returnProposal(testVector)
 x <- testGenerator$returnProposalMatrix(testMatrix)
 boxplot(x)
 table(x[,4])
+
