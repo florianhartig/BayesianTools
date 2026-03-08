@@ -26,13 +26,13 @@ plotDiagnostic(
 
 \item{window}{plot range to show, vector of percents or only one value as start value for the window}
 
-\item{plotWAIC}{whether to calculate WAIC or not, default = T}
+\item{plotWAIC}{logical, whether to calculate WAIC or not, default = T}
 
-\item{plotPSRF}{calculate and plot mPSRF/PSRF or not, default = T}
+\item{plotPSRF}{logical, whether to calculate and plot mPSRF/PSRF or not, default = T}
 
-\item{plotDIC}{calculate and plot DICor not, default = T}
+\item{plotDIC}{logical, whether to calculate and plot DIC or not, default = T}
 
-\item{plotTrace}{show trace plots or not, default = T}
+\item{plotTrace}{logical, whether to show trace plots or not, default = T}
 
 \item{graphicParameters}{graphic parameters as list for plot function}
 

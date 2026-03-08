@@ -9,9 +9,9 @@ tracePlot(sampler, thin = "auto", ...)
 \arguments{
 \item{sampler}{an object of class MCMC sampler}
 
-\item{thin}{determines the thinning intervall of the chain}
+\item{thin}{determines the thinning interval of the chain}
 
-\item{...}{additional parameters to pass on to the \code{\link{getSample}}, for example parametersOnly =F, or start = 1000}
+\item{...}{additional parameters to pass on to the \code{\link{getSample}}, for example parametersOnly = F, or start = 1000}
 }
 \description{
 Trace plot for MCMC class
