@@ -1,13 +1,14 @@
 ---
-title: "Bayesian Tools - General-Purpose MCMC and SMC Samplers and Tools for Bayesian Statistics"
+title: "Reference Manual for the BayesianTools R package"
 output: 
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Manual for the BayesianTools R package}
-  \usepackage[utf8]{inputenc}
+  %\VignetteIndexEntry{Reference Manual for the BayesianTools R package}
   %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 abstract: "The BayesianTools (BT) package supports model analysis (including sensitivity analysis and uncertainty analysis), Bayesian model calibration, as well as model selection and multi-model inference techniques for system models." 
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 editor_options: 
   markdown: 
     wrap: 72

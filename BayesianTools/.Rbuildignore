@@ -4,3 +4,5 @@ _pkgdown\.yml$
 tests/testthat/Rplots.pdf
 vignettes/*.R
 vignettes/*.html
+^doc$
+^Meta$

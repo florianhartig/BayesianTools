@@ -58,7 +58,7 @@ codaObject = getSample(out, start = 500, coda = TRUE)
 
 }
 \references{
-vignette("Manual for the BayesianTools R package", package="BayesianTools")
+To access the vignettes, type vignette(package="BayesianTools")
 }
 \seealso{
 Useful links:

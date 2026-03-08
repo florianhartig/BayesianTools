@@ -1,21 +1,21 @@
 ---
-title: "Fitting standard statistical models with the BayesianTools Package"
+title: "Practical examples fitting models with Bayesian Tools"
 output: 
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Statistical Models with the BayesianTools Package}
-  \usepackage[utf8]{inputenc}
+  %\VignetteIndexEntry{Practical examples fitting models with Bayesian Tools}
   %\VignetteEngine{knitr::rmarkdown}
-abstract: "This vignette shows how to fit standard statistical models with the BayesianTools package" 
+  %\VignetteEncoding{UTF-8}
+abstract: "This vignette shows how to fit standard statistical models with the BayesianTools package"  
 author: Florian Hartig
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 editor_options: 
   chunk_output_type: console
 ---
 
-
 ```{r global_options, include=FALSE}
-knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
+knitr::opts_chunk$set(fig.width=7, fig.height=7, warning=FALSE, cache = F)
 ```
 
 ```{r, echo = F, message = F}
@@ -52,7 +52,7 @@ likelihood(par)
 
 Creating the BayesianSetup by combining likelihood with uniform (flat) priors
 
-```{r, message=F}
+```{r}
 library(BayesianTools)
 setup <- createBayesianSetup(likelihood = likelihood, 
                              lower = c(-100,-100,0), 
@@ -62,8 +62,8 @@ setup <- createBayesianSetup(likelihood = likelihood,
 
 Creating required setup for wrapper function runMCMC to start MCMCs
 
-```{r}
-settings <- list(iterations = 10000, nrChains = 2)
+```{r, message=F}
+settings <- list(iterations = 10000, nrChains = 2, message = F)
 res <- runMCMC(bayesianSetup = setup, settings = settings)
 ```
 
@@ -133,13 +133,13 @@ likelihood(c(4,10,6,20,rep(0,11)))
 
 Estimating the model
 
-```{r, message=F}
+```{r}
 library(BayesianTools)
 setup <- createBayesianSetup(likelihood = likelihood, 
                              lower = c(-20,-50,0,0,rep(-100,11)), 
                              upper = c(20,50,50,100,rep(100,11)),
                              names = c("a", "b", "err-sd", "RE-sd", 1:11))
-settings <- list(iterations = 30000, nrChains = 2)
+settings <- list(iterations = 30000, nrChains = 2, message = F)
 
 res <- runMCMC(bayesianSetup = setup, settings = settings)
 ```
