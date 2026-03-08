@@ -1,5 +1,18 @@
 NOTE: for more news about the package, see https://github.com/florianhartig/BayesianTools/releases
 
+
+# BayesianTools 0.1.9
+
+This is a maintenance release to make BT compatible with new CRAN policies
+
+Bugfixes
+
+- fixes lost braces issue https://github.com/florianhartig/BayesianTools/issues/278 
+
+Minor changes
+
+- Help improvements and clarifications
+
 # BayesianTools 0.1.8
 
 This release was necceessary to make BT compatible with new CRAN policies, in particular a switch to HTML5 for documentation pages

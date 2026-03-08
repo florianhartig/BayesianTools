@@ -1,5 +1,19 @@
 This file contains CRAN submission info / communication
 
+## Version 0.1.9
+
+### Submission 1
+
+This is a minor update that mainly addresses a "lost braces" issue highlighted by CRAN. 
+
+See NEWS for other changes.
+
+This release has been tested without apparent problems on
+
+* local Apple MAC OS 15.7.4, R 4.2.1 
+* http://win-builder.r-project.org/ - oldrelease / devel / release
+* Github Actions https://github.com/florianhartig/BayesianTools/actions Windows: [release / devel], Mac [release], Ubuntu 20.04 [release / devel]
+
 ## Version 0.1.8
 
 ### Submission 1
