@@ -1,17 +1,18 @@
 ---
-title: "Implementing BayesianTools on real data"
+title: "Fitting standard statistical models with the BayesianTools Package"
 output: 
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Implementing BayesianTools on real data}
+  %\VignetteIndexEntry{Statistical Models with the BayesianTools Package}
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown}
-abstract: "This tutorial discusses how to implement BayesianTools on real data" 
+abstract: "This vignette shows how to fit standard statistical models with the BayesianTools package" 
 author: Florian Hartig
 editor_options: 
   chunk_output_type: console
 ---
+
 
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
@@ -21,44 +22,42 @@ knitr::opts_chunk$set(fig.width=5, fig.height=5, warning=FALSE, cache = F)
 set.seed(123)
 ```
 
-In this vignette, we want to illustrate how BayesianTools can be implemented on a real data.
 
-In this case, we are using airquality data.
+# Linear regression
 
-For the illustration purpose, we are fitting a linear regression model on the data - so that we can compare it with our result.
-
+Consider the following linear regression model
 
 ```{r}
 fit = lm(Ozone ~ Wind, data = airquality)
 summary(fit)
 ```
 
-```{r}
-
-dat = airquality[complete.cases(airquality), ]
-
-```
-
-Creating a likelihood function from the data.
+How to do the same with the BT package? First, we need to specify the likelihood for a linear regression:
 
 ```{r}
+dat = model.frame(fit) # using model.frame makes sure we use the same data
+
 likelihood <- function(par){
   # c("a", "b", "err-sd")
-  llObservation = sum(dnorm(par[1] * dat$Wind +  par[2] - dat$Ozone, sd = par[3], log = T))
-  return(llObservation)
+  pred = par[1] * dat$Wind +  par[2]
+  ll = sum(dnorm(pred - dat$Ozone, 
+                            sd = par[3], 
+                            log = T))
+  return(ll)
 }
 
-likelihood(c(4,10,6))
+par = c(-5,96,25)
+likelihood(par)
 ```
 
-Creating a standardized collection of prior, likelihood and posterior function.
+Creating the BayesianSetup by combining likelihood with uniform (flat) priors
 
 ```{r, message=F}
 library(BayesianTools)
 setup <- createBayesianSetup(likelihood = likelihood, 
                              lower = c(-100,-100,0), 
                              upper = c(100,200,50),
-                             names = c("a", "b", "err-sd"))
+                             names = c("Wind", "intercept", "err-sd"))
 ```
 
 Creating required setup for wrapper function runMCMC to start MCMCs
@@ -66,25 +65,34 @@ Creating required setup for wrapper function runMCMC to start MCMCs
 ```{r}
 settings <- list(iterations = 10000, nrChains = 2)
 res <- runMCMC(bayesianSetup = setup, settings = settings)
-
-summary(res, start=1000)
 ```
 
+Traceplots and Gelman diagnostics to check convergence confirm the estimation procedure is fine and the MCMC has converged.
 
 ```{r}
 plot(res)
+gelmanDiagnostics(res)
 ```
+
+Summary table is virtually identical to the standard regression table using lm 
+
+```{r}
+summary(res, start=1000)
+```
+
+Plots of the marginal prior and posterior distribution
 
 ```{r}
 marginalPlot(res, start = 1000, prior = T)
 ```
 
+A correlation plot shows a very strong correlction between slope and intercept. This is because the predictor variable wasn't centered. 
+
 ```{r}
-gelmanDiagnostics(res)
+correlationPlot(res, start = 1000)
 ```
-```{r}
-correlationPlot(res)
-```
+
+Tip: in a Bayesian analysis, it is useful to scale and center all predictors. Scaling helps to set sensible non-informative priors. Centering removes posterior correlations between variables. 
 
 # Linear mixed model with the BT package
 
