@@ -26,11 +26,11 @@
 #' 
 #' For blockUpdate the first element in the list determines the type of blocking.
 #' Possible choices are
-#' \itemize{
+#' \describe{
 #'  \item{"none"}{ (default), no blocking of parameters}
-#'  \item{"correlation"} { blocking based on correlation of parameters. Using h or k (see below)}
-#'  \item{"random"} { random blocking. Using k (see below)}
-#'  \item{"user"} { user defined groups. Using groups (see below)}
+#'  \item{"correlation"}{ blocking based on correlation of parameters. Using h or k (see below)}
+#'  \item{"random"}{ random blocking. Using k (see below)}
+#'  \item{"user"}{ user defined groups. Using groups (see below)}
 #'  }
 #'  Further, seven parameters can be specified. "k" defines the number of groups, "h" the strength
 #'  of the correlation used to group parameter and "groups" is used for user defined groups.
@@ -45,7 +45,6 @@
 #'  to be updated. By default all groups have the same probability.
 #'  Finally, "groupStart" defines the starting point of the groupUpdate and "groupIntervall" - the interval
 #'  in which the groups are evaluated.
-#'  
 DEzs <- function(bayesianSetup, 
                     settings = list(iterations=10000, 
                                     Z = NULL, 

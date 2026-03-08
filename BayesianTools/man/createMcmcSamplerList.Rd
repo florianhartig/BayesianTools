@@ -7,10 +7,10 @@
 createMcmcSamplerList(mcmcList)
 }
 \arguments{
-\item{mcmcList}{list of objects, each of which is an mcmcSampler}
+\item{mcmcList}{a list of objects of class mcmcSampler}
 }
 \value{
-object of class "mcmcSamplerList"
+Object of class "mcmcSamplerList"
 }
 \description{
 Convenience function to create an object of class mcmcSamplerList from a list of mcmc samplers

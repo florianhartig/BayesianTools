@@ -1,13 +1,25 @@
-
+#' One-factor-at-a-time sensitivity plot
+#' 
 #' Performs a one-factor-at-a-time sensitivity analysis for the posterior of a given bayesianSetup within the prior range.
+#' 
 #' @author Florian Hartig
-#' @param bayesianSetup an object of class BayesianSetup
+#' @param bayesianSetup An object of class BayesianSetup
 #' @param selection indices of selected parameters
-#' @param equalScale if T, y-axis of all plots will have the same scale
+#' @param equalScale logical, if TRUE - y axis of all plots will have the same scale
 #' @note This function can also be used for sensitivity analysis of an arbitrary output - just create a BayesianSetup with this output. 
+#' @details The function performs a one-factor-at-a-time sensitivity analysis on a BayesianSetup object.
+#' 
+#' Per default, the scale of the y axis is the same for all plots. Often, this creates problems, as one parameter is far more sensitive than another. In this case, we will see a plot like the following:
+#' 
+#' ![](plotSensitivity-ScaleDontMatch.png "Sensitivity Plot")
+#' 
+#' This issue can be resolved by setting 'equalScale = F'. In this case, the y axis will have different scales, resulting in the following plot:
+#' 
+#' ![](plotSensitivity-ScaleFalse.png "Sensitivity Plot")
+#' 
 #' @example /inst/examples/plotSensitivityHelp.R
 #' @export
-plotSensitivity <- function(bayesianSetup, selection = NULL, equalScale = T){
+plotSensitivity <- function(bayesianSetup, selection = NULL, equalScale = TRUE){
   
   if (is.null(selection)) selection = 1:bayesianSetup$numPars
   n = length(selection)
@@ -40,7 +52,7 @@ plotSensitivity <- function(bayesianSetup, selection = NULL, equalScale = T){
   
   
   for (i in 1:n){
-    if(equalScale == T) plot(resp~par, xlab = names[i], type = "l", col = "red", data = post[[i]], ylim = c(minR, maxR), ylab = "Response")
+    if(equalScale == TRUE) plot(resp~par, xlab = names[i], type = "l", col = "red", data = post[[i]], ylim = c(minR, maxR), ylab = "Response")
     else plot(resp~par, xlab = names[i], type = "l", col = "red", data = post[[i]], ylab = "Response")
     
     abline(v = refPar[i])

@@ -14,7 +14,8 @@ runMCMC(bayesianSetup, sampler = "DEzs", settings = NULL)
 \item{settings}{list with settings for each sampler. If a setting is not provided, defaults (see \code{\link{applySettingsDefault}}) will be used.}
 }
 \value{
-The function returns an object of class mcmcSampler (if one chain is run) or mcmcSamplerList. Both have the superclass bayesianOutput. It is possible to extract the samples as a coda object or matrix with \code{\link{getSample}}.
+The function returns an object of class mcmcSampler (if one chain is run) or mcmcSamplerList. Both have the superclass bayesianOutput. It is possible to extract the samples as a coda object or matrix with \code{\link{getSample}}. Other S3 classes that are implemented include \code{\link{summary.mcmcSampler}} or \code{\link{summary.mcmcSamplerList}}, \code{\link{print.mcmcSampler}} or \code{\link{print.mcmcSamplerList}}, \code{\link{plot.mcmcSampler}} or \code{\link{plot.mcmcSamplerList}}
+
 It is also possible to summarize the posterior as a new prior via \code{\link{createPriorDensity}}.
 }
 \description{
