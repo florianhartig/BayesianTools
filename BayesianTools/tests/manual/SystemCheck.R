@@ -1,0 +1,5 @@
+sessionInfo()
+Sys.which(c("make","gcc","g++"))
+pkgbuild::check_build_tools(debug = TRUE)
+Sys.getenv("PATH")
+system("g++ -v")
