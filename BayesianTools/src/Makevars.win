@@ -1,7 +1,0 @@
-# Force RTools mingw64 compiler
-CC = $(BINPREF)gcc
-CXX = $(BINPREF)g++
-CXX11 = $(BINPREF)g++ -std=c++11
-CXX14 = $(BINPREF)g++ -std=c++14
-CXX17 = $(BINPREF)g++ -std=c++17
-CXXFLAGS = -O2 -Wall
