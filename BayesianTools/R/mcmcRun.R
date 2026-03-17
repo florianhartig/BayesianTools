@@ -248,9 +248,11 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
       mcmcSampler$settings = settings
     }
 
-    mcmcSampler$settings$runtime = mcmcSampler$settings$runtime + proc.time() - ptm
+    mcmcSampler$info$sessionInfo = utils::sessionInfo()
+    
+    mcmcSampler$info$runtime = mcmcSampler$info$runtime + proc.time() - ptm
     if(is.null(settings$message) || settings$message == TRUE){
-      message("runMCMC terminated after ", mcmcSampler$settings$runtime[3], "seconds")
+      message("runMCMC terminated after ", mcmcSampler$info$runtime[3], "seconds")
     }
     return(mcmcSampler)
   }
@@ -310,64 +312,84 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   
   if(!settings$sampler %in% getPossibleSamplerTypes()$BTname) stop("trying to set values for a sampler that does not exist")
   
-
-  mcmcDefaults <- list(startValue = NULL,
-                          iterations = 10000,
-                          burnin = 0,
-                          thin = 1,
-                          consoleUpdates = 100,
-                          parallel = NULL,
-                          message = TRUE)
-  
-  #### Metropolis ####
-  if(settings$sampler %in% c("AM", "DR", "DRAM", "Metropolis")){
-
-    defaultSettings <- c(mcmcDefaults, list(optimize = T,
-                                               proposalGenerator = NULL,
-                                               adapt = F,
-                                               adaptationInterval = 500,
-                                               adaptationNotBefore = 3000,
-                                               DRlevels = 1 ,
-                                               proposalScaling = NULL,
-                                               adaptationDepth = NULL,
-                                               temperingFunction = NULL,
-                                               proposalGenerator = NULL,
-                                               gibbsProbabilities = NULL))   
-
-    if (settings$sampler %in% c("AM", "DRAM")) defaultSettings$adapt <- TRUE 
-    if (settings$sampler %in% c("DR", "DRAM")) defaultSettings$DRlevels <- 2
+  if (settings$sampler == "AM") {
+    defaultSettings <- applySettingsDefault(sampler = "Metropolis")
+    defaultSettings$adapt <- TRUE
   }
   
-  #### DE Family ####
-  if(settings$sampler %in% c("DE", "DEzs")){
-    defaultSettings <- c(mcmcDefaults, list(eps = 0,
-                                               currentChain = 1,
-                                               blockUpdate = list("none", 
-                                                                  k = NULL, 
-                                                                  h = NULL, 
-                                                                  pSel = NULL, 
-                                                                  pGroup = NULL, 
-                                                                  groupStart = 1000, 
-                                                                  groupIntervall = 1000)
-                                               ))
-    
-    if (settings$sampler == "DE"){
-      defaultSettings$f <- -2.38 # TODO CHECK
-
-    }
-
-    if (settings$sampler == "DEzs"){
-      defaultSettings$f <- 2.38
-      defaultSettings <- c(defaultSettings, list(Z = NULL,
-                                                 zUpdateFrequency = 1,
-                                                 pSnooker = 0.1,
-                                                 pGamma1 = 0.1,
-                                                 eps.mult =0.2,
-                                                 eps.add = 0))
-    }
-          
+  if (settings$sampler == "DR") {
+    defaultSettings <- applySettingsDefault(sampler = "Metropolis")
+    defaultSettings$DRlevels <- 2
   }
   
+  if (settings$sampler == "DRAM") {
+    defaultSettings <- applySettingsDefault(sampler = "Metropolis")
+    defaultSettings$adapt <- TRUE
+    defaultSettings$DRlevels <- 2
+  }
+  
+  if (settings$sampler == "Metropolis"){
+    defaultSettings = list(startValue = NULL, 
+                           iterations = 10000, 
+                           optimize = T, 
+                           proposalGenerator = NULL, 
+                           consoleUpdates=100, 
+                           burnin = 0,
+                           thin = 1, 
+                           parallel = NULL, 
+                           adapt = T, 
+                           adaptationInterval= 500, 
+                           adaptationNotBefore = 3000,
+                           DRlevels = 1 , 
+                           proposalScaling = NULL, 
+                           adaptationDepth = NULL, 
+                           temperingFunction = NULL, 
+                           proposalGenerator = NULL, 
+                           gibbsProbabilities = NULL, 
+                           currentChain = 1,
+                           message = TRUE)
+  }
+  
+  if (settings$sampler == "DE"){
+    defaultSettings = list(startValue = NULL,
+                           iterations = 10000, 
+                           burnin = 0, 
+                           thin = 1,
+                           eps = 0,
+                           consoleUpdates = 100, 
+                           currentChain = 1,
+                           parallel = F,
+                           f = -2.38, # TODO CHECK
+                           burnin = 0, 
+                           eps = 0, 
+                           consoleUpdates = 100, 
+                           blockUpdate = list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
+                                              groupStart = 1000, groupIntervall = 1000),
+                           message = TRUE)
+  }
+  
+  if (settings$sampler == "DEzs"){
+    defaultSettings = list(startValue = NULL,
+                           iterations = 10000, 
+                           Z = NULL,
+                           pSnooker = 0.1, 
+                           burnin = 0, 
+                           thin = 1,
+                           f = 2.38, # TODO CHECK
+                           eps = 0,
+                           pGamma1 = 0.1,
+                           eps.mult =0.2,
+                           eps.add = 0,
+                           consoleUpdates = 100, 
+                           currentChain = 1,
+                           parallel = NULL,
+                           zUpdateFrequency = 1,
+                           blockUpdate = list("none", k = NULL, h = NULL, pSel = NULL, pGroup = NULL, 
+                                              groupStart = 1000, groupIntervall = 1000),
+                           message = TRUE)
+  }
+  
+
   #### DREAM Family ####
   
   if(settings$sampler %in% c("DREAM", "DREAMzs")){  
@@ -410,17 +432,29 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   #### SMC ####
   
   if (settings$sampler == "SMC"){
-    defaultSettings = list(iterations = 10, 
-                           resampling = T, 
-                           resamplingSteps = 2, 
-                           proposal = NULL, 
-                           adaptive = T, 
-                           proposalScale = 0.5, 
-                           initialParticles = 1000
+    defaultSettings = list(  initialParticles = 1000,
+                             iterations = 10, 
+                             resampling = T, 
+                             resamplingSteps = 2, 
+                             lastMutateSteps = 5,         
+                             proposal = NULL, 
+                             exponents = NULL, 
+                             adaptive = T, 
+                             proposalScale = 0.5, 
+                             x=3.11, 
+                             m=7E-08, 
+                             sampling="multinomial",
+                             ess.limit=NULL,
+                             ess.factor = 0.95,           
+                             lastResample = 1,
+                             pars.lower=NULL, 
+                             pars.upper=NULL, 
+                             mutate.method ="Metropolis", 
+                             b=1e-04,                     
+                             diagnostics = NULL,
+                             reference=NULL
                            )
   }
-  
-
   
   ## CHECK DEFAULTS
 
@@ -439,9 +473,7 @@ applySettingsDefault<-function(settings=NULL, sampler = "DEzs", check = FALSE){
   }
   
   defaultSettings$nrChains = 1
-  defaultSettings$runtime = 0
-  defaultSettings$sessionInfo = utils::sessionInfo()
-  
+
   nam = names(defaultSettings)
   
   for (i in 1:length(defaultSettings)){
