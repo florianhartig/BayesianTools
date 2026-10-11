@@ -103,8 +103,9 @@ runMCMC <- function(bayesianSetup , sampler = "DEzs", settings = NULL){
 
   if(restart == T) if(!getPossibleSamplerTypes()$restartable[which(getPossibleSamplerTypes()$BTname == settings$sampler)]) stop("This sampler can not be restarted")
   
-  ########### Recursive call in case multiple chains are to be run
-  if(settings$nrChains >1){
+  ########### Recursive call for multiple chains or restarting a sampler list
+  if(settings$nrChains > 1 ||
+     (restart && inherits(bayesianSetup, "mcmcSamplerList"))){
 
     # Initialize output list
     out<- list()
